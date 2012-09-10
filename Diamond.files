@@ -1,0 +1,15 @@
+bin/copperspice.am
+bin/Makefile.am
+configure.ac
+Makefile.am
+main.cpp
+mainwindow.h
+mainwindow.cpp
+lineNumbers.cpp
+diamond.qrc
+util.h
+util.cpp
+settings.cpp
+mainwindow.ui
+support.cpp
+linenumbers.h
