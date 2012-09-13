@@ -20,16 +20,15 @@
 **************************************************************************/
 
 #include "dialog_options.h"
-#include "mainwindow.h"
 #include "util.h"
 
-//#include <QComboBox>
 #include <QString>
 #include <QStringList>
 
-Dialog_Options::Dialog_Options()
+Dialog_Options::Dialog_Options(MainWindow *from)
    : m_ui(new Ui::Dialog_Options)
 {
+   m_parent = from;
    m_ui->setupUi(this);
 
    initData();
@@ -45,18 +44,19 @@ Dialog_Options::~Dialog_Options()
 
 void Dialog_Options::initData()
 {
-   // struct m_struct = getStructName();
+   struct Settings m_struct = m_parent->get_StructData();
 
-   QStringList list;
+   QStringList list;   
    int index;
 
    //
-   list << "MM/dd/yyyy" << "dd/MM/yyyy" <<  "MMM dd, yyyy" << "MMMM dd, yyyy";
+   list << "MM/dd/yyyy" << "dd/MM/yyyy" <<  "MMM dd, yyyy" << "MMMM dd, yyyy"
+        << "yyyyMMdd";
 
    m_ui->dateFormat_CB->addItems(list);
    m_ui->dateFormat_CB->setEditable(false);
 
-   index = m_ui->dateFormat_CB->findText("dd/MM/yyyy");   //  m_struct.dataFormat);
+   index = m_ui->dateFormat_CB->findText(m_struct.dateFormat);
    m_ui->dateFormat_CB->setCurrentIndex(index);
 
    //
@@ -65,7 +65,7 @@ void Dialog_Options::initData()
    m_ui->tabSpacing_CB->addItems(list);
    m_ui->tabSpacing_CB->setEditable(false);
 
-   index = m_ui->tabSpacing_CB->findText("4");            //  QString::number(m_struct.tabSpacing) );
+   index = m_ui->tabSpacing_CB->findText(QString::number(m_struct.tabSpacing));
    m_ui->tabSpacing_CB->setCurrentIndex(index);
 }
 

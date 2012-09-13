@@ -50,3 +50,11 @@ QString Dialog_Get1::get_Value()
 {
    return m_ui->value->text();
 }
+
+void Dialog_Get1::set_ColNo()
+{
+   setWindowTitle("Go to Column");
+   m_ui->label->setText("Column Number:");
+}
+
+

@@ -101,7 +101,10 @@ void MainWindow::closeAll_Doc()
 
 void MainWindow::reload()
 {
-   if (m_textEdit->document()->isModified()) {
+   if (m_curFile.isEmpty()) {
+      csError("Unable to reload a file which was not Saved.");
+
+   } else if (m_textEdit->document()->isModified()) {
 
       QString fileName = m_curFile;
       if (fileName.isEmpty()){
@@ -226,7 +229,7 @@ void MainWindow::advFind()
 
 void MainWindow::goLine()
 {
-   int line = getLineNo()-1;
+   int line = get_Value1("line")-1;
 
    QTextCursor cursor(m_textEdit->textCursor());
    cursor.movePosition(QTextCursor::Start);
@@ -238,7 +241,13 @@ void MainWindow::goLine()
 
 void MainWindow::goColumn()
 {
-   showNotDone("Search Go to Column");
+   int col = get_Value1("col");
+
+   QTextCursor cursor(m_textEdit->textCursor());
+   cursor.movePosition(QTextCursor::StartOfLine);
+
+   cursor.movePosition(QTextCursor::Right, QTextCursor::MoveAnchor, col);
+   m_textEdit->setTextCursor(cursor);
 }
 
 void MainWindow::goTop()
@@ -403,7 +412,7 @@ void MainWindow::setFont()
 
 void MainWindow::setOptions()
 {
-   Dialog_Options *dw = new Dialog_Options();
+   Dialog_Options *dw = new Dialog_Options(this);
    int result = dw->exec();
 
    if ( result = QDialog::Accepted) {
@@ -604,10 +613,13 @@ void MainWindow::createShortCuts()
    m_ui->actionRedo->setShortcuts(QKeySequence::Redo);
    m_ui->actionCut->setShortcuts(QKeySequence::Cut);
    m_ui->actionCopy->setShortcuts(QKeySequence::Copy);
-   m_ui->actionPaste->setShortcuts(QKeySequence::Paste);
+   m_ui->actionPaste->setShortcuts(QKeySequence::Paste);   
+   m_ui->actionGo_Top->setShortcuts(QKeySequence::MoveToStartOfDocument);
+   // MoveToEndOfDocument
 
    //search
    m_ui->actionFind->setShortcuts(QKeySequence::Find);
+   m_ui->actionReplace->setShortcuts(QKeySequence::Replace);
    m_ui->actionFind_Next->setShortcuts(QKeySequence::FindNext);
    m_ui->actionFind_Prev->setShortcuts(QKeySequence::FindPrevious);
 

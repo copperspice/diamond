@@ -47,14 +47,19 @@ QString MainWindow::strippedName(const QString &fullFileName)
    return QFileInfo(fullFileName).fileName();
 }
 
-int MainWindow::getLineNo()
+int MainWindow::get_Value1(const QString route)
 {
    Dialog_Get1 *dw = new Dialog_Get1();
+
+   if (route == "col") {
+      dw->set_ColNo();
+   }
+
    dw->exec();
 
-   int line = dw->get_Value().toInt();
+   int col = dw->get_Value().toInt();
 
-   return line;
+   return col;
 }
 
 void MainWindow::loadFile(const QString &fileName)
@@ -79,6 +84,11 @@ void MainWindow::loadFile(const QString &fileName)
 
    setCurrentFile(fileName);
    setStatusBar(tr("File loaded"), 2000);
+}
+
+struct Settings MainWindow::get_StructData()
+{
+   return m_struct;
 }
 
 bool MainWindow::querySave()
@@ -155,11 +165,7 @@ void MainWindow::setCurrentFile(const QString &fileName)
 }
 
 
-/*
-struct MainWindow::getStructName()
-{
-   return this->m_struct;
-}
-*/
+
+
 
 

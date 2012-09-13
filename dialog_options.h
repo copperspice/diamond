@@ -23,6 +23,7 @@
 #define DIALOG_OPTIONS_H
 
 #include "ui_dialog_options.h"
+#include "mainwindow.h"
 
 #include <QDialog>
 
@@ -31,13 +32,14 @@ class Dialog_Options : public QDialog
    Q_OBJECT
 
    public:
-      Dialog_Options();
+      Dialog_Options(MainWindow *from);
       ~Dialog_Options();
       QString get_DateFormat();
       int get_TabSpacing();
 
    private:
       Ui::Dialog_Options *m_ui;
+      MainWindow *m_parent;
       void initData();
 
    private slots:

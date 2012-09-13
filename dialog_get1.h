@@ -34,6 +34,7 @@ class Dialog_Get1 : public QDialog
       Dialog_Get1();
       ~Dialog_Get1();
       QString get_Value();
+      void set_ColNo();
 
    private:
       Ui::Dialog_Get1 *m_ui;

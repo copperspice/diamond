@@ -89,8 +89,7 @@ void MainWindow::rf_UpdateActions()
    for (int i = 0; i < rf_MaxCnt; ++i) {
 
      if (i < cnt)  {
-        rf_Actions[i]->setText(rf_List[i]);
-        rf_Actions[i]->setData(rf_List[i]);
+        rf_Actions[i]->setText(rf_List[i]);        
         rf_Actions[i]->setVisible(true);
 
      } else {

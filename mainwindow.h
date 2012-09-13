@@ -30,22 +30,19 @@
 #include <QMainWindow>
 #include <QPlainTextEdit>
 
+struct Settings {
+   QFont font;
+   QString dateFormat;
+   int tabSpacing;
+};
+
 class MainWindow : public QMainWindow
 {
    Q_OBJECT
 
-   public:
+   public:      
       MainWindow();
-      // struct getStructName();
-
-      struct Setting {
-         QFont font;
-         QString dateFormat;
-         int tabSpacing;
-      };
-
-      struct Setting m_struct;
-
+      struct Settings get_StructData();
 
    protected:
       void closeEvent(QCloseEvent *event);
@@ -58,8 +55,9 @@ class MainWindow : public QMainWindow
       QString m_cfgFName;
       QDomDocument m_domCfg;
 
-      static const int rf_MaxCnt = 10;
+      struct Settings m_struct;
 
+      static const int rf_MaxCnt = 10;
       QAction *rf_Actions[rf_MaxCnt];
       QStringList rf_List;
 
@@ -96,7 +94,7 @@ class MainWindow : public QMainWindow
       void rf_Update();
       void rf_UpdateActions();
 
-      int getLineNo();
+      int get_Value1(const QString route);
       bool querySave();
       void loadFile(const QString &fileName);
       bool saveFile(const QString &fileName);
