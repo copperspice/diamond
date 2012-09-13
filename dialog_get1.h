@@ -19,17 +19,28 @@
 *
 **************************************************************************/
 
-#include "mainwindow.h"
-#include <QApplication>
+#ifndef DIALOG_GET1_H
+#define DIALOG_GET1_H
 
-int main(int argc, char *argv[])
-{
-   QApplication app(argc, argv);
-   app.setOrganizationName("BG Consulting");
-   app.setApplicationName("Diamond Editor");
+#include "ui_dialog_get1.h"
 
-   MainWindow dw;
-   dw.show();
+#include <QDialog>
 
-   return app.exec();
-}
+class Dialog_Get1 : public QDialog
+{     
+   Q_OBJECT
+
+   public:
+      Dialog_Get1();
+      ~Dialog_Get1();
+      QString get_Value();
+
+   private:
+      Ui::Dialog_Get1 *m_ui;
+
+   private slots:
+      void Ok();
+      void Cancel();
+};
+
+#endif

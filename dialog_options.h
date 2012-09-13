@@ -19,17 +19,30 @@
 *
 **************************************************************************/
 
-#include "mainwindow.h"
-#include <QApplication>
+#ifndef DIALOG_OPTIONS_H
+#define DIALOG_OPTIONS_H
 
-int main(int argc, char *argv[])
+#include "ui_dialog_options.h"
+
+#include <QDialog>
+
+class Dialog_Options : public QDialog
 {
-   QApplication app(argc, argv);
-   app.setOrganizationName("BG Consulting");
-   app.setApplicationName("Diamond Editor");
+   Q_OBJECT
 
-   MainWindow dw;
-   dw.show();
+   public:
+      Dialog_Options();
+      ~Dialog_Options();
+      QString get_DateFormat();
+      int get_TabSpacing();
 
-   return app.exec();
-}
+   private:
+      Ui::Dialog_Options *m_ui;
+      void initData();
+
+   private slots:
+      void Save();
+      void Cancel();
+};
+
+#endif

@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE QtCreatorProject>
-<!-- Written by Qt Creator 2.5.0, 2012-09-10T09:13:56. -->
+<!-- Written by Qt Creator 2.5.0, 2012-09-12T17:15:34. -->
 <qtcreator>
  <data>
   <variable>GenericProjectManager.GenericProject.Toolchain</variable>
-  <value type="QString"></value>
+  <value type="QString">ProjectExplorer.ToolChain.Mingw:C:/MingW/bin/g++.exe.x86-windows-msys-pe-64bit.</value>
  </data>
  <data>
   <variable>ProjectExplorer.Project.ActiveTarget</variable>

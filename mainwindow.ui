@@ -66,7 +66,7 @@
     </property>
     <addaction name="actionColors"/>
     <addaction name="actionFonts"/>
-    <addaction name="actionTab_Size"/>
+    <addaction name="actionOptions"/>
    </widget>
    <widget class="QMenu" name="menuHelp">
     <property name="title">
@@ -85,15 +85,17 @@
     <addaction name="actionFind_Next"/>
     <addaction name="actionFind_Prev"/>
     <addaction name="separator"/>
-    <addaction name="actionAdvanced_Find"/>
+    <addaction name="actionAdv_Find"/>
     <addaction name="separator"/>
     <addaction name="actionGo_Line"/>
     <addaction name="actionGo_Column"/>
+    <addaction name="actionGo_Top"/>
    </widget>
    <widget class="QMenu" name="menuView">
     <property name="title">
      <string>View</string>
     </property>
+    <addaction name="actionLine_Highlight"/>
     <addaction name="actionLine_Numbers"/>
     <addaction name="separator"/>
     <addaction name="actionShow_Spaces"/>
@@ -110,34 +112,34 @@
      <property name="title">
       <string>File Format</string>
      </property>
-     <addaction name="actionDOS_CR_LF"/>
-     <addaction name="actionUnix_Format_LF_Only"/>
-     <addaction name="actionMac_Format_CR_Only"/>
+     <addaction name="actionFormat_Dos"/>
+     <addaction name="actionFormat_Unix"/>
+     <addaction name="actionFormat_Mac"/>
     </widget>
     <widget class="QMenu" name="menuSyntax_Type">
      <property name="title">
       <string>Syntax Type</string>
      </property>
-     <addaction name="actionDefault"/>
-     <addaction name="actionPlain_Text"/>
+     <addaction name="actionSyn_Default"/>
+     <addaction name="actionSyn_Text"/>
      <addaction name="separator"/>
-     <addaction name="actionC_C"/>
-     <addaction name="actionCSS"/>
-     <addaction name="actionDoxygen"/>
-     <addaction name="actionHTML"/>
-     <addaction name="actionJava"/>
-     <addaction name="actionJava_Script"/>
-     <addaction name="actionMakefile"/>
-     <addaction name="actionShell_Script"/>
-     <addaction name="actionPerl_Script"/>
+     <addaction name="actionSyn_C"/>
+     <addaction name="actionSyn_Css"/>
+     <addaction name="actionSyn_Doxygen"/>
+     <addaction name="actionSyn_Html"/>
+     <addaction name="actionSyn_Java"/>
+     <addaction name="actionSyn_Javascript"/>
+     <addaction name="actionSyn_Makefile"/>
+     <addaction name="actionSyn_Shell_S"/>
+     <addaction name="actionSyn_Perl_S"/>
     </widget>
     <widget class="QMenu" name="menuTabs_Spaces">
      <property name="title">
       <string>Tabs &amp;&amp; Spaces</string>
      </property>
-     <addaction name="actionConvert_Tabs_to_Spaces_2"/>
-     <addaction name="actionConvert_Spaces_to_Tabs"/>
-     <addaction name="actionRemove_Trailing_Spaces"/>
+     <addaction name="actionFix_Tab_Spaces"/>
+     <addaction name="actionFix_Spaces_Tab"/>
+     <addaction name="actionFix_Spaces_EOL"/>
     </widget>
     <addaction name="menuSyntax_Type"/>
     <addaction name="menuFile_Format"/>
@@ -148,8 +150,8 @@
     <property name="title">
      <string>Window</string>
     </property>
-    <addaction name="actionNew_Tab"/>
-    <addaction name="actionClose_Tab"/>
+    <addaction name="actionTab_New"/>
+    <addaction name="actionTab_Close"/>
    </widget>
    <widget class="QMenu" name="menuTools">
     <property name="title">
@@ -159,10 +161,10 @@
      <property name="title">
       <string>Macros</string>
      </property>
-     <addaction name="actionBegin_Recording"/>
-     <addaction name="actionStop_Recording"/>
+     <addaction name="actionMacro_Start"/>
+     <addaction name="actionMacro_Stop"/>
      <addaction name="separator"/>
-     <addaction name="actionPlay_Macro"/>
+     <addaction name="actionMacro_Play"/>
     </widget>
     <addaction name="menuMacros"/>
     <addaction name="actionSpell_Check"/>
@@ -180,31 +182,46 @@
   <widget class="QStatusBar" name="statusbar"/>
   <action name="actionNew">
    <property name="icon">
-     <iconset resource="diamond.qrc">
+    <iconset>
      <normaloff>:/resources/new.png</normaloff>:/resources/new.png</iconset>
    </property>
    <property name="text">
     <string>New</string>
+   </property>
+   <property name="toolTip">
+    <string>Create a new document</string>
    </property>
   </action>
   <action name="actionOpen">
    <property name="text">
     <string>Open...</string>
    </property>
+   <property name="toolTip">
+    <string>Open an existing document</string>
+   </property>
   </action>
   <action name="actionSave">
    <property name="text">
     <string>Save </string>
+   </property>
+   <property name="toolTip">
+    <string>Save current document</string>
    </property>
   </action>
   <action name="actionSave_As">
    <property name="text">
     <string>Save As...</string>
    </property>
+   <property name="toolTip">
+    <string>Save document with a new name</string>
+   </property>
   </action>
   <action name="actionClose">
    <property name="text">
     <string>Close</string>
+   </property>
+   <property name="toolTip">
+    <string>Close document</string>
    </property>
   </action>
   <action name="actionCut">
@@ -214,6 +231,9 @@
   </action>
   <action name="actionCopy">
    <property name="text">
+    <string>Copy</string>
+   </property>
+   <property name="toolTip">
     <string>Copy</string>
    </property>
   </action>
@@ -226,10 +246,16 @@
    <property name="text">
     <string>Colors</string>
    </property>
+   <property name="toolTip">
+    <string>Set Colors</string>
+   </property>
   </action>
   <action name="actionAbout">
    <property name="text">
     <string>About</string>
+   </property>
+   <property name="toolTip">
+    <string>About Diamond Editor</string>
    </property>
   </action>
   <action name="actionDiamond_Help">
@@ -237,22 +263,28 @@
     <string>Help Topics...</string>
    </property>
   </action>
-  <action name="actionNew_Tab">
+  <action name="actionTab_New">
    <property name="text">
     <string>New Tab</string>
    </property>
   </action>
-  <action name="actionBegin_Recording">
+  <action name="actionMacro_Start">
    <property name="text">
     <string>Begin Recording</string>
    </property>
+   <property name="toolTip">
+    <string>Begin Recording Macro</string>
+   </property>
   </action>
-  <action name="actionStop_Recording">
+  <action name="actionMacro_Stop">
    <property name="text">
     <string>End Recording</string>
    </property>
+   <property name="toolTip">
+    <string>End Recording Macro</string>
+   </property>
   </action>
-  <action name="actionPlay_Macro">
+  <action name="actionMacro_Play">
    <property name="text">
     <string>Play Macro</string>
    </property>
@@ -262,72 +294,72 @@
     <string>Fonts</string>
    </property>
   </action>
-  <action name="actionDOS_CR_LF">
+  <action name="actionFormat_Dos">
    <property name="text">
     <string>DOS Format (CR/LF)</string>
    </property>
   </action>
-  <action name="actionUnix_Format_LF_Only">
+  <action name="actionFormat_Unix">
    <property name="text">
     <string>Unix Format (LF Only)</string>
    </property>
   </action>
-  <action name="actionMac_Format_CR_Only">
+  <action name="actionFormat_Mac">
    <property name="text">
     <string>Mac Format (CR Only)</string>
    </property>
   </action>
-  <action name="actionC_C">
+  <action name="actionSyn_C">
    <property name="text">
     <string>C/C++</string>
    </property>
   </action>
-  <action name="actionPerl_Script">
+  <action name="actionSyn_Perl_S">
    <property name="text">
     <string>Perl Script</string>
    </property>
   </action>
-  <action name="actionCSS">
+  <action name="actionSyn_Css">
    <property name="text">
     <string>CSS</string>
    </property>
   </action>
-  <action name="actionPlain_Text">
+  <action name="actionSyn_Text">
    <property name="text">
     <string>Plain Text</string>
    </property>
   </action>
-  <action name="actionDefault">
+  <action name="actionSyn_Default">
    <property name="text">
     <string>Default</string>
    </property>
   </action>
-  <action name="actionHTML">
+  <action name="actionSyn_Html">
    <property name="text">
     <string>HTML</string>
    </property>
   </action>
-  <action name="actionDoxygen">
+  <action name="actionSyn_Doxygen">
    <property name="text">
     <string>Doxygen</string>
    </property>
   </action>
-  <action name="actionJava">
+  <action name="actionSyn_Java">
    <property name="text">
     <string>Java </string>
    </property>
   </action>
-  <action name="actionMakefile">
+  <action name="actionSyn_Makefile">
    <property name="text">
     <string>Makefile</string>
    </property>
   </action>
-  <action name="actionShell_Script">
+  <action name="actionSyn_Shell_S">
    <property name="text">
     <string>Shell Script</string>
    </property>
   </action>
-  <action name="actionJava_Script">
+  <action name="actionSyn_Javascript">
    <property name="text">
     <string>Javascript</string>
    </property>
@@ -336,15 +368,27 @@
    <property name="text">
     <string>Close All</string>
    </property>
+   <property name="toolTip">
+    <string>Close all open documents</string>
+   </property>
   </action>
   <action name="actionReload">
    <property name="text">
     <string>Reload</string>
    </property>
+   <property name="toolTip">
+    <string>Reload current document</string>
+   </property>
+   <property name="shortcutContext">
+    <enum>Qt::WindowShortcut</enum>
+   </property>
   </action>
   <action name="actionSave_All">
    <property name="text">
     <string>Save All</string>
+   </property>
+   <property name="toolTip">
+    <string>Save all open documents</string>
    </property>
   </action>
   <action name="actionPrint">
@@ -365,6 +409,9 @@
   <action name="actionExit">
    <property name="text">
     <string>Exit</string>
+   </property>
+   <property name="toolTip">
+    <string>Exit Diamond Editor</string>
    </property>
   </action>
   <action name="actionUndo">
@@ -407,7 +454,7 @@
     <string>Find Prev</string>
    </property>
   </action>
-  <action name="actionAdvanced_Find">
+  <action name="actionAdv_Find">
    <property name="text">
     <string>Advanced Find...</string>
    </property>
@@ -429,10 +476,16 @@
    <property name="text">
     <string>Line Numbers</string>
    </property>
+   <property name="toolTip">
+    <string>Show Line Numbers</string>
+   </property>
   </action>
-  <action name="actionTab_Size">
+  <action name="actionOptions">
    <property name="text">
-    <string>Tab Size</string>
+    <string>Options</string>
+   </property>
+   <property name="toolTip">
+    <string>Configure Options</string>
    </property>
   </action>
   <action name="actionSpell_Check">
@@ -459,25 +512,52 @@
    <property name="text">
     <string>Show Spaces EOL</string>
    </property>
+   <property name="toolTip">
+    <string>Show Spaces at end of line</string>
+   </property>
   </action>
-  <action name="actionConvert_Tabs_to_Spaces_2">
+  <action name="actionFix_Tab_Spaces">
    <property name="text">
     <string>Convert Tabs to Spaces</string>
    </property>
   </action>
-  <action name="actionConvert_Spaces_to_Tabs">
+  <action name="actionFix_Spaces_Tab">
    <property name="text">
     <string>Convert Spaces to Tabs</string>
    </property>
   </action>
-  <action name="actionRemove_Trailing_Spaces">
+  <action name="actionFix_Spaces_EOL">
    <property name="text">
     <string>Remove Trailing Spaces</string>
    </property>
+   <property name="toolTip">
+    <string>Remove Trailing Spaces at end of line</string>
+   </property>
   </action>
-  <action name="actionClose_Tab">
+  <action name="actionTab_Close">
    <property name="text">
     <string>Close Tab</string>
+   </property>
+  </action>
+  <action name="actionSelect_Macro">
+   <property name="text">
+    <string>Select Macro</string>
+   </property>
+  </action>
+  <action name="actionLine_Highlight">
+   <property name="text">
+    <string>Line Highlight</string>
+   </property>
+   <property name="toolTip">
+    <string>Highlight current line</string>
+   </property>
+  </action>
+  <action name="actionGo_Top">
+   <property name="text">
+    <string>Go Top of File</string>
+   </property>
+   <property name="toolTip">
+    <string>Go to the top of the file</string>
    </property>
   </action>
  </widget>

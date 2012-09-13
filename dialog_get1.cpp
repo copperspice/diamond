@@ -19,17 +19,34 @@
 *
 **************************************************************************/
 
-#include "mainwindow.h"
-#include <QApplication>
+#include "dialog_get1.h"
 
-int main(int argc, char *argv[])
+Dialog_Get1::Dialog_Get1()
+   : m_ui(new Ui::Dialog_Get1)
 {
-   QApplication app(argc, argv);
-   app.setOrganizationName("BG Consulting");
-   app.setApplicationName("Diamond Editor");
+   m_ui->setupUi(this);
+   m_ui->value->setText("1");
 
-   MainWindow dw;
-   dw.show();
+   connect(m_ui->ok_PB,     SIGNAL(clicked()),this, SLOT(Ok()));
+   connect(m_ui->cancel_PB, SIGNAL(clicked()),this, SLOT(Cancel()));
+}
 
-   return app.exec();
+Dialog_Get1::~Dialog_Get1()
+{
+   delete m_ui;
+}
+
+void Dialog_Get1::Ok()
+{
+   this->done(1);
+}
+
+void Dialog_Get1::Cancel()
+{
+   this->done(0);
+}
+
+QString Dialog_Get1::get_Value()
+{
+   return m_ui->value->text();
 }

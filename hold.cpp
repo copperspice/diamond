@@ -19,17 +19,5 @@
 *
 **************************************************************************/
 
-#include "mainwindow.h"
-#include <QApplication>
 
-int main(int argc, char *argv[])
-{
-   QApplication app(argc, argv);
-   app.setOrganizationName("BG Consulting");
-   app.setApplicationName("Diamond Editor");
-
-   MainWindow dw;
-   dw.show();
-
-   return app.exec();
-}
+nothing right now
