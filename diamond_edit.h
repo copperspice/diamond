@@ -19,8 +19,8 @@
 *
 **************************************************************************/
 
-#ifndef LINE_NUMBERS_H
-#define LINE_NUMBERS_H
+#ifndef DIAMOND_TEXTEDIT_H
+#define DIAMOND_TEXTEDIT_H
 
 #include <QObject>
 #include <QPlainTextEdit>
@@ -31,47 +31,47 @@
 
 class LineNumberArea;
 
-class CodeEditor : public QPlainTextEdit
+class DiamondTextEdit : public QPlainTextEdit
 {
    Q_OBJECT
 
    public:
-      CodeEditor(QWidget *parent = 0);
+      DiamondTextEdit();
 
-      void lineNumberAreaPaintEvent(QPaintEvent *event);
-      int lineNumberAreaWidth();
+      void lineNum_PaintEvent(QPaintEvent *event);
+      int lineNum_Width();
 
    protected:
       void resizeEvent(QResizeEvent *event);
 
-   private slots:
-      void updateLineNumberAreaWidth(int newBlockCount);
-      void updateLineNumberArea(const QRect &, int);
-
    private:
-      QWidget *lineNumberArea;
+      QWidget *m_lineNumArea;
+
+   private slots:
+      void update_LineNumWidth(int newBlockCount);
+      void update_LineNumArea(const QRect &rect, int value);
+
 };
 
 
-
-class LineNumberArea : public QWidget
+class LineNumArea : public QWidget
 {
    public:
-      LineNumberArea(CodeEditor *editor) : QWidget(editor) {
-         codeEditor = editor;
+      LineNumArea(DiamondTextEdit *editor) : QWidget(editor) {
+         m_editor = editor;
       }
 
       QSize sizeHint() const {
-         return QSize(codeEditor->lineNumberAreaWidth(), 0);
+         return QSize(m_editor->lineNum_Width(), 0);
       }
 
    protected:
       void paintEvent(QPaintEvent *event) {
-         codeEditor->lineNumberAreaPaintEvent(event);
+         m_editor->lineNum_PaintEvent(event);
       }
 
    private:
-      CodeEditor *codeEditor;
+     DiamondTextEdit *m_editor;
 };
 
 

@@ -8,8 +8,8 @@ main.cpp
 mainwindow.h
 mainwindow.cpp
 mainwindow.ui
-line_numbers.cpp
-line_numbers.h
+diamond_edit.cpp
+diamond_edit.h
 recent_files.cpp
 util.h
 util.cpp
@@ -22,3 +22,6 @@ dialog_get1.ui
 dialog_options.h
 dialog_options.cpp
 dialog_options.ui
+highlighter.h
+highlighter.cpp
+syn_c.txt

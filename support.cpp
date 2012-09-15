@@ -26,6 +26,7 @@
 #include <QFile>
 #include <QFileInfo>
 #include <QTextStream>
+#include <QLabel>
 
 void MainWindow::closeEvent(QCloseEvent *event)
 {
@@ -40,11 +41,6 @@ void MainWindow::closeEvent(QCloseEvent *event)
 void MainWindow::documentWasModified()
 {    
    setWindowModified(m_textEdit->document()->isModified());
-}
-
-QString MainWindow::strippedName(const QString &fullFileName)
-{
-   return QFileInfo(fullFileName).fileName();
 }
 
 int MainWindow::get_Value1(const QString route)
@@ -72,6 +68,7 @@ void MainWindow::loadFile(const QString &fileName)
       return;
    }
 
+   setStatusBar(tr("Loading File..."),0);
    QApplication::setOverrideCursor(Qt::WaitCursor);
 
    file.seek(0);
@@ -141,17 +138,20 @@ bool MainWindow::saveFile(const QString &fileName)
 void MainWindow::setCurrentFile(const QString &fileName)
 {
    m_curFile = fileName;
-   m_textEdit->document()->setModified(false);
+   m_textEdit->document()->setModified(false);   
 
    setWindowModified(false);
 
    //
-   QString shownName = m_curFile;
+   QString showName = m_curFile;
 
    if (m_curFile.isEmpty()) {
-      shownName = "untitled.txt";
+      showName = "untitled.txt";
+      m_statusName->setText(" " + showName + "  ");
 
    } else {
+      m_priorPath = pathName(fileName);
+      m_statusName->setText(" " + fileName + "  ");
 
       bool found = true;
       found = rf_List.contains(m_curFile);
@@ -161,7 +161,16 @@ void MainWindow::setCurrentFile(const QString &fileName)
       }
    }
 
-   setWindowFilePath(shownName);
+   setWindowFilePath(showName);
+}
+
+QString MainWindow::pathName(const QString &fullFileName)
+{
+   return QFileInfo(fullFileName).path();
+}
+QString MainWindow::strippedName(const QString &fullFileName)
+{
+   return QFileInfo(fullFileName).fileName();
 }
 
 

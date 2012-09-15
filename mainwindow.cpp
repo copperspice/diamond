@@ -19,12 +19,12 @@
 *
 **************************************************************************/
 
-
 #include "mainwindow.h"
-#include "util.h"
 #include "dialog_options.h"
 
 #include <QtGui>
+#include <QDir>
+#include <QString>
 
 MainWindow::MainWindow()
    : m_ui(new Ui::MainWindow)
@@ -32,20 +32,25 @@ MainWindow::MainWindow()
    m_ui->setupUi(this);
    setWindowFilePath("untitled.txt");
 
-   m_textEdit = new QPlainTextEdit;
+   m_textEdit = new DiamondTextEdit;
    setCentralWidget(m_textEdit);
+
+   if ( ! readCfg()  ) {
+      csError("Problem in Settings file");
+   }
+
+   setColors();
 
    createShortCuts();
    createToolBars();
    createConnections();
-   createToggles();
+   createToggles();   
 
-   if ( ! readCfg()  ) {
-      csError("Problem in Settings");
-   }
+   // these methods must be done after readCfg()
+   rf_CreateMenus();  
 
-   // call after readCfg()
-   rf_CreateMenus();
+   m_highlighter = new Highlighter(m_textEdit->document());
+   m_priorPath   = QDir::currentPath();
 
    setCurrentFile("");
    setStatusBar(tr("Ready"), 0);   
@@ -76,10 +81,10 @@ void MainWindow::open()
 
       QString selectedFilter;
       QString fileName = QFileDialog::getOpenFileName(this, tr("Select File"),
-            "", tr("All Files (*)"), &selectedFilter, options);
+            m_priorPath, tr("All Files (*)"), &selectedFilter, options);
 
       if (! fileName.isEmpty()) {
-         loadFile(fileName);
+         loadFile(fileName);         
       }
    }
 }
@@ -172,12 +177,22 @@ bool MainWindow::saveAll()
 
 void MainWindow::print()
 {
-   showNotDone("File Print");
+   // goes to printer, modify this!
+
+   QPrinter *printer = new QPrinter;
+   m_textEdit->print(printer);
 }
 
 void MainWindow::printPreview()
 {
-   showNotDone("File Print Preview");
+  showNotDone("File Print Preview");
+
+  // QPrinter printer;
+  // QPrintPreviewDialog preview(&printer, this);
+  // preview.setWindowTitle("Preview");
+  // connect(&preview, SIGNAL(paintRequested(QPrinter *)),this, SLOT(printDocument(QPrinter *)));
+
+  //preview.exec();
 }
 
 void MainWindow::printSetup()
@@ -187,12 +202,93 @@ void MainWindow::printSetup()
 
 
 // **edit
+void MainWindow::selectAll()
+{
+   QTextCursor cursor(m_textEdit->textCursor());
+   cursor.select(QTextCursor::Document);
+   m_textEdit->setTextCursor(cursor);
+}
+
+void MainWindow::selectBlock()
+{
+   QTextCursor cursor(m_textEdit->textCursor());
+   cursor.select(QTextCursor::BlockUnderCursor);
+   m_textEdit->setTextCursor(cursor);
+}
+
+void MainWindow::selectLine()
+{
+   QTextCursor cursor(m_textEdit->textCursor());
+   cursor.select(QTextCursor::LineUnderCursor);
+   m_textEdit->setTextCursor(cursor);
+}
+
+void MainWindow::selectWord()
+{
+   QTextCursor cursor(m_textEdit->textCursor());
+   cursor.select(QTextCursor::WordUnderCursor);
+   m_textEdit->setTextCursor(cursor);
+}
+
+void MainWindow::caseUpper()
+{
+   QTextCursor cursor(m_textEdit->textCursor());
+   cursor.select(QTextCursor::WordUnderCursor);
+   QString text = cursor.selectedText();
+
+   cursor.removeSelectedText();
+   cursor.insertText(text.toUpper());
+}
+
+void MainWindow::caseLower()
+{
+   QTextCursor cursor(m_textEdit->textCursor());
+   cursor.select(QTextCursor::WordUnderCursor);
+   QString text = cursor.selectedText();
+
+   cursor.removeSelectedText();
+   cursor.insertText(text.toLower());
+}
+
+void MainWindow::caseCap()
+{
+   QTextCursor cursor(m_textEdit->textCursor());
+   cursor.select(QTextCursor::WordUnderCursor);
+   QString text = cursor.selectedText();
+
+   if (! text.isEmpty()) {
+
+      text = text.toLower();
+      text[0] = text[0].toUpper();
+
+      cursor.removeSelectedText();
+      cursor.insertText(text);
+   }
+}
+
 void MainWindow::insertDate()
 {   
    QDate date = QDate::currentDate();
    QString temp = date.toString(m_struct.dateFormat);
 
    m_textEdit->insertPlainText(temp);
+}
+
+void MainWindow::insertSymbol()
+{
+   showNotDone("Edit Insert Symbol");
+
+   // QString text = get_Symbol();
+   // m_textEdit->textCursor().insertText(text);
+}
+
+void MainWindow::indentIncr(){
+   showNotDone("Edit Increase Indent");
+}
+
+void MainWindow::indentDecr()
+{
+   showNotDone("Edit Decreaset Indect");
 }
 
 void MainWindow::columnMode()
@@ -229,14 +325,13 @@ void MainWindow::advFind()
 
 void MainWindow::goLine()
 {
-   int line = get_Value1("line")-1;
+   int line = get_Value1("line");
 
    QTextCursor cursor(m_textEdit->textCursor());
    cursor.movePosition(QTextCursor::Start);
 
    cursor.movePosition(QTextCursor::Down, QTextCursor::MoveAnchor, line);
    m_textEdit->setTextCursor(cursor);
-
 }
 
 void MainWindow::goColumn()
@@ -268,12 +363,11 @@ void MainWindow::lineHighlight()
 
    if (m_ui->actionLine_Highlight->isChecked()) {
       // on
-      lineColor = QColor(Qt::yellow).lighter(160);
+      lineColor = m_struct.colorHighlight;
 
    } else  {
       // off
-      lineColor = QColor(Qt::white);      // broom - resolve
-
+      lineColor = m_struct.colorBackground;
    }
 
    selection.format.setBackground(lineColor);
@@ -283,7 +377,6 @@ void MainWindow::lineHighlight()
 
    extraSelections.append(selection);
    m_textEdit->setExtraSelections(extraSelections);
-
 }
 
 void MainWindow::lineNumbers()
@@ -292,11 +385,9 @@ void MainWindow::lineNumbers()
       //off
       showNotDone("View Line Numbers - OFF");
 
-
    } else {
       // on
       showNotDone("View Line Numbers - ON");
-
    }
 }
 
@@ -375,25 +466,35 @@ void MainWindow::macroPlay()
    showNotDone("Tools, macro play");
 }
 
+void MainWindow::spellCheck()
+{
+   showNotDone("Tools, Spell Check");
+}
 
 
 // **settings
 void MainWindow::setBackgroundColor()
 {
+   // should call a window for the user to get the colors
+
    bool isNative = true;
    QColor color;
 
    if (isNative)  {
-       color = QColorDialog::getColor(Qt::green, this);
+       color = QColorDialog::getColor(m_struct.colorBackground, this);
 
    } else  {
-       color = QColorDialog::getColor(Qt::green, this, "Select Color", QColorDialog::DontUseNativeDialog);
+       color = QColorDialog::getColor(m_struct.colorBackground, this, "Select Color", QColorDialog::DontUseNativeDialog);
 
    }
 
+   // move to setMe()  for all colors
+
    if (color.isValid()) {     
+      m_struct.colorBackground = color;
+
       QPalette temp = m_textEdit->palette();
-      temp.setColor( QPalette::Base, color);
+      temp.setColor( QPalette::Base, m_struct.colorBackground);
       m_textEdit->setPalette(temp);
    }
 }
@@ -401,7 +502,6 @@ void MainWindow::setBackgroundColor()
 void MainWindow::setFont()
 {        
    bool ok;
-
    m_struct.font = QFontDialog::getFont(&ok, m_textEdit->font(), this);
 
    if (ok) {
@@ -477,6 +577,17 @@ void MainWindow::X()
 
 
 // connections, displays, toolbar
+void MainWindow::setColors()
+{
+   m_struct.colorBackground = QColor(Qt::white);
+   m_struct.colorHighlight  = QColor(Qt::yellow).lighter(160);
+   m_struct.colorText       = QColor(Qt::black);
+
+   QPalette temp = m_textEdit->palette();
+   temp.setColor( QPalette::Text, m_struct.colorText);
+   m_textEdit->setPalette(temp);
+}
+
 void MainWindow::createConnections()
 {
    // file
@@ -503,7 +614,18 @@ void MainWindow::createConnections()
    connect(m_ui->actionCopy,           SIGNAL(triggered()), m_textEdit, SLOT(copy()));
    connect(m_ui->actionPaste,          SIGNAL(triggered()), m_textEdit, SLOT(paste()));
 
+   connect(m_ui->actionSelect_All,     SIGNAL(triggered()), this, SLOT(selectAll()));
+   connect(m_ui->actionSelect_Block,   SIGNAL(triggered()), this, SLOT(selectBlock()));
+   connect(m_ui->actionSelect_Line,    SIGNAL(triggered()), this, SLOT(selectLine()));
+   connect(m_ui->actionSelect_Word,    SIGNAL(triggered()), this, SLOT(selectWord()));
+   connect(m_ui->actionCase_Upper,     SIGNAL(triggered()), this, SLOT(caseUpper()));
+   connect(m_ui->actionCase_Lower,     SIGNAL(triggered()), this, SLOT(caseLower()));
+   connect(m_ui->actionCase_Cap,       SIGNAL(triggered()), this, SLOT(caseCap()));
+
    connect(m_ui->actionInsert_Date,    SIGNAL(triggered()), this, SLOT(insertDate()));
+   connect(m_ui->actionInsert_Symbol,  SIGNAL(triggered()), this, SLOT(insertSymbol()));
+   connect(m_ui->actionIndent_Incr,    SIGNAL(triggered()), this, SLOT(indentIncr()));
+   connect(m_ui->actionIndent_Decr,    SIGNAL(triggered()), this, SLOT(indentDecr()));
    connect(m_ui->actionColumn_Mode,    SIGNAL(triggered()), this, SLOT(columnMode()));
 
    // search
@@ -550,8 +672,7 @@ void MainWindow::createConnections()
    connect(m_ui->actionMacro_Start,    SIGNAL(triggered()), this, SLOT(macroStart()));
    connect(m_ui->actionMacro_Stop,     SIGNAL(triggered()), this, SLOT(macroStop()));
    connect(m_ui->actionMacro_Play,     SIGNAL(triggered()), this, SLOT(macroPlay()));
-
-   connect(m_ui->actionSpell_Check,    SIGNAL(triggered()), this, SLOT(X()));
+   connect(m_ui->actionSpell_Check,    SIGNAL(triggered()), this, SLOT(spellCheck()));
 
    // settings
    connect(m_ui->actionColors,         SIGNAL(triggered()), this, SLOT(setBackgroundColor()));
@@ -636,7 +757,7 @@ void MainWindow::createToolBars()
    fileToolBar->addAction(m_ui->actionNew);
    fileToolBar->addAction(m_ui->actionOpen);
    fileToolBar->addAction(m_ui->actionClose);
-   fileToolBar->addAction(m_ui->actionClose_All);
+   // fileToolBar->addAction(m_ui->actionClose_All);
    fileToolBar->addAction(m_ui->actionSave);
    fileToolBar->addAction(m_ui->actionSave_All);
    fileToolBar->addAction(m_ui->actionPrint);
@@ -648,8 +769,26 @@ void MainWindow::createToolBars()
    editToolBar->addAction(m_ui->actionCopy);
    editToolBar->addAction(m_ui->actionPaste);
 
+   searchToolBar = addToolBar(tr("Search"));
+   searchToolBar->addAction(m_ui->actionFind);
+   searchToolBar->addAction(m_ui->actionReplace);
+
    toolsToolBar = addToolBar(tr("Tools"));
    toolsToolBar->addAction(m_ui->actionSpell_Check);
+
+   //
+   m_statusLine = new QLabel("Line:" + QString::number(1) + "  Col:" + QString::number(1), this);
+   m_statusLine->setFrameStyle(QFrame::Panel| QFrame::Sunken);
+
+   m_statusMid = new QLabel("Not used     ", this);
+   m_statusMid->setFrameStyle(QFrame::Panel | QFrame::Sunken);
+
+   m_statusName = new QLabel(m_curFile, this);
+   m_statusName->setFrameStyle(QFrame::Panel | QFrame::Sunken);
+
+   statusBar()->addPermanentWidget(m_statusLine, 0);
+   statusBar()->addPermanentWidget(m_statusMid,  0);
+   statusBar()->addPermanentWidget(m_statusName, 0);
 }
 
 void MainWindow::setStatusBar(QString msg, int timeOut)

@@ -49,6 +49,30 @@
     <property name="title">
      <string>Edit</string>
     </property>
+    <widget class="QMenu" name="menuSelect">
+     <property name="title">
+      <string>Select</string>
+     </property>
+     <addaction name="actionSelect_All"/>
+     <addaction name="actionSelect_Block"/>
+     <addaction name="actionSelect_Line"/>
+     <addaction name="actionSelect_Word"/>
+    </widget>
+    <widget class="QMenu" name="menuChange_Case">
+     <property name="title">
+      <string>Change Case</string>
+     </property>
+     <addaction name="actionCase_Upper"/>
+     <addaction name="actionCase_Lower"/>
+     <addaction name="actionCase_Cap"/>
+    </widget>
+    <widget class="QMenu" name="menuAdvanced">
+     <property name="title">
+      <string>Advanced</string>
+     </property>
+     <addaction name="actionIndent_Incr"/>
+     <addaction name="actionIndent_Decr"/>
+    </widget>
     <addaction name="actionUndo"/>
     <addaction name="actionRedo"/>
     <addaction name="separator"/>
@@ -56,7 +80,12 @@
     <addaction name="actionCopy"/>
     <addaction name="actionPaste"/>
     <addaction name="separator"/>
+    <addaction name="menuSelect"/>
+    <addaction name="menuChange_Case"/>
+    <addaction name="menuAdvanced"/>
+    <addaction name="separator"/>
     <addaction name="actionInsert_Date"/>
+    <addaction name="actionInsert_Symbol"/>
     <addaction name="separator"/>
     <addaction name="actionColumn_Mode"/>
    </widget>
@@ -558,6 +587,56 @@
    </property>
    <property name="toolTip">
     <string>Go to the top of the file</string>
+   </property>
+  </action>
+  <action name="actionSelect_All">
+   <property name="text">
+    <string>All</string>
+   </property>
+  </action>
+  <action name="actionSelect_Line">
+   <property name="text">
+    <string>Line</string>
+   </property>
+  </action>
+  <action name="actionCase_Upper">
+   <property name="text">
+    <string>Upper Case</string>
+   </property>
+  </action>
+  <action name="actionCase_Lower">
+   <property name="text">
+    <string>Lower Case</string>
+   </property>
+  </action>
+  <action name="actionCase_Cap">
+   <property name="text">
+    <string>Capitalize</string>
+   </property>
+  </action>
+  <action name="actionInsert_Symbol">
+   <property name="text">
+    <string>Insert Symbol</string>
+   </property>
+  </action>
+  <action name="actionIndent_Incr">
+   <property name="text">
+    <string>Increase Indent</string>
+   </property>
+  </action>
+  <action name="actionIndent_Decr">
+   <property name="text">
+    <string>Decrease Indent</string>
+   </property>
+  </action>
+  <action name="actionSelect_Block">
+   <property name="text">
+    <string>Block</string>
+   </property>
+  </action>
+  <action name="actionSelect_Word">
+   <property name="text">
+    <string>Word</string>
    </property>
   </action>
  </widget>

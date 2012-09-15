@@ -22,7 +22,10 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
+#include "highlighter.h"
+#include "diamond_edit.h"
 #include "ui_mainwindow.h"
+#include "util.h"
 
 #include <QAction>
 #include <QDomDocument>
@@ -31,6 +34,9 @@
 #include <QPlainTextEdit>
 
 struct Settings {
+   QColor colorBackground;
+   QColor colorHighlight;
+   QColor colorText;
    QFont font;
    QString dateFormat;
    int tabSpacing;
@@ -42,20 +48,27 @@ class MainWindow : public QMainWindow
 
    public:      
       MainWindow();
-      struct Settings get_StructData();
+      struct Settings get_StructData();     
 
    protected:
       void closeEvent(QCloseEvent *event);
 
    private:
       Ui::MainWindow *m_ui;
+      struct Settings m_struct;
+      QString m_priorPath;
 
-      QPlainTextEdit *m_textEdit;
+      DiamondTextEdit *m_textEdit;
       QString m_curFile;
       QString m_cfgFName;
       QDomDocument m_domCfg;
+      Highlighter *m_highlighter;
 
-      struct Settings m_struct;
+      QLabel *m_statusLine;
+      QLabel *m_statusMid;
+      QLabel *m_statusName;
+      int m_line;
+      int m_col;
 
       static const int rf_MaxCnt = 10;
       QAction *rf_Actions[rf_MaxCnt];
@@ -63,10 +76,12 @@ class MainWindow : public QMainWindow
 
       QToolBar *fileToolBar;
       QToolBar *editToolBar;
+      QToolBar *searchToolBar;
       QToolBar *toolsToolBar;
 
       enum Option {CLOSE, FONT, RECENTFILE, DATEFORMAT, TAB_SPACING};
 
+      void setColors();
       void createShortCuts();
       void createToolBars();
       void createConnections();
@@ -100,6 +115,7 @@ class MainWindow : public QMainWindow
       bool saveFile(const QString &fileName);
 
       void setCurrentFile(const QString &fileName);
+      QString pathName(const QString &fullFileName);
       QString strippedName(const QString &fullFileName);
 
    private slots:
@@ -115,7 +131,18 @@ class MainWindow : public QMainWindow
       void printPreview();
       void printSetup();
 
+      void selectAll();
+      void selectBlock();
+      void selectLine();
+      void selectWord();
+      void caseUpper();
+      void caseLower();
+      void caseCap();
+
       void insertDate();
+      void insertSymbol();
+      void indentIncr();
+      void indentDecr();
       void columnMode();
 
       void find();
@@ -144,6 +171,7 @@ class MainWindow : public QMainWindow
       void macroStart();
       void macroStop();
       void macroPlay();
+      void spellCheck();
 
       void setBackgroundColor();
       void setFont();
