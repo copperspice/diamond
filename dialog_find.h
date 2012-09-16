@@ -19,14 +19,32 @@
 *
 **************************************************************************/
 
-#ifndef UTIL_H
-#define UTIL_H
+#ifndef DIALOG_FIND_H
+#define DIALOG_FIND_H
 
-#include <QMessageBox>
+#include "ui_dialog_find.h"
 
-void csMsg(const QString &msg);
-void csMsg(QString msg, int value);
-void csMsg(QWidget *parent, const QString &title, const QString &msg);
-void csError(QString title, QString msg);
+#include <QDialog>
+
+class Dialog_Find : public QDialog
+{     
+   Q_OBJECT
+
+   public:
+      Dialog_Find(QString text = "");
+      ~Dialog_Find();
+
+      QString get_Value();
+      bool get_Direction();
+      bool get_Case();
+      bool get_WholeWords();
+
+   private:
+      Ui::Dialog_Find *m_ui;
+
+   private slots:
+      void Find();
+      void Cancel();
+};
 
 #endif

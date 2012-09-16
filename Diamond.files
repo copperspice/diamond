@@ -25,3 +25,6 @@ dialog_options.ui
 highlighter.h
 highlighter.cpp
 syn_c.txt
+dialog_find.h
+dialog_find.cpp
+dialog_find.ui

@@ -28,7 +28,24 @@ void MainWindow::rf_Open()
    action = (QAction *)sender();
 
    if (action) {
-      loadFile(action->text());
+      bool ok = loadFile(action->text());
+
+      if (! ok) {
+         // remove file which did not load
+
+         int index;
+         index = rf_List.indexOf(action->text());
+
+         if (index >= 0) {
+            rf_List.removeAt(index);
+
+            // save new list of files
+            writeCfg(RECENTFILE);
+
+            // update actions
+            rf_UpdateActions();
+         }
+      }
    }
 }
 

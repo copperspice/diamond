@@ -58,6 +58,12 @@ class MainWindow : public QMainWindow
       struct Settings m_struct;
       QString m_priorPath;
 
+      QString m_findText;
+      QTextDocument::FindFlags m_flags;
+      bool m_fDirection;
+      bool m_fCase;
+      bool m_fWholeWords;
+
       DiamondTextEdit *m_textEdit;
       QString m_curFile;
       QString m_cfgFName;
@@ -111,7 +117,7 @@ class MainWindow : public QMainWindow
 
       int get_Value1(const QString route);
       bool querySave();
-      void loadFile(const QString &fileName);
+      bool loadFile(const QString &fileName);
       bool saveFile(const QString &fileName);
 
       void setCurrentFile(const QString &fileName);
@@ -129,7 +135,7 @@ class MainWindow : public QMainWindow
       bool saveAll();
       void print();
       void printPreview();
-      void printSetup();
+      void printPdf();
 
       void selectAll();
       void selectBlock();
@@ -147,8 +153,8 @@ class MainWindow : public QMainWindow
 
       void find();
       void replace();
-      void next();
-      void previous();
+      void findNext();
+      void findPrevious();
       void advFind();
       void goLine();
       void goColumn();
@@ -186,6 +192,7 @@ class MainWindow : public QMainWindow
       //
       void documentWasModified();
       void rf_Open();
+      void printPreview(QPrinter *printer);
 };
 
 #endif

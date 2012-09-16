@@ -29,6 +29,7 @@ Diamond_LDFLAGS=$(AM_LDFLAGS)   $(patsubst %,-lCs%1,$(cslibs))
 
 # 'Diamond' must match the app name ( dash had to be replaced )
 Diamond_SOURCES = \
+	dialog_find.cpp \
 	dialog_get1.cpp \
 	dialog_options.cpp \
 	diamond_edit.cpp \
@@ -43,6 +44,7 @@ Diamond_SOURCES = \
 #              
 noinst_HEADERS = \
 	diamond_edit.h \
+	dialog_find.h \
 	dialog_get1.h  \
 	dialog_options.h \
 	diamond_edit.h \
@@ -52,6 +54,7 @@ noinst_HEADERS = \
                 
 # list of files that require compiling with moc
 MOCS = \
+	dialog_find.h \
 	dialog_get1.h  \
 	dialog_options.h \
 	diamond_edit.h  \
@@ -63,6 +66,7 @@ Diamond_LDADD=$(patsubst %.h,moc_%.$(OBJEXT),$(MOCS))
            
 #
 FORMS =	\
+	dialog_find.ui \
 	dialog_get1.ui \
 	dialog_options.ui \
 	mainwindow.ui

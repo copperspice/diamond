@@ -213,8 +213,8 @@ bool MainWindow::cfg_ParseXml()
 {
    QFile file(m_cfgFName);
    if (! file.open(QFile::ReadWrite | QFile::Text)) {
-      const QString msg = "Unable to open settings file: " + m_cfgFName + " : " + file.errorString();
-      csError(msg);
+      const QString msg = tr("Unable to open settings file: ") + m_cfgFName + " : " + file.errorString();
+      csError(tr("Parse XML"), msg);
 
       return false;
    }
@@ -228,9 +228,9 @@ bool MainWindow::cfg_ParseXml()
 
    if (! m_domCfg.setContent(&file, false, &errorMsg, &errorLine, &errorColumn)) {
 
-     const QString msg = "Set content failed.   \n\nError:" + errorMsg + "\n" +
+     const QString msg = tr("Set content failed.  \n\nError:") + errorMsg + "\n" +
          "Line: " + QString::number(errorLine) + "  Column: " + QString::number(errorColumn);
-     csError(msg);
+     csError(tr("Parse XML"), msg);
 
      file.close();
      return false;
@@ -240,8 +240,8 @@ bool MainWindow::cfg_ParseXml()
    QDomElement root = m_domCfg.documentElement();
 
    if (root.tagName() != xmlRoot)  {
-      const QString msg = "Settings file root element must be: " + xmlRoot + " Root was: " + root.tagName();
-      csError("Error: " + msg);
+      const QString msg = tr("Settings file root element must be: ") + xmlRoot + " Root was: " + root.tagName();
+      csError(tr("Parse XML"), msg);
 
       file.close();
       return false;
@@ -317,8 +317,8 @@ bool MainWindow::cfg_SaveXml()
 {
    QFile file(m_cfgFName);
    if (! file.open(QFile::ReadWrite | QFile::Truncate | QFile::Text)) {
-      const QString msg = "Unable to save settings file: " + m_cfgFName + " : " + file.errorString();
-      csError(msg);
+      const QString msg = tr("Unable to save settings file: ") + m_cfgFName + " : " + file.errorString();
+      csError(tr("Save XML"), msg);
 
       return false;
    }

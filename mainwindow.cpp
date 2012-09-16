@@ -20,6 +20,7 @@
 **************************************************************************/
 
 #include "mainwindow.h"
+#include "dialog_find.h"
 #include "dialog_options.h"
 
 #include <QtGui>
@@ -36,7 +37,7 @@ MainWindow::MainWindow()
    setCentralWidget(m_textEdit);
 
    if ( ! readCfg()  ) {
-      csError("Problem in Settings file");
+      csError(tr("Settings File"), tr("Unable to locate or open the settings file."));
    }
 
    setColors();
@@ -107,7 +108,7 @@ void MainWindow::closeAll_Doc()
 void MainWindow::reload()
 {
    if (m_curFile.isEmpty()) {
-      csError("Unable to reload a file which was not Saved.");
+      csError("Reload", tr("Unable to reload a file which was not saved."));
 
    } else if (m_textEdit->document()->isModified()) {
 
@@ -177,27 +178,61 @@ bool MainWindow::saveAll()
 
 void MainWindow::print()
 {
-   // goes to printer, modify this!
+   QPrinter printer;
+   QPrintDialog *dw = new QPrintDialog(&printer, this);
+   dw->setWindowTitle(tr("Select Printer"));
 
-   QPrinter *printer = new QPrinter;
-   m_textEdit->print(printer);
+   if (m_textEdit->textCursor().hasSelection()) {
+      dw->addEnabledOption(QAbstractPrintDialog::PrintSelection);
+   }
+
+   if (dw->exec() == QDialog::Accepted) {
+      m_textEdit->print(&printer);
+   }
+
+   delete dw;
 }
 
 void MainWindow::printPreview()
 {
-  showNotDone("File Print Preview");
+   QPrinter printer;
 
-  // QPrinter printer;
-  // QPrintPreviewDialog preview(&printer, this);
-  // preview.setWindowTitle("Preview");
-  // connect(&preview, SIGNAL(paintRequested(QPrinter *)),this, SLOT(printDocument(QPrinter *)));
+   QPrintPreviewDialog preview(&printer, this);
+   preview.setWindowTitle(m_curFile);
 
-  //preview.exec();
+   connect(&preview, SIGNAL(paintRequested(QPrinter *)), this, SLOT(printPreview(QPrinter*)));
+   preview.exec();
 }
 
-void MainWindow::printSetup()
+void MainWindow::printPreview(QPrinter *printer)
 {
-   showNotDone("File Print Setup");
+   m_textEdit->print(printer);
+}
+
+void MainWindow::printPdf()
+{
+   QFileDialog::Options options;
+
+   if (false)  {  //(Q_OS_DARWIM) {
+      options |= QFileDialog::DontUseNativeDialog;
+   }
+
+   QString selectedFilter;
+   QString fileName = QFileDialog::getSaveFileName(this, tr("Print to PDF"),
+         "document1.pdf", tr("PDF File (*.pdf)"), &selectedFilter, options);
+
+   if (! fileName.isEmpty()) {
+
+      if (QFileInfo(fileName).suffix().isEmpty()) {
+         fileName.append(".pdf");
+      }
+
+      QPrinter printer;
+      printer.setOutputFormat(QPrinter::PdfFormat);
+      printer.setOutputFileName(fileName);
+
+      m_textEdit->document()->print(&printer);
+   }
 }
 
 
@@ -282,13 +317,23 @@ void MainWindow::insertSymbol()
    // m_textEdit->textCursor().insertText(text);
 }
 
-void MainWindow::indentIncr(){
-   showNotDone("Edit Increase Indent");
+void MainWindow::indentIncr()
+{
+   showNotDone("Edit Increase Indect");
+
+   //QTextCursor cursor(m_textEdit->textCursor());
+   //QTextBlockFormat bFormat = cursor.blockFormat();
+
+   // csMsg("i did get here", cursor.blockNumber() );
+
+   //bFormat.setTextIndent(10);
+   //cursor.setBlockFormat(bFormat);
+   //m_textEdit->setTextCursor(cursor);
 }
 
 void MainWindow::indentDecr()
 {
-   showNotDone("Edit Decreaset Indect");
+   showNotDone("Edit Decrease Indect");
 }
 
 void MainWindow::columnMode()
@@ -300,7 +345,37 @@ void MainWindow::columnMode()
 // **search
 void MainWindow::find()
 {
-   showNotDone("Search Find");
+   Dialog_Find *dw = new Dialog_Find(m_findText);
+   int result = dw->exec();
+
+   if ( result = QDialog::Accepted) {
+
+      m_findText = dw->get_Value();
+      m_flags    = 0;
+
+      m_fDirection  = dw->get_Direction();
+      if (! m_fDirection) {
+         m_flags |= QTextDocument::FindBackward;
+      }
+
+      m_fCase = dw->get_Case();
+      if (m_fCase) {
+         m_flags |= QTextDocument::FindCaseSensitively;
+      }
+
+      m_fWholeWords = dw->get_WholeWords();
+      if (m_fWholeWords){
+         m_flags |= QTextDocument::FindWholeWords;
+      }
+
+      if (! m_findText.isEmpty())  {
+         bool found = m_textEdit->find(m_findText, m_flags);
+
+         if (! found)  {
+            csMsg( m_findText + " was not found");
+         }
+      }
+   }
 }
 
 void MainWindow::replace()
@@ -308,14 +383,21 @@ void MainWindow::replace()
    showNotDone("Search Replace");
 }
 
-void MainWindow::next()
+void MainWindow::findNext()
 {
-   showNotDone("Search Next");
+   QTextDocument::FindFlags flags = QTextDocument::FindFlags(~QTextDocument::FindBackward & m_flags);
+   bool found = m_textEdit->find(m_findText, flags);
+   if (! found)  {
+      csMsg(m_findText + " was not found");
+   }
 }
 
-void MainWindow::previous()
+void MainWindow::findPrevious()
 {
-   showNotDone("Search Previous");
+   bool found = m_textEdit->find(m_findText, QTextDocument::FindBackward | m_flags );
+   if (! found)  {
+      csMsg( m_findText + " was not found");
+   }
 }
 
 void MainWindow::advFind()
@@ -603,7 +685,7 @@ void MainWindow::createConnections()
 
    connect(m_ui->actionPrint,          SIGNAL(triggered()), this, SLOT(print()));
    connect(m_ui->actionPrint_Preview,  SIGNAL(triggered()), this, SLOT(printPreview()));
-   connect(m_ui->actionPrint_Setup,    SIGNAL(triggered()), this, SLOT(printSetup()));
+   connect(m_ui->actionPrint_Pdf,      SIGNAL(triggered()), this, SLOT(printPdf()));
 
    connect(m_ui->actionExit,           SIGNAL(triggered()), this, SLOT(close()));
 
@@ -631,8 +713,8 @@ void MainWindow::createConnections()
    // search
    connect(m_ui->actionFind,           SIGNAL(triggered()), this, SLOT(find()));
    connect(m_ui->actionReplace,        SIGNAL(triggered()), this, SLOT(replace()));
-   connect(m_ui->actionFind_Next,      SIGNAL(triggered()), this, SLOT(next()));
-   connect(m_ui->actionFind_Prev,      SIGNAL(triggered()), this, SLOT(previous()));
+   connect(m_ui->actionFind_Next,      SIGNAL(triggered()), this, SLOT(findNext()));
+   connect(m_ui->actionFind_Prev,      SIGNAL(triggered()), this, SLOT(findPrevious()));
    connect(m_ui->actionAdv_Find,       SIGNAL(triggered()), this, SLOT(advFind()));
    connect(m_ui->actionGo_Line,        SIGNAL(triggered()), this, SLOT(goLine()));
    connect(m_ui->actionGo_Column,      SIGNAL(triggered()), this, SLOT(goColumn()));

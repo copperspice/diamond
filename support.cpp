@@ -52,20 +52,21 @@ int MainWindow::get_Value1(const QString route)
    }
 
    dw->exec();
-
    int col = dw->get_Value().toInt();
+
+   delete dw;
 
    return col;
 }
 
-void MainWindow::loadFile(const QString &fileName)
+bool MainWindow::loadFile(const QString &fileName)
 {
    QFile file(fileName);
 
    if (! file.open(QFile::ReadOnly | QFile::Text)) {
-      QMessageBox::warning(this, tr("Load File"),
-            tr("Unable to read file %1:\n%2.").arg(fileName).arg(file.errorString()));
-      return;
+      QString error = tr("Unable to read file %1:\n%2.").arg(fileName).arg(file.errorString());
+      csError(tr("Load File"), error);
+      return false;
    }
 
    setStatusBar(tr("Loading File..."),0);
@@ -81,6 +82,8 @@ void MainWindow::loadFile(const QString &fileName)
 
    setCurrentFile(fileName);
    setStatusBar(tr("File loaded"), 2000);
+
+   return true;
 }
 
 struct Settings MainWindow::get_StructData()
@@ -120,9 +123,9 @@ bool MainWindow::saveFile(const QString &fileName)
 {
    QFile file(fileName);
 
-   if (! file.open(QFile::WriteOnly | QFile::Text)) {
-      QMessageBox::warning(this, tr("Save File"),
-            tr("Unable to write file %1:\n%2.").arg(fileName).arg(file.errorString()));
+   if (! file.open(QFile::WriteOnly | QFile::Text)) {      
+      QString error = tr("Unable to write file %1:\n%2.").arg(fileName).arg(file.errorString());
+      csError(tr("Save File"), error);
       return false;
    }
 

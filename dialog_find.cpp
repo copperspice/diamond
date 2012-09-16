@@ -19,49 +19,54 @@
 *
 **************************************************************************/
 
-#include "util.h"
+#include "dialog_find.h"
 
-void csMsg(const QString &msg)
+Dialog_Find::Dialog_Find(QString findText)
+   : m_ui(new Ui::Dialog_Find)
 {
-   QMessageBox msgB;
+   m_ui->setupUi(this);
+   m_ui->value->setText(findText);
+   m_ui->down_RB->setChecked(true);
 
-   msgB.setWindowTitle("Debug Information");
-   msgB.setText(msg);
-   msgB.exec();
+   connect(m_ui->find_PB,   SIGNAL(clicked()),this, SLOT(Find()));
+   connect(m_ui->cancel_PB, SIGNAL(clicked()),this, SLOT(Cancel()));
 }
 
-void csMsg(QString msg, int value)
+Dialog_Find::~Dialog_Find()
 {
-   msg = msg + "   " + QString::number(value);
-
-   //
-   QMessageBox msgB;
-
-   msgB.setWindowTitle("Debug Information");
-   msgB.setText(msg);
-   msgB.exec();
+   delete m_ui;
 }
 
-void csMsg(QWidget *parent, const QString &title, const QString &msg)
+void Dialog_Find::Find()
 {
-   QMessageBox msgB;
+   this->done(1);
+}
 
-   if (parent) {
-      msgB.setWindowModality(Qt::WindowModal);
+void Dialog_Find::Cancel()
+{
+   this->done(0);
+}
+
+QString Dialog_Find::get_Value()
+{
+   return m_ui->value->text();
+}
+
+bool Dialog_Find::get_Direction()
+{
+   if (m_ui->down_RB->isChecked()) {
+      return true;
+   } else {
+      return false;
    }
-
-   msgB.setWindowTitle(title);
-   msgB.setText(msg);
-   msgB.exec();
 }
 
-void csError(QString title, QString msg)
+bool Dialog_Find::get_Case()
 {
-   QMessageBox msgB;
-
-   msgB.setWindowTitle("Diamond Editor - " + title);
-   msgB.setIcon(QMessageBox::Warning);
-   msgB.setText(msg);
-   msgB.exec();
+   return m_ui->case_CKB->isChecked();
 }
 
+bool Dialog_Find::get_WholeWords()
+{
+   return m_ui->wholeWords_CKB->isChecked();
+}
