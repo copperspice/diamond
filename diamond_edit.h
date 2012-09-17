@@ -38,6 +38,7 @@ class DiamondTextEdit : public QPlainTextEdit
    public:
       DiamondTextEdit();
 
+      void setShowLineNum(bool data);
       void lineNum_PaintEvent(QPaintEvent *event);
       int lineNum_Width();
 
@@ -46,11 +47,11 @@ class DiamondTextEdit : public QPlainTextEdit
 
    private:
       QWidget *m_lineNumArea;
+      bool m_showlineNum;
 
    private slots:
       void update_LineNumWidth(int newBlockCount);
       void update_LineNumArea(const QRect &rect, int value);
-
 };
 
 

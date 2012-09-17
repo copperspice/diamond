@@ -34,12 +34,15 @@
 #include <QPlainTextEdit>
 
 struct Settings {
+   QFont font;
    QColor colorBackground;
    QColor colorHighlight;
-   QColor colorText;
-   QFont font;
+   QColor colorText;   
    QString dateFormat;
    int tabSpacing;
+   bool showlineHighlight;
+   bool showlineNum;
+   bool isLineMode;
 };
 
 class MainWindow : public QMainWindow
@@ -71,7 +74,7 @@ class MainWindow : public QMainWindow
       Highlighter *m_highlighter;
 
       QLabel *m_statusLine;
-      QLabel *m_statusMid;
+      QLabel *m_statusMode;
       QLabel *m_statusName;
       int m_line;
       int m_col;
@@ -94,6 +97,7 @@ class MainWindow : public QMainWindow
       void createToggles();
 
       void setStatusBar(QString msg, int timeOut);
+      void setFileName(QString name);
       void showNotDone(QString item);
 
       //
@@ -136,6 +140,10 @@ class MainWindow : public QMainWindow
       void print();
       void printPreview();
       void printPdf();
+
+      void cut();
+      void copy();
+      void paste();
 
       void selectAll();
       void selectBlock();
@@ -193,6 +201,8 @@ class MainWindow : public QMainWindow
       void documentWasModified();
       void rf_Open();
       void printPreview(QPrinter *printer);
+      void setLineCol();
+      void setColMode();
 };
 
 #endif

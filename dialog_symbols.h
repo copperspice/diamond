@@ -19,33 +19,31 @@
 *
 **************************************************************************/
 
-#ifndef DIALOG_OPTIONS_H
-#define DIALOG_OPTIONS_H
+#ifndef DIALOG_SYMBOLS_H
+#define DIALOG_SYMBOLS_H
 
-#include "ui_dialog_options.h"
+#include "ui_dialog_symbols.h"
 #include "mainwindow.h"
 
 #include <QDialog>
-#include <QStringList>
 
-class Dialog_Options : public QDialog
+class Dialog_Symbols : public QDialog
 {
    Q_OBJECT
 
    public:
-      Dialog_Options(MainWindow *from);
-      ~Dialog_Options();
-      QString get_DateFormat();
-      int get_TabSpacing();
+      Dialog_Symbols(MainWindow *from);
+      ~Dialog_Symbols();
+      QString get_Symbol();
 
    private:
-      Ui::Dialog_Options *m_ui;
+      Ui::Dialog_Symbols *m_ui;
       MainWindow *m_parent;
-      void initData();
+       QStringList initData();
 
    private slots:
-      void Save();
-      void Cancel();
+      void Insert();
+      void Cancel();     
 };
 
 #endif

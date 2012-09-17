@@ -150,11 +150,11 @@ void MainWindow::setCurrentFile(const QString &fileName)
 
    if (m_curFile.isEmpty()) {
       showName = "untitled.txt";
-      m_statusName->setText(" " + showName + "  ");
+      setFileName(showName);
 
    } else {
       m_priorPath = pathName(fileName);
-      m_statusName->setText(" " + fileName + "  ");
+      setFileName(fileName);
 
       bool found = true;
       found = rf_List.contains(m_curFile);
@@ -165,6 +165,28 @@ void MainWindow::setCurrentFile(const QString &fileName)
    }
 
    setWindowFilePath(showName);
+}
+
+void MainWindow::setLineCol()
+{
+   QTextCursor cursor(m_textEdit->textCursor());
+   m_statusLine->setText(" Line: "  + QString::number(cursor.blockNumber()+1) +
+                         "  Col: " + QString::number(cursor.columnNumber()+1) + "  ");
+}
+
+void MainWindow::setColMode()
+{
+   if (true) {
+      m_statusMode->setText(" Line Mode  ");
+
+   } else {
+      m_statusMode->setText(" Column Mode  ");
+   }
+}
+
+void MainWindow::setFileName(QString name)
+{
+   m_statusName->setText(" " + name + "  ");
 }
 
 QString MainWindow::pathName(const QString &fullFileName)

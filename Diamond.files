@@ -22,6 +22,9 @@ dialog_get1.ui
 dialog_options.h
 dialog_options.cpp
 dialog_options.ui
+dialog_symbols.h
+dialog_symbols.cpp
+dialog_symbols.ui
 highlighter.h
 highlighter.cpp
 syn_c.txt

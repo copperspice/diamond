@@ -22,6 +22,7 @@
 #include "mainwindow.h"
 #include "dialog_find.h"
 #include "dialog_options.h"
+#include "dialog_symbols.h"
 
 #include <QtGui>
 #include <QDir>
@@ -31,24 +32,22 @@ MainWindow::MainWindow()
    : m_ui(new Ui::MainWindow)
 {
    m_ui->setupUi(this);
-   setWindowFilePath("untitled.txt");
-
-   m_textEdit = new DiamondTextEdit;
-   setCentralWidget(m_textEdit);
+   setWindowFilePath("untitled.txt"); 
 
    if ( ! readCfg()  ) {
       csError(tr("Settings File"), tr("Unable to locate or open the settings file."));
    }
 
-   setColors();
+   // these methods must be done after readCfg()
+   m_textEdit = new DiamondTextEdit;
+   setCentralWidget(m_textEdit);
 
+   setColors();
    createShortCuts();
    createToolBars();
+   createToggles();
    createConnections();
-   createToggles();   
-
-   // these methods must be done after readCfg()
-   rf_CreateMenus();  
+   rf_CreateMenus();
 
    m_highlighter = new Highlighter(m_textEdit->document());
    m_priorPath   = QDir::currentPath();
@@ -102,6 +101,7 @@ void MainWindow::close_Doc()
 
 void MainWindow::closeAll_Doc()
 {
+   // * * *
    showNotDone("File Close All");
 }
 
@@ -154,7 +154,7 @@ bool MainWindow::saveAs()
 
    QFileDialog::Options options;
 
-   if (false)  {  //(Q_OS_DARWIM) {
+   if (false)  {  // broom  (Q_OS_DARWIM) {
       options |= QFileDialog::DontUseNativeDialog;
    }
 
@@ -173,6 +173,7 @@ bool MainWindow::saveAs()
 
 bool MainWindow::saveAll()
 {
+   // * * *
    showNotDone("File Save All");
 }
 
@@ -237,6 +238,42 @@ void MainWindow::printPdf()
 
 
 // **edit
+void MainWindow::cut()
+{
+   if (m_struct.isLineMode) {
+      m_textEdit->cut();
+
+   } else {
+      // * * *
+      showNotDone("Edit Column Mode CUT");
+
+   }
+}
+
+void MainWindow::copy()
+{
+   if (m_struct.isLineMode) {
+      m_textEdit->copy();
+
+   } else {
+      // * * *
+      showNotDone("Edit Column Mode COPY");
+
+   }
+}
+
+void MainWindow::paste()
+{
+   if (m_struct.isLineMode) {
+      m_textEdit->paste();
+
+   } else {
+      // * * *
+      showNotDone("Edit Column Mode PASTEE");
+
+   }
+}
+
 void MainWindow::selectAll()
 {
    QTextCursor cursor(m_textEdit->textCursor());
@@ -292,7 +329,6 @@ void MainWindow::caseCap()
    QString text = cursor.selectedText();
 
    if (! text.isEmpty()) {
-
       text = text.toLower();
       text[0] = text[0].toUpper();
 
@@ -311,14 +347,23 @@ void MainWindow::insertDate()
 
 void MainWindow::insertSymbol()
 {
-   showNotDone("Edit Insert Symbol");
+   Dialog_Symbols *dw = new Dialog_Symbols(this);
+   int result = dw->exec();
 
-   // QString text = get_Symbol();
-   // m_textEdit->textCursor().insertText(text);
+   if ( result == QDialog::Accepted) {
+      QString text = dw->get_Symbol();
+
+      if (! text.isEmpty() ) {
+         m_textEdit->textCursor().insertText(text);
+      }
+   }
+
+   delete dw;
 }
 
 void MainWindow::indentIncr()
 {
+   // * * *
    showNotDone("Edit Increase Indect");
 
    //QTextCursor cursor(m_textEdit->textCursor());
@@ -333,12 +378,26 @@ void MainWindow::indentIncr()
 
 void MainWindow::indentDecr()
 {
-   showNotDone("Edit Decrease Indect");
+   // * * *
+   showNotDone("Edit Decrease Indent");
 }
 
 void MainWindow::columnMode()
 {
-   showNotDone("Edit Column Mode");
+   // alters cut, copy, paste
+
+   if (m_ui->actionColumn_Mode->isChecked()) {
+      // on
+      m_struct.isLineMode = true;
+
+    } else {
+      // off
+      m_struct.isLineMode = false;
+
+    }
+
+   // save to XML here
+   setColMode();
 }
 
 
@@ -348,7 +407,7 @@ void MainWindow::find()
    Dialog_Find *dw = new Dialog_Find(m_findText);
    int result = dw->exec();
 
-   if ( result = QDialog::Accepted) {
+   if ( result == QDialog::Accepted) {
 
       m_findText = dw->get_Value();
       m_flags    = 0;
@@ -447,9 +506,15 @@ void MainWindow::lineHighlight()
       // on
       lineColor = m_struct.colorHighlight;
 
+      m_struct.showlineHighlight = true;
+      // save to XML;
+
    } else  {
       // off
       lineColor = m_struct.colorBackground;
+
+      m_struct.showlineHighlight = false;
+      // save to XML;
    }
 
    selection.format.setBackground(lineColor);
@@ -464,13 +529,17 @@ void MainWindow::lineHighlight()
 void MainWindow::lineNumbers()
 {   
    if (m_ui->actionLine_Numbers->isChecked()) {
-      //off
-      showNotDone("View Line Numbers - OFF");
+      //on
+      m_struct.showlineNum = true;   
 
    } else {
       // on
-      showNotDone("View Line Numbers - ON");
+      m_struct.showlineNum = false;
+
    }
+
+   // save to XML here
+   m_textEdit->setShowLineNum(m_struct.showlineNum);
 }
 
 void MainWindow::showSpaces()
@@ -610,6 +679,8 @@ void MainWindow::setOptions()
          writeCfg(TAB_SPACING);
       }
    }
+
+   delete dw;
 }
 
 
@@ -651,7 +722,6 @@ void MainWindow::about()
    msgB.exec();
 }
 
-
 void MainWindow::X()
 {
    csMsg("This feature has not been implemented.");
@@ -661,6 +731,9 @@ void MainWindow::X()
 // connections, displays, toolbar
 void MainWindow::setColors()
 {
+   m_textEdit->setFont(m_struct.font);
+
+   //
    m_struct.colorBackground = QColor(Qt::white);
    m_struct.colorHighlight  = QColor(Qt::yellow).lighter(160);
    m_struct.colorText       = QColor(Qt::black);
@@ -692,9 +765,9 @@ void MainWindow::createConnections()
    // edit   
    connect(m_ui->actionUndo,           SIGNAL(triggered()), m_textEdit, SLOT(undo()));
    connect(m_ui->actionRedo,           SIGNAL(triggered()), m_textEdit, SLOT(redo()));
-   connect(m_ui->actionCut,            SIGNAL(triggered()), m_textEdit, SLOT(cut()));
-   connect(m_ui->actionCopy,           SIGNAL(triggered()), m_textEdit, SLOT(copy()));
-   connect(m_ui->actionPaste,          SIGNAL(triggered()), m_textEdit, SLOT(paste()));
+   connect(m_ui->actionCut,            SIGNAL(triggered()), this, SLOT(cut()));
+   connect(m_ui->actionCopy,           SIGNAL(triggered()), this, SLOT(copy()));
+   connect(m_ui->actionPaste,          SIGNAL(triggered()), this, SLOT(paste()));
 
    connect(m_ui->actionSelect_All,     SIGNAL(triggered()), this, SLOT(selectAll()));
    connect(m_ui->actionSelect_Block,   SIGNAL(triggered()), this, SLOT(selectBlock()));
@@ -772,12 +845,12 @@ void MainWindow::createConnections()
 void MainWindow::createToggles()
 {
    m_ui->actionLine_Highlight->setCheckable(true);
-   m_ui->actionLine_Highlight->setChecked(true);      // move to user options
+   m_ui->actionLine_Highlight->setChecked(m_struct.showlineHighlight);
    lineHighlight();
 
    m_ui->actionLine_Numbers->setCheckable(true);
-   m_ui->actionLine_Numbers->setChecked(true);        // move to user options
-   // lineNumbers();
+   m_ui->actionLine_Numbers->setChecked(m_struct.showlineNum);
+   lineNumbers();
 
    m_ui->actionSpell_Check->setCheckable(true);
    m_ui->actionSpell_Check->setChecked(false);
@@ -787,6 +860,7 @@ void MainWindow::createToggles()
 
    //
    connect(m_textEdit, SIGNAL(cursorPositionChanged()), this, SLOT(lineHighlight()));
+   connect(m_textEdit, SIGNAL(cursorPositionChanged()), this, SLOT(setLineCol()));
 
    //
    m_ui->actionUndo->setEnabled(false);
@@ -859,17 +933,19 @@ void MainWindow::createToolBars()
    toolsToolBar->addAction(m_ui->actionSpell_Check);
 
    //
-   m_statusLine = new QLabel("Line:" + QString::number(1) + "  Col:" + QString::number(1), this);
-   m_statusLine->setFrameStyle(QFrame::Panel| QFrame::Sunken);
+   m_statusLine = new QLabel("", this);
+   //m_statusLine->setFrameStyle(QFrame::Panel| QFrame::Sunken);
+   setLineCol();
 
-   m_statusMid = new QLabel("Not used     ", this);
-   m_statusMid->setFrameStyle(QFrame::Panel | QFrame::Sunken);
+   m_statusMode = new QLabel("", this);
+   //m_statusMode->setFrameStyle(QFrame::Panel | QFrame::Sunken);
+   setColMode();
 
-   m_statusName = new QLabel(m_curFile, this);
-   m_statusName->setFrameStyle(QFrame::Panel | QFrame::Sunken);
+   m_statusName = new QLabel("", this);
+   //m_statusName->setFrameStyle(QFrame::Panel | QFrame::Sunken);
 
    statusBar()->addPermanentWidget(m_statusLine, 0);
-   statusBar()->addPermanentWidget(m_statusMid,  0);
+   statusBar()->addPermanentWidget(m_statusMode, 0);
    statusBar()->addPermanentWidget(m_statusName, 0);
 }
 
@@ -882,5 +958,11 @@ void MainWindow::showNotDone(QString item)
 {
    csMsg( item + " - this feature has not been implemented.");
 }
+
+
+
+
+
+
 
 

@@ -32,6 +32,7 @@ Diamond_SOURCES = \
 	dialog_find.cpp \
 	dialog_get1.cpp \
 	dialog_options.cpp \
+	dialog_symbols.cpp \
 	diamond_edit.cpp \
 	highlighter.cpp  \
 	main.cpp \
@@ -47,6 +48,7 @@ noinst_HEADERS = \
 	dialog_find.h \
 	dialog_get1.h  \
 	dialog_options.h \
+	dialog_symbols.h \
 	diamond_edit.h \
 	mainwindow.h  \
 	util.h
@@ -57,6 +59,7 @@ MOCS = \
 	dialog_find.h \
 	dialog_get1.h  \
 	dialog_options.h \
+	dialog_symbols.h \
 	diamond_edit.h  \
 	highlighter.h  \
 	mainwindow.h
@@ -69,6 +72,7 @@ FORMS =	\
 	dialog_find.ui \
 	dialog_get1.ui \
 	dialog_options.ui \
+	dialog_symbols.ui \
 	mainwindow.ui
     
           

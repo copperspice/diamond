@@ -83,9 +83,7 @@ bool MainWindow::readCfg()
       value = cfg_GetText(root, "font") ;
       {
          QFont temp;
-         temp.fromString(value);
-
-         m_textEdit->setFont(temp);
+         temp.fromString(value);        
          m_struct.font = temp;
       }
 
