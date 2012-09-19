@@ -1,12 +1,28 @@
 <RCC>
     <qresource prefix="/">
+        <file>resources/zoom_in.png</file>
+        <file>resources/zoom_out.png</file>
+        <file>resources/clipboard.png</file>
+        <file>resources/close.png</file>
+        <file>resources/close_file.png</file>
+        <file>resources/close_folder.png</file>
         <file>resources/copy.png</file>
         <file>resources/cut.png</file>
+        <file>resources/exportpdf.png</file>
+        <file>resources/find.png</file>
+        <file>resources/help.png</file>
         <file>resources/new.png</file>
         <file>resources/open.png</file>
+        <file>resources/open_file.png</file>
         <file>resources/paste.png</file>
+        <file>resources/Play.png</file>
         <file>resources/print.png</file>
+        <file>resources/redo.png</file>
+        <file>resources/refresh.png</file>
         <file>resources/save.png</file>
+        <file>resources/save_as.png</file>
+        <file>resources/spell.png</file>
+        <file>resources/stop.png</file>
         <file>resources/undo.png</file>
     </qresource>
 </RCC>

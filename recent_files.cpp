@@ -28,7 +28,7 @@ void MainWindow::rf_Open()
    action = (QAction *)sender();
 
    if (action) {
-      bool ok = loadFile(action->text());
+      bool ok = loadFile(action->text(), true);
 
       if (! ok) {
          // remove file which did not load
@@ -87,7 +87,7 @@ void MainWindow::rf_Update()
    int cnt = rf_List.count();
 
    if (cnt >= rf_MaxCnt ) {
-      rf_List.removeLast();
+      rf_List.removeFirst();
    }
 
    rf_List.append(m_curFile);

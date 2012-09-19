@@ -149,16 +149,16 @@
      <property name="title">
       <string>Syntax Type</string>
      </property>
-     <addaction name="actionSyn_Default"/>
-     <addaction name="actionSyn_Text"/>
      <addaction name="separator"/>
      <addaction name="actionSyn_C"/>
+     <addaction name="actionSyn_Clipper"/>
      <addaction name="actionSyn_Css"/>
      <addaction name="actionSyn_Doxygen"/>
      <addaction name="actionSyn_Html"/>
      <addaction name="actionSyn_Java"/>
      <addaction name="actionSyn_Javascript"/>
      <addaction name="actionSyn_Makefile"/>
+     <addaction name="actionSyn_Text"/>
      <addaction name="actionSyn_Shell_S"/>
      <addaction name="actionSyn_Perl_S"/>
     </widget>
@@ -210,10 +210,6 @@
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
   <action name="actionNew">
-   <property name="icon">
-    <iconset>
-     <normaloff>:/resources/new.png</normaloff>:/resources/new.png</iconset>
-   </property>
    <property name="text">
     <string>New</string>
    </property>
@@ -460,7 +456,7 @@
   </action>
   <action name="actionColumn_Mode">
    <property name="text">
-    <string>Column Mode *</string>
+    <string>Column Mode</string>
    </property>
   </action>
   <action name="actionFind">
@@ -637,6 +633,11 @@
   <action name="actionSelect_Word">
    <property name="text">
     <string>Word</string>
+   </property>
+  </action>
+  <action name="actionSyn_Clipper">
+   <property name="text">
+    <string>Clipper</string>
    </property>
   </action>
  </widget>

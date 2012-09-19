@@ -22,8 +22,8 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-#include "highlighter.h"
 #include "diamond_edit.h"
+#include "syntax.h"
 #include "ui_mainwindow.h"
 #include "util.h"
 
@@ -32,14 +32,17 @@
 #include <QMenu>
 #include <QMainWindow>
 #include <QPlainTextEdit>
+#include <QTabWidget>
 
-struct Settings {
-   QFont font;
-   QColor colorBackground;
-   QColor colorHighlight;
-   QColor colorText;   
-   QString dateFormat;
-   int tabSpacing;
+struct Settings {   
+   QFont   font;
+   QColor  colorBackground;
+   QColor  colorHighBackground;
+   QColor  colorHighText;
+   QColor  colorText;
+   QString syntaxPath;
+   QString dateFormat;   
+   int  tabSpacing;
    bool showlineHighlight;
    bool showlineNum;
    bool isLineMode;
@@ -67,11 +70,13 @@ class MainWindow : public QMainWindow
       bool m_fCase;
       bool m_fWholeWords;
 
+      QTabWidget *m_tabWidget;
+
       DiamondTextEdit *m_textEdit;
       QString m_curFile;
       QString m_cfgFName;
       QDomDocument m_domCfg;
-      Highlighter *m_highlighter;
+      Syntax *m_highlighter;
 
       QLabel *m_statusLine;
       QLabel *m_statusMode;
@@ -88,16 +93,23 @@ class MainWindow : public QMainWindow
       QToolBar *searchToolBar;
       QToolBar *toolsToolBar;
 
-      enum Option {CLOSE, FONT, RECENTFILE, DATEFORMAT, TAB_SPACING};
+      enum Option {CLOSE, FONT, RECENTFILE, DATEFORMAT, TAB_SPACING};      
+      enum SyntaxTypes {SYN_C, SYN_CLIPPER, SYN_CSS, SYN_DOX, SYN_HTML, SYN_JAVA,
+                        SYN_JS, SYN_MAKE, SYN_TEXT, SYN_SHELL_S, SYN_PERL_S, SYN_NONE };
 
-      void setColors();
+      void setScreenColors();
+      void setSyntax();
+      void setSynType(SyntaxTypes data);
+      void forceSyntax(SyntaxTypes data);
+
       void createShortCuts();
       void createToolBars();
+      void createStatusBar();
       void createConnections();
       void createToggles();
 
       void setStatusBar(QString msg, int timeOut);
-      void setFileName(QString name);
+      void setStatusFName(QString name);
       void showNotDone(QString item);
 
       //
@@ -121,12 +133,13 @@ class MainWindow : public QMainWindow
 
       int get_Value1(const QString route);
       bool querySave();
-      bool loadFile(const QString &fileName);
+      bool loadFile(const QString &fileName, bool newTab);
       bool saveFile(const QString &fileName);
 
       void setCurrentFile(const QString &fileName);
-      QString pathName(const QString &fullFileName);
-      QString strippedName(const QString &fullFileName);
+      QString pathName() const;
+      QString strippedName(const QString filename);
+      QString suffixName() const;
 
    private slots:
       void newFile();
@@ -140,10 +153,6 @@ class MainWindow : public QMainWindow
       void print();
       void printPreview();
       void printPdf();
-
-      void cut();
-      void copy();
-      void paste();
 
       void selectAll();
       void selectBlock();
@@ -175,6 +184,18 @@ class MainWindow : public QMainWindow
       void showTabs();
       void showLineBreaks();
 
+      void setSyn_C();
+      void setSyn_Clipper();
+      void setSyn_Css();
+      void setSyn_Dox();
+      void setSyn_Html();
+      void setSyn_Java();
+      void setSyn_Javascript();
+      void setSyn_Makefile();
+      void setSyn_Text();
+      void setSyn_Shell_S();
+      void setSyn_Perl_S();
+
       void formatDos();
       void formatUnix();
       void formatMac();
@@ -187,15 +208,13 @@ class MainWindow : public QMainWindow
       void macroPlay();
       void spellCheck();
 
-      void setBackgroundColor();
+      void setColors();
       void setFont();
       void setOptions();
 
       void tabNew();
       void tabClose();
-
       void about();
-      void X();
 
       //
       void documentWasModified();
@@ -203,6 +222,8 @@ class MainWindow : public QMainWindow
       void printPreview(QPrinter *printer);
       void setLineCol();
       void setColMode();
+
+      void tabChanged(int index);
 };
 
 #endif

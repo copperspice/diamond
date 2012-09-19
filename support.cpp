@@ -51,15 +51,24 @@ int MainWindow::get_Value1(const QString route)
       dw->set_ColNo();
    }
 
-   dw->exec();
-   int col = dw->get_Value().toInt();
+   int result = dw->exec();
+   int col = 1;
+
+   if ( result = QDialog::Accepted) {
+      col = dw->get_Value().toInt();
+   }
 
    delete dw;
 
    return col;
 }
 
-bool MainWindow::loadFile(const QString &fileName)
+QString MainWindow::suffixName() const
+{
+   return QFileInfo(m_curFile).suffix().toLower();
+}
+
+bool MainWindow::loadFile(const QString &fileName, bool addNewTab)
 {
    QFile file(fileName);
 
@@ -75,6 +84,10 @@ bool MainWindow::loadFile(const QString &fileName)
    file.seek(0);
    QByteArray temp = file.readAll();
 
+   if (addNewTab) {
+      tabNew();
+   }
+
    QString fileData = QString::fromUtf8(temp);
    m_textEdit->setPlainText(fileData);
 
@@ -89,6 +102,11 @@ bool MainWindow::loadFile(const QString &fileName)
 struct Settings MainWindow::get_StructData()
 {
    return m_struct;
+}
+
+QString MainWindow::pathName() const
+{
+   return QFileInfo(m_curFile).path();
 }
 
 bool MainWindow::querySave()
@@ -138,6 +156,162 @@ bool MainWindow::saveFile(const QString &fileName)
    return true;
 }
 
+void MainWindow::setSyntax()
+{
+   if (m_highlighter) {
+      delete m_highlighter;
+      m_highlighter = 0;
+   }
+
+   QString fname  = "";
+   QString suffix = "txt";
+
+   if (! m_curFile.isEmpty()) {
+
+      fname  = strippedName(m_curFile).toLower();
+      suffix = suffixName();
+
+      if (suffix == "c" || fname == "cpp" || fname == "h") {
+         suffix = "cpp";
+
+      } else if (suffix == "prg") {
+         suffix = "clipper";
+
+      } else if (suffix == "doxy") {
+         suffix = "dox";
+
+      } else if (fname == "configure" || fname == "configure.ac") {
+         suffix = "make";
+
+      } else if (suffix == "htm") {
+         suffix = "html";
+
+      } else if (fname == "makefile" || fname == "makefile.am" || fname == "makefile.in") {
+         suffix = "make";
+
+      }
+   }
+
+   QString synFName = m_struct.syntaxPath + "syn_"+ suffix + ".txt";
+
+   if (! QFile::exists(synFName)) {
+      csError(tr("Syntax Highlighting"), tr("Syntax highlighting file was not found: \n\n") + synFName  + "  ");
+
+      // use default
+      suffix = "txt";
+      synFName = m_struct.syntaxPath + "syn_txt.txt";
+   }
+
+   if (! QFile::exists(synFName)) {
+      csError(tr("Syntax Highlighting"), tr("Syntax highlighting file was not found: \n\n") + synFName  + "  ");
+      setSynType(SYN_NONE);
+
+   } else {
+      m_highlighter = new Syntax(m_textEdit->document(), synFName );
+
+      if (suffix == "c" || suffix == "cpp" || suffix == "h")  {
+         setSynType(SYN_C);
+
+      } else if (suffix == "clipper")  {
+         setSynType(SYN_CLIPPER);
+
+      } else if (suffix == "css")  {
+         setSynType(SYN_CSS);
+
+      } else if (suffix == "dox")  {
+         setSynType(SYN_DOX);
+
+      } else if (suffix == "html")  {
+         setSynType(SYN_HTML);
+
+      } else if (suffix == "java")  {
+         setSynType(SYN_JAVA);
+
+      } else if (suffix == "js")  {
+         setSynType(SYN_JS);
+
+      } else if ( suffix == "make")  {
+         setSynType(SYN_MAKE);
+
+      } else if (suffix == "txt")  {
+         setSynType(SYN_TEXT);
+
+      } else if ( suffix == "sh")  {
+         setSynType(SYN_SHELL_S);
+
+      } else if ( suffix == "pl")  {
+         setSynType(SYN_PERL_S);
+
+      }
+   }
+}
+
+void MainWindow::forceSyntax(SyntaxTypes data)
+{
+    QString synFName;
+
+   switch (data)  {
+      case SYN_C:
+         synFName = m_struct.syntaxPath + "syn_cpp.txt";
+         break;
+
+      case SYN_CLIPPER:
+         synFName = m_struct.syntaxPath + "syn_clipper.txt";
+         break;
+
+      case SYN_CSS:
+         synFName = m_struct.syntaxPath + "syn_css.txt";
+         break;
+
+      case SYN_DOX:
+         synFName = m_struct.syntaxPath+ "syn_dox.txt";
+         break;
+
+      case SYN_HTML:
+         synFName = m_struct.syntaxPath + "syn_html.txt";
+         break;
+
+      case SYN_JAVA:
+         synFName = m_struct.syntaxPath + "syn_java.txt";
+         break;
+
+      case SYN_JS:
+         synFName = m_struct.syntaxPath + "syn_js.txt";
+         break;
+
+      case SYN_MAKE:
+        synFName = m_struct.syntaxPath + "syn_make.txt";
+         break;
+
+      case SYN_TEXT:
+         synFName = m_struct.syntaxPath + "syn_text.txt";
+         break;
+
+      case SYN_SHELL_S:
+         synFName = m_struct.syntaxPath + "syn_shell.txt";
+         break;
+
+      case SYN_PERL_S:
+         synFName = m_struct.syntaxPath + "syn_per;.txt";
+         break;
+   }
+
+   if (! QFile::exists(synFName)) {
+      csError(tr("Syntax Highlighting"), tr("Syntax highlighting file was not found: \n\n") + synFName  + "  ");
+
+   } else {
+      m_highlighter = new Syntax(m_textEdit->document(), synFName );
+
+   }
+}
+
+QString MainWindow::strippedName(const QString fileName)
+{
+   return QFileInfo(fileName).fileName();
+}
+
+
+// title & status bar
 void MainWindow::setCurrentFile(const QString &fileName)
 {
    m_curFile = fileName;
@@ -150,11 +324,25 @@ void MainWindow::setCurrentFile(const QString &fileName)
 
    if (m_curFile.isEmpty()) {
       showName = "untitled.txt";
-      setFileName(showName);
+
+      // change the tab name
+      int index = m_tabWidget->currentIndex();
+      m_tabWidget->setTabText(index, showName);
+      m_tabWidget->setTabWhatsThis(index, showName);
+
+      setStatusFName(showName);
+      setSyntax();
 
    } else {
-      m_priorPath = pathName(fileName);
-      setFileName(fileName);
+      m_priorPath = pathName();
+
+      // change the tab name
+      int index = m_tabWidget->currentIndex();
+      m_tabWidget->setTabText(index, strippedName(m_curFile) );
+      m_tabWidget->setTabWhatsThis(index, m_curFile);
+
+      setStatusFName(m_curFile);
+      setSyntax();
 
       bool found = true;
       found = rf_List.contains(m_curFile);
@@ -176,26 +364,19 @@ void MainWindow::setLineCol()
 
 void MainWindow::setColMode()
 {
-   if (true) {
+   if (m_struct.isLineMode) {
       m_statusMode->setText(" Line Mode  ");
+      m_textEdit->setLineMode(true);
 
    } else {
       m_statusMode->setText(" Column Mode  ");
+       m_textEdit->setLineMode(false);
    }
 }
 
-void MainWindow::setFileName(QString name)
+void MainWindow::setStatusFName(QString fullName)
 {
-   m_statusName->setText(" " + name + "  ");
-}
-
-QString MainWindow::pathName(const QString &fullFileName)
-{
-   return QFileInfo(fullFileName).path();
-}
-QString MainWindow::strippedName(const QString &fullFileName)
-{
-   return QFileInfo(fullFileName).fileName();
+   m_statusName->setText(" " + fullName + "  ");
 }
 
 

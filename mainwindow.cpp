@@ -20,6 +20,7 @@
 **************************************************************************/
 
 #include "mainwindow.h"
+#include "dialog_colors.h"
 #include "dialog_find.h"
 #include "dialog_options.h"
 #include "dialog_symbols.h"
@@ -38,20 +39,33 @@ MainWindow::MainWindow()
       csError(tr("Settings File"), tr("Unable to locate or open the settings file."));
    }
 
-   // these methods must be done after readCfg()
-   m_textEdit = new DiamondTextEdit;
-   setCentralWidget(m_textEdit);
+   // move to xml  BROOM
+   m_struct.syntaxPath = "z:\\Diamond\\source\\syntax\\";
 
-   setColors();
-   createShortCuts();
+   m_highlighter = 0;
+   m_priorPath   = QDir::currentPath();
+   m_struct.isLineMode = true;
+
+   // remaining methods must be done after readCfg()
+   m_tabWidget = new QTabWidget;   
+   m_tabWidget->setFont(QFont("Verdana,16,-1,5,50,0,0,0,0,0"));
+
+   m_tabWidget->setTabsClosable(true);
+   m_tabWidget->setMovable(true);
+   setCentralWidget(m_tabWidget);  
+
+   tabNew();
+
+   // screen setup
+   createShortCuts();      
    createToolBars();
+   createStatusBar();
    createToggles();
    createConnections();
+
    rf_CreateMenus();
 
-   m_highlighter = new Highlighter(m_textEdit->document());
-   m_priorPath   = QDir::currentPath();
-
+   //
    setCurrentFile("");
    setStatusBar(tr("Ready"), 0);   
    setUnifiedTitleAndToolBarOnMac(true);            
@@ -83,8 +97,8 @@ void MainWindow::open()
       QString fileName = QFileDialog::getOpenFileName(this, tr("Select File"),
             m_priorPath, tr("All Files (*)"), &selectedFilter, options);
 
-      if (! fileName.isEmpty()) {
-         loadFile(fileName);         
+      if (! fileName.isEmpty()) {         
+         loadFile(fileName, true);
       }
    }
 }
@@ -128,11 +142,11 @@ void MainWindow::reload()
       quest.exec();
 
       if (quest.clickedButton() == reload) {
-        loadFile(m_curFile);
+        loadFile(m_curFile, false);
       }
 
    } else {
-      loadFile(m_curFile);
+      loadFile(m_curFile, false);
 
    }
 }
@@ -238,42 +252,6 @@ void MainWindow::printPdf()
 
 
 // **edit
-void MainWindow::cut()
-{
-   if (m_struct.isLineMode) {
-      m_textEdit->cut();
-
-   } else {
-      // * * *
-      showNotDone("Edit Column Mode CUT");
-
-   }
-}
-
-void MainWindow::copy()
-{
-   if (m_struct.isLineMode) {
-      m_textEdit->copy();
-
-   } else {
-      // * * *
-      showNotDone("Edit Column Mode COPY");
-
-   }
-}
-
-void MainWindow::paste()
-{
-   if (m_struct.isLineMode) {
-      m_textEdit->paste();
-
-   } else {
-      // * * *
-      showNotDone("Edit Column Mode PASTEE");
-
-   }
-}
-
 void MainWindow::selectAll()
 {
    QTextCursor cursor(m_textEdit->textCursor());
@@ -385,14 +363,13 @@ void MainWindow::indentDecr()
 void MainWindow::columnMode()
 {
    // alters cut, copy, paste
-
    if (m_ui->actionColumn_Mode->isChecked()) {
       // on
-      m_struct.isLineMode = true;
+      m_struct.isLineMode = false;
 
     } else {
       // off
-      m_struct.isLineMode = false;
+      m_struct.isLineMode = true;
 
     }
 
@@ -431,10 +408,12 @@ void MainWindow::find()
          bool found = m_textEdit->find(m_findText, m_flags);
 
          if (! found)  {
-            csMsg( m_findText + " was not found");
+            csError("Find", m_findText + " was not found");
          }
       }
    }
+
+   delete dw;
 }
 
 void MainWindow::replace()
@@ -447,7 +426,7 @@ void MainWindow::findNext()
    QTextDocument::FindFlags flags = QTextDocument::FindFlags(~QTextDocument::FindBackward & m_flags);
    bool found = m_textEdit->find(m_findText, flags);
    if (! found)  {
-      csMsg(m_findText + " was not found");
+      csError("Find", m_findText + " was not found");
    }
 }
 
@@ -455,7 +434,7 @@ void MainWindow::findPrevious()
 {
    bool found = m_textEdit->find(m_findText, QTextDocument::FindBackward | m_flags );
    if (! found)  {
-      csMsg( m_findText + " was not found");
+      csError("Find", m_findText + " was not found");
    }
 }
 
@@ -504,7 +483,7 @@ void MainWindow::lineHighlight()
 
    if (m_ui->actionLine_Highlight->isChecked()) {
       // on
-      lineColor = m_struct.colorHighlight;
+      lineColor = m_struct.colorHighBackground;
 
       m_struct.showlineHighlight = true;
       // save to XML;
@@ -553,7 +532,7 @@ void MainWindow::showSpaces_EOL()
 }
 
 void MainWindow::showTabs()
-{
+{   
    showNotDone("View Show Tabs");
 }
 
@@ -564,10 +543,131 @@ void MainWindow::showLineBreaks()
 
 
 // **document
+void MainWindow::setSyn_C()
+{
+   setSynType(SYN_C);
+   forceSyntax(SYN_C);
+}
 
+void MainWindow::setSyn_Clipper()
+{
+   setSynType(SYN_CLIPPER);
+   forceSyntax(SYN_CLIPPER);
+}
 
-// missing syntax ( 11 )
+void MainWindow::setSyn_Css()
+{
+   setSynType(SYN_CSS);
+    forceSyntax(SYN_CSS);
+}
 
+void MainWindow::setSyn_Dox()
+{
+   setSynType(SYN_DOX);
+    forceSyntax(SYN_DOX);
+}
+
+void MainWindow::setSyn_Html()
+{
+   setSynType(SYN_HTML);
+   forceSyntax(SYN_HTML);
+}
+
+void MainWindow::setSyn_Java()
+{
+   setSynType(SYN_JAVA);
+   forceSyntax(SYN_JAVA);
+}
+
+void MainWindow::setSyn_Javascript()
+{
+   setSynType(SYN_JS);
+   forceSyntax(SYN_JS);
+}
+void MainWindow::setSyn_Makefile()
+{
+   setSynType(SYN_MAKE);
+   forceSyntax(SYN_MAKE);
+}
+
+void MainWindow::setSyn_Text()
+{
+   setSynType(SYN_TEXT);
+   forceSyntax(SYN_TEXT);
+}
+
+void MainWindow::setSyn_Shell_S()
+{
+   setSynType(SYN_SHELL_S);
+   forceSyntax(SYN_SHELL_S);
+}
+
+void MainWindow::setSyn_Perl_S()
+{
+   setSynType(SYN_PERL_S);
+   forceSyntax(SYN_PERL_S);
+}
+
+void MainWindow::setSynType(SyntaxTypes data)
+{
+   m_ui->actionSyn_C->setChecked(false);
+   m_ui->actionSyn_Clipper->setChecked(false);
+   m_ui->actionSyn_Css->setChecked(false);
+   m_ui->actionSyn_Doxygen->setChecked(false);
+   m_ui->actionSyn_Html->setChecked(false);
+   m_ui->actionSyn_Java->setChecked(false);
+   m_ui->actionSyn_Javascript->setChecked(false);
+   m_ui->actionSyn_Makefile->setChecked(false);
+   m_ui->actionSyn_Text->setChecked(false);
+   m_ui->actionSyn_Shell_S->setChecked(false);
+   m_ui->actionSyn_Perl_S->setChecked(false);
+
+   switch (data)  {
+      case SYN_C:
+         m_ui->actionSyn_C->setChecked(true);
+         break;
+
+      case SYN_CLIPPER:
+         m_ui->actionSyn_Clipper->setChecked(true);
+         break;
+
+      case SYN_CSS:
+         m_ui->actionSyn_Css->setChecked(true);
+         break;
+
+      case SYN_DOX:
+         m_ui->actionSyn_Doxygen->setChecked(true);
+         break;
+
+      case SYN_HTML:
+         m_ui->actionSyn_Html->setChecked(true);
+         break;
+
+      case SYN_JAVA:
+         m_ui->actionSyn_Java->setChecked(true);
+         break;
+
+      case SYN_JS:
+         m_ui->actionSyn_Javascript->setChecked(true);
+         break;
+
+      case SYN_MAKE:
+         m_ui->actionSyn_Makefile->setChecked(true);
+         break;
+
+      case SYN_TEXT:
+         m_ui->actionSyn_Text->setChecked(true);
+         break;
+
+      case SYN_SHELL_S:
+         m_ui->actionSyn_Shell_S->setChecked(true);
+         break;
+
+      case SYN_PERL_S:
+         m_ui->actionSyn_Perl_S->setChecked(true);
+         break;            
+   }
+}
 
 void MainWindow::formatDos()
 {
@@ -624,29 +724,43 @@ void MainWindow::spellCheck()
 
 
 // **settings
-void MainWindow::setBackgroundColor()
+void MainWindow::setColors()
 {
-   // should call a window for the user to get the colors
+   // save the old highlight color
+   QColor old_colorHighlight = m_struct.colorHighBackground;
 
-   bool isNative = true;
-   QColor color;
+   //
+   Dialog_Colors *dw = new Dialog_Colors(this, m_highlighter);
+   int result = dw->exec();
 
-   if (isNative)  {
-       color = QColorDialog::getColor(m_struct.colorBackground, this);
+   if (result = QDialog::Accepted) {
 
-   } else  {
-       color = QColorDialog::getColor(m_struct.colorBackground, this, "Select Color", QColorDialog::DontUseNativeDialog);
+      // update Settings
+      m_struct = dw->get_Colors();
 
-   }
+      // update SyntaxColors
+      struct SyntaxColors tempSyntax = dw->get_Syntax();
+      m_highlighter->set_StructData(tempSyntax);
 
-   // move to setMe()  for all colors
+/*
+      if (m_struct.showlineHighlight)  {
+         // clear the old highlight first        
+         QTextEdit::ExtraSelection selection;
 
-   if (color.isValid()) {     
-      m_struct.colorBackground = color;
+         selection.format.setBackground(old_colorHighlight);
+         selection.format.setProperty(QTextFormat::FullWidthSelection, true);
+         selection.cursor = m_textEdit->textCursor();
+         selection.cursor.clearSelection();
+      }
+*/
 
       QPalette temp = m_textEdit->palette();
-      temp.setColor( QPalette::Base, m_struct.colorBackground);
+      temp.setColor(QPalette::Text, m_struct.colorText);
+      temp.setColor(QPalette::Base, m_struct.colorBackground);
       m_textEdit->setPalette(temp);
+
+      //
+      lineHighlight();
    }
 }
 
@@ -684,17 +798,63 @@ void MainWindow::setOptions()
 }
 
 
-// **window
+// **window, tabs
 void MainWindow::tabNew()
 {
-   showNotDone("Window, tab new");
+   DiamondTextEdit *textEdit;
+   textEdit = new DiamondTextEdit;
+
+   const QString label = "untitled.txt";
+   int index = m_tabWidget->addTab(textEdit, label);
+
+   //
+   m_textEdit = textEdit;   
+   setScreenColors();
+
+   // select new tab
+   m_tabWidget->setCurrentIndex(index);
 }
 
 void MainWindow::tabClose()
 {
-   showNotDone("Window, tab close");
+   bool okClose = querySave();
+
+   if (okClose)  {
+      int count = m_tabWidget->count();
+
+      if (count == 1) {
+         // do not remove !
+         m_textEdit->clear();
+         setCurrentFile("");
+
+      } else {
+         // may need to delete the widget         
+         int index = m_tabWidget->currentIndex();
+         m_tabWidget->removeTab(index);
+      }
+   }
 }
 
+void MainWindow::tabChanged(int index)
+{
+   QWidget *temp = m_tabWidget->widget(index);
+
+   DiamondTextEdit *textEdit;
+   textEdit = dynamic_cast<DiamondTextEdit *>(temp);
+
+   if (textEdit) {
+      m_textEdit = textEdit;
+
+      // retrieve fullName for status bar
+      m_curFile = m_tabWidget->tabWhatsThis(index);
+      setStatusFName(m_curFile);
+
+      // adjust in case they changed
+      lineNumbers();
+      lineHighlight();
+      setSyntax();
+   }
+}
 
 // **help
 void MainWindow::about()
@@ -722,21 +882,16 @@ void MainWindow::about()
    msgB.exec();
 }
 
-void MainWindow::X()
-{
-   csMsg("This feature has not been implemented.");
-}
-
 
 // connections, displays, toolbar
-void MainWindow::setColors()
+void MainWindow::setScreenColors()
 {
    m_textEdit->setFont(m_struct.font);
 
    //
-   m_struct.colorBackground = QColor(Qt::white);
-   m_struct.colorHighlight  = QColor(Qt::yellow).lighter(160);
-   m_struct.colorText       = QColor(Qt::black);
+   m_struct.colorText            = QColor(Qt::black);
+   m_struct.colorBackground      = QColor(Qt::white);
+   m_struct.colorHighBackground  = QColor(Qt::yellow).lighter(160);
 
    QPalette temp = m_textEdit->palette();
    temp.setColor( QPalette::Text, m_struct.colorText);
@@ -765,9 +920,9 @@ void MainWindow::createConnections()
    // edit   
    connect(m_ui->actionUndo,           SIGNAL(triggered()), m_textEdit, SLOT(undo()));
    connect(m_ui->actionRedo,           SIGNAL(triggered()), m_textEdit, SLOT(redo()));
-   connect(m_ui->actionCut,            SIGNAL(triggered()), this, SLOT(cut()));
-   connect(m_ui->actionCopy,           SIGNAL(triggered()), this, SLOT(copy()));
-   connect(m_ui->actionPaste,          SIGNAL(triggered()), this, SLOT(paste()));
+   connect(m_ui->actionCut,            SIGNAL(triggered()), m_textEdit, SLOT(cut()));
+   connect(m_ui->actionCopy,           SIGNAL(triggered()), m_textEdit, SLOT(copy()));
+   connect(m_ui->actionPaste,          SIGNAL(triggered()), m_textEdit, SLOT(paste()));
 
    connect(m_ui->actionSelect_All,     SIGNAL(triggered()), this, SLOT(selectAll()));
    connect(m_ui->actionSelect_Block,   SIGNAL(triggered()), this, SLOT(selectBlock()));
@@ -803,17 +958,17 @@ void MainWindow::createConnections()
    connect(m_ui->actionShow_Line_Break,SIGNAL(triggered()), this, SLOT(showLineBreaks()));
 
    // document
-   connect(m_ui->actionSyn_Default,    SIGNAL(triggered()), this, SLOT(X()));
-   connect(m_ui->actionSyn_Text,       SIGNAL(triggered()), this, SLOT(X()));
-   connect(m_ui->actionSyn_C,          SIGNAL(triggered()), this, SLOT(X()));
-   connect(m_ui->actionSyn_Css,        SIGNAL(triggered()), this, SLOT(X()));
-   connect(m_ui->actionSyn_Doxygen,    SIGNAL(triggered()), this, SLOT(X()));
-   connect(m_ui->actionSyn_Html,       SIGNAL(triggered()), this, SLOT(X()));
-   connect(m_ui->actionSyn_Java,       SIGNAL(triggered()), this, SLOT(X()));
-   connect(m_ui->actionSyn_Javascript, SIGNAL(triggered()), this, SLOT(X()));
-   connect(m_ui->actionSyn_Makefile,   SIGNAL(triggered()), this, SLOT(X()));
-   connect(m_ui->actionSyn_Shell_S,    SIGNAL(triggered()), this, SLOT(X()));
-   connect(m_ui->actionSyn_Perl_S,     SIGNAL(triggered()), this, SLOT(X()));
+   connect(m_ui->actionSyn_C,          SIGNAL(triggered()), this, SLOT(setSyn_C()));
+   connect(m_ui->actionSyn_Clipper,    SIGNAL(triggered()), this, SLOT(setSyn_Clipper()));
+   connect(m_ui->actionSyn_Css,        SIGNAL(triggered()), this, SLOT(setSyn_Css()));
+   connect(m_ui->actionSyn_Doxygen,    SIGNAL(triggered()), this, SLOT(setSyn_Dox()));
+   connect(m_ui->actionSyn_Html,       SIGNAL(triggered()), this, SLOT(setSyn_Html()));
+   connect(m_ui->actionSyn_Java,       SIGNAL(triggered()), this, SLOT(setSyn_Java()));
+   connect(m_ui->actionSyn_Javascript, SIGNAL(triggered()), this, SLOT(setSyn_Javascript()));
+   connect(m_ui->actionSyn_Makefile,   SIGNAL(triggered()), this, SLOT(setSyn_Makefile()));
+   connect(m_ui->actionSyn_Text,       SIGNAL(triggered()), this, SLOT(setSyn_Text()));
+   connect(m_ui->actionSyn_Shell_S,    SIGNAL(triggered()), this, SLOT(setSyn_Shell_S()));
+   connect(m_ui->actionSyn_Perl_S,     SIGNAL(triggered()), this, SLOT(setSyn_Perl_S()));
 
    connect(m_ui->actionFormat_Dos,     SIGNAL(triggered()), this, SLOT(formatDos()));
    connect(m_ui->actionFormat_Unix,    SIGNAL(triggered()), this, SLOT(formatUnix()));
@@ -830,7 +985,7 @@ void MainWindow::createConnections()
    connect(m_ui->actionSpell_Check,    SIGNAL(triggered()), this, SLOT(spellCheck()));
 
    // settings
-   connect(m_ui->actionColors,         SIGNAL(triggered()), this, SLOT(setBackgroundColor()));
+   connect(m_ui->actionColors,         SIGNAL(triggered()), this, SLOT(setColors()));
    connect(m_ui->actionFonts,          SIGNAL(triggered()), this, SLOT(setFont()));
    connect(m_ui->actionOptions,        SIGNAL(triggered()), this, SLOT(setOptions()));
 
@@ -843,7 +998,19 @@ void MainWindow::createConnections()
 }
 
 void MainWindow::createToggles()
-{
+{    
+   m_ui->actionSyn_C->setCheckable(true);
+   m_ui->actionSyn_Clipper->setCheckable(true);
+   m_ui->actionSyn_Css->setCheckable(true);
+   m_ui->actionSyn_Doxygen->setCheckable(true);
+   m_ui->actionSyn_Html->setCheckable(true);
+   m_ui->actionSyn_Java->setCheckable(true);
+   m_ui->actionSyn_Javascript->setCheckable(true);
+   m_ui->actionSyn_Makefile->setCheckable(true);
+   m_ui->actionSyn_Text->setCheckable(true);
+   m_ui->actionSyn_Shell_S->setCheckable(true);
+   m_ui->actionSyn_Perl_S->setCheckable(true);
+
    m_ui->actionLine_Highlight->setCheckable(true);
    m_ui->actionLine_Highlight->setChecked(m_struct.showlineHighlight);
    lineHighlight();
@@ -851,6 +1018,10 @@ void MainWindow::createToggles()
    m_ui->actionLine_Numbers->setCheckable(true);
    m_ui->actionLine_Numbers->setChecked(m_struct.showlineNum);
    lineNumbers();
+
+   m_ui->actionColumn_Mode->setCheckable(true);
+   m_ui->actionColumn_Mode->setChecked(! m_struct.isLineMode);
+   columnMode();
 
    m_ui->actionSpell_Check->setCheckable(true);
    m_ui->actionSpell_Check->setChecked(false);
@@ -872,6 +1043,10 @@ void MainWindow::createToggles()
    connect(m_textEdit, SIGNAL(redoAvailable(bool)), m_ui->actionRedo, SLOT(setEnabled(bool)));
    connect(m_textEdit, SIGNAL(copyAvailable(bool)), m_ui->actionCut,  SLOT(setEnabled(bool)));
    connect(m_textEdit, SIGNAL(copyAvailable(bool)), m_ui->actionCopy, SLOT(setEnabled(bool)));
+
+   //
+   connect(m_tabWidget, SIGNAL(currentChanged(int)),    this, SLOT(tabChanged(int)));
+   connect(m_tabWidget, SIGNAL(tabCloseRequested(int)), this, SLOT(tabClose()));
 }
 
 void MainWindow::createShortCuts()
@@ -909,14 +1084,32 @@ void MainWindow::createShortCuts()
 
 void MainWindow::createToolBars()
 {
+   m_ui->actionNew->setIcon(QIcon(":/resources/new.png"));
+   m_ui->actionOpen->setIcon(QIcon(":/resources/open.png"));
+   m_ui->actionClose->setIcon(QIcon(":/resources/close_folder.png"));
+   m_ui->actionSave->setIcon(QIcon(":/resources/save.png"));
+   m_ui->actionPrint->setIcon(QIcon(":/resources/print.png"));
+   m_ui->actionPrint_Pdf->setIcon(QIcon(":/resources/exportpdf.png"));
+
+   m_ui->actionUndo->setIcon(QIcon(":/resources/undo.png"));
+   m_ui->actionRedo->setIcon(QIcon(":/resources/redo.png"));
+   m_ui->actionCut->setIcon(QIcon(":/resources/cut.png"));
+   m_ui->actionCopy->setIcon(QIcon(":/resources/copy.png"));
+   m_ui->actionPaste->setIcon(QIcon(":/resources/paste.png"));
+
+   m_ui->actionFind->setIcon(QIcon(":/resources/find.png"));
+   m_ui->actionSpell_Check->setIcon(QIcon(":/resources/spell.png"));
+
+   //
    fileToolBar = addToolBar(tr("File"));
    fileToolBar->addAction(m_ui->actionNew);
    fileToolBar->addAction(m_ui->actionOpen);
    fileToolBar->addAction(m_ui->actionClose);
    // fileToolBar->addAction(m_ui->actionClose_All);
    fileToolBar->addAction(m_ui->actionSave);
-   fileToolBar->addAction(m_ui->actionSave_All);
+   // fileToolBar->addAction(m_ui->actionSave_All);
    fileToolBar->addAction(m_ui->actionPrint);
+   fileToolBar->addAction(m_ui->actionPrint_Pdf);
 
    editToolBar = addToolBar(tr("Edit"));
    editToolBar->addAction(m_ui->actionUndo);
@@ -931,8 +1124,10 @@ void MainWindow::createToolBars()
 
    toolsToolBar = addToolBar(tr("Tools"));
    toolsToolBar->addAction(m_ui->actionSpell_Check);
+}
 
-   //
+void MainWindow::createStatusBar()
+{
    m_statusLine = new QLabel("", this);
    //m_statusLine->setFrameStyle(QFrame::Panel| QFrame::Sunken);
    setLineCol();
@@ -946,7 +1141,7 @@ void MainWindow::createToolBars()
 
    statusBar()->addPermanentWidget(m_statusLine, 0);
    statusBar()->addPermanentWidget(m_statusMode, 0);
-   statusBar()->addPermanentWidget(m_statusName, 0);
+   statusBar()->addPermanentWidget(m_statusName, 0);    
 }
 
 void MainWindow::setStatusBar(QString msg, int timeOut)

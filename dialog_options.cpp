@@ -44,7 +44,7 @@ Dialog_Options::~Dialog_Options()
 
 void Dialog_Options::initData()
 {
-   struct Settings m_struct = m_parent->get_StructData();
+   struct Settings temp = m_parent->get_StructData();
 
    QStringList list;   
    int index;
@@ -56,7 +56,7 @@ void Dialog_Options::initData()
    m_ui->dateFormat_CB->addItems(list);
    m_ui->dateFormat_CB->setEditable(false);
 
-   index = m_ui->dateFormat_CB->findText(m_struct.dateFormat);
+   index = m_ui->dateFormat_CB->findText(temp.dateFormat);
    m_ui->dateFormat_CB->setCurrentIndex(index);
 
    //
@@ -65,7 +65,7 @@ void Dialog_Options::initData()
    m_ui->tabSpacing_CB->addItems(list);
    m_ui->tabSpacing_CB->setEditable(false);
 
-   index = m_ui->tabSpacing_CB->findText(QString::number(m_struct.tabSpacing));
+   index = m_ui->tabSpacing_CB->findText(QString::number(temp.tabSpacing));
    m_ui->tabSpacing_CB->setCurrentIndex(index);
 }
 

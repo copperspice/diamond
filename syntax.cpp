@@ -19,21 +19,20 @@
 *
 **************************************************************************/
 
-#include "highlighter.h"
+#include "syntax.h"
 #include "util.h"
 
 #include <QtGui>
 #include <QFile>
 #include <QString>
 
-Highlighter::Highlighter(QTextDocument *parent)
-   : QSyntaxHighlighter(parent)
+Syntax::Syntax(QTextDocument *document, QString synFName)
+   : QSyntaxHighlighter(document)
 {     
-   QString fileName = "syn_cpp.txt";
-   QFile file(fileName);
-
+   QFile file(synFName);
    if (! file.open(QFile::ReadOnly | QFile::Text)) {
-      csMsg("Syntax C/C++ is missing");
+      QString error = tr("Unable to open file %1:\n%2.").arg(synFName).arg(file.errorString());
+      csError(tr("Syntax Highlighting"), error);
    }
 
    file.seek(0);
@@ -41,18 +40,22 @@ Highlighter::Highlighter(QTextDocument *parent)
 
    QString fileData = QString::fromUtf8(temp);
    file.close();  
-
    QStringList keywordPatterns = fileData.split("\n");
 
    //
+   QStringList typesPatterns;
+   typesPatterns << "\\bint\\b" << "\\bfloat\\b";
+
    m_struct.syn_KeyWeight    = QFont::Bold;
    m_struct.syn_KeyText      = QColor(Qt::blue);
+   m_struct.syn_TypeWeight   = QFont::Normal;
+   m_struct.syn_TypeText     = QColor(Qt::blue);
    m_struct.syn_ClassWeight  = QFont::Normal;
    m_struct.syn_ClassText    = QColor(Qt::darkMagenta);
    m_struct.syn_FuncWeight   = QFont::Normal;
    m_struct.syn_FuncText     = QColor(Qt::blue);
-   m_struct.syn_LineText     = QColor(Qt::darkGreen);
    m_struct.syn_QuoteText    = QColor(Qt::darkGreen);
+   m_struct.syn_CommentText  = QColor(Qt::darkGreen);
    m_struct.syn_MLineText    = QColor(Qt::darkGreen);
 
    //
@@ -71,8 +74,22 @@ Highlighter::Highlighter(QTextDocument *parent)
       highlightingRules.append(rule);
    }
 
+   foreach (const QString &pattern, typesPatterns) {
+
+      if (pattern.trimmed().isEmpty()) {
+         continue;
+      }
+
+      // types
+      rule.format.setFontWeight(m_struct.syn_TypeWeight);
+      rule.format.setForeground(m_struct.syn_TypeText);
+      rule.pattern = QRegExp(pattern);
+      highlightingRules.append(rule);
+   }
+
    // class
    rule.format.setFontWeight(m_struct.syn_ClassWeight);
+   // rule.format.setFontItalic(m_struct.syn_ClassItalic);
    rule.format.setForeground(m_struct.syn_ClassText);
    rule.pattern = QRegExp("\\bQ[A-Za-z]+\\b");
    highlightingRules.append(rule);
@@ -83,14 +100,14 @@ Highlighter::Highlighter(QTextDocument *parent)
    rule.pattern = QRegExp("\\b[A-Za-z0-9_]+(?=\\()");
    highlightingRules.append(rule);
 
-   // single line
-   rule.format.setForeground(m_struct.syn_LineText);
-   rule.pattern = QRegExp("//[^\n]*");
-   highlightingRules.append(rule);
-
    // quoted text
    rule.format.setForeground(m_struct.syn_QuoteText);
    rule.pattern = QRegExp("\".*\"");
+   highlightingRules.append(rule);
+
+   // single line comment
+   rule.format.setForeground(m_struct.syn_CommentText);   
+   rule.pattern = QRegExp("//[^\n]*");
    highlightingRules.append(rule);
 
    multiLineCommentFormat.setForeground(m_struct.syn_MLineText);
@@ -99,7 +116,7 @@ Highlighter::Highlighter(QTextDocument *parent)
    commentEndExpression   = QRegExp("\\*/");
 }
 
-void Highlighter::highlightBlock(const QString &text)
+void Syntax::highlightBlock(const QString &text)
 {
    foreach (const HighlightingRule &rule, highlightingRules) {
       QRegExp expression(rule.pattern);
@@ -112,6 +129,7 @@ void Highlighter::highlightBlock(const QString &text)
       }
    }
 
+   // multi line comments
    setCurrentBlockState(0);
 
    int startIndex = 0;
@@ -136,3 +154,16 @@ void Highlighter::highlightBlock(const QString &text)
       startIndex = commentStartExpression.indexIn(text, startIndex + commentLength);
    }
 }
+
+struct SyntaxColors Syntax::get_StructData()
+{
+   return m_struct;
+}
+
+void Syntax::set_StructData(SyntaxColors data)
+{
+   m_struct = data;
+}
+
+
+
