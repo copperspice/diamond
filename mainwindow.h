@@ -23,30 +23,17 @@
 #define MAINWINDOW_H
 
 #include "diamond_edit.h"
+#include "settings.h"
 #include "syntax.h"
 #include "ui_mainwindow.h"
 #include "util.h"
 
 #include <QAction>
-#include <QDomDocument>
+#include <QJsonValue>
 #include <QMenu>
 #include <QMainWindow>
 #include <QPlainTextEdit>
 #include <QTabWidget>
-
-struct Settings {   
-   QFont   font;
-   QColor  colorBackground;
-   QColor  colorHighBackground;
-   QColor  colorHighText;
-   QColor  colorText;
-   QString syntaxPath;
-   QString dateFormat;   
-   int  tabSpacing;
-   bool showlineHighlight;
-   bool showlineNum;
-   bool isLineMode;
-};
 
 class MainWindow : public QMainWindow
 {
@@ -61,39 +48,46 @@ class MainWindow : public QMainWindow
 
    private:
       Ui::MainWindow *m_ui;
-      struct Settings m_struct;
-      QString m_priorPath;
 
+      // textEdit
+      DiamondTextEdit *m_textEdit;
+      QTabWidget *m_tabWidget;
+      Syntax *m_syntaxParser;
+
+      QString m_curFile;
+      QString m_jsonFname;
+
+      // settings
+      struct Settings m_struct;
+
+      // find
       QString m_findText;
-      QTextDocument::FindFlags m_flags;
+      QTextDocument::FindFlags m_flags;      
       bool m_fDirection;
       bool m_fCase;
       bool m_fWholeWords;
 
-      QTabWidget *m_tabWidget;
-
-      DiamondTextEdit *m_textEdit;
-      QString m_curFile;
-      QString m_cfgFName;
-      QDomDocument m_domCfg;
-      Syntax *m_highlighter;
-
+      // status bar
       QLabel *m_statusLine;
       QLabel *m_statusMode;
       QLabel *m_statusName;
       int m_line;
       int m_col;
 
+      // recent files
       static const int rf_MaxCnt = 10;
       QAction *rf_Actions[rf_MaxCnt];
-      QStringList rf_List;
+      QStringList m_rf_List;
 
+      // menu bar
       QToolBar *fileToolBar;
       QToolBar *editToolBar;
       QToolBar *searchToolBar;
       QToolBar *toolsToolBar;
 
-      enum Option {CLOSE, FONT, RECENTFILE, DATEFORMAT, TAB_SPACING};      
+      enum Option {CLOSE, COLORS, COLUMN_MODE, FONT, FORMAT_DATE, FORMAT_TIME,
+                   PATH_SYNTAX, PATH_PRIOR, RECENTFILE, SHOW_LINEHIGHLIGHT, SHOW_LINENUMBERS, TAB_SPACING};
+
       enum SyntaxTypes {SYN_C, SYN_CLIPPER, SYN_CSS, SYN_DOX, SYN_HTML, SYN_JAVA,
                         SYN_JS, SYN_MAKE, SYN_TEXT, SYN_SHELL_S, SYN_PERL_S, SYN_NONE };
 
@@ -112,25 +106,24 @@ class MainWindow : public QMainWindow
       void setStatusFName(QString name);
       void showNotDone(QString item);
 
-      //
-      bool readCfg();
-      void writeCfg(Option data);
-      void cfg_FileName();
-      bool cfg_ParseXml();
-      bool cfg_NewXml();
-      bool cfg_SaveXml();      
+      // json
+      bool json_Read();
+      bool json_Write(Option data);
+      void json_getFileName();
+      bool json_CreateNew();
+      bool json_SaveFile(QByteArray route);
+      QByteArray json_ReadFile();
 
-      QString cfg_GetText(QDomElement root, QString name);
-      void cfg_Update(QDomElement root, QString name, QString newData);
+      QString get_SyntaxPath();
+      QString json_GetText();
+      void json_SetText();
 
-      QStringList cfg_GetList(QDomElement root, QString name);
-      void cfg_UpdateList(QDomElement root, QString name, QStringList newData);
-
-      //
+      // rencent files
       void rf_CreateMenus();
       void rf_Update();
       void rf_UpdateActions();
 
+      // support
       int get_Value1(const QString route);
       bool querySave();
       bool loadFile(const QString &fileName, bool newTab);
@@ -217,12 +210,11 @@ class MainWindow : public QMainWindow
       void about();
 
       //
-      void documentWasModified();
-      void rf_Open();
+      void documentWasModified();     
       void printPreview(QPrinter *printer);
+      void rf_Open();
       void setLineCol();
-      void setColMode();
-
+      void setColMode();      
       void tabChanged(int index);
 };
 

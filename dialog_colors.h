@@ -37,26 +37,33 @@ class Dialog_Colors : public QDialog
       Dialog_Colors(MainWindow *from, Syntax *dw);
       ~Dialog_Colors();
       struct Settings get_Colors();
-      struct SyntaxColors get_Syntax();
 
    private:
       Ui::Dialog_Colors *m_ui;
-      MainWindow *m_mainWindow;
-      Syntax *m_syntax;
 
+      MainWindow *m_mainWindow;
+      Syntax *m_syntaxParser;
+
+      QString m_syntaxFname;
       struct Settings m_struSettings;
-      struct SyntaxColors m_struSyntax;
 
       void initData();
-      void colorBox(QLineEdit field, QColor color);
+      void colorBox(QLineEdit *field, QColor color);
       QColor pickColor(QColor oldColor);
-
 
    private slots:
       void text_TB();
       void back_TB();
       void highText_TB();
       void highBack_TB();
+
+      void key_TB();
+      void type_TB();
+      void class_TB();
+      void func_TB();
+      void quote_TB();
+      void comment_TB();
+      void mline_TB();
 
       void Save();
       void Cancel();

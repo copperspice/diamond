@@ -164,7 +164,7 @@ void MainWindow::writeCfg(Option data)
             break;
 
          case DATEFORMAT:                       
-            cfg_Update(root, "dateFormat", m_struct.dateFormat);
+            cfg_Update(root, "dateFormat", m_struct.formatDate);
             break;
 
          case TAB_SPACING:                       

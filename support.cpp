@@ -31,7 +31,7 @@
 void MainWindow::closeEvent(QCloseEvent *event)
 {
    if (querySave()) {
-      writeCfg(CLOSE);
+      json_Write(CLOSE);
       event->accept();
    } else {
       event->ignore();
@@ -158,9 +158,9 @@ bool MainWindow::saveFile(const QString &fileName)
 
 void MainWindow::setSyntax()
 {
-   if (m_highlighter) {
-      delete m_highlighter;
-      m_highlighter = 0;
+   if (m_syntaxParser) {
+      delete m_syntaxParser;
+      m_syntaxParser = 0;
    }
 
    QString fname  = "";
@@ -192,14 +192,14 @@ void MainWindow::setSyntax()
       }
    }
 
-   QString synFName = m_struct.syntaxPath + "syn_"+ suffix + ".txt";
+   QString synFName = m_struct.pathSyntax + "syn_"+ suffix + ".txt";
 
    if (! QFile::exists(synFName)) {
       csError(tr("Syntax Highlighting"), tr("Syntax highlighting file was not found: \n\n") + synFName  + "  ");
 
       // use default
       suffix = "txt";
-      synFName = m_struct.syntaxPath + "syn_txt.txt";
+      synFName = m_struct.pathSyntax + "syn_txt.txt";
    }
 
    if (! QFile::exists(synFName)) {
@@ -207,7 +207,7 @@ void MainWindow::setSyntax()
       setSynType(SYN_NONE);
 
    } else {
-      m_highlighter = new Syntax(m_textEdit->document(), synFName );
+      m_syntaxParser = new Syntax{m_textEdit->document(), synFName, m_struct};
 
       if (suffix == "c" || suffix == "cpp" || suffix == "h")  {
          setSynType(SYN_C);
@@ -252,47 +252,47 @@ void MainWindow::forceSyntax(SyntaxTypes data)
 
    switch (data)  {
       case SYN_C:
-         synFName = m_struct.syntaxPath + "syn_cpp.txt";
+         synFName = m_struct.pathSyntax + "syn_cpp.txt";
          break;
 
       case SYN_CLIPPER:
-         synFName = m_struct.syntaxPath + "syn_clipper.txt";
+         synFName = m_struct.pathSyntax + "syn_clipper.txt";
          break;
 
       case SYN_CSS:
-         synFName = m_struct.syntaxPath + "syn_css.txt";
+         synFName = m_struct.pathSyntax + "syn_css.txt";
          break;
 
       case SYN_DOX:
-         synFName = m_struct.syntaxPath+ "syn_dox.txt";
+         synFName = m_struct.pathSyntax+ "syn_dox.txt";
          break;
 
       case SYN_HTML:
-         synFName = m_struct.syntaxPath + "syn_html.txt";
+         synFName = m_struct.pathSyntax + "syn_html.txt";
          break;
 
       case SYN_JAVA:
-         synFName = m_struct.syntaxPath + "syn_java.txt";
+         synFName = m_struct.pathSyntax + "syn_java.txt";
          break;
 
       case SYN_JS:
-         synFName = m_struct.syntaxPath + "syn_js.txt";
+         synFName = m_struct.pathSyntax + "syn_js.txt";
          break;
 
       case SYN_MAKE:
-        synFName = m_struct.syntaxPath + "syn_make.txt";
+        synFName = m_struct.pathSyntax + "syn_make.txt";
          break;
 
       case SYN_TEXT:
-         synFName = m_struct.syntaxPath + "syn_text.txt";
+         synFName = m_struct.pathSyntax + "syn_txt.txt";
          break;
 
       case SYN_SHELL_S:
-         synFName = m_struct.syntaxPath + "syn_shell.txt";
+         synFName = m_struct.pathSyntax + "syn_sh.txt";
          break;
 
       case SYN_PERL_S:
-         synFName = m_struct.syntaxPath + "syn_per;.txt";
+         synFName = m_struct.pathSyntax + "syn_pl.txt";
          break;
    }
 
@@ -300,7 +300,7 @@ void MainWindow::forceSyntax(SyntaxTypes data)
       csError(tr("Syntax Highlighting"), tr("Syntax highlighting file was not found: \n\n") + synFName  + "  ");
 
    } else {
-      m_highlighter = new Syntax(m_textEdit->document(), synFName );
+      m_syntaxParser = new Syntax{m_textEdit->document(), synFName, m_struct};
 
    }
 }
@@ -331,10 +331,11 @@ void MainWindow::setCurrentFile(const QString &fileName)
       m_tabWidget->setTabWhatsThis(index, showName);
 
       setStatusFName(showName);
-      setSyntax();
+      //FOO    setSyntax();
 
    } else {
-      m_priorPath = pathName();
+      m_struct.pathPrior = pathName();
+      json_Write(PATH_PRIOR);
 
       // change the tab name
       int index = m_tabWidget->currentIndex();
@@ -342,10 +343,10 @@ void MainWindow::setCurrentFile(const QString &fileName)
       m_tabWidget->setTabWhatsThis(index, m_curFile);
 
       setStatusFName(m_curFile);
-      setSyntax();
+      //FOO    setSyntax();
 
       bool found = true;
-      found = rf_List.contains(m_curFile);
+      found = m_rf_List.contains(m_curFile);
 
       if (! found) {
          rf_Update();

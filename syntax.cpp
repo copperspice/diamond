@@ -26,9 +26,9 @@
 #include <QFile>
 #include <QString>
 
-Syntax::Syntax(QTextDocument *document, QString synFName)
+Syntax::Syntax(QTextDocument *document, QString synFName, const struct Settings &settings)
    : QSyntaxHighlighter(document)
-{     
+{              
    QFile file(synFName);
    if (! file.open(QFile::ReadOnly | QFile::Text)) {
       QString error = tr("Unable to open file %1:\n%2.").arg(synFName).arg(file.errorString());
@@ -46,18 +46,6 @@ Syntax::Syntax(QTextDocument *document, QString synFName)
    QStringList typesPatterns;
    typesPatterns << "\\bint\\b" << "\\bfloat\\b";
 
-   m_struct.syn_KeyWeight    = QFont::Bold;
-   m_struct.syn_KeyText      = QColor(Qt::blue);
-   m_struct.syn_TypeWeight   = QFont::Normal;
-   m_struct.syn_TypeText     = QColor(Qt::blue);
-   m_struct.syn_ClassWeight  = QFont::Normal;
-   m_struct.syn_ClassText    = QColor(Qt::darkMagenta);
-   m_struct.syn_FuncWeight   = QFont::Normal;
-   m_struct.syn_FuncText     = QColor(Qt::blue);
-   m_struct.syn_QuoteText    = QColor(Qt::darkGreen);
-   m_struct.syn_CommentText  = QColor(Qt::darkGreen);
-   m_struct.syn_MLineText    = QColor(Qt::darkGreen);
-
    //
    HighlightingRule rule;
 
@@ -68,8 +56,9 @@ Syntax::Syntax(QTextDocument *document, QString synFName)
       }
 
       // keywords
-      rule.format.setFontWeight(m_struct.syn_KeyWeight);
-      rule.format.setForeground(m_struct.syn_KeyText);
+      rule.format.setFontWeight(settings.syn_KeyWeight);
+      rule.format.setFontItalic(settings.syn_KeyItalic);
+      rule.format.setForeground(settings.syn_KeyText);
       rule.pattern = QRegExp(pattern);
       highlightingRules.append(rule);
    }
@@ -81,36 +70,45 @@ Syntax::Syntax(QTextDocument *document, QString synFName)
       }
 
       // types
-      rule.format.setFontWeight(m_struct.syn_TypeWeight);
-      rule.format.setForeground(m_struct.syn_TypeText);
+      rule.format.setFontWeight(settings.syn_TypeWeight);
+      rule.format.setFontItalic(settings.syn_TypeItalic);
+      rule.format.setForeground(settings.syn_TypeText);
       rule.pattern = QRegExp(pattern);
       highlightingRules.append(rule);
    }
 
    // class
-   rule.format.setFontWeight(m_struct.syn_ClassWeight);
-   // rule.format.setFontItalic(m_struct.syn_ClassItalic);
-   rule.format.setForeground(m_struct.syn_ClassText);
+   rule.format.setFontWeight(settings.syn_ClassWeight);
+   rule.format.setFontItalic(settings.syn_ClassItalic);
+   rule.format.setForeground(settings.syn_ClassText);
    rule.pattern = QRegExp("\\bQ[A-Za-z]+\\b");
    highlightingRules.append(rule);
 
    // functions    
-   rule.format.setFontWeight(m_struct.syn_FuncWeight);
-   rule.format.setForeground( m_struct.syn_FuncText);
+   rule.format.setFontWeight(settings.syn_FuncWeight);
+   rule.format.setFontItalic(settings.syn_FuncItalic);
+   rule.format.setForeground(settings.syn_FuncText);
    rule.pattern = QRegExp("\\b[A-Za-z0-9_]+(?=\\()");
    highlightingRules.append(rule);
 
    // quoted text
-   rule.format.setForeground(m_struct.syn_QuoteText);
+   rule.format.setFontItalic(settings.syn_QuoteWeight);
+   rule.format.setFontItalic(settings.syn_QuoteItalic);
+   rule.format.setForeground(settings.syn_QuoteText);
    rule.pattern = QRegExp("\".*\"");
    highlightingRules.append(rule);
 
    // single line comment
-   rule.format.setForeground(m_struct.syn_CommentText);   
+   rule.format.setFontItalic(settings.syn_CommentWeight);
+   rule.format.setFontItalic(settings.syn_CommentItalic);
+   rule.format.setForeground(settings.syn_CommentText);
    rule.pattern = QRegExp("//[^\n]*");
    highlightingRules.append(rule);
 
-   multiLineCommentFormat.setForeground(m_struct.syn_MLineText);
+   //rule.format.setFontItalic(settings.syn_MLineWeight);
+   //rule.format.setFontItalic(settings.syn_MLineItalic);
+   //rule.format.setForeground(settings.syn_MLineText);
+   multiLineCommentFormat.setForeground(settings.syn_MLineText);
 
    commentStartExpression = QRegExp("/\\*");
    commentEndExpression   = QRegExp("\\*/");
@@ -154,16 +152,5 @@ void Syntax::highlightBlock(const QString &text)
       startIndex = commentStartExpression.indexIn(text, startIndex + commentLength);
    }
 }
-
-struct SyntaxColors Syntax::get_StructData()
-{
-   return m_struct;
-}
-
-void Syntax::set_StructData(SyntaxColors data)
-{
-   m_struct = data;
-}
-
 
 

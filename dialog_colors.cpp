@@ -23,22 +23,30 @@
 #include "util.h"
 
 #include <QColorDialog>
+#include <QPalette>
+#include <QLineEdit>
 #include <QString>
 #include <QStringList>
 
 Dialog_Colors::Dialog_Colors(MainWindow *from, Syntax *dw)
    : m_ui(new Ui::Dialog_Colors)
 {
-   m_mainWindow = from;
-   m_syntax = dw;
+   m_mainWindow   = from;
+   m_syntaxParser = dw;   
    m_ui->setupUi(this);
+
+   m_struSettings = m_mainWindow->get_StructData();
+   m_syntaxFname  = m_struSettings.pathSyntax + "syn_cpp.txt";
 
    initData();
 
    connect(m_ui->text_TB,     SIGNAL(clicked()), this, SLOT(text_TB())     );
    connect(m_ui->back_TB,     SIGNAL(clicked()), this, SLOT(back_TB())     );
    connect(m_ui->highText_TB, SIGNAL(clicked()), this, SLOT(highText_TB()) );
-   connect(m_ui->highBack_TB, SIGNAL(clicked()), this, SLOT(highBack_TB()) );
+   connect(m_ui->highBack_TB, SIGNAL(clicked()), this, SLOT(highBack_TB()) );   
+
+   connect(m_ui->key_TB,      SIGNAL(clicked()), this, SLOT(key_TB())      );
+   connect(m_ui->type_TB,     SIGNAL(clicked()), this, SLOT(type_TB())     );
 
    connect(m_ui->save_PB,   SIGNAL(clicked()), this, SLOT(Save()));
    connect(m_ui->cancel_PB, SIGNAL(clicked()), this, SLOT(Cancel()));
@@ -49,81 +57,56 @@ Dialog_Colors::~Dialog_Colors()
    delete m_ui;
 }
 
-void Dialog_Colors::colorBox(QLineEdit field, QColor color)
+void Dialog_Colors::colorBox(QLineEdit *field, QColor color)
 {
    QPalette temp;
 
-   temp = m_ui->text_Color->palette();          // adjust here
-   temp.setColor(QPalette::Base, m_struSettings.colorText);
-   m_ui->text_Color->setPalette(temp);
+   temp = field->palette();
+   temp.setColor(QPalette::Base, color);
+   field->setPalette(temp);
 }
 
 void Dialog_Colors::initData()
 {
    QPalette temp;   
-   m_struSettings = m_mainWindow->get_StructData();
-   m_struSyntax   = m_syntax->get_StructData();
 
    // 1
    m_ui->text_Color->setReadOnly(true);
-   temp = m_ui->text_Color->palette();
-   temp.setColor(QPalette::Base, m_struSettings.colorText);
-   m_ui->text_Color->setPalette(temp);
+   colorBox(m_ui->text_Color, m_struSettings.colorText);
 
    m_ui->back_Color->setReadOnly(true);
-   temp = m_ui->back_Color->palette();
-   temp.setColor(QPalette::Base, m_struSettings.colorBackground);
-   m_ui->back_Color->setPalette(temp);
+   colorBox(m_ui->back_Color, m_struSettings.colorBack);
 
    m_ui->highText_Color->setReadOnly(true);
-   temp = m_ui->highText_Color->palette();
-   temp.setColor(QPalette::Base, m_struSettings.colorHighText);
-   m_ui->highText_Color->setPalette(temp);
+   colorBox(m_ui->highText_Color, m_struSettings.colorHighText);
 
    m_ui->highBack_Color->setReadOnly(true);
-   temp = m_ui->highBack_Color->palette();
-   temp.setColor(QPalette::Base, m_struSettings.colorHighBackground);
-   m_ui->highBack_Color->setPalette(temp);
+   colorBox(m_ui->highBack_Color, m_struSettings.colorHighBack);
 
    // 2
    m_ui->key_Color->setReadOnly(true);
-   temp = m_ui->key_Color->palette();
-   temp.setColor(QPalette::Base, m_struSyntax.syn_KeyText);
-   m_ui->key_Color->setPalette(temp);
+   colorBox(m_ui->key_Color, m_struSettings.syn_KeyText);
 
    m_ui->type_Color->setReadOnly(true);
-   temp = m_ui->type_Color->palette();
-   temp.setColor(QPalette::Base, m_struSyntax.syn_TypeText);
-   m_ui->type_Color->setPalette(temp);
+   colorBox(m_ui->type_Color, m_struSettings.syn_TypeText);
 
    m_ui->class_Color->setReadOnly(true);
-   temp = m_ui->class_Color->palette();
-   temp.setColor(QPalette::Base, m_struSyntax.syn_ClassText);
-   m_ui->class_Color->setPalette(temp);
+   colorBox(m_ui->class_Color, m_struSettings.syn_ClassText);
 
    m_ui->func_Color->setReadOnly(true);
-   temp = m_ui->func_Color->palette();
-   temp.setColor(QPalette::Base, m_struSyntax.syn_FuncText);
-   m_ui->func_Color->setPalette(temp);
+   colorBox(m_ui->func_Color, m_struSettings.syn_FuncText);
 
    m_ui->quote_Color->setReadOnly(true);
-   temp = m_ui->quote_Color->palette();
-   temp.setColor( QPalette::Base, m_struSyntax.syn_QuoteText);
-   m_ui->quote_Color->setPalette(temp);
+   colorBox(m_ui->quote_Color, m_struSettings.syn_QuoteText);
 
    m_ui->comment_Color->setReadOnly(true);
-   temp = m_ui->comment_Color->palette();
-   temp.setColor( QPalette::Base, m_struSyntax.syn_CommentText);
-   m_ui->comment_Color->setPalette(temp);
+   colorBox(m_ui->comment_Color, m_struSettings.syn_CommentText);
 
    m_ui->mline_Color->setReadOnly(true);
-   temp = m_ui->mline_Color->palette();
-   temp.setColor( QPalette::Base, m_struSyntax.syn_MLineText);
-   m_ui->mline_Color->setPalette(temp);
+   colorBox(m_ui->mline_Color, m_struSettings.syn_MLineText);
 
-   //
-   QString synFName = m_struSettings.syntaxPath + "syn_cpp.txt";
-   m_syntax = new Syntax(m_ui->sample->document(), synFName );
+   // 3
+   m_syntaxParser = new Syntax(m_ui->sample->document(), m_syntaxFname, m_struSettings);
 }
 
 void Dialog_Colors::Save()
@@ -135,35 +118,35 @@ void Dialog_Colors::Save()
    m_struSettings.colorText = temp.color(QPalette::Base);
 
    temp = m_ui->back_Color->palette();
-   m_struSettings.colorBackground = temp.color(QPalette::Base);
+   m_struSettings.colorBack = temp.color(QPalette::Base);
 
    temp = m_ui->highText_Color->palette();
    m_struSettings.colorHighText = temp.color(QPalette::Base);
 
    temp = m_ui->highBack_Color->palette();
-   m_struSettings.colorHighBackground = temp.color(QPalette::Base);
+   m_struSettings.colorHighBack = temp.color(QPalette::Base);
 
    // 2
    temp = m_ui->key_Color->palette();
-   m_struSyntax.syn_KeyText = temp.color(QPalette::Base);
+   m_struSettings.syn_KeyText = temp.color(QPalette::Base);
 
    temp = m_ui->type_Color->palette();
-   m_struSyntax.syn_TypeText = temp.color(QPalette::Base);
+   m_struSettings.syn_TypeText = temp.color(QPalette::Base);
 
    temp = m_ui->class_Color->palette();
-   m_struSyntax.syn_ClassText = temp.color(QPalette::Base);
+   m_struSettings.syn_ClassText = temp.color(QPalette::Base);
 
    temp = m_ui->func_Color->palette();
-   m_struSyntax.syn_FuncText = temp.color(QPalette::Base);
+   m_struSettings.syn_FuncText = temp.color(QPalette::Base);
 
    temp = m_ui->quote_Color->palette();
-   m_struSyntax.syn_QuoteText = temp.color(QPalette::Base);
+   m_struSettings.syn_QuoteText = temp.color(QPalette::Base);
 
    temp = m_ui->comment_Color->palette();
-   m_struSyntax.syn_CommentText = temp.color(QPalette::Base);
+   m_struSettings.syn_CommentText = temp.color(QPalette::Base);
 
    temp = m_ui->mline_Color->palette();
-   m_struSyntax.syn_MLineText = temp.color(QPalette::Base);
+   m_struSettings.syn_MLineText = temp.color(QPalette::Base);
 
    this->done(QDialog::Accepted);
 }
@@ -191,48 +174,120 @@ void Dialog_Colors::text_TB()
    m_struSettings.colorText = pickColor(color);
 
    //
-   QPalette temp = m_ui->text_Color->palette();
-   temp.setColor( QPalette::Base, m_struSettings.colorText);
-   m_ui->text_Color->setPalette(temp);
+   colorBox(m_ui->text_Color, m_struSettings.colorText);
 
    //
+   QPalette temp;
    temp = m_ui->sample->palette();
    temp.setColor(QPalette::Text, m_struSettings.colorText);
-   temp.setColor(QPalette::Base, m_struSettings.colorBackground);
+   temp.setColor(QPalette::Base, m_struSettings.colorBack);
    m_ui->sample->setPalette(temp);
-
 }
 
 void Dialog_Colors::back_TB()
 {
-   QColor color = m_struSettings.colorBackground;
-   m_struSettings.colorBackground = pickColor(color);
+   QColor color = m_struSettings.colorBack;
+   m_struSettings.colorBack = pickColor(color);
 
    //
-   QPalette temp = m_ui->back_Color->palette();
-   temp.setColor( QPalette::Base, m_struSettings.colorBackground);
-   m_ui->back_Color->setPalette(temp);
+   colorBox(m_ui->back_Color, m_struSettings.colorBack);
 
    //
+   QPalette temp;
    temp = m_ui->sample->palette();
    temp.setColor(QPalette::Text, m_struSettings.colorText);
-   temp.setColor(QPalette::Base, m_struSettings.colorBackground);
+   temp.setColor(QPalette::Base, m_struSettings.colorBack);
    m_ui->sample->setPalette(temp);
 }
 
 void Dialog_Colors::highText_TB()
 {
+   QColor color = m_struSettings.colorHighText;
+   m_struSettings.colorHighText = pickColor(color);
+
+   //
+   colorBox(m_ui->highText_Color, m_struSettings.colorHighText);
+   m_syntaxParser = new Syntax(m_ui->sample->document(), m_syntaxFname, m_struSettings);
 }
 
 void Dialog_Colors::highBack_TB()
 {
-   QColor color = m_struSettings.colorHighBackground;
-   m_struSettings.colorHighBackground = pickColor(color);
+   QColor color = m_struSettings.colorHighBack;
+   m_struSettings.colorHighBack = pickColor(color);
 
    //
-   QPalette temp = m_ui->highBack_Color->palette();
-   temp.setColor( QPalette::Base, m_struSettings.colorHighBackground);
-   m_ui->highBack_Color->setPalette(temp);
+   colorBox(m_ui->highBack_Color, m_struSettings.colorHighBack);
+   m_syntaxParser = new Syntax(m_ui->sample->document(), m_syntaxFname, m_struSettings);
+}
+
+void Dialog_Colors::key_TB()
+{
+   QColor color = m_struSettings.syn_KeyText;
+   m_struSettings.syn_KeyText = pickColor(color);
+
+   //
+   colorBox(m_ui->key_Color, m_struSettings.syn_KeyText);
+   m_syntaxParser = new Syntax(m_ui->sample->document(), m_syntaxFname, m_struSettings);
+}
+
+void Dialog_Colors::type_TB()
+{
+   QColor color = m_struSettings.syn_TypeText;
+   m_struSettings.syn_TypeText = pickColor(color);
+
+   //
+   colorBox(m_ui->type_Color, m_struSettings.syn_TypeText);
+   m_syntaxParser = new Syntax(m_ui->sample->document(), m_syntaxFname, m_struSettings);
+}
+
+void Dialog_Colors::class_TB()
+{
+   QColor color = m_struSettings.syn_ClassText;
+   m_struSettings.syn_ClassText = pickColor(color);
+
+   //
+   colorBox(m_ui->class_Color, m_struSettings.syn_ClassText);
+   m_syntaxParser = new Syntax(m_ui->sample->document(), m_syntaxFname, m_struSettings);
+}
+
+void Dialog_Colors::func_TB()
+{
+   QColor color = m_struSettings.syn_FuncText;
+   m_struSettings.syn_FuncText = pickColor(color);
+
+   //
+   colorBox(m_ui->func_Color, m_struSettings.syn_FuncText);
+   m_syntaxParser = new Syntax(m_ui->sample->document(), m_syntaxFname, m_struSettings);
+}
+
+void Dialog_Colors::quote_TB()
+{
+   QColor color = m_struSettings.syn_QuoteText;
+   m_struSettings.syn_QuoteText = pickColor(color);
+
+   //
+   colorBox(m_ui->quote_Color, m_struSettings.syn_QuoteText);
+   m_syntaxParser = new Syntax(m_ui->sample->document(), m_syntaxFname, m_struSettings);
+}
+
+void Dialog_Colors::comment_TB()
+{
+   QColor color = m_struSettings.syn_CommentText;
+   m_struSettings.syn_CommentText = pickColor(color);
+
+   //
+   colorBox(m_ui->comment_Color, m_struSettings.syn_CommentText);
+   m_syntaxParser = new Syntax(m_ui->sample->document(), m_syntaxFname, m_struSettings);
+}
+
+void Dialog_Colors::mline_TB()
+{
+   QColor color = m_struSettings.syn_MLineText;
+   m_struSettings.syn_MLineText = pickColor(color);
+
+   //
+   colorBox(m_ui->mline_Color, m_struSettings.syn_MLineText);
+   m_syntaxParser = new Syntax(m_ui->sample->document(), m_syntaxFname, m_struSettings);
 }
 
 void Dialog_Colors::Cancel()
@@ -243,9 +298,4 @@ void Dialog_Colors::Cancel()
 struct Settings Dialog_Colors::get_Colors()
 {
    return m_struSettings;
-}
-
-struct SyntaxColors Dialog_Colors::get_Syntax()
-{
-   return m_struSyntax;
 }

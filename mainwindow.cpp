@@ -33,22 +33,16 @@ MainWindow::MainWindow()
    : m_ui(new Ui::MainWindow)
 {
    m_ui->setupUi(this);
-   setWindowFilePath("untitled.txt"); 
+   setWindowFilePath("untitled.txt");
 
-   if ( ! readCfg()  ) {
-      csError(tr("Settings File"), tr("Unable to locate or open the settings file."));
+   if ( ! json_Read()  ) {
+      csError(tr("Settings File"), tr("Unable to locate or open the Settings file."));
    }
 
-   // move to xml  BROOM
-   m_struct.syntaxPath = "z:\\Diamond\\source\\syntax\\";
-
-   m_highlighter = 0;
-   m_priorPath   = QDir::currentPath();
-   m_struct.isLineMode = true;
+   m_syntaxParser = 0;
 
    // remaining methods must be done after readCfg()
-   m_tabWidget = new QTabWidget;   
-   m_tabWidget->setFont(QFont("Verdana,16,-1,5,50,0,0,0,0,0"));
+   m_tabWidget = new QTabWidget;      
 
    m_tabWidget->setTabsClosable(true);
    m_tabWidget->setMovable(true);
@@ -95,7 +89,7 @@ void MainWindow::open()
 
       QString selectedFilter;
       QString fileName = QFileDialog::getOpenFileName(this, tr("Select File"),
-            m_priorPath, tr("All Files (*)"), &selectedFilter, options);
+            m_struct.pathPrior, tr("All Files (*)"), &selectedFilter, options);
 
       if (! fileName.isEmpty()) {         
          loadFile(fileName, true);
@@ -317,8 +311,8 @@ void MainWindow::caseCap()
 
 void MainWindow::insertDate()
 {   
-   QDate date = QDate::currentDate();
-   QString temp = date.toString(m_struct.dateFormat);
+   QDate date   = QDate::currentDate();
+   QString temp = date.toString(m_struct.formatDate);
 
    m_textEdit->insertPlainText(temp);
 }
@@ -367,13 +361,13 @@ void MainWindow::columnMode()
       // on
       m_struct.isLineMode = false;
 
-    } else {
+   } else {
       // off
       m_struct.isLineMode = true;
 
-    }
+   }
 
-   // save to XML here
+   json_Write(COLUMN_MODE);
    setColMode();
 }
 
@@ -483,18 +477,18 @@ void MainWindow::lineHighlight()
 
    if (m_ui->actionLine_Highlight->isChecked()) {
       // on
-      lineColor = m_struct.colorHighBackground;
+      lineColor = m_struct.colorHighBack;
 
-      m_struct.showlineHighlight = true;
-      // save to XML;
+      m_struct.showLineHighlight = true;      
 
    } else  {
       // off
-      lineColor = m_struct.colorBackground;
+      lineColor = m_struct.colorBack;
 
-      m_struct.showlineHighlight = false;
-      // save to XML;
+      m_struct.showLineHighlight = false;
    }
+
+   json_Write(SHOW_LINEHIGHLIGHT);
 
    selection.format.setBackground(lineColor);
    selection.format.setProperty(QTextFormat::FullWidthSelection, true);
@@ -509,16 +503,16 @@ void MainWindow::lineNumbers()
 {   
    if (m_ui->actionLine_Numbers->isChecked()) {
       //on
-      m_struct.showlineNum = true;   
+      m_struct.showLineNumbers = true;
 
    } else {
       // on
-      m_struct.showlineNum = false;
+      m_struct.showLineNumbers = false;
 
    }
 
-   // save to XML here
-   m_textEdit->setShowLineNum(m_struct.showlineNum);
+   json_Write(SHOW_LINENUMBERS);
+   m_textEdit->setShowLineNum(m_struct.showLineNumbers);
 }
 
 void MainWindow::showSpaces()
@@ -727,36 +721,30 @@ void MainWindow::spellCheck()
 void MainWindow::setColors()
 {
    // save the old highlight color
-   QColor old_colorHighlight = m_struct.colorHighBackground;
+   QColor old_color = m_struct.colorHighBack;
 
    //
-   Dialog_Colors *dw = new Dialog_Colors(this, m_highlighter);
+   Dialog_Colors *dw = new Dialog_Colors(this, m_syntaxParser);
    int result = dw->exec();
 
    if (result = QDialog::Accepted) {
 
-      // update Settings
-      m_struct = dw->get_Colors();
+      // update colors in settings structure
+      m_struct = dw->get_Colors();      
 
-      // update SyntaxColors
-      struct SyntaxColors tempSyntax = dw->get_Syntax();
-      m_highlighter->set_StructData(tempSyntax);
-
-/*
-      if (m_struct.showlineHighlight)  {
+      if (m_struct.showLineHighlight)  {
          // clear the old highlight first        
          QTextEdit::ExtraSelection selection;
 
-         selection.format.setBackground(old_colorHighlight);
+         selection.format.setBackground(old_color);
          selection.format.setProperty(QTextFormat::FullWidthSelection, true);
          selection.cursor = m_textEdit->textCursor();
          selection.cursor.clearSelection();
       }
-*/
 
       QPalette temp = m_textEdit->palette();
       temp.setColor(QPalette::Text, m_struct.colorText);
-      temp.setColor(QPalette::Base, m_struct.colorBackground);
+      temp.setColor(QPalette::Base, m_struct.colorBack);
       m_textEdit->setPalette(temp);
 
       //
@@ -771,7 +759,7 @@ void MainWindow::setFont()
 
    if (ok) {
       m_textEdit->setFont(m_struct.font);
-      writeCfg(FONT);
+      json_Write(FONT);
    }
 }
 
@@ -782,15 +770,15 @@ void MainWindow::setOptions()
 
    if ( result = QDialog::Accepted) {
       QString strTemp = dw->get_DateFormat();
-      if ( m_struct.dateFormat != strTemp)  {
-         m_struct.dateFormat = strTemp;
-         writeCfg(DATEFORMAT);
+      if ( m_struct.formatDate != strTemp)  {
+         m_struct.formatDate = strTemp;
+         json_Write(FORMAT_DATE);
       }
 
       int intTemp = dw->get_TabSpacing();
       if ( m_struct.tabSpacing != intTemp)  {
          m_struct.tabSpacing = intTemp;
-         writeCfg(TAB_SPACING);
+         json_Write(TAB_SPACING);
       }
    }
 
@@ -888,13 +876,9 @@ void MainWindow::setScreenColors()
 {
    m_textEdit->setFont(m_struct.font);
 
-   //
-   m_struct.colorText            = QColor(Qt::black);
-   m_struct.colorBackground      = QColor(Qt::white);
-   m_struct.colorHighBackground  = QColor(Qt::yellow).lighter(160);
-
    QPalette temp = m_textEdit->palette();
-   temp.setColor( QPalette::Text, m_struct.colorText);
+   temp.setColor(QPalette::Text, m_struct.colorText);
+   temp.setColor(QPalette::Base, m_struct.colorBack);
    m_textEdit->setPalette(temp);
 }
 
@@ -1012,11 +996,11 @@ void MainWindow::createToggles()
    m_ui->actionSyn_Perl_S->setCheckable(true);
 
    m_ui->actionLine_Highlight->setCheckable(true);
-   m_ui->actionLine_Highlight->setChecked(m_struct.showlineHighlight);
+   m_ui->actionLine_Highlight->setChecked(m_struct.showLineHighlight);
    lineHighlight();
 
    m_ui->actionLine_Numbers->setCheckable(true);
-   m_ui->actionLine_Numbers->setChecked(m_struct.showlineNum);
+   m_ui->actionLine_Numbers->setChecked(m_struct.showLineNumbers);
    lineNumbers();
 
    m_ui->actionColumn_Mode->setCheckable(true);

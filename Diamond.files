@@ -23,7 +23,6 @@ diamond_edit.h
 recent_files.cpp
 util.h
 util.cpp
-settings.cpp
 support.cpp
 hold.cpp
 dialog_get1.h
@@ -45,3 +44,5 @@ diamond_tab.cpp
 dialog_colors.h
 dialog_colors.cpp
 dialog_colors.ui
+json.cpp
+settings.h

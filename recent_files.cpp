@@ -34,13 +34,13 @@ void MainWindow::rf_Open()
          // remove file which did not load
 
          int index;
-         index = rf_List.indexOf(action->text());
+         index = m_rf_List.indexOf(action->text());
 
          if (index >= 0) {
-            rf_List.removeAt(index);
+            m_rf_List.removeAt(index);
 
             // save new list of files
-            writeCfg(RECENTFILE);
+            json_Write(RECENTFILE);
 
             // update actions
             rf_UpdateActions();
@@ -51,7 +51,7 @@ void MainWindow::rf_Open()
 
 void MainWindow::rf_CreateMenus()
 {
-   int cnt = rf_List.count();
+   int cnt = m_rf_List.count();
 
    if (cnt > 0)  {
 
@@ -63,7 +63,7 @@ void MainWindow::rf_CreateMenus()
       for (int i = 0; i < rf_MaxCnt; ++i) {
 
          if (i < cnt)  {
-            tName = rf_List[i];
+            tName = m_rf_List[i];
          } else {
             tName = "file"+QString::number(i);
          }
@@ -84,16 +84,16 @@ void MainWindow::rf_CreateMenus()
 
 void MainWindow::rf_Update()
 {
-   int cnt = rf_List.count();
+   int cnt = m_rf_List.count();
 
    if (cnt >= rf_MaxCnt ) {
-      rf_List.removeFirst();
+      m_rf_List.removeFirst();
    }
 
-   rf_List.append(m_curFile);
+   m_rf_List.append(m_curFile);
 
    // save new list of files
-   writeCfg(RECENTFILE);
+   json_Write(RECENTFILE);
 
    // update actions
    rf_UpdateActions();
@@ -101,12 +101,12 @@ void MainWindow::rf_Update()
 
 void MainWindow::rf_UpdateActions()
 {
-   int cnt = rf_List.count();
+   int cnt = m_rf_List.count();
 
    for (int i = 0; i < rf_MaxCnt; ++i) {
 
      if (i < cnt)  {
-        rf_Actions[i]->setText(rf_List[i]);        
+        rf_Actions[i]->setText(m_rf_List[i]);
         rf_Actions[i]->setVisible(true);
 
      } else {

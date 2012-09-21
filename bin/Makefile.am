@@ -36,10 +36,10 @@ Diamond_SOURCES = \
 	dialog_symbols.cpp \
 	diamond_edit.cpp \
 	diamond_tab.cpp \
+	json.cpp \
 	main.cpp \
     mainwindow.cpp \
-    recent_files.cpp \
-    settings.cpp \
+    recent_files.cpp \    
     syntax.cpp  \
     support.cpp \
     util.cpp
@@ -54,7 +54,7 @@ noinst_HEADERS = \
 	diamond_edit.h \
 	diamond_tab.h \
 	mainwindow.h  \
-	syntax.h  \
+	settings.h \
 	util.h
    
                 
@@ -67,8 +67,10 @@ MOCS = \
 	dialog_symbols.h \
 	diamond_edit.h  \
 	diamond_tab.h \
-	mainwindow.h   \
+	mainwindow.h  \
 	syntax.h
+	
+	
     
     
 Diamond_LDADD=$(patsubst %.h,moc_%.$(OBJEXT),$(MOCS))    

@@ -56,7 +56,7 @@ void Dialog_Options::initData()
    m_ui->dateFormat_CB->addItems(list);
    m_ui->dateFormat_CB->setEditable(false);
 
-   index = m_ui->dateFormat_CB->findText(temp.dateFormat);
+   index = m_ui->dateFormat_CB->findText(temp.formatDate);
    m_ui->dateFormat_CB->setCurrentIndex(index);
 
    //

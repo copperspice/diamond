@@ -22,41 +22,26 @@
 #ifndef SYNTAX_H
 #define SYNTAX_H
 
+#include "settings.h"
+
 #include <QHash>
 #include <QTextCharFormat>
 #include <QPlainTextEdit>
 #include <QSyntaxHighlighter>
-
-struct SyntaxColors {
-   int    syn_KeyWeight;
-   QColor syn_KeyText;
-   int    syn_TypeWeight;
-   QColor syn_TypeText;
-   int    syn_ClassWeight;
-   QColor syn_ClassText;
-   int    syn_FuncWeight;
-   QColor syn_FuncText;
-   QColor syn_LineText;
-   QColor syn_QuoteText;
-   QColor syn_CommentText;
-   QColor syn_MLineText;
-};
+#include <QVector>
 
 class Syntax : public QSyntaxHighlighter
 {
    Q_OBJECT
 
    public:
-      Syntax(QTextDocument *parent, QString synFName);
-      struct SyntaxColors get_StructData();
-      void set_StructData(SyntaxColors data);
+      Syntax(QTextDocument *parent, QString synFName,
+             const struct Settings &settings);
 
    protected:
       void highlightBlock(const QString &text);
 
    private:
-      struct SyntaxColors m_struct;
-
       struct HighlightingRule
       {
          QRegExp pattern;
