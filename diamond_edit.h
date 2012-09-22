@@ -29,6 +29,7 @@
 #include <QSize>
 #include <QWidget>
 
+class MainWindow;
 class LineNumberArea;
 
 class DiamondTextEdit : public QPlainTextEdit
@@ -36,21 +37,24 @@ class DiamondTextEdit : public QPlainTextEdit
    Q_OBJECT
 
    public:
-      DiamondTextEdit();
+      DiamondTextEdit(MainWindow *from);
 
       void lineNum_PaintEvent(QPaintEvent *event);
       int lineNum_Width();
 
-      void setShowLineNum(bool data);
-      void setLineMode(bool data);
+      void set_ShowLineNum(bool data);
+      void set_ColumnMode(bool data);
 
    protected:
       void resizeEvent(QResizeEvent *event);
+      void contextMenuEvent(QContextMenuEvent *event);
 
    private:
+      MainWindow *m_mainWindow;
       QWidget *m_lineNumArea;
+
       bool m_showlineNum;
-      bool m_isLineMode;
+      bool m_isColumnMode;
 
       void showNotDone(QString item);
 

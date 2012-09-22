@@ -67,3 +67,7 @@ void csError(QString title, QString msg)
 
 
 
+//   printf("%s\n",  qPrintable(string) );
+
+
+

@@ -9,7 +9,7 @@ struct Settings {
    int     tabSpacing;
    bool    showLineHighlight;
    bool    showLineNumbers;
-   bool    isLineMode;
+   bool    isColumnMode;
    QString pathSyntax;
    QString pathPrior;
    QString formatDate;

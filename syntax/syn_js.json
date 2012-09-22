@@ -1,0 +1,12 @@
+{
+   "keywords": [
+        "\\bif\\b",
+        "\\belse\\b",
+        "\\bfor\\b",
+        "\\bin\\b"
+   ],
+   "types": [
+   ],
+   "functions": [
+   ]
+}

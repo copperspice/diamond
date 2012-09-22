@@ -174,7 +174,7 @@ QString CodeColoring ::test(int x, int y)
       </widget>
      </item>
      <item row="4" column="3">
-      <widget class="QCheckBox" name="type_Bold_CB_2">
+      <widget class="QCheckBox" name="func_Bold_CB">
        <property name="minimumSize">
         <size>
          <width>35</width>
@@ -192,7 +192,7 @@ QString CodeColoring ::test(int x, int y)
       </widget>
      </item>
      <item row="4" column="4">
-      <widget class="QCheckBox" name="type_Italic_CB_2">
+      <widget class="QCheckBox" name="func_Italic_CB">
        <property name="minimumSize">
         <size>
          <width>35</width>
@@ -287,7 +287,7 @@ QString CodeColoring ::test(int x, int y)
       </widget>
      </item>
      <item row="5" column="4">
-      <widget class="QCheckBox" name="key_Italic_CB_3">
+      <widget class="QCheckBox" name="quote_Italic_CB">
        <property name="minimumSize">
         <size>
          <width>35</width>
@@ -417,7 +417,7 @@ QString CodeColoring ::test(int x, int y)
       </widget>
      </item>
      <item row="3" column="3">
-      <widget class="QCheckBox" name="key_Bold_CB_2">
+      <widget class="QCheckBox" name="class_Bold_CB">
        <property name="minimumSize">
         <size>
          <width>35</width>
@@ -510,7 +510,7 @@ QString CodeColoring ::test(int x, int y)
       </widget>
      </item>
      <item row="6" column="3">
-      <widget class="QCheckBox" name="key_Bold_CB_4">
+      <widget class="QCheckBox" name="comment_Bold_CB">
        <property name="minimumSize">
         <size>
          <width>35</width>
@@ -528,7 +528,7 @@ QString CodeColoring ::test(int x, int y)
       </widget>
      </item>
      <item row="3" column="4">
-      <widget class="QCheckBox" name="key_Italic_CB_2">
+      <widget class="QCheckBox" name="class_Italic_CB">
        <property name="minimumSize">
         <size>
          <width>35</width>
@@ -562,7 +562,7 @@ QString CodeColoring ::test(int x, int y)
       </spacer>
      </item>
      <item row="5" column="3">
-      <widget class="QCheckBox" name="key_Bold_CB_3">
+      <widget class="QCheckBox" name="quote_Bold_CB">
        <property name="minimumSize">
         <size>
          <width>35</width>
@@ -629,7 +629,7 @@ QString CodeColoring ::test(int x, int y)
       </widget>
      </item>
      <item row="6" column="4">
-      <widget class="QCheckBox" name="key_Italic_CB_4">
+      <widget class="QCheckBox" name="comment_Italic_CB">
        <property name="minimumSize">
         <size>
          <width>35</width>
@@ -691,14 +691,14 @@ QString CodeColoring ::test(int x, int y)
       </widget>
      </item>
      <item row="7" column="3">
-      <widget class="QCheckBox" name="checkBox">
+      <widget class="QCheckBox" name="mline_Bold_CB">
        <property name="text">
         <string>Bold</string>
        </property>
       </widget>
      </item>
      <item row="7" column="4">
-      <widget class="QCheckBox" name="checkBox_2">
+      <widget class="QCheckBox" name="mline_Italic_CB">
        <property name="text">
         <string>Italic</string>
        </property>
@@ -1073,20 +1073,20 @@ QString CodeColoring ::test(int x, int y)
   <tabstop>type_Italic_CB</tabstop>
   <tabstop>type_Color</tabstop>
   <tabstop>class_TB</tabstop>
-  <tabstop>key_Bold_CB_2</tabstop>
-  <tabstop>key_Italic_CB_2</tabstop>
+  <tabstop>class_Bold_CB</tabstop>
+  <tabstop>class_Italic_CB</tabstop>
   <tabstop>class_Color</tabstop>
   <tabstop>func_TB</tabstop>
-  <tabstop>type_Bold_CB_2</tabstop>
-  <tabstop>type_Italic_CB_2</tabstop>
+  <tabstop>func_Bold_CB</tabstop>
+  <tabstop>func_Italic_CB</tabstop>
   <tabstop>func_Color</tabstop>
   <tabstop>quote_TB</tabstop>
-  <tabstop>key_Bold_CB_3</tabstop>
-  <tabstop>key_Italic_CB_3</tabstop>
+  <tabstop>quote_Bold_CB</tabstop>
+  <tabstop>quote_Italic_CB</tabstop>
   <tabstop>quote_Color</tabstop>
   <tabstop>comment_TB</tabstop>
-  <tabstop>key_Bold_CB_4</tabstop>
-  <tabstop>key_Italic_CB_4</tabstop>
+  <tabstop>comment_Bold_CB</tabstop>
+  <tabstop>comment_Italic_CB</tabstop>
   <tabstop>comment_Color</tabstop>
   <tabstop>save_PB</tabstop>
   <tabstop>cancel_PB</tabstop>

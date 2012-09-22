@@ -1,0 +1,19 @@
+{
+   "keywords": [
+        "\\binclude\\b",
+        "\\bdefine\\b",
+        "\\belse\\b",
+        "\\bendif\\b",
+        "\\bifdef\\b",
+        "\\bifeq\\b",
+        "\\bifndef\\b",
+        "\\bifneq\\b"
+   ], 
+   "types": [
+   ],
+  "functions": [
+        "\\bdir\\b",
+        "\\bcall\\b",
+        "\\bsuffix\\b",
+   ]
+}

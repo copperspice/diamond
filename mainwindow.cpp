@@ -41,14 +41,12 @@ MainWindow::MainWindow()
 
    m_syntaxParser = 0;
 
-   // remaining methods must be done after readCfg()
+   // remaining methods must be done after jsson_Read
    m_tabWidget = new QTabWidget;      
 
    m_tabWidget->setTabsClosable(true);
    m_tabWidget->setMovable(true);
    setCentralWidget(m_tabWidget);  
-
-   tabNew();
 
    // screen setup
    createShortCuts();      
@@ -57,10 +55,13 @@ MainWindow::MainWindow()
    createToggles();
    createConnections();
 
+   // recent files
    rf_CreateMenus();
 
    //
-   setCurrentFile("");
+   tabNew();
+
+   setStatus_ColMode();
    setStatusBar(tr("Ready"), 0);   
    setUnifiedTitleAndToolBarOnMac(true);            
 }
@@ -77,23 +78,19 @@ void MainWindow::newFile()
 }
 
 void MainWindow::open()
-{
-   bool okClose = querySave();
+{       
+   QFileDialog::Options options;
 
-   if (okClose) {
-      QFileDialog::Options options;
+   if (false)  {  //(Q_OS_DARWIM) {
+      options |= QFileDialog::DontUseNativeDialog;
+   }
 
-      if (false)  {  //(Q_OS_DARWIM) {
-         options |= QFileDialog::DontUseNativeDialog;
-      }
+   QString selectedFilter;
+   QString fileName = QFileDialog::getOpenFileName(this, tr("Select File"),
+         m_struct.pathPrior, tr("All Files (*)"), &selectedFilter, options);
 
-      QString selectedFilter;
-      QString fileName = QFileDialog::getOpenFileName(this, tr("Select File"),
-            m_struct.pathPrior, tr("All Files (*)"), &selectedFilter, options);
-
-      if (! fileName.isEmpty()) {         
-         loadFile(fileName, true);
-      }
+   if (! fileName.isEmpty()) {
+      loadFile(fileName, true);
    }
 }
 
@@ -317,6 +314,14 @@ void MainWindow::insertDate()
    m_textEdit->insertPlainText(temp);
 }
 
+void MainWindow::insertTime()
+{
+   QTime time   = QTime::currentTime();
+   QString temp = time.toString(m_struct.formatTime);
+
+   m_textEdit->insertPlainText(temp);
+}
+
 void MainWindow::insertSymbol()
 {
    Dialog_Symbols *dw = new Dialog_Symbols(this);
@@ -339,10 +344,7 @@ void MainWindow::indentIncr()
    showNotDone("Edit Increase Indect");
 
    //QTextCursor cursor(m_textEdit->textCursor());
-   //QTextBlockFormat bFormat = cursor.blockFormat();
-
-   // csMsg("i did get here", cursor.blockNumber() );
-
+   //QTextBlockFormat bFormat = cursor.blockFormat();   
    //bFormat.setTextIndent(10);
    //cursor.setBlockFormat(bFormat);
    //m_textEdit->setTextCursor(cursor);
@@ -359,16 +361,16 @@ void MainWindow::columnMode()
    // alters cut, copy, paste
    if (m_ui->actionColumn_Mode->isChecked()) {
       // on
-      m_struct.isLineMode = false;
+      m_struct.isColumnMode = true;
 
    } else {
       // off
-      m_struct.isLineMode = true;
+      m_struct.isColumnMode = false;
 
    }
 
-   json_Write(COLUMN_MODE);
-   setColMode();
+   json_Write(COLUMN_MODE);  
+   setStatus_ColMode();
 }
 
 
@@ -469,29 +471,43 @@ void MainWindow::goTop()
 
 // **view
 void MainWindow::lineHighlight()
-{
-   QList<QTextEdit::ExtraSelection> extraSelections;
-   QTextEdit::ExtraSelection selection;
-
-   QColor lineColor;
-
+{   
    if (m_ui->actionLine_Highlight->isChecked()) {
-      // on
-      lineColor = m_struct.colorHighBack;
-
+      // on     
       m_struct.showLineHighlight = true;      
 
    } else  {
       // off
-      lineColor = m_struct.colorBack;
-
       m_struct.showLineHighlight = false;
    }
 
    json_Write(SHOW_LINEHIGHLIGHT);
+   move_lineHighlight();
+}
 
-   selection.format.setBackground(lineColor);
+void MainWindow::move_lineHighlight()
+{
+   QList<QTextEdit::ExtraSelection> extraSelections;
+   QTextEdit::ExtraSelection selection;
+
+   QColor textColor;
+   QColor backColor;
+
+   if (m_struct.showLineHighlight) {
+      // on
+      textColor = m_struct.colorHighText;
+      backColor = m_struct.colorHighBack;
+
+   } else  {
+      // off
+      textColor = m_struct.colorText;
+      backColor = m_struct.colorBack;
+   }
+
+   selection.format.setForeground(textColor);
+   selection.format.setBackground(backColor);
    selection.format.setProperty(QTextFormat::FullWidthSelection, true);
+
    selection.cursor = m_textEdit->textCursor();
    selection.cursor.clearSelection();
 
@@ -506,13 +522,13 @@ void MainWindow::lineNumbers()
       m_struct.showLineNumbers = true;
 
    } else {
-      // on
+      // off
       m_struct.showLineNumbers = false;
 
    }
 
    json_Write(SHOW_LINENUMBERS);
-   m_textEdit->setShowLineNum(m_struct.showLineNumbers);
+   m_textEdit->set_ShowLineNum(m_struct.showLineNumbers);
 }
 
 void MainWindow::showSpaces()
@@ -720,8 +736,9 @@ void MainWindow::spellCheck()
 // **settings
 void MainWindow::setColors()
 {
-   // save the old highlight color
-   QColor old_color = m_struct.colorHighBack;
+   // save the old colors
+   QColor old_TextColor = m_struct.colorText;
+   QColor old_BackColor = m_struct.colorBack;
 
    //
    Dialog_Colors *dw = new Dialog_Colors(this, m_syntaxParser);
@@ -729,18 +746,25 @@ void MainWindow::setColors()
 
    if (result = QDialog::Accepted) {
 
-      // update colors in settings structure
-      m_struct = dw->get_Colors();      
-
       if (m_struct.showLineHighlight)  {
-         // clear the old highlight first        
+         // clear the old highlight first
+         QList<QTextEdit::ExtraSelection> extraSelections;
          QTextEdit::ExtraSelection selection;
 
-         selection.format.setBackground(old_color);
+         selection.format.setForeground(old_TextColor);
+         selection.format.setBackground(old_BackColor);
          selection.format.setProperty(QTextFormat::FullWidthSelection, true);
+
          selection.cursor = m_textEdit->textCursor();
          selection.cursor.clearSelection();
+
+         extraSelections.append(selection);
+         m_textEdit->setExtraSelections(extraSelections);
       }
+
+      // update colors in settings structure
+      m_struct = dw->get_Colors();
+      json_Write(COLORS);
 
       QPalette temp = m_textEdit->palette();
       temp.setColor(QPalette::Text, m_struct.colorText);
@@ -748,7 +772,8 @@ void MainWindow::setColors()
       m_textEdit->setPalette(temp);
 
       //
-      lineHighlight();
+      setSyntax();
+      move_lineHighlight();
    }
 }
 
@@ -775,6 +800,12 @@ void MainWindow::setOptions()
          json_Write(FORMAT_DATE);
       }
 
+      strTemp = dw->get_TimeFormat();
+      if ( m_struct.formatTime != strTemp)  {
+         m_struct.formatTime = strTemp;
+         json_Write(FORMAT_TIME);
+      }
+
       int intTemp = dw->get_TabSpacing();
       if ( m_struct.tabSpacing != intTemp)  {
          m_struct.tabSpacing = intTemp;
@@ -790,17 +821,41 @@ void MainWindow::setOptions()
 void MainWindow::tabNew()
 {
    DiamondTextEdit *textEdit;
-   textEdit = new DiamondTextEdit;
+   textEdit = new DiamondTextEdit(this);
 
    const QString label = "untitled.txt";
    int index = m_tabWidget->addTab(textEdit, label);
 
-   //
-   m_textEdit = textEdit;   
-   setScreenColors();
-
    // select new tab
    m_tabWidget->setCurrentIndex(index);
+
+   //
+   m_textEdit = textEdit;   
+   m_textEdit->setFocus();
+
+   setCurrentFile("");
+   setScreenColors();
+
+
+/*    BROOM - MUST FIX THIS
+   // edit
+   connect(m_ui->actionUndo,   SIGNAL(triggered()), m_textEdit, SLOT(undo()));
+   connect(m_ui->actionRedo,   SIGNAL(triggered()), m_textEdit, SLOT(redo()));
+   connect(m_ui->actionCut,    SIGNAL(triggered()), m_textEdit, SLOT(cut()));
+   connect(m_ui->actionCopy,   SIGNAL(triggered()), m_textEdit, SLOT(copy()));
+   connect(m_ui->actionPaste,  SIGNAL(triggered()), m_textEdit, SLOT(paste()));
+*/
+
+   //
+   connect(m_textEdit->document(), SIGNAL(contentsChanged()), this, SLOT(documentWasModified()));
+
+   connect(m_textEdit, SIGNAL(cursorPositionChanged()), this, SLOT(move_lineHighlight()));
+   connect(m_textEdit, SIGNAL(cursorPositionChanged()), this, SLOT(setStatus_LineCol()));
+
+   connect(m_textEdit, SIGNAL(undoAvailable(bool)), m_ui->actionUndo, SLOT(setEnabled(bool)));
+   connect(m_textEdit, SIGNAL(redoAvailable(bool)), m_ui->actionRedo, SLOT(setEnabled(bool)));
+   connect(m_textEdit, SIGNAL(copyAvailable(bool)), m_ui->actionCut,  SLOT(setEnabled(bool)));
+   connect(m_textEdit, SIGNAL(copyAvailable(bool)), m_ui->actionCopy, SLOT(setEnabled(bool)));
 }
 
 void MainWindow::tabClose()
@@ -818,7 +873,7 @@ void MainWindow::tabClose()
       } else {
          // may need to delete the widget         
          int index = m_tabWidget->currentIndex();
-         m_tabWidget->removeTab(index);
+         m_tabWidget->removeTab(index);                  
       }
    }
 }
@@ -835,11 +890,16 @@ void MainWindow::tabChanged(int index)
 
       // retrieve fullName for status bar
       m_curFile = m_tabWidget->tabWhatsThis(index);
-      setStatusFName(m_curFile);
 
-      // adjust in case they changed
-      lineNumbers();
-      lineHighlight();
+      setStatus_LineCol();
+      setStatus_FName(m_curFile);
+
+      setWindowFilePath(m_curFile);
+
+      m_textEdit->set_ColumnMode(m_struct.isColumnMode);
+      m_textEdit->set_ShowLineNum(m_struct.showLineNumbers);
+
+      move_lineHighlight();
       setSyntax();
    }
 }
@@ -898,15 +958,7 @@ void MainWindow::createConnections()
    connect(m_ui->actionPrint,          SIGNAL(triggered()), this, SLOT(print()));
    connect(m_ui->actionPrint_Preview,  SIGNAL(triggered()), this, SLOT(printPreview()));
    connect(m_ui->actionPrint_Pdf,      SIGNAL(triggered()), this, SLOT(printPdf()));
-
    connect(m_ui->actionExit,           SIGNAL(triggered()), this, SLOT(close()));
-
-   // edit   
-   connect(m_ui->actionUndo,           SIGNAL(triggered()), m_textEdit, SLOT(undo()));
-   connect(m_ui->actionRedo,           SIGNAL(triggered()), m_textEdit, SLOT(redo()));
-   connect(m_ui->actionCut,            SIGNAL(triggered()), m_textEdit, SLOT(cut()));
-   connect(m_ui->actionCopy,           SIGNAL(triggered()), m_textEdit, SLOT(copy()));
-   connect(m_ui->actionPaste,          SIGNAL(triggered()), m_textEdit, SLOT(paste()));
 
    connect(m_ui->actionSelect_All,     SIGNAL(triggered()), this, SLOT(selectAll()));
    connect(m_ui->actionSelect_Block,   SIGNAL(triggered()), this, SLOT(selectBlock()));
@@ -917,6 +969,7 @@ void MainWindow::createConnections()
    connect(m_ui->actionCase_Cap,       SIGNAL(triggered()), this, SLOT(caseCap()));
 
    connect(m_ui->actionInsert_Date,    SIGNAL(triggered()), this, SLOT(insertDate()));
+   connect(m_ui->actionInsert_Time,    SIGNAL(triggered()), this, SLOT(insertTime()));
    connect(m_ui->actionInsert_Symbol,  SIGNAL(triggered()), this, SLOT(insertSymbol()));
    connect(m_ui->actionIndent_Incr,    SIGNAL(triggered()), this, SLOT(indentIncr()));
    connect(m_ui->actionIndent_Decr,    SIGNAL(triggered()), this, SLOT(indentDecr()));
@@ -997,36 +1050,21 @@ void MainWindow::createToggles()
 
    m_ui->actionLine_Highlight->setCheckable(true);
    m_ui->actionLine_Highlight->setChecked(m_struct.showLineHighlight);
-   lineHighlight();
 
    m_ui->actionLine_Numbers->setCheckable(true);
-   m_ui->actionLine_Numbers->setChecked(m_struct.showLineNumbers);
-   lineNumbers();
+   m_ui->actionLine_Numbers->setChecked(m_struct.showLineNumbers);  
 
    m_ui->actionColumn_Mode->setCheckable(true);
-   m_ui->actionColumn_Mode->setChecked(! m_struct.isLineMode);
-   columnMode();
+   m_ui->actionColumn_Mode->setChecked(m_struct.isColumnMode);  
 
    m_ui->actionSpell_Check->setCheckable(true);
    m_ui->actionSpell_Check->setChecked(false);
-
-   // signals for the document
-   connect(m_textEdit->document(), SIGNAL(contentsChanged()), this, SLOT(documentWasModified()));
-
-   //
-   connect(m_textEdit, SIGNAL(cursorPositionChanged()), this, SLOT(lineHighlight()));
-   connect(m_textEdit, SIGNAL(cursorPositionChanged()), this, SLOT(setLineCol()));
 
    //
    m_ui->actionUndo->setEnabled(false);
    m_ui->actionRedo->setEnabled(false);
    m_ui->actionCut->setEnabled(false);
    m_ui->actionCopy->setEnabled(false);
-
-   connect(m_textEdit, SIGNAL(undoAvailable(bool)), m_ui->actionUndo, SLOT(setEnabled(bool)));
-   connect(m_textEdit, SIGNAL(redoAvailable(bool)), m_ui->actionRedo, SLOT(setEnabled(bool)));
-   connect(m_textEdit, SIGNAL(copyAvailable(bool)), m_ui->actionCut,  SLOT(setEnabled(bool)));
-   connect(m_textEdit, SIGNAL(copyAvailable(bool)), m_ui->actionCopy, SLOT(setEnabled(bool)));
 
    //
    connect(m_tabWidget, SIGNAL(currentChanged(int)),    this, SLOT(tabChanged(int)));
@@ -1111,14 +1149,12 @@ void MainWindow::createToolBars()
 }
 
 void MainWindow::createStatusBar()
-{
+{   
    m_statusLine = new QLabel("", this);
-   //m_statusLine->setFrameStyle(QFrame::Panel| QFrame::Sunken);
-   setLineCol();
+   //m_statusLine->setFrameStyle(QFrame::Panel| QFrame::Sunken);   
 
    m_statusMode = new QLabel("", this);
-   //m_statusMode->setFrameStyle(QFrame::Panel | QFrame::Sunken);
-   setColMode();
+   //m_statusMode->setFrameStyle(QFrame::Panel | QFrame::Sunken);   
 
    m_statusName = new QLabel("", this);
    //m_statusName->setFrameStyle(QFrame::Panel | QFrame::Sunken);

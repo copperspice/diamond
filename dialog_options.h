@@ -36,6 +36,7 @@ class Dialog_Options : public QDialog
       Dialog_Options(MainWindow *from);
       ~Dialog_Options();
       QString get_DateFormat();
+      QString get_TimeFormat();
       int get_TabSpacing();
 
    private:

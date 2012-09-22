@@ -86,6 +86,9 @@ bool MainWindow::loadFile(const QString &fileName, bool addNewTab)
 
    if (addNewTab) {
       tabNew();
+
+      m_struct.pathPrior = pathName(fileName);
+      json_Write(PATH_PRIOR);
    }
 
    QString fileData = QString::fromUtf8(temp);
@@ -104,9 +107,9 @@ struct Settings MainWindow::get_StructData()
    return m_struct;
 }
 
-QString MainWindow::pathName() const
+QString MainWindow::pathName(QString fileName) const
 {
-   return QFileInfo(m_curFile).path();
+   return QFileInfo(fileName).path();
 }
 
 bool MainWindow::querySave()
@@ -152,6 +155,7 @@ bool MainWindow::saveFile(const QString &fileName)
    QApplication::restoreOverrideCursor();
 
    setCurrentFile(fileName);
+
    setStatusBar(tr("File saved"), 2000);
    return true;
 }
@@ -192,18 +196,18 @@ void MainWindow::setSyntax()
       }
    }
 
-   QString synFName = m_struct.pathSyntax + "syn_"+ suffix + ".txt";
+   QString synFName = m_struct.pathSyntax + "syn_"+ suffix + ".json";
 
    if (! QFile::exists(synFName)) {
-      csError(tr("Syntax Highlighting"), tr("Syntax highlighting file was not found: \n\n") + synFName  + "  ");
+      // csError(tr("Syntax Highlighting"), tr("Syntax highlighting file was not found: \n\n") + synFName  + "  ");
 
       // use default
       suffix = "txt";
-      synFName = m_struct.pathSyntax + "syn_txt.txt";
+      synFName = m_struct.pathSyntax + "syn_txt.json";
    }
 
    if (! QFile::exists(synFName)) {
-      csError(tr("Syntax Highlighting"), tr("Syntax highlighting file was not found: \n\n") + synFName  + "  ");
+      // csError(tr("Syntax Highlighting"), tr("Syntax highlighting file was not found: \n\n") + synFName  + "  ");
       setSynType(SYN_NONE);
 
    } else {
@@ -252,47 +256,47 @@ void MainWindow::forceSyntax(SyntaxTypes data)
 
    switch (data)  {
       case SYN_C:
-         synFName = m_struct.pathSyntax + "syn_cpp.txt";
+         synFName = m_struct.pathSyntax + "syn_cpp.json";
          break;
 
       case SYN_CLIPPER:
-         synFName = m_struct.pathSyntax + "syn_clipper.txt";
+         synFName = m_struct.pathSyntax + "syn_clipper.json";
          break;
 
       case SYN_CSS:
-         synFName = m_struct.pathSyntax + "syn_css.txt";
+         synFName = m_struct.pathSyntax + "syn_css.json";
          break;
 
       case SYN_DOX:
-         synFName = m_struct.pathSyntax+ "syn_dox.txt";
+         synFName = m_struct.pathSyntax+ "syn_dox.json";
          break;
 
       case SYN_HTML:
-         synFName = m_struct.pathSyntax + "syn_html.txt";
+         synFName = m_struct.pathSyntax + "syn_html.json";
          break;
 
       case SYN_JAVA:
-         synFName = m_struct.pathSyntax + "syn_java.txt";
+         synFName = m_struct.pathSyntax + "syn_java.json";
          break;
 
       case SYN_JS:
-         synFName = m_struct.pathSyntax + "syn_js.txt";
+         synFName = m_struct.pathSyntax + "syn_js.json";
          break;
 
       case SYN_MAKE:
-        synFName = m_struct.pathSyntax + "syn_make.txt";
+        synFName = m_struct.pathSyntax + "syn_make.json";
          break;
 
       case SYN_TEXT:
-         synFName = m_struct.pathSyntax + "syn_txt.txt";
+         synFName = m_struct.pathSyntax + "syn_txt.json";
          break;
 
       case SYN_SHELL_S:
-         synFName = m_struct.pathSyntax + "syn_sh.txt";
+         synFName = m_struct.pathSyntax + "syn_sh.json";
          break;
 
       case SYN_PERL_S:
-         synFName = m_struct.pathSyntax + "syn_pl.txt";
+         synFName = m_struct.pathSyntax + "syn_pl.json";
          break;
    }
 
@@ -330,20 +334,17 @@ void MainWindow::setCurrentFile(const QString &fileName)
       m_tabWidget->setTabText(index, showName);
       m_tabWidget->setTabWhatsThis(index, showName);
 
-      setStatusFName(showName);
-      //FOO    setSyntax();
+      setStatus_FName(showName);
+      setSyntax();
 
    } else {
-      m_struct.pathPrior = pathName();
-      json_Write(PATH_PRIOR);
-
       // change the tab name
       int index = m_tabWidget->currentIndex();
       m_tabWidget->setTabText(index, strippedName(m_curFile) );
       m_tabWidget->setTabWhatsThis(index, m_curFile);
 
-      setStatusFName(m_curFile);
-      //FOO    setSyntax();
+      setStatus_FName(m_curFile);
+      setSyntax();
 
       bool found = true;
       found = m_rf_List.contains(m_curFile);
@@ -356,26 +357,26 @@ void MainWindow::setCurrentFile(const QString &fileName)
    setWindowFilePath(showName);
 }
 
-void MainWindow::setLineCol()
+void MainWindow::setStatus_LineCol()
 {
-   QTextCursor cursor(m_textEdit->textCursor());
+   QTextCursor cursor(m_textEdit->textCursor());   
    m_statusLine->setText(" Line: "  + QString::number(cursor.blockNumber()+1) +
                          "  Col: " + QString::number(cursor.columnNumber()+1) + "  ");
 }
 
-void MainWindow::setColMode()
+void MainWindow::setStatus_ColMode()
 {
-   if (m_struct.isLineMode) {
-      m_statusMode->setText(" Line Mode  ");
-      m_textEdit->setLineMode(true);
+   if (m_struct.isColumnMode) {
+      m_statusMode->setText(" Column Mode  ");    
 
    } else {
-      m_statusMode->setText(" Column Mode  ");
-       m_textEdit->setLineMode(false);
+      m_statusMode->setText(" Line Mode  ");      
    }
+
+   m_textEdit->set_ColumnMode(m_struct.isColumnMode);
 }
 
-void MainWindow::setStatusFName(QString fullName)
+void MainWindow::setStatus_FName(QString fullName)
 {
    m_statusName->setText(" " + fullName + "  ");
 }

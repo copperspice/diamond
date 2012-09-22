@@ -22,48 +22,79 @@
 #include "syntax.h"
 #include "util.h"
 
-#include <QtGui>
-#include <QFile>
 #include <QString>
+#include <QJsonArray>
+#include <QJsonDocument>
+#include <QJsonObject>
+#include <QJsonValue>
 
 Syntax::Syntax(QTextDocument *document, QString synFName, const struct Settings &settings)
    : QSyntaxHighlighter(document)
-{              
-   QFile file(synFName);
-   if (! file.open(QFile::ReadOnly | QFile::Text)) {
-      QString error = tr("Unable to open file %1:\n%2.").arg(synFName).arg(file.errorString());
-      csError(tr("Syntax Highlighting"), error);
+{                 
+   // get existing json data
+   QByteArray data = json_ReadFile(synFName);
+
+   QJsonDocument doc = QJsonDocument::fromJson(data);
+
+   QJsonObject object = doc.object();   
+   QJsonArray list;
+   int cnt;
+
+   bool ignoreCase = object.value("ignore-case").toBool();
+
+   // key
+   QStringList key_Patterns;
+
+   list = object.value("keywords").toArray();
+   cnt = list.count();
+
+   for (int k = 0; k < cnt; k++)  {
+      key_Patterns.append(list.at(k).toString());
    }
 
-   file.seek(0);
-   QByteArray temp = file.readAll();
+   // types
+   QStringList type_Patterns;
 
-   QString fileData = QString::fromUtf8(temp);
-   file.close();  
-   QStringList keywordPatterns = fileData.split("\n");
+   list = object.value("types").toArray();
+   cnt = list.count();
 
-   //
-   QStringList typesPatterns;
-   typesPatterns << "\\bint\\b" << "\\bfloat\\b";
+   for (int k = 0; k < cnt; k++)  {
+      type_Patterns.append(list.at(k).toString());
+   }
+
+   // functions
+   QStringList func_Patterns;
+
+   list = object.value("functions").toArray();
+   cnt = list.count();
+
+   for (int k = 0; k < cnt; k++)  {
+      func_Patterns.append(list.at(k).toString());
+   }
 
    //
    HighlightingRule rule;
 
-   foreach (const QString &pattern, keywordPatterns) {
+   foreach (const QString &pattern, key_Patterns) {
 
       if (pattern.trimmed().isEmpty()) {
          continue;
       }
 
-      // keywords
+      // key
       rule.format.setFontWeight(settings.syn_KeyWeight);
       rule.format.setFontItalic(settings.syn_KeyItalic);
       rule.format.setForeground(settings.syn_KeyText);
       rule.pattern = QRegExp(pattern);
+
+      if (ignoreCase) {
+         rule.pattern.setCaseSensitivity(Qt::CaseInsensitive);
+      }
+
       highlightingRules.append(rule);
    }
 
-   foreach (const QString &pattern, typesPatterns) {
+   foreach (const QString &pattern, type_Patterns) {
 
       if (pattern.trimmed().isEmpty()) {
          continue;
@@ -74,17 +105,41 @@ Syntax::Syntax(QTextDocument *document, QString synFName, const struct Settings 
       rule.format.setFontItalic(settings.syn_TypeItalic);
       rule.format.setForeground(settings.syn_TypeText);
       rule.pattern = QRegExp(pattern);
+
+      if (ignoreCase) {
+         rule.pattern.setCaseSensitivity(Qt::CaseInsensitive);
+      }
+
       highlightingRules.append(rule);
    }
 
-   // class
+   foreach (const QString &pattern, func_Patterns) {
+
+      if (pattern.trimmed().isEmpty()) {
+         continue;
+      }
+
+      // types
+      rule.format.setFontWeight(settings.syn_FuncWeight);
+      rule.format.setFontItalic(settings.syn_FuncItalic);
+      rule.format.setForeground(settings.syn_FuncText);
+      rule.pattern = QRegExp(pattern);
+
+      if (ignoreCase) {
+         rule.pattern.setCaseSensitivity(Qt::CaseInsensitive);
+      }
+
+      highlightingRules.append(rule);
+   }
+
+   // class - Qt Only
    rule.format.setFontWeight(settings.syn_ClassWeight);
    rule.format.setFontItalic(settings.syn_ClassItalic);
    rule.format.setForeground(settings.syn_ClassText);
    rule.pattern = QRegExp("\\bQ[A-Za-z]+\\b");
    highlightingRules.append(rule);
 
-   // functions    
+   // functions
    rule.format.setFontWeight(settings.syn_FuncWeight);
    rule.format.setFontItalic(settings.syn_FuncItalic);
    rule.format.setForeground(settings.syn_FuncText);
@@ -92,30 +147,47 @@ Syntax::Syntax(QTextDocument *document, QString synFName, const struct Settings 
    highlightingRules.append(rule);
 
    // quoted text
-   rule.format.setFontItalic(settings.syn_QuoteWeight);
+   rule.format.setFontWeight(settings.syn_QuoteWeight);
    rule.format.setFontItalic(settings.syn_QuoteItalic);
    rule.format.setForeground(settings.syn_QuoteText);
    rule.pattern = QRegExp("\".*\"");
    highlightingRules.append(rule);
 
    // single line comment
-   rule.format.setFontItalic(settings.syn_CommentWeight);
+   rule.format.setFontWeight(settings.syn_CommentWeight);
    rule.format.setFontItalic(settings.syn_CommentItalic);
    rule.format.setForeground(settings.syn_CommentText);
    rule.pattern = QRegExp("//[^\n]*");
    highlightingRules.append(rule);
 
-   //rule.format.setFontItalic(settings.syn_MLineWeight);
-   //rule.format.setFontItalic(settings.syn_MLineItalic);
-   //rule.format.setForeground(settings.syn_MLineText);
+   multiLineCommentFormat.setFontWeight(settings.syn_MLineWeight);
+   multiLineCommentFormat.setFontItalic(settings.syn_MLineItalic);
    multiLineCommentFormat.setForeground(settings.syn_MLineText);
 
    commentStartExpression = QRegExp("/\\*");
    commentEndExpression   = QRegExp("\\*/");
 }
 
-void Syntax::highlightBlock(const QString &text)
+QByteArray Syntax::json_ReadFile(QString fileName)
 {
+   QByteArray data;
+
+   QFile file(fileName);
+   if (! file.open(QFile::ReadOnly | QFile::Text)) {
+      const QString msg = tr("Unable to open Json Sntax file: ") +  fileName + " : " + file.errorString();
+      csError(tr("Read Json"), msg);
+      return data;
+   }
+
+   file.seek(0);
+   data = file.readAll();
+   file.close();
+
+   return data;
+}
+
+void Syntax::highlightBlock(const QString &text)
+{  
    foreach (const HighlightingRule &rule, highlightingRules) {
       QRegExp expression(rule.pattern);
       int index = expression.indexIn(text);

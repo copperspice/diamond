@@ -85,6 +85,7 @@
     <addaction name="menuAdvanced"/>
     <addaction name="separator"/>
     <addaction name="actionInsert_Date"/>
+    <addaction name="actionInsert_Time"/>
     <addaction name="actionInsert_Symbol"/>
     <addaction name="separator"/>
     <addaction name="actionColumn_Mode"/>
@@ -638,6 +639,11 @@
   <action name="actionSyn_Clipper">
    <property name="text">
     <string>Clipper</string>
+   </property>
+  </action>
+  <action name="actionInsert_Time">
+   <property name="text">
+    <string>Insert Time</string>
    </property>
   </action>
  </widget>

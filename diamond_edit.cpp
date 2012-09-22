@@ -20,15 +20,17 @@
 **************************************************************************/
 
 #include "diamond_edit.h"
+#include "mainwindow.h"
 #include "util.h"
 
 #include <QtGui>
 
-DiamondTextEdit::DiamondTextEdit()
+DiamondTextEdit::DiamondTextEdit(MainWindow *from)
       : QPlainTextEdit()
 {
-   m_showlineNum = false;
-   m_isLineMode  = true;
+   m_mainWindow   = from;
+   m_showlineNum  = false;
+   m_isColumnMode = false;
 
    m_lineNumArea = new LineNumArea(this);
    update_LineNumWidth(0);
@@ -106,51 +108,73 @@ void DiamondTextEdit::resizeEvent(QResizeEvent *e)
 }
 
 
-//
-void DiamondTextEdit::setShowLineNum(bool data)
+// *
+void DiamondTextEdit::contextMenuEvent(QContextMenuEvent *event)
 {
-   m_showlineNum = data;
+   QMenu *menu = new QMenu(this);   
+
+   menu->addAction("Undo",          this, SLOT(undo())  );
+   menu->addAction("Redo",          this, SLOT(redo())  );
+
+   menu->addSeparator();
+   menu->addAction("Cut",           this, SLOT(cut())   );
+   menu->addAction("Copy",          this, SLOT(copy())  );
+   menu->addAction("Paste",         this, SLOT(paste()) );
+
+   menu->addSeparator();
+   menu->addAction("Insert Date",   m_mainWindow, SLOT(insertDate()) );
+   menu->addAction("Insert Time",   m_mainWindow, SLOT(insertTime()) );
+
+   menu->addSeparator();
+   menu->addAction("Select All",    this, SLOT(selectAll()) );
+
+   menu->exec(event->globalPos());
+   delete menu;
 }
 
-void DiamondTextEdit::setLineMode(bool data)
+void DiamondTextEdit::set_ColumnMode(bool data)
 {
-   m_isLineMode = data;
+   m_isColumnMode = data;
+}
+
+void DiamondTextEdit::set_ShowLineNum(bool data)
+{
+   m_showlineNum = data;
 }
 
 //
 void DiamondTextEdit::cut()
 {
-   if (m_isLineMode) {
-      this->cut();
+   if (m_isColumnMode) {
+      // * * *
+      showNotDone("Column Mode CUT");
 
    } else {
-      // * * *
-      showNotDone("Edit Column Mode CUT");
+      QPlainTextEdit::cut();
 
    }
 }
 
 void DiamondTextEdit::copy()
 {
-   if (m_isLineMode) {
-      this->copy();
-
-   } else {
+   if (m_isColumnMode) {
       // * * *
-      showNotDone("Edit Column Mode COPY");
+      showNotDone("Column Mode COPY");
+
+   } else {     
+      QPlainTextEdit::copy();
 
    }
 }
 
 void DiamondTextEdit::paste()
 {
-   if (m_isLineMode) {
-      // this->paste();
-      showNotDone("LINE, paster");
+   if (m_isColumnMode) {
+      showNotDone("Column Mode, PASTE");
 
    } else {
-      // * * *
-      showNotDone("Column, PASTE");
+      QPlainTextEdit::paste();
+
    }
 }
 
@@ -158,5 +182,9 @@ void DiamondTextEdit::showNotDone(QString item)
 {
    csMsg( item + " - this feature has not been implemented.");
 }
+
+
+
+
 
 

@@ -29,6 +29,7 @@
 #include "util.h"
 
 #include <QAction>
+#include <QJsonObject>
 #include <QJsonValue>
 #include <QMenu>
 #include <QMainWindow>
@@ -96,6 +97,7 @@ class MainWindow : public QMainWindow
       void setSynType(SyntaxTypes data);
       void forceSyntax(SyntaxTypes data);
 
+      // create shortcuts, menus, status bar
       void createShortCuts();
       void createToolBars();
       void createStatusBar();
@@ -103,7 +105,8 @@ class MainWindow : public QMainWindow
       void createToggles();
 
       void setStatusBar(QString msg, int timeOut);
-      void setStatusFName(QString name);
+      void setStatus_ColMode();
+      void setStatus_FName(QString name);
       void showNotDone(QString item);
 
       // json
@@ -115,8 +118,9 @@ class MainWindow : public QMainWindow
       QByteArray json_ReadFile();
 
       QString get_SyntaxPath();
-      QString json_GetText();
-      void json_SetText();
+      QColor  json_SetColor(QString values);
+      QString json_GetRGB(QColor color);
+      QJsonObject json_SaveSyntax(QJsonObject object);
 
       // rencent files
       void rf_CreateMenus();
@@ -130,7 +134,7 @@ class MainWindow : public QMainWindow
       bool saveFile(const QString &fileName);
 
       void setCurrentFile(const QString &fileName);
-      QString pathName() const;
+      QString pathName(QString fileName) const;
       QString strippedName(const QString filename);
       QString suffixName() const;
 
@@ -156,6 +160,7 @@ class MainWindow : public QMainWindow
       void caseCap();
 
       void insertDate();
+      void insertTime();
       void insertSymbol();
       void indentIncr();
       void indentDecr();
@@ -171,6 +176,8 @@ class MainWindow : public QMainWindow
       void goTop();
 
       void lineHighlight();
+      void move_lineHighlight();
+
       void lineNumbers();
       void showSpaces();
       void showSpaces_EOL();
@@ -213,8 +220,7 @@ class MainWindow : public QMainWindow
       void documentWasModified();     
       void printPreview(QPrinter *printer);
       void rf_Open();
-      void setLineCol();
-      void setColMode();      
+      void setStatus_LineCol();     
       void tabChanged(int index);
 };
 

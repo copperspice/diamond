@@ -1,0 +1,18 @@
+{
+   "keywords": [
+    "\\belse\\b",
+    "\\bfor\\b",
+    "\\bfunction\\b",
+    "\\bin\\b",
+    "\\belif\\b",
+    "\\bselect\\b",
+    "\\bset\\b",
+    "\\bthen\\b",
+    "\\buntil\\b",
+    "\\bwhile\\b"
+   ],
+   "types": [
+   ],
+   "functions": [
+   ]
+}

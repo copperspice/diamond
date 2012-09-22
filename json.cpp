@@ -93,6 +93,7 @@ bool MainWindow::json_Read()
 
       m_struct.showLineHighlight = object.value("showLineHighlight").toBool();
       m_struct.showLineNumbers   = object.value("showLineNumbers").toBool();
+      m_struct.isColumnMode      = object.value("column-mode").toBool();
 
       //
       m_struct.formatDate = object.value("formatDate").toString();
@@ -109,45 +110,45 @@ bool MainWindow::json_Read()
       }
 
       // colors
-      m_struct.colorText     = QColor( object.value("color-text").toDouble()     );
-      m_struct.colorBack     = QColor( Qt::white);      // object.value("color-back").toDouble()     );
-      m_struct.colorHighText = QColor( object.value("color-highText").toDouble() );
-      m_struct.colorHighBack = QColor( object.value("color-highBack").toDouble() );
+      m_struct.colorText     = json_SetColor(object.value("color-text").toString()    );
+      m_struct.colorBack     = json_SetColor(object.value("color-back").toString()    );
+      m_struct.colorHighText = json_SetColor(object.value("color-highText").toString());
+      m_struct.colorHighBack = json_SetColor(object.value("color-highBack").toString());
 
       list = object.value("syntax-key").toArray();
       m_struct.syn_KeyWeight = list.at(0).toDouble();
       m_struct.syn_KeyItalic = list.at(1).toBool();
-      m_struct.syn_KeyText   = list.at(2).toString();
+      m_struct.syn_KeyText   = json_SetColor(list.at(2).toString());
 
       list = object.value("syntax-type").toArray();
       m_struct.syn_TypeWeight = list.at(0).toDouble();
       m_struct.syn_TypeItalic = list.at(1).toBool();
-      m_struct.syn_TypeText   = list.at(2).toString();
+      m_struct.syn_TypeText   = json_SetColor(list.at(2).toString());
 
       list = object.value("syntax-class").toArray();
       m_struct.syn_ClassWeight = list.at(0).toDouble();
       m_struct.syn_ClassItalic = list.at(1).toBool();
-      m_struct.syn_ClassText   = list.at(2).toString();
+      m_struct.syn_ClassText   = json_SetColor(list.at(2).toString());
 
       list = object.value("syntax-func").toArray();
       m_struct.syn_FuncWeight = list.at(0).toDouble();
       m_struct.syn_FuncItalic = list.at(1).toBool();
-      m_struct.syn_FuncText   = list.at(2).toString();
+      m_struct.syn_FuncText   = json_SetColor(list.at(2).toString());
 
       list = object.value("syntax-quote").toArray();
       m_struct.syn_QuoteWeight = list.at(0).toDouble();
       m_struct.syn_QuoteItalic = list.at(1).toBool();
-      m_struct.syn_QuoteText   = list.at(2).toString();
+      m_struct.syn_QuoteText   = json_SetColor(list.at(2).toString());
 
       list = object.value("syntax-comment").toArray();
       m_struct.syn_CommentWeight = list.at(0).toDouble();
       m_struct.syn_CommentItalic = list.at(1).toBool();
-      m_struct.syn_CommentText   = list.at(2).toString();
+      m_struct.syn_CommentText   = json_SetColor(list.at(2).toString());
 
       list = object.value("syntax-mline").toArray();
       m_struct.syn_MLineWeight = list.at(0).toDouble();
       m_struct.syn_MLineItalic = list.at(1).toBool();
-      m_struct.syn_MLineText   = list.at(2).toString();
+      m_struct.syn_MLineText   = json_SetColor(list.at(2).toString());
 
       // recent files
       list = object.value("recent-files").toArray();
@@ -196,14 +197,18 @@ bool MainWindow::json_Write(Option route)
             break;
 
          case COLORS:
-            // object.insert("color-text",     m_struct.colorText );
-            // object.insert("color-back",     m_struct.colorHighBack);
-            // object.insert("color-highText", m_struct.colorHighText);
-            // object.insert("color-highBack", m_struct.colorHighBack);
+
+            object.insert("color-text",     json_GetRGB(m_struct.colorText) );
+            object.insert("color-back",     json_GetRGB(m_struct.colorBack));
+            object.insert("color-highText", json_GetRGB(m_struct.colorHighText));
+            object.insert("color-highBack", json_GetRGB(m_struct.colorHighBack));
+
+            object = json_SaveSyntax(object);
+
             break;
 
          case COLUMN_MODE:
-            // BROOM
+            object.insert("column-mode", m_struct.isColumnMode);
             break;
 
          case FONT:           
@@ -220,14 +225,14 @@ bool MainWindow::json_Write(Option route)
 
          case FORMAT_TIME:
             object.insert("formatTime", m_struct.formatTime);
-            break;            
+            break;                        
+
+         case PATH_PRIOR:
+            object.insert("pathPrior", m_struct.pathPrior);
+            break;
 
          case PATH_SYNTAX:
             object.insert("pathSyntax", m_struct.pathSyntax);
-            break;
-
-         case PATH_PRIOR:
-            object.insert("pathSyntax", m_struct.pathPrior);
             break;
 
          case SHOW_LINEHIGHLIGHT:
@@ -246,7 +251,6 @@ bool MainWindow::json_Write(Option route)
             QJsonArray temp = QJsonArray::fromStringList(m_rf_List);
             object.insert("recent-files", temp);
             break;
-
       }
 
       // save the new data
@@ -361,10 +365,12 @@ bool MainWindow::json_CreateNew()
    object.insert("showLineNumbers",   true);
    object.insert("showLineHighlight", true);
 
+   object.insert("column-mode", false);
+
    value = QJsonValue(QString("MM/dd/yyyy"));
    object.insert("formatDate", value);
 
-   value = QJsonValue(QString(""));
+   value = QJsonValue(QString("h:mm ap"));
    object.insert("formatTime", value);
 
    value = QJsonValue(QString( QDir::currentPath() ));
@@ -377,16 +383,16 @@ bool MainWindow::json_CreateNew()
    value = QJsonValue(QString("Courier,12,-1,5,50,0,0,0,0,0"));
    object.insert("font", value);
 
-   value = QJsonValue(Qt::black);         // "0,0,0"));          // black
+   value = QJsonValue(QString("0,0,0"));         // black
    object.insert("color-text", value);
 
-   value = QJsonValue(Qt::white);         //"255,255,255"));     // white
+   value = QJsonValue(QString("255,255,255"));   // white
    object.insert("color-back", value);
 
-   value = QJsonValue(Qt::black);         // "0,0,0"));         // black
+   value = QJsonValue(QString("0,0,0"));         // black
    object.insert("color-highText", value);
 
-   value = QJsonValue(Qt::yellow);        // "255,255,153"));     // light yellow
+   value = QJsonValue(QString("255,255,153"));   // light yellow
    object.insert("color-highBack", value);
 
    // dummy
@@ -396,37 +402,37 @@ bool MainWindow::json_CreateNew()
 
    list.replace(0, QFont::Bold);
    list.replace(1, false);
-   list.replace(2, Qt::blue);
+   list.replace(2, QString("0,0,255"));         // blue
    object.insert("syntax-key", list);
 
    list.replace(0, QFont::Normal);
    list.replace(1, false);
-   list.replace(2, Qt::blue);
+   list.replace(2, QString("0,0,255"));         // blue
    object.insert("syntax-type", list);
 
    list.replace(0, QFont::Normal);
    list.replace(1, false);
-   list.replace(2, Qt::darkMagenta);
+   list.replace(2, QString("128,0,128"));       // dark magenta
    object.insert("syntax-class", list);
 
    list.replace(0, QFont::Normal);
    list.replace(1, false);
-   list.replace(2, Qt::blue);
+   list.replace(2, QString("0,0,255"));         // blue
    object.insert("syntax-func", list);
 
    list.replace(0, QFont::Normal);
    list.replace(1, false);
-   list.replace(2, Qt::darkGreen);
+   list.replace(2, QString("0,128,0"));         // dark green
    object.insert("syntax-quote", list);
 
    list.replace(0, QFont::Normal);
    list.replace(1, false);
-   list.replace(2, Qt::darkGreen);
+   list.replace(2, QString("0,128,0"));         // dark green
    object.insert("syntax-comment", list);
 
    list.replace(0, QFont::Normal);
    list.replace(1, false);
-   list.replace(2, Qt::darkGreen);
+   list.replace(2, QString("0,128,0"));         // dark green
    object.insert("syntax-mline", list);
 
    value = QJsonValue(QJsonArray());
@@ -439,13 +445,78 @@ bool MainWindow::json_CreateNew()
    json_SaveFile(data);
 }
 
-QString MainWindow::json_GetText()
+QColor MainWindow::json_SetColor(QString values)
 {
-   QString data = "";
-   return data;
+   QStringList list = values.split(",");
+   int red   = list[0].toInt();
+   int green = list[1].toInt();
+   int blue  = list[2].toInt();
+
+   QColor color(red,green,blue);
+
+   return color;
 }
 
-void MainWindow::json_SetText()
+QString MainWindow::json_GetRGB(QColor color)
 {
+   int red   = color.red();
+   int green = color.green();
+   int blue  = color.blue();
+
+   QStringList list;
+   list.append(QString::number(red));
+   list.append(QString::number(green));
+   list.append(QString::number(blue));
+
+   QString values = list.join(",");
+
+   return values;
+}
+
+QJsonObject MainWindow::json_SaveSyntax(QJsonObject object)
+{
+   QJsonArray list;
+
+   // dummy
+   list.append(0);
+   list.append(true);
+   list.append(0);
+
+   list.replace(0, m_struct.syn_KeyWeight );
+   list.replace(1, m_struct.syn_KeyItalic );
+   list.replace(2, json_GetRGB(m_struct.syn_KeyText));   
+   object.insert("syntax-key", list);         
+
+   list.replace(0, m_struct.syn_TypeWeight );
+   list.replace(1, m_struct.syn_TypeItalic );
+   list.replace(2, json_GetRGB(m_struct.syn_TypeText));
+   object.insert("syntax-type", list);
+
+   list.replace(0, m_struct.syn_ClassWeight );
+   list.replace(1, m_struct.syn_ClassItalic );
+   list.replace(2, json_GetRGB(m_struct.syn_ClassText));
+   object.insert("syntax-class", list);
+
+   list.replace(0, m_struct.syn_FuncWeight );
+   list.replace(1, m_struct.syn_FuncItalic );
+   list.replace(2, json_GetRGB(m_struct.syn_FuncText));
+   object.insert("syntax-func", list);
+
+   list.replace(0, m_struct.syn_QuoteWeight );
+   list.replace(1, m_struct.syn_QuoteItalic );
+   list.replace(2, json_GetRGB(m_struct.syn_QuoteText));
+   object.insert("syntax-quote", list);
+
+   list.replace(0, m_struct.syn_CommentWeight );
+   list.replace(1, m_struct.syn_CommentItalic );
+   list.replace(2, json_GetRGB(m_struct.syn_CommentText));
+   object.insert("syntax-comment", list);
+
+   list.replace(0, m_struct.syn_MLineWeight );
+   list.replace(1, m_struct.syn_MLineItalic );
+   list.replace(2, json_GetRGB(m_struct.syn_MLineText));
+   object.insert("syntax-mline", list);
+
+   return object;
 }
 

@@ -49,8 +49,8 @@ void Dialog_Options::initData()
    QStringList list;   
    int index;
 
-   //
-   list << "MM/dd/yyyy" << "dd/MM/yyyy" <<  "MMM dd, yyyy" << "MMMM dd, yyyy"
+   // 1
+   list << "MM/dd/yyyy" << "dd/MM/yyyy" << "MMM dd, yyyy" << "MMMM dd, yyyy"
         << "yyyyMMdd";
 
    m_ui->dateFormat_CB->addItems(list);
@@ -59,7 +59,17 @@ void Dialog_Options::initData()
    index = m_ui->dateFormat_CB->findText(temp.formatDate);
    m_ui->dateFormat_CB->setCurrentIndex(index);
 
-   //
+   // 2
+   list.clear();
+   list << "hh:mm" << "hh:mm:ss" << "h:m:s ap" << "h:mm ap";
+
+   m_ui->timeFormat_CB->addItems(list);
+   m_ui->timeFormat_CB->setEditable(false);
+
+   index = m_ui->timeFormat_CB->findText(temp.formatTime);
+   m_ui->timeFormat_CB->setCurrentIndex(index);
+
+   // 3
    list.clear();
    list << "3" << "4" << "8";
    m_ui->tabSpacing_CB->addItems(list);
@@ -82,6 +92,11 @@ void Dialog_Options::Cancel()
 QString Dialog_Options::get_DateFormat()
 {
    return m_ui->dateFormat_CB->currentText();
+}
+
+QString Dialog_Options::get_TimeFormat()
+{
+   return m_ui->timeFormat_CB->currentText();
 }
 
 int Dialog_Options::get_TabSpacing()

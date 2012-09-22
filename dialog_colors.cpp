@@ -22,6 +22,7 @@
 #include "dialog_colors.h"
 #include "util.h"
 
+#include <QCheckBox>
 #include <QColorDialog>
 #include <QPalette>
 #include <QLineEdit>
@@ -36,7 +37,7 @@ Dialog_Colors::Dialog_Colors(MainWindow *from, Syntax *dw)
    m_ui->setupUi(this);
 
    m_struSettings = m_mainWindow->get_StructData();
-   m_syntaxFname  = m_struSettings.pathSyntax + "syn_cpp.txt";
+   m_syntaxFname  = m_struSettings.pathSyntax + "syn_cpp.json";
 
    initData();
 
@@ -47,9 +48,29 @@ Dialog_Colors::Dialog_Colors(MainWindow *from, Syntax *dw)
 
    connect(m_ui->key_TB,      SIGNAL(clicked()), this, SLOT(key_TB())      );
    connect(m_ui->type_TB,     SIGNAL(clicked()), this, SLOT(type_TB())     );
+   connect(m_ui->class_TB,    SIGNAL(clicked()), this, SLOT(class_TB())    );
+   connect(m_ui->func_TB,     SIGNAL(clicked()), this, SLOT(func_TB())     );
+   connect(m_ui->quote_TB,    SIGNAL(clicked()), this, SLOT(quote_TB())    );
+   connect(m_ui->comment_TB,  SIGNAL(clicked()), this, SLOT(comment_TB())  );
+   connect(m_ui->mline_TB,    SIGNAL(clicked()), this, SLOT(mline_TB())    );
 
-   connect(m_ui->save_PB,   SIGNAL(clicked()), this, SLOT(Save()));
-   connect(m_ui->cancel_PB, SIGNAL(clicked()), this, SLOT(Cancel()));
+   connect(m_ui->key_Bold_CB,       SIGNAL(clicked()), this, SLOT(key_bold())      );
+   connect(m_ui->key_Italic_CB,     SIGNAL(clicked()), this, SLOT(key_italic())    );
+   connect(m_ui->type_Bold_CB,      SIGNAL(clicked()), this, SLOT(type_bold())     );
+   connect(m_ui->type_Italic_CB,    SIGNAL(clicked()), this, SLOT(type_italic())   );
+   connect(m_ui->class_Bold_CB,     SIGNAL(clicked()), this, SLOT(class_bold())    );
+   connect(m_ui->class_Italic_CB,   SIGNAL(clicked()), this, SLOT(class_italic())  );
+   connect(m_ui->func_Bold_CB,      SIGNAL(clicked()), this, SLOT(func_bold())     );
+   connect(m_ui->func_Italic_CB,    SIGNAL(clicked()), this, SLOT(func_italic())   );
+   connect(m_ui->quote_Bold_CB,     SIGNAL(clicked()), this, SLOT(quote_bold())    );
+   connect(m_ui->quote_Italic_CB,   SIGNAL(clicked()), this, SLOT(quote_italic())  );
+   connect(m_ui->comment_Bold_CB,   SIGNAL(clicked()), this, SLOT(comment_bold())  );
+   connect(m_ui->comment_Italic_CB, SIGNAL(clicked()), this, SLOT(comment_italic()));
+   connect(m_ui->mline_Bold_CB,     SIGNAL(clicked()), this, SLOT(mline_bold())    );
+   connect(m_ui->mline_Italic_CB,   SIGNAL(clicked()), this, SLOT(mline_italic())  );
+
+   connect(m_ui->save_PB,           SIGNAL(clicked()), this, SLOT(Save()));
+   connect(m_ui->cancel_PB,         SIGNAL(clicked()), this, SLOT(Cancel()));
 }
 
 Dialog_Colors::~Dialog_Colors()
@@ -68,8 +89,6 @@ void Dialog_Colors::colorBox(QLineEdit *field, QColor color)
 
 void Dialog_Colors::initData()
 {
-   QPalette temp;   
-
    // 1
    m_ui->text_Color->setReadOnly(true);
    colorBox(m_ui->text_Color, m_struSettings.colorText);
@@ -87,69 +106,69 @@ void Dialog_Colors::initData()
    m_ui->key_Color->setReadOnly(true);
    colorBox(m_ui->key_Color, m_struSettings.syn_KeyText);
 
+   if (m_struSettings.syn_KeyWeight == QFont::Bold) {
+      m_ui->key_Bold_CB->setChecked(true);
+   }
+   m_ui->key_Italic_CB->setChecked(m_struSettings.syn_KeyItalic);
+
+   /**/
    m_ui->type_Color->setReadOnly(true);
    colorBox(m_ui->type_Color, m_struSettings.syn_TypeText);
 
+   if (m_struSettings.syn_TypeWeight == QFont::Bold) {
+      m_ui->type_Bold_CB->setChecked(true);
+   }
+   m_ui->type_Italic_CB->setChecked(m_struSettings.syn_TypeItalic);
+
+   /**/
    m_ui->class_Color->setReadOnly(true);
    colorBox(m_ui->class_Color, m_struSettings.syn_ClassText);
 
+   if (m_struSettings.syn_ClassWeight == QFont::Bold) {
+      m_ui->class_Bold_CB->setChecked(true);
+   }
+   m_ui->class_Italic_CB->setChecked(m_struSettings.syn_ClassItalic);
+
+   /**/
    m_ui->func_Color->setReadOnly(true);
    colorBox(m_ui->func_Color, m_struSettings.syn_FuncText);
 
+   if (m_struSettings.syn_FuncWeight == QFont::Bold) {
+      m_ui->func_Bold_CB->setChecked(true);
+   }
+   m_ui->func_Italic_CB->setChecked(m_struSettings.syn_FuncItalic);
+
+   /**/
    m_ui->quote_Color->setReadOnly(true);
    colorBox(m_ui->quote_Color, m_struSettings.syn_QuoteText);
 
+   if (m_struSettings.syn_QuoteWeight == QFont::Bold) {
+      m_ui->quote_Bold_CB->setChecked(true);
+   }
+   m_ui->quote_Italic_CB->setChecked(m_struSettings.syn_QuoteItalic);
+
+   /**/
    m_ui->comment_Color->setReadOnly(true);
    colorBox(m_ui->comment_Color, m_struSettings.syn_CommentText);
 
+   if (m_struSettings.syn_CommentWeight == QFont::Bold) {
+      m_ui->comment_Bold_CB->setChecked(true);
+   }
+   m_ui->comment_Italic_CB->setChecked(m_struSettings.syn_CommentItalic);
+
+   /**/
    m_ui->mline_Color->setReadOnly(true);
    colorBox(m_ui->mline_Color, m_struSettings.syn_MLineText);
+
+   if (m_struSettings.syn_MLineWeight == QFont::Bold) {
+      m_ui->mline_Bold_CB->setChecked(true);
+   }
+   m_ui->mline_Italic_CB->setChecked(m_struSettings.syn_MLineItalic);
 
    // 3
    m_syntaxParser = new Syntax(m_ui->sample->document(), m_syntaxFname, m_struSettings);
 }
 
-void Dialog_Colors::Save()
-{
-   QPalette temp;
-
-   // 1
-   temp = m_ui->text_Color->palette();
-   m_struSettings.colorText = temp.color(QPalette::Base);
-
-   temp = m_ui->back_Color->palette();
-   m_struSettings.colorBack = temp.color(QPalette::Base);
-
-   temp = m_ui->highText_Color->palette();
-   m_struSettings.colorHighText = temp.color(QPalette::Base);
-
-   temp = m_ui->highBack_Color->palette();
-   m_struSettings.colorHighBack = temp.color(QPalette::Base);
-
-   // 2
-   temp = m_ui->key_Color->palette();
-   m_struSettings.syn_KeyText = temp.color(QPalette::Base);
-
-   temp = m_ui->type_Color->palette();
-   m_struSettings.syn_TypeText = temp.color(QPalette::Base);
-
-   temp = m_ui->class_Color->palette();
-   m_struSettings.syn_ClassText = temp.color(QPalette::Base);
-
-   temp = m_ui->func_Color->palette();
-   m_struSettings.syn_FuncText = temp.color(QPalette::Base);
-
-   temp = m_ui->quote_Color->palette();
-   m_struSettings.syn_QuoteText = temp.color(QPalette::Base);
-
-   temp = m_ui->comment_Color->palette();
-   m_struSettings.syn_CommentText = temp.color(QPalette::Base);
-
-   temp = m_ui->mline_Color->palette();
-   m_struSettings.syn_MLineText = temp.color(QPalette::Base);
-
-   this->done(QDialog::Accepted);
-}
 
 QColor Dialog_Colors::pickColor(QColor oldColor)
 {
@@ -288,6 +307,182 @@ void Dialog_Colors::mline_TB()
    //
    colorBox(m_ui->mline_Color, m_struSettings.syn_MLineText);
    m_syntaxParser = new Syntax(m_ui->sample->document(), m_syntaxFname, m_struSettings);
+}
+
+/**/
+void Dialog_Colors::key_bold()
+{
+   if(m_ui->key_Bold_CB->isChecked())  {
+      m_struSettings.syn_KeyWeight = QFont::Bold;
+   } else   {
+      m_struSettings.syn_KeyWeight = QFont::Normal;
+   }
+
+   //
+   m_syntaxParser = new Syntax(m_ui->sample->document(), m_syntaxFname, m_struSettings);
+}
+
+void Dialog_Colors::key_italic()
+{
+   if(m_ui->key_Italic_CB->isChecked())  {
+      m_struSettings.syn_KeyItalic = true;
+   } else   {
+      m_struSettings.syn_KeyItalic = false;
+   }
+
+   //
+   m_syntaxParser = new Syntax(m_ui->sample->document(), m_syntaxFname, m_struSettings);
+}
+
+void Dialog_Colors::type_bold()
+{
+   if(m_ui->type_Bold_CB->isChecked())  {
+      m_struSettings.syn_TypeWeight = QFont::Bold;
+   } else   {
+      m_struSettings.syn_TypeWeight = QFont::Normal;
+   }
+
+   //
+   m_syntaxParser = new Syntax(m_ui->sample->document(), m_syntaxFname, m_struSettings);
+}
+
+void Dialog_Colors::type_italic()
+{
+   if(m_ui->type_Italic_CB->isChecked())  {
+      m_struSettings.syn_TypeItalic = true;
+   } else   {
+      m_struSettings.syn_TypeItalic = false;
+   }
+
+   //
+   m_syntaxParser = new Syntax(m_ui->sample->document(), m_syntaxFname, m_struSettings);
+}
+
+void Dialog_Colors::class_bold()
+{
+   if(m_ui->class_Bold_CB->isChecked())  {
+      m_struSettings.syn_ClassWeight = QFont::Bold;
+   } else   {
+      m_struSettings.syn_ClassWeight = QFont::Normal;
+   }
+
+   //
+   m_syntaxParser = new Syntax(m_ui->sample->document(), m_syntaxFname, m_struSettings);
+}
+
+void Dialog_Colors::class_italic()
+{
+   if(m_ui->class_Italic_CB->isChecked())  {
+      m_struSettings.syn_ClassItalic = true;
+   } else   {
+      m_struSettings.syn_ClassItalic = false;
+   }
+
+   //
+   m_syntaxParser = new Syntax(m_ui->sample->document(), m_syntaxFname, m_struSettings);
+}
+
+void Dialog_Colors::func_bold()
+{
+   if(m_ui->func_Bold_CB->isChecked())  {
+      m_struSettings.syn_FuncWeight = QFont::Bold;
+   } else   {
+      m_struSettings.syn_FuncWeight = QFont::Normal;
+   }
+
+   //
+   m_syntaxParser = new Syntax(m_ui->sample->document(), m_syntaxFname, m_struSettings);
+}
+
+void Dialog_Colors::func_italic()
+{
+   if(m_ui->func_Italic_CB->isChecked())  {
+      m_struSettings.syn_FuncItalic = true;
+   } else   {
+      m_struSettings.syn_FuncItalic = false;
+   }
+
+   //
+   m_syntaxParser = new Syntax(m_ui->sample->document(), m_syntaxFname, m_struSettings);
+}
+
+void Dialog_Colors::quote_bold()
+{
+   if(m_ui->quote_Bold_CB->isChecked())  {
+      m_struSettings.syn_QuoteWeight = QFont::Bold;
+   } else   {
+      m_struSettings.syn_QuoteWeight = QFont::Normal;
+   }
+
+   //
+   m_syntaxParser = new Syntax(m_ui->sample->document(), m_syntaxFname, m_struSettings);
+}
+
+void Dialog_Colors::quote_italic()
+{
+   if(m_ui->quote_Italic_CB->isChecked())  {
+      m_struSettings.syn_QuoteItalic = true;
+   } else   {
+      m_struSettings.syn_QuoteItalic = false;
+   }
+
+   //
+   m_syntaxParser = new Syntax(m_ui->sample->document(), m_syntaxFname, m_struSettings);
+}
+
+void Dialog_Colors::comment_bold()
+{
+   if(m_ui->comment_Bold_CB->isChecked())  {
+      m_struSettings.syn_CommentWeight = QFont::Bold;
+   } else   {
+      m_struSettings.syn_CommentWeight = QFont::Normal;
+   }
+
+   //
+   m_syntaxParser = new Syntax(m_ui->sample->document(), m_syntaxFname, m_struSettings);
+}
+
+void Dialog_Colors::comment_italic()
+{
+   if(m_ui->comment_Italic_CB->isChecked())  {
+      m_struSettings.syn_CommentItalic = true;
+   } else   {
+      m_struSettings.syn_CommentItalic = false;
+   }
+
+   //
+   m_syntaxParser = new Syntax(m_ui->sample->document(), m_syntaxFname, m_struSettings);
+}
+
+void Dialog_Colors::mline_bold()
+{
+   if(m_ui->mline_Bold_CB->isChecked())  {
+      m_struSettings.syn_MLineWeight = QFont::Bold;
+   } else   {
+      m_struSettings.syn_MLineWeight = QFont::Normal;
+   }
+
+   //
+   m_syntaxParser = new Syntax(m_ui->sample->document(), m_syntaxFname, m_struSettings);
+}
+
+void Dialog_Colors::mline_italic()
+{
+   if(m_ui->mline_Italic_CB->isChecked())  {
+      m_struSettings.syn_MLineItalic = true;
+   } else   {
+      m_struSettings.syn_MLineItalic = false;
+   }
+
+   //
+   m_syntaxParser = new Syntax(m_ui->sample->document(), m_syntaxFname, m_struSettings);
+}
+
+
+//
+void Dialog_Colors::Save()
+{
+   this->done(QDialog::Accepted);
 }
 
 void Dialog_Colors::Cancel()

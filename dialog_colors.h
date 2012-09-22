@@ -65,6 +65,21 @@ class Dialog_Colors : public QDialog
       void comment_TB();
       void mline_TB();
 
+      void key_bold();
+      void key_italic();
+      void type_bold();
+      void type_italic();
+      void class_bold();
+      void class_italic();
+      void func_bold();
+      void func_italic();
+      void quote_bold();
+      void quote_italic();
+      void comment_bold();
+      void comment_italic();
+      void mline_bold();
+      void mline_italic();
+
       void Save();
       void Cancel();
 };

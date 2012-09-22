@@ -42,6 +42,7 @@ class Syntax : public QSyntaxHighlighter
       void highlightBlock(const QString &text);
 
    private:
+      QByteArray json_ReadFile(QString fileName);
       struct HighlightingRule
       {
          QRegExp pattern;
