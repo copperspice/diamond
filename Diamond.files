@@ -46,3 +46,5 @@ dialog_colors.cpp
 dialog_colors.ui
 json.cpp
 settings.h
+syntax/syn_php.json
+syntax/syn_py.json

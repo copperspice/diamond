@@ -89,8 +89,8 @@ class MainWindow : public QMainWindow
       enum Option {CLOSE, COLORS, COLUMN_MODE, FONT, FORMAT_DATE, FORMAT_TIME,
                    PATH_SYNTAX, PATH_PRIOR, RECENTFILE, SHOW_LINEHIGHLIGHT, SHOW_LINENUMBERS, TAB_SPACING};
 
-      enum SyntaxTypes {SYN_C, SYN_CLIPPER, SYN_CSS, SYN_DOX, SYN_HTML, SYN_JAVA,
-                        SYN_JS, SYN_MAKE, SYN_TEXT, SYN_SHELL_S, SYN_PERL_S, SYN_NONE };
+      enum SyntaxTypes {SYN_C, SYN_CLIPPER, SYN_CSS, SYN_DOX, SYN_HTML, SYN_JAVA, SYN_JS,
+                        SYN_JSON, SYN_MAKE, SYN_TEXT, SYN_SHELL_S, SYN_PERL, SYN_PHP, SYN_PYTHON, SYN_NONE };
 
       void setScreenColors();
       void setSyntax();
@@ -131,7 +131,8 @@ class MainWindow : public QMainWindow
       int get_Value1(const QString route);
       bool querySave();
       bool loadFile(const QString &fileName, bool newTab);
-      bool saveFile(const QString &fileName);
+      bool saveFile(const QString &fileName, bool isSaveOne);
+      bool saveAs(bool isSaveOne);
 
       void setCurrentFile(const QString &fileName);
       QString pathName(QString fileName) const;
@@ -150,6 +151,12 @@ class MainWindow : public QMainWindow
       void print();
       void printPreview();
       void printPdf();
+
+      void mw_undo();
+      void mw_redo();
+      void mw_cut();
+      void mw_copy();
+      void mw_paste();
 
       void selectAll();
       void selectBlock();
@@ -191,10 +198,13 @@ class MainWindow : public QMainWindow
       void setSyn_Html();
       void setSyn_Java();
       void setSyn_Javascript();
+      void setSyn_Json();
       void setSyn_Makefile();
       void setSyn_Text();
       void setSyn_Shell_S();
-      void setSyn_Perl_S();
+      void setSyn_Perl();
+      void setSyn_Php();
+      void setSyn_Python();
 
       void formatDos();
       void formatUnix();

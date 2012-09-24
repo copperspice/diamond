@@ -140,7 +140,7 @@ bool MainWindow::querySave()
    return true;
 }
 
-bool MainWindow::saveFile(const QString &fileName)
+bool MainWindow::saveFile(const QString &fileName, bool isSaveOne)
 {
    QFile file(fileName);
 
@@ -151,12 +151,14 @@ bool MainWindow::saveFile(const QString &fileName)
    }
 
    QApplication::setOverrideCursor(Qt::WaitCursor);     
-   file.write( m_textEdit->toPlainText().toUtf8() );
+   file.write(m_textEdit->toPlainText().toUtf8());
    QApplication::restoreOverrideCursor();
 
-   setCurrentFile(fileName);
+   if (isSaveOne) {
+      setCurrentFile(fileName);
+      setStatusBar(tr("File saved"), 2000);
+   }
 
-   setStatusBar(tr("File saved"), 2000);
    return true;
 }
 
@@ -181,7 +183,7 @@ void MainWindow::setSyntax()
       } else if (suffix == "prg") {
          suffix = "clipper";
 
-      } else if (suffix == "doxy") {
+      } else if (suffix == "doxy" || suffix == "doxygen") {
          suffix = "dox";
 
       } else if (fname == "configure" || fname == "configure.ac") {
@@ -234,6 +236,9 @@ void MainWindow::setSyntax()
       } else if (suffix == "js")  {
          setSynType(SYN_JS);
 
+      } else if (suffix == "json")  {
+         setSynType(SYN_JSON);
+
       } else if ( suffix == "make")  {
          setSynType(SYN_MAKE);
 
@@ -244,7 +249,13 @@ void MainWindow::setSyntax()
          setSynType(SYN_SHELL_S);
 
       } else if ( suffix == "pl")  {
-         setSynType(SYN_PERL_S);
+         setSynType(SYN_PERL);
+
+      } else if (suffix == "php")  {
+         setSynType(SYN_PHP);
+
+      } else if (suffix == "py")  {
+         setSynType(SYN_PYTHON);
 
       }
    }
@@ -283,6 +294,10 @@ void MainWindow::forceSyntax(SyntaxTypes data)
          synFName = m_struct.pathSyntax + "syn_js.json";
          break;
 
+      case SYN_JSON:
+         synFName = m_struct.pathSyntax + "syn_json.json";
+         break;
+
       case SYN_MAKE:
         synFName = m_struct.pathSyntax + "syn_make.json";
          break;
@@ -295,8 +310,16 @@ void MainWindow::forceSyntax(SyntaxTypes data)
          synFName = m_struct.pathSyntax + "syn_sh.json";
          break;
 
-      case SYN_PERL_S:
+      case SYN_PERL:
          synFName = m_struct.pathSyntax + "syn_pl.json";
+         break;
+
+      case SYN_PHP:
+         synFName = m_struct.pathSyntax + "syn_php.json";
+         break;
+
+      case SYN_PYTHON:
+         synFName = m_struct.pathSyntax + "syn_py.json";
          break;
    }
 
@@ -383,6 +406,26 @@ void MainWindow::setStatus_FName(QString fullName)
 
 
 
+//* macro recording
+
+/*
+
+void MainWindow::keyPressEvent(QKeyEvent *k)
+{
+
+   switch ( tolower(k->ascii()) ) {
+    case 'r': // reload
+      pict->load( name );
+      update();
+      break;
+
+    case 'q': // quit
+      QApplication::exit();
+      break;
+   }
+}
+
+*/
 
 
 

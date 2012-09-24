@@ -1,10 +1,47 @@
 {
-   "keywords": [   
-   ],   
-   "types": [   
-   ],   
-   "functions": [
-   ]
+	"classes": [
+	],
+	"functions": [
+   	],
+	"ignore-case" : true,
+	"keywords": [	
+ 	  "\\b\addtogroup\\b",
+      "\\b\a\\b",
+      "\\b\anchor\\b",
+      "\\b\b\\b",
+      "\\b\c\\b",
+      "\\b\class\\b",
+      "\\b\cond\\b",
+      "\\b\copydoc\\b",
+      "\\b\def\\b",
+      "\\b\dontinclude\\b",
+      "\\b\dotfile\\b",
+      "\\b\e\\b",
+      "\\b\elseif\\b",
+      "\\b\em\\b",
+      "\\b\enum\\b",
+      "\\b\example\\b",
+      "\\b\exception\\b",
+      "\\b\exceptions\\b",
+      "\\b\file\\b",
+      "\\b\htmlinclude\\b",
+      "\\b\if\\b",
+      "\\b\ifnot\\b",
+      "\\b\include\\b",
+      "\\b\link\\b",
+      "\\b\namespace\\b",
+      "\\b\p\\b",
+      "\\b\package\\b",
+      "\\b\ref\\b",
+      "\\b\relatesalso\\b",
+      "\\b\relates\\b",
+      "\\b\retval\\b",
+      "\\b\throw\\b",
+      "\\b\throws\\b",
+      "\\b\verbinclude\\b",
+      "\\b\version\\b",
+      "\\b\xrefitem\\b\\b"
+   	],
+   	"types": [
+   	] 
 }
-
-

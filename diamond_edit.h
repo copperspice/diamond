@@ -62,6 +62,7 @@ class DiamondTextEdit : public QPlainTextEdit
       void update_LineNumWidth(int newBlockCount);
       void update_LineNumArea(const QRect &rect, int value);
 
+   public slots:
       void cut();
       void copy();
       void paste();

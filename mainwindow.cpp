@@ -145,15 +145,19 @@ void MainWindow::reload()
 bool MainWindow::save()
 {
    if (m_curFile.isEmpty()) {
-      return saveAs();
-
+      return saveAs(true);
    } else {
-      return saveFile(m_curFile);
-
+      return saveFile(m_curFile, true);
    }      
 }
 
 bool MainWindow::saveAs()
+{
+   // slot called from menu
+   return saveAs(true);
+}
+
+bool MainWindow::saveAs(bool isSaveOne)
 {
    bool retval = false;
 
@@ -170,7 +174,7 @@ bool MainWindow::saveAs()
    if (fileName.isEmpty()) {
       retval = false;
    } else {
-      retval = saveFile(fileName);
+      retval = saveFile(fileName, isSaveOne);
    }
 
    return retval;
@@ -178,8 +182,47 @@ bool MainWindow::saveAs()
 
 bool MainWindow::saveAll()
 {
-   // * * *
-   showNotDone("File Save All");
+   QString file;
+   QWidget *temp;
+   DiamondTextEdit *textEdit;
+
+   // save current textEdit
+   DiamondTextEdit *cur_textEdit = m_textEdit;
+
+   int cnt = m_tabWidget->count();
+
+   for (int index = 0; index < cnt; ++index) {
+
+      temp = m_tabWidget->widget(index);
+      textEdit = dynamic_cast<DiamondTextEdit *>(temp);
+
+      if (textEdit) {
+         m_textEdit = textEdit;
+         file = m_tabWidget->tabWhatsThis(index);
+
+         if (file == "untitled.txt") {
+            if (saveAs(false)) {
+               m_textEdit->document()->setModified(false);
+            }
+
+         } else {
+            if ( saveFile(file, false) ) {
+               m_textEdit->document()->setModified(false);
+            }
+
+         }
+      }
+   }
+
+   // load the current textEdit again
+   m_textEdit = cur_textEdit;
+
+   if (! m_textEdit->document()->isModified())  {
+      setWindowModified(false);
+      // setWindowFilePath(m_curFile);
+   }
+
+   setStatusBar(tr("File(s) saved"), 2000);
 }
 
 void MainWindow::print()
@@ -243,6 +286,31 @@ void MainWindow::printPdf()
 
 
 // **edit
+void MainWindow::mw_undo()
+{
+   m_textEdit->undo();
+}
+
+void MainWindow::mw_redo()
+{
+   m_textEdit->redo();
+}
+
+void MainWindow::mw_cut()
+{
+   m_textEdit->cut();
+}
+
+void MainWindow::mw_copy()
+{
+   m_textEdit->copy();
+}
+
+void MainWindow::mw_paste()
+{
+   m_textEdit->paste();
+}
+
 void MainWindow::selectAll()
 {
    QTextCursor cursor(m_textEdit->textCursor());
@@ -594,6 +662,13 @@ void MainWindow::setSyn_Javascript()
    setSynType(SYN_JS);
    forceSyntax(SYN_JS);
 }
+
+void MainWindow::setSyn_Json()
+{
+   setSynType(SYN_JSON);
+   forceSyntax(SYN_JSON);
+}
+
 void MainWindow::setSyn_Makefile()
 {
    setSynType(SYN_MAKE);
@@ -612,10 +687,22 @@ void MainWindow::setSyn_Shell_S()
    forceSyntax(SYN_SHELL_S);
 }
 
-void MainWindow::setSyn_Perl_S()
+void MainWindow::setSyn_Perl()
 {
-   setSynType(SYN_PERL_S);
-   forceSyntax(SYN_PERL_S);
+   setSynType(SYN_PERL);
+   forceSyntax(SYN_PERL);
+}
+
+void MainWindow::setSyn_Php()
+{
+   setSynType(SYN_PHP);
+   forceSyntax(SYN_PHP);
+}
+
+void MainWindow::setSyn_Python()
+{
+   setSynType(SYN_PYTHON);
+   forceSyntax(SYN_PYTHON);
 }
 
 void MainWindow::setSynType(SyntaxTypes data)
@@ -625,12 +712,15 @@ void MainWindow::setSynType(SyntaxTypes data)
    m_ui->actionSyn_Css->setChecked(false);
    m_ui->actionSyn_Doxygen->setChecked(false);
    m_ui->actionSyn_Html->setChecked(false);
-   m_ui->actionSyn_Java->setChecked(false);
+   m_ui->actionSyn_Java->setChecked(false);  
    m_ui->actionSyn_Javascript->setChecked(false);
+   m_ui->actionSyn_Json->setChecked(false);
    m_ui->actionSyn_Makefile->setChecked(false);
    m_ui->actionSyn_Text->setChecked(false);
    m_ui->actionSyn_Shell_S->setChecked(false);
-   m_ui->actionSyn_Perl_S->setChecked(false);
+   m_ui->actionSyn_Perl->setChecked(false);
+   m_ui->actionSyn_PHP->setChecked(false);
+   m_ui->actionSyn_Python->setChecked(false);
 
    switch (data)  {
       case SYN_C:
@@ -661,6 +751,10 @@ void MainWindow::setSynType(SyntaxTypes data)
          m_ui->actionSyn_Javascript->setChecked(true);
          break;
 
+      case SYN_JSON:
+         m_ui->actionSyn_Json->setChecked(true);
+         break;
+
       case SYN_MAKE:
          m_ui->actionSyn_Makefile->setChecked(true);
          break;
@@ -673,9 +767,17 @@ void MainWindow::setSynType(SyntaxTypes data)
          m_ui->actionSyn_Shell_S->setChecked(true);
          break;
 
-      case SYN_PERL_S:
-         m_ui->actionSyn_Perl_S->setChecked(true);
+      case SYN_PERL:
+         m_ui->actionSyn_Perl->setChecked(true);
          break;            
+
+      case SYN_PHP:
+         m_ui->actionSyn_PHP->setChecked(true);
+         break;
+
+      case SYN_PYTHON:
+         m_ui->actionSyn_Python->setChecked(true);
+         break;
    }
 }
 
@@ -836,16 +938,6 @@ void MainWindow::tabNew()
    setCurrentFile("");
    setScreenColors();
 
-
-/*    BROOM - MUST FIX THIS
-   // edit
-   connect(m_ui->actionUndo,   SIGNAL(triggered()), m_textEdit, SLOT(undo()));
-   connect(m_ui->actionRedo,   SIGNAL(triggered()), m_textEdit, SLOT(redo()));
-   connect(m_ui->actionCut,    SIGNAL(triggered()), m_textEdit, SLOT(cut()));
-   connect(m_ui->actionCopy,   SIGNAL(triggered()), m_textEdit, SLOT(copy()));
-   connect(m_ui->actionPaste,  SIGNAL(triggered()), m_textEdit, SLOT(paste()));
-*/
-
    //
    connect(m_textEdit->document(), SIGNAL(contentsChanged()), this, SLOT(documentWasModified()));
 
@@ -960,6 +1052,13 @@ void MainWindow::createConnections()
    connect(m_ui->actionPrint_Pdf,      SIGNAL(triggered()), this, SLOT(printPdf()));
    connect(m_ui->actionExit,           SIGNAL(triggered()), this, SLOT(close()));
 
+   // edit
+   connect(m_ui->actionUndo,           SIGNAL(triggered()), this, SLOT(mw_undo()));
+   connect(m_ui->actionRedo,           SIGNAL(triggered()), this, SLOT(mw_redo()));
+   connect(m_ui->actionCut,            SIGNAL(triggered()), this, SLOT(mw_cut()));
+   connect(m_ui->actionCopy,           SIGNAL(triggered()), this, SLOT(mw_copy()));
+   connect(m_ui->actionPaste,          SIGNAL(triggered()), this, SLOT(mw_paste()));
+
    connect(m_ui->actionSelect_All,     SIGNAL(triggered()), this, SLOT(selectAll()));
    connect(m_ui->actionSelect_Block,   SIGNAL(triggered()), this, SLOT(selectBlock()));
    connect(m_ui->actionSelect_Line,    SIGNAL(triggered()), this, SLOT(selectLine()));
@@ -1000,12 +1099,15 @@ void MainWindow::createConnections()
    connect(m_ui->actionSyn_Css,        SIGNAL(triggered()), this, SLOT(setSyn_Css()));
    connect(m_ui->actionSyn_Doxygen,    SIGNAL(triggered()), this, SLOT(setSyn_Dox()));
    connect(m_ui->actionSyn_Html,       SIGNAL(triggered()), this, SLOT(setSyn_Html()));
-   connect(m_ui->actionSyn_Java,       SIGNAL(triggered()), this, SLOT(setSyn_Java()));
+   connect(m_ui->actionSyn_Java,       SIGNAL(triggered()), this, SLOT(setSyn_Java()));   
    connect(m_ui->actionSyn_Javascript, SIGNAL(triggered()), this, SLOT(setSyn_Javascript()));
+   connect(m_ui->actionSyn_Json,       SIGNAL(triggered()), this, SLOT(setSyn_Json()));
    connect(m_ui->actionSyn_Makefile,   SIGNAL(triggered()), this, SLOT(setSyn_Makefile()));
    connect(m_ui->actionSyn_Text,       SIGNAL(triggered()), this, SLOT(setSyn_Text()));
    connect(m_ui->actionSyn_Shell_S,    SIGNAL(triggered()), this, SLOT(setSyn_Shell_S()));
-   connect(m_ui->actionSyn_Perl_S,     SIGNAL(triggered()), this, SLOT(setSyn_Perl_S()));
+   connect(m_ui->actionSyn_Perl,       SIGNAL(triggered()), this, SLOT(setSyn_Perl()));
+   connect(m_ui->actionSyn_PHP,        SIGNAL(triggered()), this, SLOT(setSyn_Php()));
+   connect(m_ui->actionSyn_Python,     SIGNAL(triggered()), this, SLOT(setSyn_Python()));
 
    connect(m_ui->actionFormat_Dos,     SIGNAL(triggered()), this, SLOT(formatDos()));
    connect(m_ui->actionFormat_Unix,    SIGNAL(triggered()), this, SLOT(formatUnix()));
@@ -1043,10 +1145,13 @@ void MainWindow::createToggles()
    m_ui->actionSyn_Html->setCheckable(true);
    m_ui->actionSyn_Java->setCheckable(true);
    m_ui->actionSyn_Javascript->setCheckable(true);
+   m_ui->actionSyn_Json->setCheckable(true);
    m_ui->actionSyn_Makefile->setCheckable(true);
    m_ui->actionSyn_Text->setCheckable(true);
    m_ui->actionSyn_Shell_S->setCheckable(true);
-   m_ui->actionSyn_Perl_S->setCheckable(true);
+   m_ui->actionSyn_Perl->setCheckable(true);
+   m_ui->actionSyn_PHP->setCheckable(true);
+   m_ui->actionSyn_Python->setCheckable(true);
 
    m_ui->actionLine_Highlight->setCheckable(true);
    m_ui->actionLine_Highlight->setChecked(m_struct.showLineHighlight);

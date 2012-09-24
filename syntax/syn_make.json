@@ -1,6 +1,46 @@
 {
-   "keywords": [
-        "\\binclude\\b",
+	"classes": [
+	],
+	"functions": [
+      	"\\bcall\\b",
+        "\\bsubst\\b",
+        "\\bpatsubst\\b",
+        "\\bstrip\\b",
+        "\\bfindstring\\b",
+        "\\bfilter\\b",
+        "\\bfilter-out\\b",
+        "\\bsort\\b",
+        "\\bword\\b",
+        "\\bwordlist\\b",
+        "\\bwords\\b",
+        "\\bfirstword\\b",
+        "\\blastword\\b",
+        "\\bdir\\b",
+        "\\bnotdir\\b",
+        "\\bsuffix\\b",
+        "\\bbasename\\b",
+        "\\baddsuffix\\b",
+        "\\baddprefix\\b",
+        "\\bjoin\\b",
+        "\\bwildcard\\b",
+        "\\brealpath\\b",
+        "\\babspath\\b",
+        "\\bif\\b",
+        "\\bor\\b",
+        "\\band\\b",
+        "\\bforeach\\b",
+        "\\bvalue\\b",
+        "\\beval\\b",
+        "\\borigin\\b",
+        "\\bflavor\\b",
+        "\\bshell\\b",
+        "\\berror\\b",
+        "\\bwarning\\b",
+        "\\binfo\\b"	
+   	],
+	"ignore-case" : true,
+	"keywords": [     
+	    "\\binclude\\b",
         "\\bdefine\\b",
         "\\belse\\b",
         "\\bendif\\b",
@@ -8,12 +48,8 @@
         "\\bifeq\\b",
         "\\bifndef\\b",
         "\\bifneq\\b"
-   ], 
-   "types": [
-   ],
-  "functions": [
-        "\\bdir\\b",
-        "\\bcall\\b",
-        "\\bsuffix\\b",
-   ]
+   	],
+   	"types": [
+   	] 
 }
+

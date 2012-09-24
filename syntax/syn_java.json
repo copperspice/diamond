@@ -1,5 +1,10 @@
 {
-   "keywords": [
+	"classes": [
+	],
+	"functions": [
+   	],
+	"ignore-case" : true,
+    "keywords": [
         "\\babstract\\b",
         "\\bbreak\\b",
         "\\bcase\\b",
@@ -41,7 +46,17 @@
         "\\bwhile\\b"
    ],   
    "types": [
-   ],
-   "functions": [
-   ]
+		"\\bboolean\\b",
+		"\\bbyte\\b",
+		"\\bchar\\b",
+		"\\bconst\\b",
+		"\\bdouble\\b",
+		"\\bfinal\\b",
+		"\\bfloat\\b",
+		"\\bint\\b",
+		"\\blong\\b",
+		"\\bshort\\b",
+		"\\bstatic\\b",
+		"\\bvoid\\b"   
+   ]  
 }

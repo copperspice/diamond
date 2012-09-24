@@ -140,7 +140,7 @@
     </property>
     <widget class="QMenu" name="menuFile_Format">
      <property name="title">
-      <string>File Format</string>
+      <string>File Format *</string>
      </property>
      <addaction name="actionFormat_Dos"/>
      <addaction name="actionFormat_Unix"/>
@@ -158,14 +158,17 @@
      <addaction name="actionSyn_Html"/>
      <addaction name="actionSyn_Java"/>
      <addaction name="actionSyn_Javascript"/>
+     <addaction name="actionSyn_Json"/>
      <addaction name="actionSyn_Makefile"/>
      <addaction name="actionSyn_Text"/>
      <addaction name="actionSyn_Shell_S"/>
-     <addaction name="actionSyn_Perl_S"/>
+     <addaction name="actionSyn_Perl"/>
+     <addaction name="actionSyn_PHP"/>
+     <addaction name="actionSyn_Python"/>
     </widget>
     <widget class="QMenu" name="menuTabs_Spaces">
      <property name="title">
-      <string>Tabs &amp;&amp; Spaces</string>
+      <string>Tabs / Spaces *</string>
      </property>
      <addaction name="actionFix_Tab_Spaces"/>
      <addaction name="actionFix_Spaces_Tab"/>
@@ -337,12 +340,12 @@
   </action>
   <action name="actionSyn_C">
    <property name="text">
-    <string>C/C++</string>
+    <string>C / C++</string>
    </property>
   </action>
-  <action name="actionSyn_Perl_S">
+  <action name="actionSyn_Perl">
    <property name="text">
-    <string>Perl Script</string>
+    <string>Perl</string>
    </property>
   </action>
   <action name="actionSyn_Css">
@@ -411,7 +414,7 @@
   </action>
   <action name="actionSave_All">
    <property name="text">
-    <string>Save All *</string>
+    <string>Save All</string>
    </property>
    <property name="toolTip">
     <string>Save all open documents</string>
@@ -516,27 +519,27 @@
   </action>
   <action name="actionSpell_Check">
    <property name="text">
-    <string>Spell Check</string>
+    <string>Spell Check *</string>
    </property>
   </action>
   <action name="actionShow_Tabs">
    <property name="text">
-    <string>Show Tabs</string>
+    <string>Show Tabs *</string>
    </property>
   </action>
   <action name="actionShow_Line_Break">
    <property name="text">
-    <string>Show Line Break</string>
+    <string>Show Line Break *</string>
    </property>
   </action>
   <action name="actionShow_Spaces">
    <property name="text">
-    <string>Show Spaces</string>
+    <string>Show Spaces *</string>
    </property>
   </action>
   <action name="actionShow_Spaces_EOL">
    <property name="text">
-    <string>Show Spaces EOL</string>
+    <string>Show Spaces EOL *</string>
    </property>
    <property name="toolTip">
     <string>Show Spaces at end of line</string>
@@ -644,6 +647,31 @@
   <action name="actionInsert_Time">
    <property name="text">
     <string>Insert Time</string>
+   </property>
+  </action>
+  <action name="actionSyn_Json">
+   <property name="text">
+    <string>Json</string>
+   </property>
+  </action>
+  <action name="actionSyn_Python">
+   <property name="text">
+    <string>Python</string>
+   </property>
+  </action>
+  <action name="actionSyn_PHP">
+   <property name="text">
+    <string>PHP</string>
+   </property>
+  </action>
+  <action name="actionJoin_Lines">
+   <property name="text">
+    <string>Join Lines</string>
+   </property>
+  </action>
+  <action name="actionSplit_Lines">
+   <property name="text">
+    <string>Split Lines</string>
    </property>
   </action>
  </widget>

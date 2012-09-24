@@ -40,43 +40,54 @@ Syntax::Syntax(QTextDocument *document, QString synFName, const struct Settings 
    QJsonArray list;
    int cnt;
 
+   //
    bool ignoreCase = object.value("ignore-case").toBool();
 
    // key
    QStringList key_Patterns;
 
    list = object.value("keywords").toArray();
-   cnt = list.count();
+   cnt  = list.count();
 
    for (int k = 0; k < cnt; k++)  {
       key_Patterns.append(list.at(k).toString());
    }
 
-   // types
-   QStringList type_Patterns;
+   // class
+   QStringList class_Patterns;
 
-   list = object.value("types").toArray();
-   cnt = list.count();
+   list = object.value("classes").toArray();
+   cnt  = list.count();
 
    for (int k = 0; k < cnt; k++)  {
-      type_Patterns.append(list.at(k).toString());
+      class_Patterns.append(list.at(k).toString());
    }
 
    // functions
    QStringList func_Patterns;
 
    list = object.value("functions").toArray();
-   cnt = list.count();
+   cnt  = list.count();
 
    for (int k = 0; k < cnt; k++)  {
       func_Patterns.append(list.at(k).toString());
    }
 
+   // types
+   QStringList type_Patterns;
+
+   list = object.value("types").toArray();
+   cnt  = list.count();
+
+   for (int k = 0; k < cnt; k++)  {
+      type_Patterns.append(list.at(k).toString());
+   }
+
+
    //
    HighlightingRule rule;
 
    foreach (const QString &pattern, key_Patterns) {
-
       if (pattern.trimmed().isEmpty()) {
          continue;
       }
@@ -94,8 +105,43 @@ Syntax::Syntax(QTextDocument *document, QString synFName, const struct Settings 
       highlightingRules.append(rule);
    }
 
-   foreach (const QString &pattern, type_Patterns) {
+   foreach (const QString &pattern, class_Patterns) {
+      if (pattern.trimmed().isEmpty()) {
+         continue;
+      }
 
+      // class
+      rule.format.setFontWeight(settings.syn_ClassWeight);
+      rule.format.setFontItalic(settings.syn_ClassItalic);
+      rule.format.setForeground(settings.syn_ClassText);
+      rule.pattern = QRegExp(pattern);
+
+      if (ignoreCase) {
+         rule.pattern.setCaseSensitivity(Qt::CaseInsensitive);
+      }
+
+      highlightingRules.append(rule);
+   }
+
+   foreach (const QString &pattern, func_Patterns) {
+      if (pattern.trimmed().isEmpty()) {
+         continue;
+      }
+
+      // func
+      rule.format.setFontWeight(settings.syn_FuncWeight);
+      rule.format.setFontItalic(settings.syn_FuncItalic);
+      rule.format.setForeground(settings.syn_FuncText);
+      rule.pattern = QRegExp(pattern);
+
+      if (ignoreCase) {
+         rule.pattern.setCaseSensitivity(Qt::CaseInsensitive);
+      }
+
+      highlightingRules.append(rule);
+   }
+
+   foreach (const QString &pattern, type_Patterns) {
       if (pattern.trimmed().isEmpty()) {
          continue;
       }
@@ -113,26 +159,7 @@ Syntax::Syntax(QTextDocument *document, QString synFName, const struct Settings 
       highlightingRules.append(rule);
    }
 
-   foreach (const QString &pattern, func_Patterns) {
-
-      if (pattern.trimmed().isEmpty()) {
-         continue;
-      }
-
-      // types
-      rule.format.setFontWeight(settings.syn_FuncWeight);
-      rule.format.setFontItalic(settings.syn_FuncItalic);
-      rule.format.setForeground(settings.syn_FuncText);
-      rule.pattern = QRegExp(pattern);
-
-      if (ignoreCase) {
-         rule.pattern.setCaseSensitivity(Qt::CaseInsensitive);
-      }
-
-      highlightingRules.append(rule);
-   }
-
-   // class - Qt Only
+   // class - rule is for Qt*()
    rule.format.setFontWeight(settings.syn_ClassWeight);
    rule.format.setFontItalic(settings.syn_ClassItalic);
    rule.format.setForeground(settings.syn_ClassText);
@@ -160,6 +187,7 @@ Syntax::Syntax(QTextDocument *document, QString synFName, const struct Settings 
    rule.pattern = QRegExp("//[^\n]*");
    highlightingRules.append(rule);
 
+   // multi line comment
    multiLineCommentFormat.setFontWeight(settings.syn_MLineWeight);
    multiLineCommentFormat.setFontItalic(settings.syn_MLineItalic);
    multiLineCommentFormat.setForeground(settings.syn_MLineText);
@@ -223,6 +251,7 @@ void Syntax::highlightBlock(const QString &text)
       setFormat(startIndex, commentLength, multiLineCommentFormat);
       startIndex = commentStartExpression.indexIn(text, startIndex + commentLength);
    }
+
 }
 
 
