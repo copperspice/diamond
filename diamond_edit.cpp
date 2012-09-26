@@ -31,14 +31,21 @@ DiamondTextEdit::DiamondTextEdit(MainWindow *from)
    m_mainWindow   = from;
    m_showlineNum  = false;
    m_isColumnMode = false;
+   m_record       = false;
 
    m_lineNumArea = new LineNumArea(this);
    update_LineNumWidth(0);
 
+   // line highlight
    connect(this, SIGNAL(blockCountChanged(int)),   this, SLOT(update_LineNumWidth(int)));
    connect(this, SIGNAL(updateRequest(QRect,int)), this, SLOT(update_LineNumArea(QRect,int)));  
+
+   // column mode
+   connect(this, SIGNAL(selectionChanged()),       this, SLOT(selectionChanged()));
 }
 
+
+// ** line highlight
 void DiamondTextEdit::lineNum_PaintEvent(QPaintEvent *event)
 {   
    if (m_showlineNum)  {
@@ -108,10 +115,30 @@ void DiamondTextEdit::resizeEvent(QResizeEvent *e)
 }
 
 
-// *
+// ** context menu
 void DiamondTextEdit::contextMenuEvent(QContextMenuEvent *event)
 {
-   QMenu *menu = new QMenu(this);   
+   QTextCursor cursor(this->textCursor());
+   cursor.setPosition(cursorForPosition(event->pos()).position());
+   cursor.select(QTextCursor::WordUnderCursor);
+   this->setTextCursor(cursor);
+
+   QString selectedWord = cursor.selectedText();
+
+   //
+   QMenu *menu = new QMenu(this);
+
+   QStringList m_maybeList =  m_mainWindow->get_Maybe(selectedWord);
+   int cnt = m_maybeList.count();
+
+   if (cnt > 0)  {
+      for (int k = 0; k < cnt; ++k)  {
+         menu->addAction(m_maybeList[k],  m_mainWindow, SLOT(replaceWord())  );
+      }
+
+      menu->addAction("Add to User Dictionary",  m_mainWindow, SLOT(add_UserDict()) );
+      menu->addSeparator();
+   }
 
    menu->addAction("Undo",          this, SLOT(undo())  );
    menu->addAction("Redo",          this, SLOT(redo())  );
@@ -132,6 +159,8 @@ void DiamondTextEdit::contextMenuEvent(QContextMenuEvent *event)
    delete menu;
 }
 
+
+// ** column mode
 void DiamondTextEdit::set_ColumnMode(bool data)
 {
    m_isColumnMode = data;
@@ -142,7 +171,15 @@ void DiamondTextEdit::set_ShowLineNum(bool data)
    m_showlineNum = data;
 }
 
-//
+void DiamondTextEdit::selectionChanged()
+{
+   if (m_isColumnMode) {
+
+      // QString data = this->textCursor().selectedText();
+      // csMsg("Column Mode - selection changed  " + data );
+   }
+}
+
 void DiamondTextEdit::cut()
 {
    if (m_isColumnMode) {
@@ -158,8 +195,14 @@ void DiamondTextEdit::cut()
 void DiamondTextEdit::copy()
 {
    if (m_isColumnMode) {
-      // * * *
-      showNotDone("Column Mode COPY");
+
+      QTextCursor cursor( this->textCursor());
+      //QTextBlockFormat bFormat = cursor.blockFormat();
+
+      cursor.select(QTextCursor::BlockUnderCursor);
+
+      //cursor.setBlockFormat(bFormat);
+      this->setTextCursor(cursor);
 
    } else {     
       QPlainTextEdit::copy();
@@ -184,7 +227,39 @@ void DiamondTextEdit::showNotDone(QString item)
 }
 
 
+// ** macros
+void DiamondTextEdit::macroStart()
+{
+   m_record = true;
+}
 
+void DiamondTextEdit::macroStop()
+{
+   m_record = false;
+}
+
+QList<QKeyEvent *> DiamondTextEdit::get_KeyList()
+{
+   return m_keyList;
+}
+
+void DiamondTextEdit::keyPressEvent(QKeyEvent *event)
+{
+   if (m_record)  {
+
+      if (event->key() == Qt::Key_unknown) {
+         // lose this one?
+
+      } else {
+         QKeyEvent *newEvent;
+         newEvent = new QKeyEvent(*event);
+
+         m_keyList.append(newEvent);         
+      }
+   }
+
+   return QPlainTextEdit::keyPressEvent(event);
+}
 
 
 

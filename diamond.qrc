@@ -15,7 +15,6 @@
         <file>resources/open.png</file>
         <file>resources/open_file.png</file>
         <file>resources/paste.png</file>
-        <file>resources/Play.png</file>
         <file>resources/print.png</file>
         <file>resources/redo.png</file>
         <file>resources/refresh.png</file>
@@ -24,5 +23,7 @@
         <file>resources/spell.png</file>
         <file>resources/stop.png</file>
         <file>resources/undo.png</file>
+        <file>resources/play.png</file>
+        <file>resources/camera.png</file>
     </qresource>
 </RCC>

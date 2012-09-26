@@ -19,6 +19,7 @@
 *
 **************************************************************************/
 
+#include "spellcheck.h"
 #include "syntax.h"
 #include "util.h"
 
@@ -27,10 +28,14 @@
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QJsonValue>
+#include <QTextBoundaryFinder>
 
-Syntax::Syntax(QTextDocument *document, QString synFName, const struct Settings &settings)
+Syntax::Syntax(QTextDocument *document, QString synFName, const struct Settings &settings, SpellCheck *spell)
    : QSyntaxHighlighter(document)
 {                 
+   m_isSpellCheck = settings.isSpellCheck;
+   m_spellCheck   = spell;
+
    // get existing json data
    QByteArray data = json_ReadFile(synFName);
 
@@ -187,14 +192,19 @@ Syntax::Syntax(QTextDocument *document, QString synFName, const struct Settings 
    rule.pattern = QRegExp("//[^\n]*");
    highlightingRules.append(rule);
 
-   // multi line comment
-   multiLineCommentFormat.setFontWeight(settings.syn_MLineWeight);
-   multiLineCommentFormat.setFontItalic(settings.syn_MLineItalic);
-   multiLineCommentFormat.setForeground(settings.syn_MLineText);
+   m_commentStartExpression = QRegExp("/\\*");
+   m_commentEndExpression   = QRegExp("\\*/");
 
-   commentStartExpression = QRegExp("/\\*");
-   commentEndExpression   = QRegExp("\\*/");
+   // multi line comment
+   m_multiLineCommentFormat.setFontWeight(settings.syn_MLineWeight);
+   m_multiLineCommentFormat.setFontItalic(settings.syn_MLineItalic);
+   m_multiLineCommentFormat.setForeground(settings.syn_MLineText);
+
+   // spell check   
+   m_spellCheckFormat.setUnderlineColor(QColor("red"));
+   m_spellCheckFormat.setUnderlineStyle(QTextCharFormat::SpellCheckUnderline);
 }
+
 
 QByteArray Syntax::json_ReadFile(QString fileName)
 {
@@ -214,6 +224,11 @@ QByteArray Syntax::json_ReadFile(QString fileName)
    return data;
 }
 
+void Syntax::set_Spell(bool value)
+{
+   m_isSpellCheck = value;   
+}
+
 void Syntax::highlightBlock(const QString &text)
 {  
    foreach (const HighlightingRule &rule, highlightingRules) {
@@ -231,12 +246,13 @@ void Syntax::highlightBlock(const QString &text)
    setCurrentBlockState(0);
 
    int startIndex = 0;
+
    if (previousBlockState() != 1) {
-      startIndex = commentStartExpression.indexIn(text);
+      startIndex = m_commentStartExpression.indexIn(text);
    }
 
    while (startIndex >= 0) {
-      int endIndex = commentEndExpression.indexIn(text, startIndex);
+      int endIndex = m_commentEndExpression.indexIn(text, startIndex);
       int commentLength;
 
       if (endIndex == -1) {
@@ -244,14 +260,40 @@ void Syntax::highlightBlock(const QString &text)
          commentLength = text.length() - startIndex;
 
       } else {
-         commentLength = endIndex - startIndex + commentEndExpression.matchedLength();
+         commentLength = endIndex - startIndex + m_commentEndExpression.matchedLength();
 
       }
 
-      setFormat(startIndex, commentLength, multiLineCommentFormat);
-      startIndex = commentStartExpression.indexIn(text, startIndex + commentLength);
+      setFormat(startIndex, commentLength, m_multiLineCommentFormat);
+      startIndex = m_commentStartExpression.indexIn(text, startIndex + commentLength);
    }
 
-}
 
+   // spell check
+   if (m_spellCheck && m_isSpellCheck)  {
+
+      QTextBoundaryFinder wordFinder(QTextBoundaryFinder::Word, text);
+
+      int wordStart  = 0;
+      int wordLength = 0;
+      QString word   = "";
+
+      while (wordFinder.position() < text.length()) {
+
+         if (wordFinder.position() == 0)  {
+            wordStart = 0;
+         } else  {
+            wordStart = wordFinder.position();
+         }
+
+         wordLength = wordFinder.toNextBoundary()-wordStart;
+         word       = text.mid(wordStart,wordLength).trimmed();
+
+         if ( ! word.isEmpty() &&  word.at(0).isLetter() && ! m_spellCheck->spell(word) )   {
+            setFormat(wordStart, wordLength, m_spellCheckFormat);
+         }
+
+      }
+   }
+}
 

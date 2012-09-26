@@ -7,10 +7,11 @@ gccpath=/c/MingW
 gcclibs=libgcc_s_sjlj-1  libstdc++-6  libwinpthread-1
 
 # list of CopperSpice libraries your app uses
-cslibs=Core Gui Xml
+cslibs=Core Gui
+hunspell=/z/Hunspell/deploy/lib/libhunspell-1.3.la
 
 # location of includes, libs, defines for compiling, turn off debugging
-AM_CXXFLAGS+=-mwindows -std=c++11
+AM_CXXFLAGS+=-mwindows -std=c++11   -I/z/Hunspell/deploy/include/hunspell
 
 # 'KitchenSink-Cs1' target app name
 deploy_PROGRAMS = Diamond
@@ -39,7 +40,9 @@ Diamond_SOURCES = \
 	json.cpp \
 	main.cpp \
     mainwindow.cpp \
-    recent_files.cpp \    
+    recent_files.cpp \
+    spell.cpp \
+    spellcheck.cpp \
     syntax.cpp  \
     support.cpp \
     util.cpp
@@ -55,6 +58,7 @@ noinst_HEADERS = \
 	diamond_tab.h \
 	mainwindow.h  \
 	settings.h \
+	spellcheck.h \
 	util.h
    
                 
@@ -69,11 +73,9 @@ MOCS = \
 	diamond_tab.h \
 	mainwindow.h  \
 	syntax.h
-	
-	
+	   
     
-    
-Diamond_LDADD=$(patsubst %.h,moc_%.$(OBJEXT),$(MOCS))    
+Diamond_LDADD=$(patsubst %.h,moc_%.$(OBJEXT),$(MOCS))   $(hunspell) 
            
 #
 FORMS =	\

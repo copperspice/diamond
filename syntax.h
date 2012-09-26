@@ -23,6 +23,7 @@
 #define SYNTAX_H
 
 #include "settings.h"
+#include "spellcheck.h"
 
 #include <QHash>
 #include <QTextCharFormat>
@@ -36,25 +37,32 @@ class Syntax : public QSyntaxHighlighter
 
    public:
       Syntax(QTextDocument *parent, QString synFName,
-             const struct Settings &settings);
+             const struct Settings &settings,  SpellCheck *spell = 0);
+      void set_Spell(bool value);
 
    protected:
       void highlightBlock(const QString &text);
 
    private:
+      bool m_isSpellCheck;
+      SpellCheck *m_spellCheck;
+
+      QRegExp m_commentStartExpression;
+      QRegExp m_commentEndExpression;
+
+      QTextCharFormat m_multiLineCommentFormat;
+      QTextCharFormat m_spellCheckFormat;
+
       QByteArray json_ReadFile(QString fileName);
+
+      //
       struct HighlightingRule
       {
          QRegExp pattern;
          QTextCharFormat format;
       };
 
-      QVector<HighlightingRule> highlightingRules;
-
-      QRegExp commentStartExpression;
-      QRegExp commentEndExpression;
-
-      QTextCharFormat multiLineCommentFormat;     
+      QVector<HighlightingRule> highlightingRules;     
 };
 
 #endif

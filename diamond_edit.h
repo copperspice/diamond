@@ -45,13 +45,22 @@ class DiamondTextEdit : public QPlainTextEdit
       void set_ShowLineNum(bool data);
       void set_ColumnMode(bool data);
 
+      void macroStart();
+      void macroStop();
+      QList<QKeyEvent *> get_KeyList();
+
    protected:
       void resizeEvent(QResizeEvent *event);
       void contextMenuEvent(QContextMenuEvent *event);
+      void keyPressEvent(QKeyEvent *event);    
 
    private:
       MainWindow *m_mainWindow;
       QWidget *m_lineNumArea;
+
+      // macro
+      bool m_record;
+      QList<QKeyEvent *> m_keyList;
 
       bool m_showlineNum;
       bool m_isColumnMode;
@@ -61,11 +70,12 @@ class DiamondTextEdit : public QPlainTextEdit
    private slots:
       void update_LineNumWidth(int newBlockCount);
       void update_LineNumArea(const QRect &rect, int value);
+      void selectionChanged();
 
-   public slots:
+   public slots:     
       void cut();
       void copy();
-      void paste();
+      void paste();         
 };
 
 

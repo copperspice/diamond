@@ -30,11 +30,15 @@
 
 void MainWindow::closeEvent(QCloseEvent *event)
 {
-   if (querySave()) {
+   bool exit = closeAll_Doc();
+
+   if (exit) {
       json_Write(CLOSE);
       event->accept();
+
    } else {
       event->ignore();
+
    }
 }
 
@@ -97,7 +101,7 @@ bool MainWindow::loadFile(const QString &fileName, bool addNewTab)
    QApplication::restoreOverrideCursor();
 
    setCurrentFile(fileName);
-   setStatusBar(tr("File loaded"), 2000);
+   setStatusBar(tr("File loaded"), 1500);
 
    return true;
 }
@@ -117,20 +121,22 @@ bool MainWindow::querySave()
    if (m_textEdit->document()->isModified()) {
 
       QString fileName = m_curFile;
-      if (fileName.isEmpty()){
-         fileName = "Untitled.txt";
-      }
 
       QMessageBox quest;
       quest.setWindowTitle(tr("Diamond Editor"));
-      quest.setText( fileName + tr(" has been modified. Save your changes?"));
+      quest.setText( fileName + tr(" has been modified. Save changes?"));
       quest.setStandardButtons(QMessageBox::Save | QMessageBox::Discard  | QMessageBox::Cancel );
       quest.setDefaultButton(QMessageBox::Cancel);
 
       int retval = quest.exec();
 
       if (retval == QMessageBox::Save) {
-         return save();
+
+         if (fileName == "untitled.txt") {
+            return saveAs(false);
+         } else {
+            return save();
+         }
 
       } else if (retval == QMessageBox::Cancel) {
          return false;
@@ -213,7 +219,7 @@ void MainWindow::setSyntax()
       setSynType(SYN_NONE);
 
    } else {
-      m_syntaxParser = new Syntax{m_textEdit->document(), synFName, m_struct};
+      m_syntaxParser = new Syntax(m_textEdit->document(), synFName, m_struct, m_spellCheck);
 
       if (suffix == "c" || suffix == "cpp" || suffix == "h")  {
          setSynType(SYN_C);
@@ -327,7 +333,7 @@ void MainWindow::forceSyntax(SyntaxTypes data)
       csError(tr("Syntax Highlighting"), tr("Syntax highlighting file was not found: \n\n") + synFName  + "  ");
 
    } else {
-      m_syntaxParser = new Syntax{m_textEdit->document(), synFName, m_struct};
+      m_syntaxParser = new Syntax(m_textEdit->document(), synFName, m_struct, m_spellCheck);
 
    }
 }
@@ -403,29 +409,5 @@ void MainWindow::setStatus_FName(QString fullName)
 {
    m_statusName->setText(" " + fullName + "  ");
 }
-
-
-
-//* macro recording
-
-/*
-
-void MainWindow::keyPressEvent(QKeyEvent *k)
-{
-
-   switch ( tolower(k->ascii()) ) {
-    case 'r': // reload
-      pict->load( name );
-      update();
-      break;
-
-    case 'q': // quit
-      QApplication::exit();
-      break;
-   }
-}
-
-*/
-
 
 

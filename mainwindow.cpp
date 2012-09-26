@@ -39,7 +39,7 @@ MainWindow::MainWindow()
       csError(tr("Settings File"), tr("Unable to locate or open the Settings file."));
    }
 
-   m_syntaxParser = 0;
+   m_syntaxParser = 0; 
 
    // remaining methods must be done after jsson_Read
    m_tabWidget = new QTabWidget;      
@@ -57,6 +57,9 @@ MainWindow::MainWindow()
 
    // recent files
    rf_CreateMenus();
+
+   // spell check
+   createSpellCheck();
 
    //
    tabNew();
@@ -104,10 +107,51 @@ void MainWindow::close_Doc()
    }
 }
 
-void MainWindow::closeAll_Doc()
+bool MainWindow::closeAll_Doc()
 {
-   // * * *
-   showNotDone("File Close All");
+   bool allClosed = true;
+
+   QWidget *temp;
+   DiamondTextEdit *textEdit;
+
+   int cnt = m_tabWidget->count();
+   int whichTab = 0;
+
+   for (int index = 0; index < cnt; ++index) {
+
+      temp = m_tabWidget->widget(whichTab);
+      textEdit = dynamic_cast<DiamondTextEdit *>(temp);
+
+      if (textEdit) {
+         m_textEdit = textEdit;
+         m_curFile  = m_tabWidget->tabWhatsThis(whichTab);
+
+         if (querySave())  {
+
+            if (m_tabWidget->count() == 1) {
+               // do not remove !
+               m_textEdit->clear();
+               setCurrentFile("");
+
+            } else {
+               // may need to delete the widget
+               m_tabWidget->removeTab(whichTab);
+            }
+
+         } else  {
+            // move over one tab            
+            ++whichTab;
+
+            // something is still open
+            allClosed = false;
+         }
+      }
+   }
+
+   //
+   m_tabWidget->setCurrentIndex(0);
+
+   return allClosed;
 }
 
 void MainWindow::reload()
@@ -218,8 +262,7 @@ bool MainWindow::saveAll()
    m_textEdit = cur_textEdit;
 
    if (! m_textEdit->document()->isModified())  {
-      setWindowModified(false);
-      // setWindowFilePath(m_curFile);
+      setWindowModified(false);      
    }
 
    setStatusBar(tr("File(s) saved"), 2000);
@@ -814,26 +857,65 @@ void MainWindow::fixSpaces_EOL()
 
 
 // **tools
-void MainWindow::macroStart()
+void MainWindow::mw_macroStart()
 {
-   showNotDone("Tools, macro start");
+   if ( ! m_record ) {
+      m_record = true;
+      m_textEdit->macroStart();
+      setStatusBar(tr("Recording macro. . ."), 0);
+   }
 }
 
-void MainWindow::macroStop()
+void MainWindow::mw_macroStop()
 {
-   showNotDone("Tools, macro stop");
+   if ( m_record ) {
+      m_record = false;
+      m_textEdit->macroStop();
+      setStatusBar(tr("Macro recorded"), 1000);
+   }
 }
 
 void MainWindow::macroPlay()
 {
-   showNotDone("Tools, macro play");
+   if (m_record) {
+      csError("Macro Playback", "Unable to play back a macro while recording");
+
+   }  else {
+
+      QList<QKeyEvent *> keyList;
+      keyList = m_textEdit->get_KeyList();
+
+      QKeyEvent *event;
+
+      //
+      int cnt = keyList.count();
+
+      for (int k = 0; k < cnt; ++k)   {
+         event = keyList.at(k);
+
+         QKeyEvent *newEvent;
+         newEvent = new QKeyEvent(*event);
+
+         QApplication::postEvent(m_textEdit, newEvent);
+      }
+   }
 }
 
 void MainWindow::spellCheck()
 {
-   showNotDone("Tools, Spell Check");
-}
+   if (m_ui->actionSpell_Check->isChecked()) {
+      //on
+      m_struct.isSpellCheck = true;
 
+   } else {
+      // off
+      m_struct.isSpellCheck = false;
+
+   }
+
+   json_Write(SPELLCHECK);
+   m_syntaxParser->set_Spell(m_struct.isSpellCheck);
+}
 
 // **settings
 void MainWindow::setColors()
@@ -896,23 +978,30 @@ void MainWindow::setOptions()
    int result = dw->exec();
 
    if ( result = QDialog::Accepted) {
+      // test
       QString strTemp = dw->get_DateFormat();
       if ( m_struct.formatDate != strTemp)  {
          m_struct.formatDate = strTemp;
          json_Write(FORMAT_DATE);
       }
 
+      // test
       strTemp = dw->get_TimeFormat();
       if ( m_struct.formatTime != strTemp)  {
          m_struct.formatTime = strTemp;
          json_Write(FORMAT_TIME);
       }
 
+      // test
       int intTemp = dw->get_TabSpacing();
       if ( m_struct.tabSpacing != intTemp)  {
          m_struct.tabSpacing = intTemp;
          json_Write(TAB_SPACING);
       }
+
+      //
+      json_Write(DICT_MAIN);
+      json_Write(DICT_USER);
    }
 
    delete dw;
@@ -1118,8 +1207,8 @@ void MainWindow::createConnections()
    connect(m_ui->actionFix_Spaces_EOL, SIGNAL(triggered()), this, SLOT(fixSpaces_EOL()));
 
    // tools
-   connect(m_ui->actionMacro_Start,    SIGNAL(triggered()), this, SLOT(macroStart()));
-   connect(m_ui->actionMacro_Stop,     SIGNAL(triggered()), this, SLOT(macroStop()));
+   connect(m_ui->actionMacro_Start,    SIGNAL(triggered()), this, SLOT(mw_macroStart()));
+   connect(m_ui->actionMacro_Stop,     SIGNAL(triggered()), this, SLOT(mw_macroStop()));
    connect(m_ui->actionMacro_Play,     SIGNAL(triggered()), this, SLOT(macroPlay()));
    connect(m_ui->actionSpell_Check,    SIGNAL(triggered()), this, SLOT(spellCheck()));
 
@@ -1163,7 +1252,7 @@ void MainWindow::createToggles()
    m_ui->actionColumn_Mode->setChecked(m_struct.isColumnMode);  
 
    m_ui->actionSpell_Check->setCheckable(true);
-   m_ui->actionSpell_Check->setChecked(false);
+   m_ui->actionSpell_Check->setChecked(m_struct.isSpellCheck);     
 
    //
    m_ui->actionUndo->setEnabled(false);
@@ -1225,6 +1314,10 @@ void MainWindow::createToolBars()
    m_ui->actionPaste->setIcon(QIcon(":/resources/paste.png"));
 
    m_ui->actionFind->setIcon(QIcon(":/resources/find.png"));
+
+   m_ui->actionMacro_Start->setIcon(QIcon(":/resources/camera.png"));
+   m_ui->actionMacro_Stop->setIcon(QIcon(":/resources/stop.png"));
+   m_ui->actionMacro_Play->setIcon(QIcon(":/resources/play.png"));
    m_ui->actionSpell_Check->setIcon(QIcon(":/resources/spell.png"));
 
    //
@@ -1250,6 +1343,9 @@ void MainWindow::createToolBars()
    searchToolBar->addAction(m_ui->actionReplace);
 
    toolsToolBar = addToolBar(tr("Tools"));
+   toolsToolBar->addAction(m_ui->actionMacro_Start);
+   toolsToolBar->addAction(m_ui->actionMacro_Stop);
+   toolsToolBar->addAction(m_ui->actionMacro_Play);
    toolsToolBar->addAction(m_ui->actionSpell_Check);
 }
 
@@ -1278,11 +1374,4 @@ void MainWindow::showNotDone(QString item)
 {
    csMsg( item + " - this feature has not been implemented.");
 }
-
-
-
-
-
-
-
 

@@ -10,6 +10,8 @@ syntax/syn_dox.json
 syntax/syn_css.json
 syntax/syn_cpp.json
 syntax/syn_clipper.json
+syntax/syn_php.json
+syntax/syn_py.json
 configure.ac
 Makefile.am
 diamond.qrc
@@ -46,5 +48,7 @@ dialog_colors.cpp
 dialog_colors.ui
 json.cpp
 settings.h
-syntax/syn_php.json
-syntax/syn_py.json
+spellcheck.cpp
+spellcheck.h
+
+spell.cpp

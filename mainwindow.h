@@ -24,6 +24,7 @@
 
 #include "diamond_edit.h"
 #include "settings.h"
+#include "spellcheck.h"
 #include "syntax.h"
 #include "ui_mainwindow.h"
 #include "util.h"
@@ -31,6 +32,7 @@
 #include <QAction>
 #include <QJsonObject>
 #include <QJsonValue>
+#include <QList>
 #include <QMenu>
 #include <QMainWindow>
 #include <QPlainTextEdit>
@@ -42,7 +44,8 @@ class MainWindow : public QMainWindow
 
    public:      
       MainWindow();
-      struct Settings get_StructData();     
+      struct Settings get_StructData();           
+      QStringList get_Maybe(QString word);
 
    protected:
       void closeEvent(QCloseEvent *event);
@@ -58,15 +61,34 @@ class MainWindow : public QMainWindow
       QString m_curFile;
       QString m_jsonFname;
 
-      // settings
-      struct Settings m_struct;
-
       // find
       QString m_findText;
       QTextDocument::FindFlags m_flags;      
       bool m_fDirection;
       bool m_fCase;
       bool m_fWholeWords;
+
+      // macros
+      bool m_record;
+      QList<QKeyEvent *> m_keyList;
+
+      // settings
+      struct Settings m_struct;
+
+      // recent files
+      static const int rf_MaxCnt = 10;
+      QAction *rf_Actions[rf_MaxCnt];
+      QStringList m_rf_List;
+
+      // spell check     
+      void createSpellCheck();
+      SpellCheck *m_spellCheck;          
+
+      // menu bar
+      QToolBar *fileToolBar;
+      QToolBar *editToolBar;
+      QToolBar *searchToolBar;
+      QToolBar *toolsToolBar;
 
       // status bar
       QLabel *m_statusLine;
@@ -75,19 +97,9 @@ class MainWindow : public QMainWindow
       int m_line;
       int m_col;
 
-      // recent files
-      static const int rf_MaxCnt = 10;
-      QAction *rf_Actions[rf_MaxCnt];
-      QStringList m_rf_List;
-
-      // menu bar
-      QToolBar *fileToolBar;
-      QToolBar *editToolBar;
-      QToolBar *searchToolBar;
-      QToolBar *toolsToolBar;
-
-      enum Option {CLOSE, COLORS, COLUMN_MODE, FONT, FORMAT_DATE, FORMAT_TIME,
-                   PATH_SYNTAX, PATH_PRIOR, RECENTFILE, SHOW_LINEHIGHLIGHT, SHOW_LINENUMBERS, TAB_SPACING};
+      enum Option {CLOSE, COLORS, COLUMN_MODE, DICT_MAIN, DICT_USER, FONT, FORMAT_DATE, FORMAT_TIME,
+                   PATH_SYNTAX, PATH_PRIOR, RECENTFILE, SHOW_LINEHIGHLIGHT, SHOW_LINENUMBERS,
+                   SPELLCHECK, TAB_SPACING};
 
       enum SyntaxTypes {SYN_C, SYN_CLIPPER, SYN_CSS, SYN_DOX, SYN_HTML, SYN_JAVA, SYN_JS,
                         SYN_JSON, SYN_MAKE, SYN_TEXT, SYN_SHELL_S, SYN_PERL, SYN_PHP, SYN_PYTHON, SYN_NONE };
@@ -143,7 +155,7 @@ class MainWindow : public QMainWindow
       void newFile();
       void open();
       void close_Doc();
-      void closeAll_Doc();
+      bool closeAll_Doc();
       void reload();
       bool save();
       bool saveAs();
@@ -213,8 +225,8 @@ class MainWindow : public QMainWindow
       void fixSpaces_Tabs();
       void fixSpaces_EOL();
 
-      void macroStart();
-      void macroStop();
+      void mw_macroStart();
+      void mw_macroStop();
       void macroPlay();
       void spellCheck();
 
@@ -232,6 +244,10 @@ class MainWindow : public QMainWindow
       void rf_Open();
       void setStatus_LineCol();     
       void tabChanged(int index);
+
+      // spell check
+      void add_UserDict();
+      void replaceWord();
 };
 
 #endif

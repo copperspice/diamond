@@ -93,13 +93,17 @@ bool MainWindow::json_Read()
 
       m_struct.showLineHighlight = object.value("showLineHighlight").toBool();
       m_struct.showLineNumbers   = object.value("showLineNumbers").toBool();
-      m_struct.isColumnMode      = object.value("column-mode").toBool();
+      m_struct.isColumnMode      = object.value("column-mode").toBool();      
+      m_struct.isSpellCheck      = object.value("spellcheck").toBool();
 
       //
       m_struct.formatDate = object.value("formatDate").toString();
       m_struct.formatTime = object.value("formatTime").toString();
       m_struct.pathPrior  = object.value("pathPrior").toString();
       m_struct.pathSyntax = object.value("pathSyntax").toString();
+
+      m_struct.dictMain   = object.value("dictMain").toString();
+      m_struct.dictUser   = object.value("dictUser").toString();
 
       //
       value = object.value("font");
@@ -211,6 +215,14 @@ bool MainWindow::json_Write(Option route)
             object.insert("column-mode", m_struct.isColumnMode);
             break;
 
+         case DICT_MAIN:
+            object.insert("dictMain", m_struct.dictMain);
+            break;
+
+         case DICT_USER:
+            object.insert("dictUser", m_struct.dictUser);
+            break;
+
          case FONT:           
             {
                QString temp = m_struct.font.toString();
@@ -241,6 +253,10 @@ bool MainWindow::json_Write(Option route)
 
          case SHOW_LINENUMBERS:
             object.insert("showLineNumbers", m_struct.showLineNumbers);
+            break;
+
+         case SPELLCHECK:
+            object.insert("spellcheck", m_struct.isSpellCheck);
             break;
 
          case TAB_SPACING:
@@ -366,6 +382,7 @@ bool MainWindow::json_CreateNew()
    object.insert("showLineHighlight", true);
 
    object.insert("column-mode", false);
+   object.insert("spellcheck",  false);
 
    value = QJsonValue(QString("MM/dd/yyyy"));
    object.insert("formatDate", value);
@@ -378,6 +395,12 @@ bool MainWindow::json_CreateNew()
 
    value = QJsonValue(QString(syntaxPath));
    object.insert("pathSyntax", value);
+
+   value = QJsonValue(QString(QDir::currentPath() + "/dictionary/en_US.dic" ));
+   object.insert("dictMain", value);
+
+   value = QJsonValue(QString(QDir::currentPath() + "/dictionary/userDict.txt" ));
+   object.insert("dictUser", value);
 
    //
    value = QJsonValue(QString("Courier,12,-1,5,50,0,0,0,0,0"));

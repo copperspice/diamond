@@ -395,7 +395,7 @@
   </action>
   <action name="actionClose_All">
    <property name="text">
-    <string>Close All *</string>
+    <string>Close All</string>
    </property>
    <property name="toolTip">
     <string>Close all open documents</string>
@@ -519,7 +519,7 @@
   </action>
   <action name="actionSpell_Check">
    <property name="text">
-    <string>Spell Check *</string>
+    <string>Spell Check</string>
    </property>
   </action>
   <action name="actionShow_Tabs">

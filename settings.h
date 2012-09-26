@@ -10,10 +10,13 @@ struct Settings {
    bool    showLineHighlight;
    bool    showLineNumbers;
    bool    isColumnMode;
+   bool    isSpellCheck;
    QString pathSyntax;
    QString pathPrior;
    QString formatDate;
    QString formatTime;
+   QString dictMain;
+   QString dictUser;
 
    QFont   font;
    QColor  colorText;
