@@ -22,6 +22,8 @@
 #ifndef DIAMOND_TEXTEDIT_H
 #define DIAMOND_TEXTEDIT_H
 
+#include "spellcheck.h"
+
 #include <QObject>
 #include <QPlainTextEdit>
 #include <QPaintEvent>
@@ -37,13 +39,17 @@ class DiamondTextEdit : public QPlainTextEdit
    Q_OBJECT
 
    public:
-      DiamondTextEdit(MainWindow *from);
+      DiamondTextEdit(MainWindow *from);      
+      ~DiamondTextEdit();
 
       void lineNum_PaintEvent(QPaintEvent *event);
       int lineNum_Width();
 
       void set_ShowLineNum(bool data);
       void set_ColumnMode(bool data);
+
+      void set_Spell(bool value, SpellCheck *spell);
+      QTextCursor get_Cursor();
 
       void macroStart();
       void macroStop();
@@ -58,12 +64,17 @@ class DiamondTextEdit : public QPlainTextEdit
       MainWindow *m_mainWindow;
       QWidget *m_lineNumArea;
 
+      // spell check
+      QTextCursor m_cursor;
+
       // macro
       bool m_record;
       QList<QKeyEvent *> m_keyList;
 
       bool m_showlineNum;
       bool m_isColumnMode;
+      bool m_spellCheck;
+      bool m_isSpellCheck;
 
       void showNotDone(QString item);
 

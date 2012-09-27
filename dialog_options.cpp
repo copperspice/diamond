@@ -22,19 +22,25 @@
 #include "dialog_options.h"
 #include "util.h"
 
+#include <QFileDialog>
+#include <QLineEdit>
 #include <QString>
 #include <QStringList>
 
-Dialog_Options::Dialog_Options(MainWindow *from)
+Dialog_Options::Dialog_Options(MainWindow *from, struct Options data)
    : m_ui(new Ui::Dialog_Options)
 {
-   m_parent = from;
+   m_parent   = from;
+   m_options  = data;
+
    m_ui->setupUi(this);
 
    initData();
 
-   connect(m_ui->save_PB,   SIGNAL(clicked()),this, SLOT(Save()));
-   connect(m_ui->cancel_PB, SIGNAL(clicked()),this, SLOT(Cancel()));
+   connect(m_ui->dictMain_TB, SIGNAL(clicked()), this, SLOT(pick_Main()));
+   connect(m_ui->dictUser_TB, SIGNAL(clicked()), this, SLOT(pick_User()));
+   connect(m_ui->save_PB,     SIGNAL(clicked()), this, SLOT(Save()));
+   connect(m_ui->cancel_PB,   SIGNAL(clicked()), this, SLOT(Cancel()));
 }
 
 Dialog_Options::~Dialog_Options()
@@ -44,9 +50,7 @@ Dialog_Options::~Dialog_Options()
 
 void Dialog_Options::initData()
 {
-   struct Settings temp = m_parent->get_StructData();
-
-   QStringList list;   
+   QStringList list;
    int index;
 
    // 1
@@ -56,7 +60,7 @@ void Dialog_Options::initData()
    m_ui->dateFormat_CB->addItems(list);
    m_ui->dateFormat_CB->setEditable(false);
 
-   index = m_ui->dateFormat_CB->findText(temp.formatDate);
+   index = m_ui->dateFormat_CB->findText(m_options.formatDate);
    m_ui->dateFormat_CB->setCurrentIndex(index);
 
    // 2
@@ -66,7 +70,7 @@ void Dialog_Options::initData()
    m_ui->timeFormat_CB->addItems(list);
    m_ui->timeFormat_CB->setEditable(false);
 
-   index = m_ui->timeFormat_CB->findText(temp.formatTime);
+   index = m_ui->timeFormat_CB->findText(m_options.formatTime);
    m_ui->timeFormat_CB->setCurrentIndex(index);
 
    // 3
@@ -75,8 +79,12 @@ void Dialog_Options::initData()
    m_ui->tabSpacing_CB->addItems(list);
    m_ui->tabSpacing_CB->setEditable(false);
 
-   index = m_ui->tabSpacing_CB->findText(QString::number(temp.tabSpacing));
+   index = m_ui->tabSpacing_CB->findText(QString::number(m_options.tabSpacing));
    m_ui->tabSpacing_CB->setCurrentIndex(index);
+
+   //
+   m_ui->dictMain->setText(m_options.dictMain);
+   m_ui->dictUser->setText(m_options.dictUser);
 }
 
 void Dialog_Options::Save()
@@ -89,20 +97,63 @@ void Dialog_Options::Cancel()
    this->done(QDialog::Rejected);
 }
 
-QString Dialog_Options::get_DateFormat()
+void Dialog_Options::pick_Main()
 {
-   return m_ui->dateFormat_CB->currentText();
+   QFileDialog::Options options;
+
+   if (false)  {  //(Q_OS_DARWIM) {
+      options |= QFileDialog::DontUseNativeDialog;
+   }
+
+   QString selectedFilter;
+
+   QString fileName = QFileDialog::getOpenFileName(this, tr("Select Dictionary"),
+         m_ui->dictMain->text(), tr("All Files (*)"), &selectedFilter, options);
+
+   if (! fileName.isEmpty()) {
+      m_ui->dictMain->setText(fileName);
+   }
 }
 
-QString Dialog_Options::get_TimeFormat()
+void Dialog_Options::pick_User()
 {
-   return m_ui->timeFormat_CB->currentText();
+   QFileDialog::Options options;
+
+   if (false)  {  //(Q_OS_DARWIM) {
+      options |= QFileDialog::DontUseNativeDialog;
+   }
+
+   QString selectedFilter;
+
+   QString fileName = QFileDialog::getOpenFileName(this, tr("Select User Dictionary"),
+         m_ui->dictUser->text(), tr("All Files (*)"), &selectedFilter, options);
+
+   if (! fileName.isEmpty()) {
+      m_ui->dictUser->setText(fileName);
+   }
 }
 
-int Dialog_Options::get_TabSpacing()
+struct Options Dialog_Options::get_Results()
 {
    QString value = m_ui->tabSpacing_CB->currentText();
-   int temp = value.toInt();
+   m_options.tabSpacing = value.toInt();
 
-   return temp;
+   m_options.formatDate = m_ui->dateFormat_CB->currentText();
+   m_options.formatTime = m_ui->timeFormat_CB->currentText();
+   m_options.dictMain   = m_ui->dictMain->text();
+   m_options.dictUser   = m_ui->dictUser->text();
+
+   return m_options;
 }
+
+
+
+
+
+
+
+
+
+
+
+

@@ -52,3 +52,6 @@ spellcheck.cpp
 spellcheck.h
 
 spell.cpp
+dialog_replace.h
+dialog_replace.cpp
+dialog_replace.ui

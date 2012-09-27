@@ -19,45 +19,32 @@
 *
 **************************************************************************/
 
-#include "mainwindow.h"
-#include "spellcheck.h"
-#include "util.h"
+#ifndef DIALOG_REPLACE_H
+#define DIALOG_REPLACE_H
 
-void MainWindow::createSpellCheck()
-{
-   m_spellCheck = new SpellCheck(m_struct.dictMain,  m_struct.dictUser);
-}
+#include "diamond_edit.h"
+#include "ui_dialog_replace.h"
 
-void MainWindow::add_UserDict()
-{      
-   QString word = m_textEdit->textCursor().selectedText();
-   m_spellCheck->addToUserDict(word);
+#include <QDialog>
 
-   // forces document change
+class Dialog_Replace : public QDialog
+{     
+   Q_OBJECT
 
-   m_textEdit->insertPlainText(word);
-}
+   public:
+      Dialog_Replace(DiamondTextEdit *text, QString findText = "");
+      ~Dialog_Replace();
 
-void MainWindow::replaceWord()
-{
-   QAction *action;
-   action = (QAction *)sender();
+   private:
+      Ui::Dialog_Replace *m_ui;
+      DiamondTextEdit *m_textEdit;
 
-   if (action) {      
-      QTextCursor cursor = m_textEdit->get_Cursor();
-      cursor.insertText(action->text());
-   }
-}
+   private slots:
+      void Find();
+      void Replace();
+      void ReplaceAll();
 
-QStringList MainWindow::get_Maybe(QString word)
-{
-   if ( m_spellCheck->spell(word) )   {
-      return QStringList();
-   } else {
-      return m_spellCheck->suggest(word);
-   }
-}
+      void Cancel();
+};
 
-
-
-
+#endif

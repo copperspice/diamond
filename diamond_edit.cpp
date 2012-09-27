@@ -30,8 +30,11 @@ DiamondTextEdit::DiamondTextEdit(MainWindow *from)
 {
    m_mainWindow   = from;
    m_showlineNum  = false;
-   m_isColumnMode = false;
-   m_record       = false;
+   m_isColumnMode = false;  
+   m_record       = false;   
+
+   m_spellCheck   = false;
+   m_isSpellCheck = false;
 
    m_lineNumArea = new LineNumArea(this);
    update_LineNumWidth(0);
@@ -44,6 +47,9 @@ DiamondTextEdit::DiamondTextEdit(MainWindow *from)
    connect(this, SIGNAL(selectionChanged()),       this, SLOT(selectionChanged()));
 }
 
+DiamondTextEdit::~DiamondTextEdit()
+{
+}
 
 // ** line highlight
 void DiamondTextEdit::lineNum_PaintEvent(QPaintEvent *event)
@@ -114,30 +120,53 @@ void DiamondTextEdit::resizeEvent(QResizeEvent *e)
    m_lineNumArea->setGeometry(QRect(cr.left(), cr.top(), lineNum_Width(), cr.height()));
 }
 
+// ** spell check
+void DiamondTextEdit::set_Spell(bool value, SpellCheck *spell)
+{
+   m_isSpellCheck = value;
+   m_spellCheck   = spell;
+}
 
 // ** context menu
+QTextCursor DiamondTextEdit::get_Cursor()
+{
+   return m_cursor;
+}
+
 void DiamondTextEdit::contextMenuEvent(QContextMenuEvent *event)
 {
-   QTextCursor cursor(this->textCursor());
-   cursor.setPosition(cursorForPosition(event->pos()).position());
-   cursor.select(QTextCursor::WordUnderCursor);
-   this->setTextCursor(cursor);
+   bool isSelected = false;
 
-   QString selectedWord = cursor.selectedText();
+   QTextCursor cursor(this->textCursor());
+   QString selectedText = cursor.selectedText();
+
+   if (! selectedText.isEmpty())  {
+      isSelected = true;
+   }
 
    //
    QMenu *menu = new QMenu(this);
 
-   QStringList m_maybeList =  m_mainWindow->get_Maybe(selectedWord);
-   int cnt = m_maybeList.count();
+   if (m_spellCheck && m_isSpellCheck)  {
 
-   if (cnt > 0)  {
-      for (int k = 0; k < cnt; ++k)  {
-         menu->addAction(m_maybeList[k],  m_mainWindow, SLOT(replaceWord())  );
+      cursor.setPosition(cursorForPosition(event->pos()).position());
+      cursor.select(QTextCursor::WordUnderCursor);      
+      selectedText = cursor.selectedText();
+
+      // saved and used in replaceWord()
+      m_cursor = cursor;
+
+      QStringList m_maybeList =  m_mainWindow->get_Maybe(selectedText);
+      int cnt = m_maybeList.count();
+
+      if (cnt > 0)  {
+         for (int k = 0; k < cnt; ++k)  {
+            menu->addAction(m_maybeList[k],  m_mainWindow, SLOT(replaceWord())  );
+         }
+
+         menu->addAction("Add to User Dictionary",  m_mainWindow, SLOT(add_UserDict()) );
+         menu->addSeparator();
       }
-
-      menu->addAction("Add to User Dictionary",  m_mainWindow, SLOT(add_UserDict()) );
-      menu->addSeparator();
    }
 
    menu->addAction("Undo",          this, SLOT(undo())  );
@@ -148,12 +177,19 @@ void DiamondTextEdit::contextMenuEvent(QContextMenuEvent *event)
    menu->addAction("Copy",          this, SLOT(copy())  );
    menu->addAction("Paste",         this, SLOT(paste()) );
 
-   menu->addSeparator();
-   menu->addAction("Insert Date",   m_mainWindow, SLOT(insertDate()) );
-   menu->addAction("Insert Time",   m_mainWindow, SLOT(insertTime()) );
+   if (isSelected) {
+      menu->addSeparator();
+      menu->addAction("Uppercase",   m_mainWindow, SLOT(caseUpper()) );
+      menu->addAction("Lowercase",   m_mainWindow, SLOT(caseLower()) );
 
-   menu->addSeparator();
-   menu->addAction("Select All",    this, SLOT(selectAll()) );
+   } else {
+      menu->addSeparator();
+      menu->addAction("Insert Date", m_mainWindow, SLOT(insertDate()) );
+      menu->addAction("Insert Time", m_mainWindow, SLOT(insertTime()) );
+
+      menu->addSeparator();
+      menu->addAction("Select All",  this, SLOT(selectAll()) );
+   }
 
    menu->exec(event->globalPos());
    delete menu;
@@ -260,6 +296,3 @@ void DiamondTextEdit::keyPressEvent(QKeyEvent *event)
 
    return QPlainTextEdit::keyPressEvent(event);
 }
-
-
-

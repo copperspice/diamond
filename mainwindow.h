@@ -55,11 +55,13 @@ class MainWindow : public QMainWindow
 
       // textEdit
       DiamondTextEdit *m_textEdit;
-      QTabWidget *m_tabWidget;
-      Syntax *m_syntaxParser;
+      QTabWidget *m_tabWidget;      
 
+      // json syntax
       QString m_curFile;
       QString m_jsonFname;
+      Syntax *m_syntaxParser;
+      void runSyntax(QString synFName);
 
       // find
       QString m_findText;
@@ -93,9 +95,7 @@ class MainWindow : public QMainWindow
       // status bar
       QLabel *m_statusLine;
       QLabel *m_statusMode;
-      QLabel *m_statusName;
-      int m_line;
-      int m_col;
+      QLabel *m_statusName;    
 
       enum Option {CLOSE, COLORS, COLUMN_MODE, DICT_MAIN, DICT_USER, FONT, FORMAT_DATE, FORMAT_TIME,
                    PATH_SYNTAX, PATH_PRIOR, RECENTFILE, SHOW_LINEHIGHLIGHT, SHOW_LINENUMBERS,

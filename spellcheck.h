@@ -35,7 +35,7 @@ class SpellCheck
       bool spell(const QString &word);
       QStringList suggest(const QString &word);
       void ignoreWord(const QString &word);
-      void addToUserWordlist(const QString &word);
+      void addToUserDict(const QString &word);
 
    private:
       QString m_userFname;

@@ -29,11 +29,10 @@
 #include <QString>
 #include <QStringList>
 
-Dialog_Colors::Dialog_Colors(MainWindow *from, Syntax *syntax)
+Dialog_Colors::Dialog_Colors(MainWindow *from)
    : m_ui(new Ui::Dialog_Colors)
 {
-   m_mainWindow   = from;
-   m_syntaxParser = syntax;
+   m_mainWindow   = from;   
    m_ui->setupUi(this);
 
    m_struSettings = m_mainWindow->get_StructData();

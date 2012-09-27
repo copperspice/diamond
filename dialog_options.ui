@@ -9,7 +9,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>385</width>
+    <width>460</width>
     <height>227</height>
    </rect>
   </property>
@@ -211,7 +211,7 @@
     <widget class="QLineEdit" name="dictMain">
      <property name="minimumSize">
       <size>
-       <width>200</width>
+       <width>275</width>
        <height>0</height>
       </size>
      </property>
@@ -337,7 +337,7 @@
     <widget class="QLineEdit" name="dictUser">
      <property name="minimumSize">
       <size>
-       <width>200</width>
+       <width>275</width>
        <height>0</height>
       </size>
      </property>

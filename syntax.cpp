@@ -205,6 +205,9 @@ Syntax::Syntax(QTextDocument *document, QString synFName, const struct Settings 
    m_spellCheckFormat.setUnderlineStyle(QTextCharFormat::SpellCheckUnderline);
 }
 
+Syntax::~Syntax()
+{   
+}
 
 QByteArray Syntax::json_ReadFile(QString fileName)
 {
@@ -224,9 +227,10 @@ QByteArray Syntax::json_ReadFile(QString fileName)
    return data;
 }
 
-void Syntax::set_Spell(bool value)
+void Syntax::set_Spell(bool value, SpellCheck *spell)
 {
-   m_isSpellCheck = value;   
+   m_isSpellCheck = value;
+   m_spellCheck   = spell;
 }
 
 void Syntax::highlightBlock(const QString &text)
@@ -268,10 +272,8 @@ void Syntax::highlightBlock(const QString &text)
       startIndex = m_commentStartExpression.indexIn(text, startIndex + commentLength);
    }
 
-
    // spell check
    if (m_spellCheck && m_isSpellCheck)  {
-
       QTextBoundaryFinder wordFinder(QTextBoundaryFinder::Word, text);
 
       int wordStart  = 0;
@@ -289,10 +291,9 @@ void Syntax::highlightBlock(const QString &text)
          wordLength = wordFinder.toNextBoundary()-wordStart;
          word       = text.mid(wordStart,wordLength).trimmed();
 
-         if ( ! word.isEmpty() &&  word.at(0).isLetter() && ! m_spellCheck->spell(word) )   {
+         if ( ! m_spellCheck->spell(word) )   {
             setFormat(wordStart, wordLength, m_spellCheckFormat);
          }
-
       }
    }
 }

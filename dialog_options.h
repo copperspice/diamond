@@ -24,6 +24,7 @@
 
 #include "ui_dialog_options.h"
 #include "mainwindow.h"
+#include "settings.h"
 
 #include <QDialog>
 #include <QStringList>
@@ -33,18 +34,22 @@ class Dialog_Options : public QDialog
    Q_OBJECT
 
    public:
-      Dialog_Options(MainWindow *from);
+      Dialog_Options(MainWindow *from, struct Options data);
       ~Dialog_Options();
-      QString get_DateFormat();
-      QString get_TimeFormat();
-      int get_TabSpacing();
+
+      struct Options get_Results();
 
    private:
       Ui::Dialog_Options *m_ui;
       MainWindow *m_parent;
+
+      struct Options m_options;
+
       void initData();
 
    private slots:
+      void pick_Main();
+      void pick_User();
       void Save();
       void Cancel();
 };

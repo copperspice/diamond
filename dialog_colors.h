@@ -34,7 +34,7 @@ class Dialog_Colors : public QDialog
    Q_OBJECT
 
    public:
-      Dialog_Colors(MainWindow *from, Syntax *dw);
+      Dialog_Colors(MainWindow *from);
       ~Dialog_Colors();
       struct Settings get_Colors();
 

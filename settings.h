@@ -47,4 +47,12 @@ struct Settings {
    QColor syn_MLineText;
 };
 
+struct Options {
+   int     tabSpacing;
+   QString formatDate;
+   QString formatTime;
+   QString dictMain;
+   QString dictUser;
+};
+
 #endif

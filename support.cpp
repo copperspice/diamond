@@ -219,7 +219,7 @@ void MainWindow::setSyntax()
       setSynType(SYN_NONE);
 
    } else {
-      m_syntaxParser = new Syntax(m_textEdit->document(), synFName, m_struct, m_spellCheck);
+      runSyntax(synFName);
 
       if (suffix == "c" || suffix == "cpp" || suffix == "h")  {
          setSynType(SYN_C);
@@ -333,9 +333,17 @@ void MainWindow::forceSyntax(SyntaxTypes data)
       csError(tr("Syntax Highlighting"), tr("Syntax highlighting file was not found: \n\n") + synFName  + "  ");
 
    } else {
-      m_syntaxParser = new Syntax(m_textEdit->document(), synFName, m_struct, m_spellCheck);
+      runSyntax(synFName);
 
    }
+}
+
+void MainWindow::runSyntax(QString synFName)
+{
+   m_syntaxParser = new Syntax(m_textEdit->document(), synFName, m_struct, m_spellCheck);
+
+   m_syntaxParser->set_Spell(m_struct.isSpellCheck, m_spellCheck);
+   m_textEdit->set_Spell(m_struct.isSpellCheck, m_spellCheck);
 }
 
 QString MainWindow::strippedName(const QString fileName)

@@ -22,12 +22,14 @@
 #include "mainwindow.h"
 #include "dialog_colors.h"
 #include "dialog_find.h"
+#include "dialog_replace.h"
 #include "dialog_options.h"
 #include "dialog_symbols.h"
 
 #include <QtGui>
 #include <QDir>
 #include <QString>
+#include <QStringList>
 
 MainWindow::MainWindow()
    : m_ui(new Ui::MainWindow)
@@ -89,11 +91,18 @@ void MainWindow::open()
    }
 
    QString selectedFilter;
-   QString fileName = QFileDialog::getOpenFileName(this, tr("Select File"),
+
+   QStringList fileList = QFileDialog::getOpenFileNames(this, tr("Select File"),
          m_struct.pathPrior, tr("All Files (*)"), &selectedFilter, options);
 
-   if (! fileName.isEmpty()) {
-      loadFile(fileName, true);
+   int cnt = fileList.count();
+
+   for (int k = 0; k < cnt; ++k )  {
+      QString fileName = fileList.at(k);
+
+      if (! fileName.isEmpty()) {
+         loadFile(fileName, true);
+      }
    }
 }
 
@@ -384,9 +393,13 @@ void MainWindow::selectWord()
 
 void MainWindow::caseUpper()
 {
-   QTextCursor cursor(m_textEdit->textCursor());
-   cursor.select(QTextCursor::WordUnderCursor);
+   QTextCursor cursor(m_textEdit->textCursor());   
    QString text = cursor.selectedText();
+
+   if (text.isEmpty())  {
+      cursor.select(QTextCursor::WordUnderCursor);
+      text = cursor.selectedText();
+   }
 
    cursor.removeSelectedText();
    cursor.insertText(text.toUpper());
@@ -394,9 +407,13 @@ void MainWindow::caseUpper()
 
 void MainWindow::caseLower()
 {
-   QTextCursor cursor(m_textEdit->textCursor());
-   cursor.select(QTextCursor::WordUnderCursor);
+   QTextCursor cursor(m_textEdit->textCursor()); 
    QString text = cursor.selectedText();
+
+   if (text.isEmpty())  {
+      cursor.select(QTextCursor::WordUnderCursor);
+      text = cursor.selectedText();
+   }
 
    cursor.removeSelectedText();
    cursor.insertText(text.toLower());
@@ -405,16 +422,18 @@ void MainWindow::caseLower()
 void MainWindow::caseCap()
 {
    QTextCursor cursor(m_textEdit->textCursor());
-   cursor.select(QTextCursor::WordUnderCursor);
    QString text = cursor.selectedText();
 
-   if (! text.isEmpty()) {
-      text = text.toLower();
-      text[0] = text[0].toUpper();
-
-      cursor.removeSelectedText();
-      cursor.insertText(text);
+   if (text.isEmpty())  {
+      cursor.select(QTextCursor::WordUnderCursor);
+      text = cursor.selectedText();
    }
+
+   text    = text.toLower();
+   text[0] = text[0].toUpper();
+
+   cursor.removeSelectedText();
+   cursor.insertText(text);
 }
 
 void MainWindow::insertDate()
@@ -525,7 +544,13 @@ void MainWindow::find()
 
 void MainWindow::replace()
 {
-   showNotDone("Search Replace");
+   Dialog_Replace *dw = new Dialog_Replace(m_textEdit, m_findText);
+   int result = dw->exec();
+
+   if ( result == QDialog::Accepted) {
+   }
+
+   delete dw;
 }
 
 void MainWindow::findNext()
@@ -914,7 +939,9 @@ void MainWindow::spellCheck()
    }
 
    json_Write(SPELLCHECK);
-   m_syntaxParser->set_Spell(m_struct.isSpellCheck);
+
+   m_syntaxParser->set_Spell(m_struct.isSpellCheck, m_spellCheck);
+   m_textEdit->set_Spell(m_struct.isSpellCheck, m_spellCheck);
 }
 
 // **settings
@@ -925,7 +952,7 @@ void MainWindow::setColors()
    QColor old_BackColor = m_struct.colorBack;
 
    //
-   Dialog_Colors *dw = new Dialog_Colors(this, m_syntaxParser);
+   Dialog_Colors *dw = new Dialog_Colors(this);
    int result = dw->exec();
 
    if (result = QDialog::Accepted) {
@@ -959,6 +986,8 @@ void MainWindow::setColors()
       setSyntax();
       move_lineHighlight();
    }
+
+   delete dw;
 }
 
 void MainWindow::setFont()
@@ -974,34 +1003,49 @@ void MainWindow::setFont()
 
 void MainWindow::setOptions()
 {
-   Dialog_Options *dw = new Dialog_Options(this);
+   struct Options options;
+   options.tabSpacing = m_struct.tabSpacing;
+   options.formatDate = m_struct.formatDate;
+   options.formatTime = m_struct.formatTime;
+   options.dictMain   = m_struct.dictMain;
+   options.dictUser   = m_struct.dictUser;
+
+   Dialog_Options *dw = new Dialog_Options(this, options);
    int result = dw->exec();
 
    if ( result = QDialog::Accepted) {
-      // test
-      QString strTemp = dw->get_DateFormat();
-      if ( m_struct.formatDate != strTemp)  {
-         m_struct.formatDate = strTemp;
-         json_Write(FORMAT_DATE);
-      }
 
-      // test
-      strTemp = dw->get_TimeFormat();
-      if ( m_struct.formatTime != strTemp)  {
-         m_struct.formatTime = strTemp;
-         json_Write(FORMAT_TIME);
-      }
+      options = dw->get_Results();
 
-      // test
-      int intTemp = dw->get_TabSpacing();
-      if ( m_struct.tabSpacing != intTemp)  {
-         m_struct.tabSpacing = intTemp;
+      //
+      if ( m_struct.tabSpacing != options.tabSpacing)  {
+         m_struct.tabSpacing = options.tabSpacing;
          json_Write(TAB_SPACING);
       }
 
       //
-      json_Write(DICT_MAIN);
-      json_Write(DICT_USER);
+      if ( m_struct.formatDate != options.formatDate)  {
+         m_struct.formatDate = options.formatDate;
+         json_Write(FORMAT_DATE);
+      }
+
+      //
+      if ( m_struct.formatTime != options.formatTime)  {
+         m_struct.formatTime = options.formatTime;
+         json_Write(FORMAT_TIME);
+      } 
+
+      //
+      if (m_struct.dictMain != options.dictMain ) {
+         m_struct.dictMain = options.dictMain;
+         json_Write(DICT_MAIN);
+      }
+
+      //
+      if (m_struct.dictUser != options.dictUser ) {
+         m_struct.dictUser = options.dictUser;
+         json_Write(DICT_USER);
+      }
    }
 
    delete dw;
@@ -1052,9 +1096,13 @@ void MainWindow::tabClose()
          setCurrentFile("");
 
       } else {
-         // may need to delete the widget         
+         // hold textEdit and delete after tab is removed
+         DiamondTextEdit *hold = m_textEdit;
+
          int index = m_tabWidget->currentIndex();
-         m_tabWidget->removeTab(index);                  
+         m_tabWidget->removeTab(index);
+
+         delete hold;
       }
    }
 }

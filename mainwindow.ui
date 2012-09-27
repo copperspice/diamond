@@ -470,7 +470,7 @@
   </action>
   <action name="actionReplace">
    <property name="text">
-    <string>Replace... *</string>
+    <string>Replace...</string>
    </property>
   </action>
   <action name="actionFind_Next">

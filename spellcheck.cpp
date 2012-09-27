@@ -83,10 +83,21 @@ SpellCheck::~SpellCheck()
 
 bool SpellCheck::spell(const QString &word)
 {
+   bool isCorrect;
 
-   //  csMsg( m_codec->fromUnicode(word).constData() );
+   if ( word.isEmpty() ) {
+      return true;
+   }
 
-   return m_hunspell->spell(m_codec->fromUnicode(word).constData()) != 0;
+   QString lookUp(word);
+
+   while ( ! lookUp.isEmpty() && ! lookUp.at(0).isLetter()) {
+      lookUp = lookUp.mid(1);
+   }
+
+   isCorrect = m_hunspell->spell(m_codec->fromUnicode(lookUp).constData()) != 0;
+
+   return isCorrect;
 }
 
 QStringList SpellCheck::suggest(const QString &word)
@@ -114,9 +125,16 @@ void SpellCheck::put_word(const QString &word)
    m_hunspell->add(m_codec->fromUnicode(word).constData());
 }
 
-void SpellCheck::addToUserWordlist(const QString &word)
+void SpellCheck::addToUserDict(const QString &word)
 {
-   put_word(word);
+   // remove non letters
+   QString lookUp(word);
+
+   while ( ! lookUp.isEmpty() && ! lookUp.at(0).isLetter()) {
+      lookUp = lookUp.mid(1);
+   }
+
+   put_word(lookUp);
 
    if (! m_userFname.isEmpty()) {
 
@@ -129,7 +147,7 @@ void SpellCheck::addToUserWordlist(const QString &word)
       }
 
       QTextStream stream(&file);
-      stream << word << "\n";
+      stream << lookUp << "\n";
 
       file.close();
 

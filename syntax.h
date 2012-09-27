@@ -38,7 +38,9 @@ class Syntax : public QSyntaxHighlighter
    public:
       Syntax(QTextDocument *parent, QString synFName,
              const struct Settings &settings,  SpellCheck *spell = 0);
-      void set_Spell(bool value);
+
+      ~Syntax();
+      void set_Spell(bool value, SpellCheck *spell);
 
    protected:
       void highlightBlock(const QString &text);
