@@ -120,6 +120,7 @@
     <addaction name="actionGo_Line"/>
     <addaction name="actionGo_Column"/>
     <addaction name="actionGo_Top"/>
+    <addaction name="actionGo_Bottom"/>
    </widget>
    <widget class="QMenu" name="menuView">
     <property name="title">
@@ -127,12 +128,13 @@
     </property>
     <addaction name="actionLine_Highlight"/>
     <addaction name="actionLine_Numbers"/>
+    <addaction name="actionWord_Wrap"/>
     <addaction name="separator"/>
     <addaction name="actionShow_Spaces"/>
-    <addaction name="actionShow_Spaces_EOL"/>
     <addaction name="actionShow_Tabs"/>
-    <addaction name="actionShow_Line_Break"/>
+    <addaction name="actionShow_EOL"/>
     <addaction name="separator"/>
+    <addaction name="actionDisplay_HTML"/>
    </widget>
    <widget class="QMenu" name="menuDocument">
     <property name="title">
@@ -165,6 +167,8 @@
      <addaction name="actionSyn_Perl"/>
      <addaction name="actionSyn_PHP"/>
      <addaction name="actionSyn_Python"/>
+     <addaction name="separator"/>
+     <addaction name="actionSyn_None"/>
     </widget>
     <widget class="QMenu" name="menuTabs_Spaces">
      <property name="title">
@@ -181,7 +185,7 @@
    </widget>
    <widget class="QMenu" name="menuWindow">
     <property name="title">
-     <string>Window</string>
+     <string>Tabs</string>
     </property>
     <addaction name="actionTab_New"/>
     <addaction name="actionTab_Close"/>
@@ -196,8 +200,10 @@
      </property>
      <addaction name="actionMacro_Start"/>
      <addaction name="actionMacro_Stop"/>
-     <addaction name="separator"/>
      <addaction name="actionMacro_Play"/>
+     <addaction name="separator"/>
+     <addaction name="actionMacro_Select"/>
+     <addaction name="actionMacro_SelectPlay"/>
     </widget>
     <addaction name="menuMacros"/>
     <addaction name="actionSpell_Check"/>
@@ -289,7 +295,7 @@
   </action>
   <action name="actionDiamond_Help">
    <property name="text">
-    <string>Help Topics...</string>
+    <string>Diamond Help</string>
    </property>
   </action>
   <action name="actionTab_New">
@@ -480,7 +486,7 @@
   </action>
   <action name="actionFind_Prev">
    <property name="text">
-    <string>Find Prev</string>
+    <string>Find Previous</string>
    </property>
   </action>
   <action name="actionAdv_Find">
@@ -527,9 +533,9 @@
     <string>Show Tabs *</string>
    </property>
   </action>
-  <action name="actionShow_Line_Break">
+  <action name="actionShow_EOL">
    <property name="text">
-    <string>Show Line Break *</string>
+    <string>Show EOL *</string>
    </property>
   </action>
   <action name="actionShow_Spaces">
@@ -583,7 +589,7 @@
   </action>
   <action name="actionGo_Top">
    <property name="text">
-    <string>Go Top of File</string>
+    <string>Go Top</string>
    </property>
    <property name="toolTip">
     <string>Go to the top of the file</string>
@@ -672,6 +678,36 @@
   <action name="actionSplit_Lines">
    <property name="text">
     <string>Split Lines</string>
+   </property>
+  </action>
+  <action name="actionSyn_None">
+   <property name="text">
+    <string>None</string>
+   </property>
+  </action>
+  <action name="actionMacro_Select">
+   <property name="text">
+    <string>Select Saved Macro...</string>
+   </property>
+  </action>
+  <action name="actionMacro_SelectPlay">
+   <property name="text">
+    <string>Play Saved Macro</string>
+   </property>
+  </action>
+  <action name="actionGo_Bottom">
+   <property name="text">
+    <string>Go Bottom</string>
+   </property>
+  </action>
+  <action name="actionWord_Wrap">
+   <property name="text">
+    <string>Word Wrap</string>
+   </property>
+  </action>
+  <action name="actionDisplay_HTML">
+   <property name="text">
+    <string>Display as HTML</string>
    </property>
   </action>
  </widget>

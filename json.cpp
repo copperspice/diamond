@@ -93,6 +93,7 @@ bool MainWindow::json_Read()
 
       m_struct.showLineHighlight = object.value("showLineHighlight").toBool();
       m_struct.showLineNumbers   = object.value("showLineNumbers").toBool();
+      m_struct.isWordWrap        = object.value("word-wrap").toBool();
       m_struct.isColumnMode      = object.value("column-mode").toBool();      
       m_struct.isSpellCheck      = object.value("spellcheck").toBool();
 
@@ -104,6 +105,7 @@ bool MainWindow::json_Read()
 
       m_struct.dictMain   = object.value("dictMain").toString();
       m_struct.dictUser   = object.value("dictUser").toString();
+      m_struct.aboutUrl   = object.value("aboutUrl").toString();
 
       //
       value = object.value("font");
@@ -247,6 +249,10 @@ bool MainWindow::json_Write(Option route)
             object.insert("pathSyntax", m_struct.pathSyntax);
             break;
 
+         case ABOUTURL:
+            object.insert("aboutUrl", m_struct.aboutUrl);
+            break;
+
          case SHOW_LINEHIGHLIGHT:
             object.insert("showLineHighlight", m_struct.showLineHighlight);
             break;
@@ -263,10 +269,16 @@ bool MainWindow::json_Write(Option route)
             object.insert("tabSpacing", m_struct.tabSpacing);
             break;
 
-         case RECENTFILE:            
-            QJsonArray temp = QJsonArray::fromStringList(m_rf_List);
-            object.insert("recent-files", temp);
+         case WORDWRAP:
+            object.insert("word-wrap", m_struct.isWordWrap);
             break;
+
+         case RECENTFILE:            
+            {
+               QJsonArray temp = QJsonArray::fromStringList(m_rf_List);
+               object.insert("recent-files", temp);
+               break;
+            }
       }
 
       // save the new data
@@ -319,6 +331,7 @@ QString MainWindow::get_SyntaxPath()
 
    options |= QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks;
 
+   // BROOM, unsure how to show the title on X11 and OS X
    dir = QFileDialog::getExistingDirectory(this, tr("Select location for the existing Diamond Editor Syntax Files"),
       "", options);
 
@@ -380,7 +393,7 @@ bool MainWindow::json_CreateNew()
 
    object.insert("showLineNumbers",   true);
    object.insert("showLineHighlight", true);
-
+   object.insert("word-wrap",   false);
    object.insert("column-mode", false);
    object.insert("spellcheck",  false);
 
@@ -401,6 +414,9 @@ bool MainWindow::json_CreateNew()
 
    value = QJsonValue(QString(QDir::currentPath() + "/dictionary/userDict.txt" ));
    object.insert("dictUser", value);
+
+   value = QJsonValue(QString( QDir::currentPath() + "/html/index.html" ));
+   object.insert("aboutUrl", value);
 
    //
    value = QJsonValue(QString("Courier,12,-1,5,50,0,0,0,0,0"));

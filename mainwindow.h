@@ -56,10 +56,11 @@ class MainWindow : public QMainWindow
       // textEdit
       DiamondTextEdit *m_textEdit;
       QTabWidget *m_tabWidget;      
-
-      // json syntax
       QString m_curFile;
+
+      // syntax
       QString m_jsonFname;
+      SyntaxTypes m_syntaxEnum;
       Syntax *m_syntaxParser;
       void runSyntax(QString synFName);
 
@@ -81,6 +82,7 @@ class MainWindow : public QMainWindow
       static const int rf_MaxCnt = 10;
       QAction *rf_Actions[rf_MaxCnt];
       QStringList m_rf_List;
+      QMenu *rf_DeleteMenu(QString tName);
 
       // spell check     
       void createSpellCheck();
@@ -98,11 +100,8 @@ class MainWindow : public QMainWindow
       QLabel *m_statusName;    
 
       enum Option {CLOSE, COLORS, COLUMN_MODE, DICT_MAIN, DICT_USER, FONT, FORMAT_DATE, FORMAT_TIME,
-                   PATH_SYNTAX, PATH_PRIOR, RECENTFILE, SHOW_LINEHIGHLIGHT, SHOW_LINENUMBERS,
-                   SPELLCHECK, TAB_SPACING};
-
-      enum SyntaxTypes {SYN_C, SYN_CLIPPER, SYN_CSS, SYN_DOX, SYN_HTML, SYN_JAVA, SYN_JS,
-                        SYN_JSON, SYN_MAKE, SYN_TEXT, SYN_SHELL_S, SYN_PERL, SYN_PHP, SYN_PYTHON, SYN_NONE };
+                   PATH_SYNTAX, PATH_PRIOR, RECENTFILE, ABOUTURL,
+                   SHOW_LINEHIGHLIGHT, SHOW_LINENUMBERS, WORDWRAP, SPELLCHECK, TAB_SPACING};
 
       void setScreenColors();
       void setSyntax();
@@ -193,15 +192,16 @@ class MainWindow : public QMainWindow
       void goLine();
       void goColumn();
       void goTop();
+      void goBottom();
 
       void lineHighlight();
       void move_lineHighlight();
-
       void lineNumbers();
-      void showSpaces();
-      void showSpaces_EOL();
+      void wordWrap();
+      void showSpaces();      
       void showTabs();
-      void showLineBreaks();
+      void showEOL();
+      void displayHTML();
 
       void setSyn_C();
       void setSyn_Clipper();
@@ -217,6 +217,7 @@ class MainWindow : public QMainWindow
       void setSyn_Perl();
       void setSyn_Php();
       void setSyn_Python();
+      void setSyn_None();
 
       void formatDos();
       void formatUnix();
@@ -228,6 +229,8 @@ class MainWindow : public QMainWindow
       void mw_macroStart();
       void mw_macroStop();
       void macroPlay();
+      void macroSelect();
+      void macroSelectPlay();
       void spellCheck();
 
       void setColors();
@@ -235,15 +238,20 @@ class MainWindow : public QMainWindow
       void setOptions();
 
       void tabNew();
-      void tabClose();
+      void tabClose(int index);
+      void diamondHelp();
       void about();
 
       //
       void documentWasModified();     
-      void printPreview(QPrinter *printer);
-      void rf_Open();
-      void setStatus_LineCol();     
+      void printPreview(QPrinter *printer);      
+      void setStatus_LineCol();           
+
+      void mw_tabClose();
       void tabChanged(int index);
+
+      void rf_Open();
+      void rf_DeleteName();
 
       // spell check
       void add_UserDict();

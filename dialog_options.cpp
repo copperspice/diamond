@@ -39,6 +39,8 @@ Dialog_Options::Dialog_Options(MainWindow *from, struct Options data)
 
    connect(m_ui->dictMain_TB, SIGNAL(clicked()), this, SLOT(pick_Main()));
    connect(m_ui->dictUser_TB, SIGNAL(clicked()), this, SLOT(pick_User()));
+   connect(m_ui->about_TB,    SIGNAL(clicked()), this, SLOT(pick_About()));
+
    connect(m_ui->save_PB,     SIGNAL(clicked()), this, SLOT(Save()));
    connect(m_ui->cancel_PB,   SIGNAL(clicked()), this, SLOT(Cancel()));
 }
@@ -85,6 +87,7 @@ void Dialog_Options::initData()
    //
    m_ui->dictMain->setText(m_options.dictMain);
    m_ui->dictUser->setText(m_options.dictUser);
+   m_ui->about->setText(m_options.aboutUrl);
 }
 
 void Dialog_Options::Save()
@@ -133,6 +136,25 @@ void Dialog_Options::pick_User()
    }
 }
 
+void Dialog_Options::pick_About()
+{
+   QFileDialog::Options options;
+
+   if (false)  {  //(Q_OS_DARWIM) {
+      options |= QFileDialog::DontUseNativeDialog;
+   }
+
+   QString selectedFilter;
+
+   QString fileName = QFileDialog::getOpenFileName(this, tr("Select Diamond About"),
+         m_ui->about->text(), tr("All Files (*)"), &selectedFilter, options);
+
+   if (! fileName.isEmpty()) {
+      m_ui->about->setText(fileName);
+   }
+}
+
+
 struct Options Dialog_Options::get_Results()
 {
    QString value = m_ui->tabSpacing_CB->currentText();
@@ -142,6 +164,7 @@ struct Options Dialog_Options::get_Results()
    m_options.formatTime = m_ui->timeFormat_CB->currentText();
    m_options.dictMain   = m_ui->dictMain->text();
    m_options.dictUser   = m_ui->dictUser->text();
+   m_options.aboutUrl   = m_ui->about->text();
 
    return m_options;
 }

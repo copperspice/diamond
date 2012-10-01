@@ -25,8 +25,6 @@
 
 #include <QFile>
 #include <QFileInfo>
-#include <QTextStream>
-#include <QLabel>
 
 void MainWindow::closeEvent(QCloseEvent *event)
 {
@@ -161,189 +159,15 @@ bool MainWindow::saveFile(const QString &fileName, bool isSaveOne)
    QApplication::restoreOverrideCursor();
 
    if (isSaveOne) {
-      setCurrentFile(fileName);
+      m_textEdit->document()->setModified(false);
+      setWindowModified(false);
+      setWindowFilePath(m_curFile);
+
+      //
       setStatusBar(tr("File saved"), 2000);
    }
 
    return true;
-}
-
-void MainWindow::setSyntax()
-{
-   if (m_syntaxParser) {
-      delete m_syntaxParser;
-      m_syntaxParser = 0;
-   }
-
-   QString fname  = "";
-   QString suffix = "txt";
-
-   if (! m_curFile.isEmpty()) {
-
-      fname  = strippedName(m_curFile).toLower();
-      suffix = suffixName();
-
-      if (suffix == "c" || fname == "cpp" || fname == "h") {
-         suffix = "cpp";
-
-      } else if (suffix == "prg") {
-         suffix = "clipper";
-
-      } else if (suffix == "doxy" || suffix == "doxygen") {
-         suffix = "dox";
-
-      } else if (fname == "configure" || fname == "configure.ac") {
-         suffix = "make";
-
-      } else if (suffix == "htm") {
-         suffix = "html";
-
-      } else if (fname == "makefile" || fname == "makefile.am" || fname == "makefile.in") {
-         suffix = "make";
-
-      }
-   }
-
-   QString synFName = m_struct.pathSyntax + "syn_"+ suffix + ".json";
-
-   if (! QFile::exists(synFName)) {
-      // csError(tr("Syntax Highlighting"), tr("Syntax highlighting file was not found: \n\n") + synFName  + "  ");
-
-      // use default
-      suffix = "txt";
-      synFName = m_struct.pathSyntax + "syn_txt.json";
-   }
-
-   if (! QFile::exists(synFName)) {
-      // csError(tr("Syntax Highlighting"), tr("Syntax highlighting file was not found: \n\n") + synFName  + "  ");
-      setSynType(SYN_NONE);
-
-   } else {
-      runSyntax(synFName);
-
-      if (suffix == "c" || suffix == "cpp" || suffix == "h")  {
-         setSynType(SYN_C);
-
-      } else if (suffix == "clipper")  {
-         setSynType(SYN_CLIPPER);
-
-      } else if (suffix == "css")  {
-         setSynType(SYN_CSS);
-
-      } else if (suffix == "dox")  {
-         setSynType(SYN_DOX);
-
-      } else if (suffix == "html")  {
-         setSynType(SYN_HTML);
-
-      } else if (suffix == "java")  {
-         setSynType(SYN_JAVA);
-
-      } else if (suffix == "js")  {
-         setSynType(SYN_JS);
-
-      } else if (suffix == "json")  {
-         setSynType(SYN_JSON);
-
-      } else if ( suffix == "make")  {
-         setSynType(SYN_MAKE);
-
-      } else if (suffix == "txt")  {
-         setSynType(SYN_TEXT);
-
-      } else if ( suffix == "sh")  {
-         setSynType(SYN_SHELL_S);
-
-      } else if ( suffix == "pl")  {
-         setSynType(SYN_PERL);
-
-      } else if (suffix == "php")  {
-         setSynType(SYN_PHP);
-
-      } else if (suffix == "py")  {
-         setSynType(SYN_PYTHON);
-
-      }
-   }
-}
-
-void MainWindow::forceSyntax(SyntaxTypes data)
-{
-    QString synFName;
-
-   switch (data)  {
-      case SYN_C:
-         synFName = m_struct.pathSyntax + "syn_cpp.json";
-         break;
-
-      case SYN_CLIPPER:
-         synFName = m_struct.pathSyntax + "syn_clipper.json";
-         break;
-
-      case SYN_CSS:
-         synFName = m_struct.pathSyntax + "syn_css.json";
-         break;
-
-      case SYN_DOX:
-         synFName = m_struct.pathSyntax+ "syn_dox.json";
-         break;
-
-      case SYN_HTML:
-         synFName = m_struct.pathSyntax + "syn_html.json";
-         break;
-
-      case SYN_JAVA:
-         synFName = m_struct.pathSyntax + "syn_java.json";
-         break;
-
-      case SYN_JS:
-         synFName = m_struct.pathSyntax + "syn_js.json";
-         break;
-
-      case SYN_JSON:
-         synFName = m_struct.pathSyntax + "syn_json.json";
-         break;
-
-      case SYN_MAKE:
-        synFName = m_struct.pathSyntax + "syn_make.json";
-         break;
-
-      case SYN_TEXT:
-         synFName = m_struct.pathSyntax + "syn_txt.json";
-         break;
-
-      case SYN_SHELL_S:
-         synFName = m_struct.pathSyntax + "syn_sh.json";
-         break;
-
-      case SYN_PERL:
-         synFName = m_struct.pathSyntax + "syn_pl.json";
-         break;
-
-      case SYN_PHP:
-         synFName = m_struct.pathSyntax + "syn_php.json";
-         break;
-
-      case SYN_PYTHON:
-         synFName = m_struct.pathSyntax + "syn_py.json";
-         break;
-   }
-
-   if (! QFile::exists(synFName)) {
-      csError(tr("Syntax Highlighting"), tr("Syntax highlighting file was not found: \n\n") + synFName  + "  ");
-
-   } else {
-      runSyntax(synFName);
-
-   }
-}
-
-void MainWindow::runSyntax(QString synFName)
-{
-   m_syntaxParser = new Syntax(m_textEdit->document(), synFName, m_struct, m_spellCheck);
-
-   m_syntaxParser->set_Spell(m_struct.isSpellCheck, m_spellCheck);
-   m_textEdit->set_Spell(m_struct.isSpellCheck, m_spellCheck);
 }
 
 QString MainWindow::strippedName(const QString fileName)
@@ -366,17 +190,21 @@ void MainWindow::setCurrentFile(const QString &fileName)
    if (m_curFile.isEmpty()) {
       showName = "untitled.txt";
 
-      // change the tab name
+      // change the name on the tab to "untitled.txt"
       int index = m_tabWidget->currentIndex();
+
       m_tabWidget->setTabText(index, showName);
       m_tabWidget->setTabWhatsThis(index, showName);
 
       setStatus_FName(showName);
-      setSyntax();
+      forceSyntax(SYN_TEXT);
 
    } else {
-      // change the tab name
+      // called when loading an existing file
+
+      //  change the name on the tab to m_curFile
       int index = m_tabWidget->currentIndex();
+
       m_tabWidget->setTabText(index, strippedName(m_curFile) );
       m_tabWidget->setTabWhatsThis(index, m_curFile);
 

@@ -29,12 +29,13 @@
 #include <QJsonObject>
 #include <QJsonValue>
 #include <QTextBoundaryFinder>
+#include <QFileInfo>
 
 Syntax::Syntax(QTextDocument *document, QString synFName, const struct Settings &settings, SpellCheck *spell)
    : QSyntaxHighlighter(document)
-{                 
-   m_isSpellCheck = settings.isSpellCheck;
+{
    m_spellCheck   = spell;
+   m_isSpellCheck = settings.isSpellCheck;
 
    // get existing json data
    QByteArray data = json_ReadFile(synFName);
@@ -192,10 +193,20 @@ Syntax::Syntax(QTextDocument *document, QString synFName, const struct Settings 
    rule.pattern = QRegExp("//[^\n]*");
    highlightingRules.append(rule);
 
-   m_commentStartExpression = QRegExp("/\\*");
-   m_commentEndExpression   = QRegExp("\\*/");
-
    // multi line comment
+   QString temp = QFileInfo(synFName).fileName();
+
+   if (temp == "syn_dox.json" || temp == "syn_txt.json" ||
+       temp == "syn_none.json" ) {
+
+      m_commentStartExpression = QRegExp("(?!E)E");
+      m_commentEndExpression   = QRegExp("(?!E)E");
+
+   } else {
+      m_commentStartExpression = QRegExp("/\\*");
+      m_commentEndExpression   = QRegExp("\\*/");
+   }
+
    m_multiLineCommentFormat.setFontWeight(settings.syn_MLineWeight);
    m_multiLineCommentFormat.setFontItalic(settings.syn_MLineItalic);
    m_multiLineCommentFormat.setForeground(settings.syn_MLineText);
@@ -227,10 +238,9 @@ QByteArray Syntax::json_ReadFile(QString fileName)
    return data;
 }
 
-void Syntax::set_Spell(bool value, SpellCheck *spell)
+void Syntax::set_Spell(bool value)
 {
-   m_isSpellCheck = value;
-   m_spellCheck   = spell;
+   m_isSpellCheck = value;   
 }
 
 void Syntax::highlightBlock(const QString &text)

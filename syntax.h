@@ -26,9 +26,9 @@
 #include "spellcheck.h"
 
 #include <QHash>
-#include <QTextCharFormat>
 #include <QPlainTextEdit>
 #include <QSyntaxHighlighter>
+#include <QTextCharFormat>
 #include <QVector>
 
 class Syntax : public QSyntaxHighlighter
@@ -40,7 +40,7 @@ class Syntax : public QSyntaxHighlighter
              const struct Settings &settings,  SpellCheck *spell = 0);
 
       ~Syntax();
-      void set_Spell(bool value, SpellCheck *spell);
+      void set_Spell(bool value);
 
    protected:
       void highlightBlock(const QString &text);

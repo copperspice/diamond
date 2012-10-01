@@ -25,17 +25,25 @@
 
 #include <QtGui>
 
-DiamondTextEdit::DiamondTextEdit(MainWindow *from)
+DiamondTextEdit::DiamondTextEdit(MainWindow *from, struct Settings settings, SpellCheck *spell)
       : QPlainTextEdit()
 {
    m_mainWindow   = from;
-   m_showlineNum  = false;
-   m_isColumnMode = false;  
-   m_record       = false;   
+   m_record       = false;
 
-   m_spellCheck   = false;
-   m_isSpellCheck = false;
+   //
+   m_showlineNum  = settings.showLineNumbers;
+   m_isColumnMode = settings.isColumnMode;
 
+   // syntax (assinged from loadfile(), runSyntax()
+   m_synFName     = "";
+   m_syntaxParser = 0;
+
+   // spell check
+   m_spellCheck   = spell;
+   m_isSpellCheck = settings.isSpellCheck;
+
+   //
    m_lineNumArea = new LineNumArea(this);
    update_LineNumWidth(0);
 
@@ -120,12 +128,6 @@ void DiamondTextEdit::resizeEvent(QResizeEvent *e)
    m_lineNumArea->setGeometry(QRect(cr.left(), cr.top(), lineNum_Width(), cr.height()));
 }
 
-// ** spell check
-void DiamondTextEdit::set_Spell(bool value, SpellCheck *spell)
-{
-   m_isSpellCheck = value;
-   m_spellCheck   = spell;
-}
 
 // ** context menu
 QTextCursor DiamondTextEdit::get_Cursor()
@@ -153,7 +155,7 @@ void DiamondTextEdit::contextMenuEvent(QContextMenuEvent *event)
       cursor.select(QTextCursor::WordUnderCursor);      
       selectedText = cursor.selectedText();
 
-      // saved and used in replaceWord()
+      // save to use in add_userDict() and replaceWord()
       m_cursor = cursor;
 
       QStringList m_maybeList =  m_mainWindow->get_Maybe(selectedText);
@@ -167,6 +169,11 @@ void DiamondTextEdit::contextMenuEvent(QContextMenuEvent *event)
          menu->addAction("Add to User Dictionary",  m_mainWindow, SLOT(add_UserDict()) );
          menu->addSeparator();
       }
+
+
+   } else  {
+      csMsg("Spell Check is off");
+
    }
 
    menu->addAction("Undo",          this, SLOT(undo())  );
@@ -193,6 +200,48 @@ void DiamondTextEdit::contextMenuEvent(QContextMenuEvent *event)
 
    menu->exec(event->globalPos());
    delete menu;
+}
+
+// ** syntax
+QString DiamondTextEdit::get_SyntaxFile()
+{
+   return m_synFName;
+}
+
+void DiamondTextEdit::set_SyntaxFile(QString fname)
+{
+   m_synFName = fname;
+}
+
+Syntax * DiamondTextEdit::get_SyntaxParser()
+{
+   return m_syntaxParser;
+}
+
+void DiamondTextEdit::set_SyntaxParser(Syntax *parser)
+{
+   m_syntaxParser = parser;
+}
+
+SyntaxTypes DiamondTextEdit::get_SyntaxEnum()
+{
+   return m_syntaxEnum;
+}
+
+void DiamondTextEdit::set_SyntaxEnum(SyntaxTypes data)
+{
+   m_syntaxEnum = data;
+}
+
+
+// ** spell check
+void DiamondTextEdit::set_Spell(bool value)
+{
+   m_isSpellCheck = value;   
+   m_syntaxParser->set_Spell(value);
+
+   // force syntax highlight to redraw
+   m_syntaxParser->rehighlight();
 }
 
 

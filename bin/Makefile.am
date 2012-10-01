@@ -7,8 +7,10 @@ gccpath=/c/MingW
 gcclibs=libgcc_s_sjlj-1  libstdc++-6  libwinpthread-1
 
 # list of CopperSpice libraries your app uses
-cslibs=Core Gui
-hunspell=/z/Hunspell/deploy/lib/libhunspell-1.3.la
+cslibs=Core Gui Network Script WebKit 
+
+hunspell_dll=/z/Hunspell/deploy/bin/libhunspell-1.3-0.dll
+hunspell_la=/z/Hunspell/deploy/lib/libhunspell-1.3.la
 
 # location of includes, libs, defines for compiling, turn off debugging
 AM_CXXFLAGS+=-mwindows -std=c++11   -I/z/Hunspell/deploy/include/hunspell
@@ -21,6 +23,7 @@ install-data-hook:
 	mkdir -p $(deploydir)	  
 	cp --preserve=timestamps  $(patsubst %,$(gccpath)/bin/%.dll,$(gcclibs))  $(deploydir)
 	cp --preserve=timestamps  $(patsubst %,$(CS_HOME)/bin/libCs%1-0.dll,$(cslibs))  $(deploydir)
+	cp --preserve=timestamps  $(hunspell_dll)  $(deploydir)
     
 # search path for source
 VPATH = ../
@@ -30,12 +33,13 @@ Diamond_LDFLAGS=$(AM_LDFLAGS)   $(patsubst %,-lCs%1,$(cslibs))
 
 # 'Diamond' must match the app name ( dash had to be replaced )
 Diamond_SOURCES = \
+	about.cpp \
 	dialog_colors.cpp \
 	dialog_find.cpp \
 	dialog_get1.cpp \
 	dialog_options.cpp \
 	dialog_replace.cpp \
-	dialog_symbols.cpp \	
+	dialog_symbols.cpp \
 	diamond_edit.cpp \
 	diamond_tab.cpp \
 	json.cpp \
@@ -50,6 +54,7 @@ Diamond_SOURCES = \
           
 #              
 noinst_HEADERS = \
+	about.h \
 	dialog_colors.h \
 	dialog_find.h \
 	dialog_get1.h  \
@@ -62,10 +67,12 @@ noinst_HEADERS = \
 	settings.h \
 	spellcheck.h \
 	util.h
+	
    
                 
 # list of files that require compiling with moc
 MOCS = \
+	about.h \
 	dialog_colors.h\
 	dialog_find.h \
 	dialog_get1.h  \
@@ -76,9 +83,10 @@ MOCS = \
 	diamond_tab.h \
 	mainwindow.h  \
 	syntax.h
+	
 	   
     
-Diamond_LDADD=$(patsubst %.h,moc_%.$(OBJEXT),$(MOCS))   $(hunspell) 
+Diamond_LDADD=$(patsubst %.h,moc_%.$(OBJEXT),$(MOCS))   $(hunspell_la)
            
 #
 FORMS =	\

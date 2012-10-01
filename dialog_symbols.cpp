@@ -57,7 +57,12 @@ QStringList Dialog_Symbols::initData()
 {
    QStringList data;
 
-   data << QChar(0x02153)     // "1/3"
+   data
+        << "&amp;"
+        << "&nbsp;"
+        << "&lt;"
+        << "&gt;"
+        << QChar(0x02153)     // "1/3"
         << QChar(0x02154)     // "2/3"
         << QChar(0x0215C)     // "3/8"
         << QChar(0x0215D)     // "5/8"

@@ -50,6 +50,7 @@ class Dialog_Options : public QDialog
    private slots:
       void pick_Main();
       void pick_User();
+      void pick_About();
       void Save();
       void Cancel();
 };

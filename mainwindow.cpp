@@ -19,6 +19,7 @@
 *
 **************************************************************************/
 
+#include "about.h"
 #include "mainwindow.h"
 #include "dialog_colors.h"
 #include "dialog_find.h"
@@ -28,8 +29,10 @@
 
 #include <QtGui>
 #include <QDir>
+#include <QFileInfo>
 #include <QString>
 #include <QStringList>
+#include <QFontMetrics>
 
 MainWindow::MainWindow()
    : m_ui(new Ui::MainWindow)
@@ -41,14 +44,12 @@ MainWindow::MainWindow()
       csError(tr("Settings File"), tr("Unable to locate or open the Settings file."));
    }
 
-   m_syntaxParser = 0; 
-
    // remaining methods must be done after jsson_Read
    m_tabWidget = new QTabWidget;      
 
    m_tabWidget->setTabsClosable(true);
    m_tabWidget->setMovable(true);
-   setCentralWidget(m_tabWidget);  
+   setCentralWidget(m_tabWidget);
 
    // screen setup
    createShortCuts();      
@@ -60,7 +61,7 @@ MainWindow::MainWindow()
    // recent files
    rf_CreateMenus();
 
-   // spell check
+   // spell check  
    createSpellCheck();
 
    //
@@ -123,10 +124,10 @@ bool MainWindow::closeAll_Doc()
    QWidget *temp;
    DiamondTextEdit *textEdit;
 
-   int cnt = m_tabWidget->count();
+   int count = m_tabWidget->count();
    int whichTab = 0;
 
-   for (int index = 0; index < cnt; ++index) {
+   for (int k = 0; k < count; ++k) {
 
       temp = m_tabWidget->widget(whichTab);
       textEdit = dynamic_cast<DiamondTextEdit *>(temp);
@@ -140,6 +141,7 @@ bool MainWindow::closeAll_Doc()
             if (m_tabWidget->count() == 1) {
                // do not remove !
                m_textEdit->clear();
+
                setCurrentFile("");
 
             } else {
@@ -221,8 +223,10 @@ bool MainWindow::saveAs(bool isSaveOne)
    }
 
    QString selectedFilter;
+   QString path = pathName(m_curFile);
+
    QString fileName = QFileDialog::getSaveFileName(this, tr("Create or Select File"),
-         "", tr("All Files (*)"), &selectedFilter, options);
+        path, tr("All Files (*)"), &selectedFilter, options);
 
    if (fileName.isEmpty()) {
       retval = false;
@@ -236,22 +240,23 @@ bool MainWindow::saveAs(bool isSaveOne)
 bool MainWindow::saveAll()
 {
    QString file;
+
    QWidget *temp;
    DiamondTextEdit *textEdit;
 
    // save current textEdit
    DiamondTextEdit *cur_textEdit = m_textEdit;
 
-   int cnt = m_tabWidget->count();
+   int count = m_tabWidget->count();
 
-   for (int index = 0; index < cnt; ++index) {
+   for (int k = 0; k < count; ++k) {
 
-      temp = m_tabWidget->widget(index);
+      temp = m_tabWidget->widget(k);
       textEdit = dynamic_cast<DiamondTextEdit *>(temp);
 
       if (textEdit) {
          m_textEdit = textEdit;
-         file = m_tabWidget->tabWhatsThis(index);
+         file = m_tabWidget->tabWhatsThis(k);
 
          if (file == "untitled.txt") {
             if (saveAs(false)) {
@@ -470,14 +475,20 @@ void MainWindow::insertSymbol()
 
 void MainWindow::indentIncr()
 {
-   // * * *
-   showNotDone("Edit Increase Indect");
+   QTextCursor cursor(m_textEdit->textCursor());
 
-   //QTextCursor cursor(m_textEdit->textCursor());
-   //QTextBlockFormat bFormat = cursor.blockFormat();   
+   if (cursor.hasSelection()) {
+      QString newText = cursor.selectedText();
+
+      // just one line
+      newText = "   " + newText;
+
+      cursor.insertText(newText);
+   }
+
+   //QTextBlockFormat bFormat = cursor.blockFormat();
    //bFormat.setTextIndent(10);
    //cursor.setBlockFormat(bFormat);
-   //m_textEdit->setTextCursor(cursor);
 }
 
 void MainWindow::indentDecr()
@@ -604,6 +615,13 @@ void MainWindow::goTop()
    m_textEdit->setTextCursor(cursor);
 }
 
+void MainWindow::goBottom()
+{
+   QTextCursor cursor(m_textEdit->textCursor());
+   cursor.movePosition(QTextCursor::End);
+   m_textEdit->setTextCursor(cursor);
+}
+
 
 // **view
 void MainWindow::lineHighlight()
@@ -660,11 +678,27 @@ void MainWindow::lineNumbers()
    } else {
       // off
       m_struct.showLineNumbers = false;
-
    }
 
    json_Write(SHOW_LINENUMBERS);
    m_textEdit->set_ShowLineNum(m_struct.showLineNumbers);
+}
+
+void MainWindow::wordWrap()
+{
+   if (m_ui->actionWord_Wrap->isChecked()) {
+      //on
+      m_struct.isWordWrap = true;
+      m_textEdit->setWordWrapMode(QTextOption::WordWrap);
+
+   } else {
+      // off
+      m_struct.isWordWrap = false;
+      m_textEdit->setWordWrapMode(QTextOption::NoWrap);
+
+   }
+
+   json_Write(WORDWRAP);
 }
 
 void MainWindow::showSpaces()
@@ -672,105 +706,102 @@ void MainWindow::showSpaces()
    showNotDone("View Show Spaces");
 }
 
-void MainWindow::showSpaces_EOL()
+void MainWindow::showTabs()
+{
+   showNotDone("View Show Tabs");
+}
+
+void MainWindow::showEOL()
 {
    showNotDone("View Show Spaces EOL");
 }
 
-void MainWindow::showTabs()
-{   
-   showNotDone("View Show Tabs");
-}
-
-void MainWindow::showLineBreaks()
+void MainWindow::displayHTML()
 {
-   showNotDone("View Show Line Breaks");
+   try {
+      About *dw = new About(m_curFile);
+      dw->show();
+   } catch (std::exception &e) {
+      // do nothing
+   }
 }
 
 
 // **document
 void MainWindow::setSyn_C()
 {
-   setSynType(SYN_C);
    forceSyntax(SYN_C);
 }
 
 void MainWindow::setSyn_Clipper()
 {
-   setSynType(SYN_CLIPPER);
    forceSyntax(SYN_CLIPPER);
 }
 
 void MainWindow::setSyn_Css()
 {
-   setSynType(SYN_CSS);
-    forceSyntax(SYN_CSS);
+   forceSyntax(SYN_CSS);
 }
 
 void MainWindow::setSyn_Dox()
 {
-   setSynType(SYN_DOX);
-    forceSyntax(SYN_DOX);
+   forceSyntax(SYN_DOX);
 }
 
 void MainWindow::setSyn_Html()
 {
-   setSynType(SYN_HTML);
    forceSyntax(SYN_HTML);
 }
 
 void MainWindow::setSyn_Java()
 {
-   setSynType(SYN_JAVA);
    forceSyntax(SYN_JAVA);
 }
 
 void MainWindow::setSyn_Javascript()
 {
-   setSynType(SYN_JS);
    forceSyntax(SYN_JS);
 }
 
 void MainWindow::setSyn_Json()
 {
-   setSynType(SYN_JSON);
    forceSyntax(SYN_JSON);
 }
 
 void MainWindow::setSyn_Makefile()
 {
-   setSynType(SYN_MAKE);
    forceSyntax(SYN_MAKE);
 }
 
 void MainWindow::setSyn_Text()
 {
-   setSynType(SYN_TEXT);
    forceSyntax(SYN_TEXT);
 }
 
 void MainWindow::setSyn_Shell_S()
 {
-   setSynType(SYN_SHELL_S);
+
    forceSyntax(SYN_SHELL_S);
 }
 
 void MainWindow::setSyn_Perl()
 {
-   setSynType(SYN_PERL);
    forceSyntax(SYN_PERL);
 }
 
 void MainWindow::setSyn_Php()
-{
-   setSynType(SYN_PHP);
+{   
    forceSyntax(SYN_PHP);
 }
 
 void MainWindow::setSyn_Python()
-{
-   setSynType(SYN_PYTHON);
+{  
    forceSyntax(SYN_PYTHON);
+}
+
+void MainWindow::setSyn_None()
+{   
+   forceSyntax(SYN_NONE);
 }
 
 void MainWindow::setSynType(SyntaxTypes data)
@@ -789,6 +820,7 @@ void MainWindow::setSynType(SyntaxTypes data)
    m_ui->actionSyn_Perl->setChecked(false);
    m_ui->actionSyn_PHP->setChecked(false);
    m_ui->actionSyn_Python->setChecked(false);
+   m_ui->actionSyn_None->setChecked(false); 
 
    switch (data)  {
       case SYN_C:
@@ -845,6 +877,10 @@ void MainWindow::setSynType(SyntaxTypes data)
 
       case SYN_PYTHON:
          m_ui->actionSyn_Python->setChecked(true);
+         break;
+
+      case SYN_NONE:
+         m_ui->actionSyn_None->setChecked(true);
          break;
    }
 }
@@ -926,6 +962,17 @@ void MainWindow::macroPlay()
    }
 }
 
+void MainWindow::macroSelect()
+{
+   showNotDone("Macro, Get saved");
+}
+
+
+void MainWindow::macroSelectPlay()
+{
+   showNotDone("Macro, Play saved");
+}
+
 void MainWindow::spellCheck()
 {
    if (m_ui->actionSpell_Check->isChecked()) {
@@ -940,8 +987,22 @@ void MainWindow::spellCheck()
 
    json_Write(SPELLCHECK);
 
-   m_syntaxParser->set_Spell(m_struct.isSpellCheck, m_spellCheck);
-   m_textEdit->set_Spell(m_struct.isSpellCheck, m_spellCheck);
+   // run for every tab
+   int count = m_tabWidget->count();
+
+   QWidget *temp;
+   DiamondTextEdit *textEdit;
+
+   for (int k = 0; k < count; ++k)  {
+
+      temp     = m_tabWidget->widget(k);
+      textEdit = dynamic_cast<DiamondTextEdit *>(temp);
+
+      if (textEdit) {
+         // save new values & reHighlight
+         textEdit->set_Spell(m_struct.isSpellCheck);
+      }
+   }     
 }
 
 // **settings
@@ -977,13 +1038,41 @@ void MainWindow::setColors()
       m_struct = dw->get_Colors();
       json_Write(COLORS);
 
-      QPalette temp = m_textEdit->palette();
-      temp.setColor(QPalette::Text, m_struct.colorText);
-      temp.setColor(QPalette::Base, m_struct.colorBack);
-      m_textEdit->setPalette(temp);
+      QPalette colors = m_textEdit->palette();
+      colors.setColor(QPalette::Text, m_struct.colorText);
+      colors.setColor(QPalette::Base, m_struct.colorBack);
+      m_textEdit->setPalette(colors);
 
-      //
-      setSyntax();
+      // get saved value
+      QString synFName = m_textEdit->get_SyntaxFile();
+
+      // run for every tab
+      DiamondTextEdit *cur_textEdit  = m_textEdit;
+      int count = m_tabWidget->count();
+
+      QWidget *temp;
+      DiamondTextEdit *textEdit;
+
+      for (int k=0; k < count; ++k)  {
+
+         temp     = m_tabWidget->widget(k);
+         textEdit = dynamic_cast<DiamondTextEdit *>(temp);
+
+         if (textEdit) {
+            m_textEdit = textEdit;
+
+            // get saved value
+            synFName = m_textEdit->get_SyntaxFile();
+
+            // reloads the syntax blocks based on new colors
+            runSyntax(synFName);
+         }
+      }
+
+      // reassign current tab
+      m_textEdit = cur_textEdit;
+
+      // for this tab only, updated every time we change tabs
       move_lineHighlight();
    }
 
@@ -1009,6 +1098,7 @@ void MainWindow::setOptions()
    options.formatTime = m_struct.formatTime;
    options.dictMain   = m_struct.dictMain;
    options.dictUser   = m_struct.dictUser;
+   options.aboutUrl   = m_struct.aboutUrl;
 
    Dialog_Options *dw = new Dialog_Options(this, options);
    int result = dw->exec();
@@ -1046,6 +1136,12 @@ void MainWindow::setOptions()
          m_struct.dictUser = options.dictUser;
          json_Write(DICT_USER);
       }
+
+      //
+      if (m_struct.aboutUrl != options.aboutUrl ) {
+         m_struct.aboutUrl = options.aboutUrl;
+         json_Write(ABOUTURL);
+      }
    }
 
    delete dw;
@@ -1056,7 +1152,7 @@ void MainWindow::setOptions()
 void MainWindow::tabNew()
 {
    DiamondTextEdit *textEdit;
-   textEdit = new DiamondTextEdit(this);
+   textEdit = new DiamondTextEdit(this, m_struct, m_spellCheck);
 
    const QString label = "untitled.txt";
    int index = m_tabWidget->addTab(textEdit, label);
@@ -1071,6 +1167,9 @@ void MainWindow::tabNew()
    setCurrentFile("");
    setScreenColors();
 
+   int temp = m_textEdit->fontMetrics().width(" ");
+   m_textEdit->setTabStopWidth( temp * m_struct.tabSpacing );     // BROOM, must examine and change all tabs
+
    //
    connect(m_textEdit->document(), SIGNAL(contentsChanged()), this, SLOT(documentWasModified()));
 
@@ -1083,26 +1182,42 @@ void MainWindow::tabNew()
    connect(m_textEdit, SIGNAL(copyAvailable(bool)), m_ui->actionCopy, SLOT(setEnabled(bool)));
 }
 
-void MainWindow::tabClose()
+void MainWindow::mw_tabClose()
 {
-   bool okClose = querySave();
+   int index = m_tabWidget->currentIndex();
+   tabClose(index);
+}
 
-   if (okClose)  {
-      int count = m_tabWidget->count();
+void MainWindow::tabClose(int index)
+{   
+   QWidget *temp = m_tabWidget->widget(index);
 
-      if (count == 1) {
-         // do not remove !
-         m_textEdit->clear();
-         setCurrentFile("");
+   DiamondTextEdit *textEdit;
+   textEdit = dynamic_cast<DiamondTextEdit *>(temp);
 
-      } else {
-         // hold textEdit and delete after tab is removed
-         DiamondTextEdit *hold = m_textEdit;
+   if (textEdit) {
+      m_textEdit = textEdit;
 
-         int index = m_tabWidget->currentIndex();
-         m_tabWidget->removeTab(index);
+      // retrieve fullName for status bar
+      m_curFile = m_tabWidget->tabWhatsThis(index);
 
-         delete hold;
+      bool okClose = querySave();
+
+      if (okClose)  {
+         int count = m_tabWidget->count();
+
+         if (count == 1) {
+            // do not remove !
+            m_textEdit->clear();
+            setCurrentFile("");
+
+         } else {
+            // hold textEdit and delete after tab is removed
+            DiamondTextEdit *hold = m_textEdit;
+
+            m_tabWidget->removeTab(index);
+            delete hold;
+         }
       }
    }
 }
@@ -1120,6 +1235,9 @@ void MainWindow::tabChanged(int index)
       // retrieve fullName for status bar
       m_curFile = m_tabWidget->tabWhatsThis(index);
 
+      // adjust the * in the title bar
+      setWindowModified(m_textEdit->document()->isModified());
+
       setStatus_LineCol();
       setStatus_FName(m_curFile);
 
@@ -1128,12 +1246,29 @@ void MainWindow::tabChanged(int index)
       m_textEdit->set_ColumnMode(m_struct.isColumnMode);
       m_textEdit->set_ShowLineNum(m_struct.showLineNumbers);
 
-      move_lineHighlight();
-      setSyntax();
+      // get saved value
+      m_syntaxParser = m_textEdit->get_SyntaxParser();
+
+      // get which syntax should be checked
+      m_syntaxEnum = m_textEdit->get_SyntaxEnum();
+      setSynType(m_syntaxEnum);
+
+      // adjust hightlight
+      move_lineHighlight();      
    }
 }
 
 // **help
+void MainWindow::diamondHelp()
+{   
+   try {
+      About *dw = new About(m_struct.aboutUrl);
+      dw->show();
+   } catch (std::exception &e) {
+      // do nothing
+   }
+}
+
 void MainWindow::about()
 {
    QString textBody = "<font color='#000080'><table style=margin-right:25>"
@@ -1212,65 +1347,72 @@ void MainWindow::createConnections()
    connect(m_ui->actionColumn_Mode,    SIGNAL(triggered()), this, SLOT(columnMode()));
 
    // search
-   connect(m_ui->actionFind,           SIGNAL(triggered()), this, SLOT(find()));
-   connect(m_ui->actionReplace,        SIGNAL(triggered()), this, SLOT(replace()));
-   connect(m_ui->actionFind_Next,      SIGNAL(triggered()), this, SLOT(findNext()));
-   connect(m_ui->actionFind_Prev,      SIGNAL(triggered()), this, SLOT(findPrevious()));
-   connect(m_ui->actionAdv_Find,       SIGNAL(triggered()), this, SLOT(advFind()));
-   connect(m_ui->actionGo_Line,        SIGNAL(triggered()), this, SLOT(goLine()));
-   connect(m_ui->actionGo_Column,      SIGNAL(triggered()), this, SLOT(goColumn()));
-   connect(m_ui->actionGo_Top,         SIGNAL(triggered()), this, SLOT(goTop()));
+   connect(m_ui->actionFind,              SIGNAL(triggered()), this, SLOT(find()));
+   connect(m_ui->actionReplace,           SIGNAL(triggered()), this, SLOT(replace()));
+   connect(m_ui->actionFind_Next,         SIGNAL(triggered()), this, SLOT(findNext()));
+   connect(m_ui->actionFind_Prev,         SIGNAL(triggered()), this, SLOT(findPrevious()));
+   connect(m_ui->actionAdv_Find,          SIGNAL(triggered()), this, SLOT(advFind()));
+   connect(m_ui->actionGo_Line,           SIGNAL(triggered()), this, SLOT(goLine()));
+   connect(m_ui->actionGo_Column,         SIGNAL(triggered()), this, SLOT(goColumn()));
+   connect(m_ui->actionGo_Top,            SIGNAL(triggered()), this, SLOT(goTop()));
+   connect(m_ui->actionGo_Bottom,         SIGNAL(triggered()), this, SLOT(goBottom()));
 
    // view
-   connect(m_ui->actionLine_Highlight, SIGNAL(triggered()), this, SLOT(lineHighlight()));
-   connect(m_ui->actionLine_Numbers,   SIGNAL(triggered()), this, SLOT(lineNumbers()));
+   connect(m_ui->actionLine_Highlight,    SIGNAL(triggered()), this, SLOT(lineHighlight()));
+   connect(m_ui->actionLine_Numbers,      SIGNAL(triggered()), this, SLOT(lineNumbers()));
+   connect(m_ui->actionWord_Wrap,         SIGNAL(triggered()), this, SLOT(wordWrap()));
 
-   connect(m_ui->actionShow_Spaces,    SIGNAL(triggered()), this, SLOT(showSpaces()));
-   connect(m_ui->actionShow_Spaces_EOL,SIGNAL(triggered()), this, SLOT(showSpaces_EOL()));
-   connect(m_ui->actionShow_Tabs,      SIGNAL(triggered()), this, SLOT(showTabs()));
-   connect(m_ui->actionShow_Line_Break,SIGNAL(triggered()), this, SLOT(showLineBreaks()));
+   connect(m_ui->actionShow_Spaces,       SIGNAL(triggered()), this, SLOT(showSpaces()));
+   connect(m_ui->actionShow_Tabs,         SIGNAL(triggered()), this, SLOT(showTabs()));
+   connect(m_ui->actionShow_EOL,          SIGNAL(triggered()), this, SLOT(showEOL()));
+
+   connect(m_ui->actionDisplay_HTML,      SIGNAL(triggered()), this, SLOT(displayHTML()));
 
    // document
-   connect(m_ui->actionSyn_C,          SIGNAL(triggered()), this, SLOT(setSyn_C()));
-   connect(m_ui->actionSyn_Clipper,    SIGNAL(triggered()), this, SLOT(setSyn_Clipper()));
-   connect(m_ui->actionSyn_Css,        SIGNAL(triggered()), this, SLOT(setSyn_Css()));
-   connect(m_ui->actionSyn_Doxygen,    SIGNAL(triggered()), this, SLOT(setSyn_Dox()));
-   connect(m_ui->actionSyn_Html,       SIGNAL(triggered()), this, SLOT(setSyn_Html()));
-   connect(m_ui->actionSyn_Java,       SIGNAL(triggered()), this, SLOT(setSyn_Java()));   
-   connect(m_ui->actionSyn_Javascript, SIGNAL(triggered()), this, SLOT(setSyn_Javascript()));
-   connect(m_ui->actionSyn_Json,       SIGNAL(triggered()), this, SLOT(setSyn_Json()));
-   connect(m_ui->actionSyn_Makefile,   SIGNAL(triggered()), this, SLOT(setSyn_Makefile()));
-   connect(m_ui->actionSyn_Text,       SIGNAL(triggered()), this, SLOT(setSyn_Text()));
-   connect(m_ui->actionSyn_Shell_S,    SIGNAL(triggered()), this, SLOT(setSyn_Shell_S()));
-   connect(m_ui->actionSyn_Perl,       SIGNAL(triggered()), this, SLOT(setSyn_Perl()));
-   connect(m_ui->actionSyn_PHP,        SIGNAL(triggered()), this, SLOT(setSyn_Php()));
-   connect(m_ui->actionSyn_Python,     SIGNAL(triggered()), this, SLOT(setSyn_Python()));
+   connect(m_ui->actionSyn_C,             SIGNAL(triggered()), this, SLOT(setSyn_C()));
+   connect(m_ui->actionSyn_Clipper,       SIGNAL(triggered()), this, SLOT(setSyn_Clipper()));
+   connect(m_ui->actionSyn_Css,           SIGNAL(triggered()), this, SLOT(setSyn_Css()));
+   connect(m_ui->actionSyn_Doxygen,       SIGNAL(triggered()), this, SLOT(setSyn_Dox()));
+   connect(m_ui->actionSyn_Html,          SIGNAL(triggered()), this, SLOT(setSyn_Html()));
+   connect(m_ui->actionSyn_Java,          SIGNAL(triggered()), this, SLOT(setSyn_Java()));
+   connect(m_ui->actionSyn_Javascript,    SIGNAL(triggered()), this, SLOT(setSyn_Javascript()));
+   connect(m_ui->actionSyn_Json,          SIGNAL(triggered()), this, SLOT(setSyn_Json()));
+   connect(m_ui->actionSyn_Makefile,      SIGNAL(triggered()), this, SLOT(setSyn_Makefile()));
+   connect(m_ui->actionSyn_Text,          SIGNAL(triggered()), this, SLOT(setSyn_Text()));
+   connect(m_ui->actionSyn_Shell_S,       SIGNAL(triggered()), this, SLOT(setSyn_Shell_S()));
+   connect(m_ui->actionSyn_Perl,          SIGNAL(triggered()), this, SLOT(setSyn_Perl()));
+   connect(m_ui->actionSyn_PHP,           SIGNAL(triggered()), this, SLOT(setSyn_Php()));
+   connect(m_ui->actionSyn_Python,        SIGNAL(triggered()), this, SLOT(setSyn_Python()));
+   connect(m_ui->actionSyn_None,          SIGNAL(triggered()), this, SLOT(setSyn_None()));
 
-   connect(m_ui->actionFormat_Dos,     SIGNAL(triggered()), this, SLOT(formatDos()));
-   connect(m_ui->actionFormat_Unix,    SIGNAL(triggered()), this, SLOT(formatUnix()));
-   connect(m_ui->actionFormat_Mac,     SIGNAL(triggered()), this, SLOT(formatMac()));
+   connect(m_ui->actionFormat_Dos,        SIGNAL(triggered()), this, SLOT(formatDos()));
+   connect(m_ui->actionFormat_Unix,       SIGNAL(triggered()), this, SLOT(formatUnix()));
+   connect(m_ui->actionFormat_Mac,        SIGNAL(triggered()), this, SLOT(formatMac()));
 
-   connect(m_ui->actionFix_Tab_Spaces, SIGNAL(triggered()), this, SLOT(fixTab_Spaces()));
-   connect(m_ui->actionFix_Spaces_Tab, SIGNAL(triggered()), this, SLOT(fixSpaces_Tabs()));
-   connect(m_ui->actionFix_Spaces_EOL, SIGNAL(triggered()), this, SLOT(fixSpaces_EOL()));
+   connect(m_ui->actionFix_Tab_Spaces,    SIGNAL(triggered()), this, SLOT(fixTab_Spaces()));
+   connect(m_ui->actionFix_Spaces_Tab,    SIGNAL(triggered()), this, SLOT(fixSpaces_Tabs()));
+   connect(m_ui->actionFix_Spaces_EOL,    SIGNAL(triggered()), this, SLOT(fixSpaces_EOL()));
 
    // tools
-   connect(m_ui->actionMacro_Start,    SIGNAL(triggered()), this, SLOT(mw_macroStart()));
-   connect(m_ui->actionMacro_Stop,     SIGNAL(triggered()), this, SLOT(mw_macroStop()));
-   connect(m_ui->actionMacro_Play,     SIGNAL(triggered()), this, SLOT(macroPlay()));
-   connect(m_ui->actionSpell_Check,    SIGNAL(triggered()), this, SLOT(spellCheck()));
+   connect(m_ui->actionMacro_Start,       SIGNAL(triggered()), this, SLOT(mw_macroStart()));
+   connect(m_ui->actionMacro_Stop,        SIGNAL(triggered()), this, SLOT(mw_macroStop()));
+   connect(m_ui->actionMacro_Play,        SIGNAL(triggered()), this, SLOT(macroPlay()));
+   connect(m_ui->actionMacro_Select,      SIGNAL(triggered()), this, SLOT(macroSelect()));
+   connect(m_ui->actionMacro_SelectPlay,  SIGNAL(triggered()), this, SLOT(macroSelectPlay()));
+   connect(m_ui->actionSpell_Check,       SIGNAL(triggered()), this, SLOT(spellCheck()));
 
    // settings
-   connect(m_ui->actionColors,         SIGNAL(triggered()), this, SLOT(setColors()));
-   connect(m_ui->actionFonts,          SIGNAL(triggered()), this, SLOT(setFont()));
-   connect(m_ui->actionOptions,        SIGNAL(triggered()), this, SLOT(setOptions()));
+   connect(m_ui->actionColors,            SIGNAL(triggered()), this, SLOT(setColors()));
+   connect(m_ui->actionFonts,             SIGNAL(triggered()), this, SLOT(setFont()));
+   connect(m_ui->actionOptions,           SIGNAL(triggered()), this, SLOT(setOptions()));
 
-   // window
-   connect(m_ui->actionTab_New,        SIGNAL(triggered()), this, SLOT(tabNew()));
-   connect(m_ui->actionTab_Close,      SIGNAL(triggered()), this, SLOT(tabClose()));
+   // tabs
+   connect(m_ui->actionTab_New,           SIGNAL(triggered()), this, SLOT(tabNew()));
+   connect(m_ui->actionTab_Close,         SIGNAL(triggered()), this, SLOT(mw_tabClose()));
 
    // help menu
-   connect(m_ui->actionAbout,          SIGNAL(triggered()), this, SLOT(about()));
+   connect(m_ui->actionDiamond_Help,      SIGNAL(triggered()), this, SLOT(diamondHelp()));
+   connect(m_ui->actionAbout,             SIGNAL(triggered()), this, SLOT(about()));
 }
 
 void MainWindow::createToggles()
@@ -1289,12 +1431,16 @@ void MainWindow::createToggles()
    m_ui->actionSyn_Perl->setCheckable(true);
    m_ui->actionSyn_PHP->setCheckable(true);
    m_ui->actionSyn_Python->setCheckable(true);
+   m_ui->actionSyn_None->setCheckable(true);
 
    m_ui->actionLine_Highlight->setCheckable(true);
    m_ui->actionLine_Highlight->setChecked(m_struct.showLineHighlight);
 
    m_ui->actionLine_Numbers->setCheckable(true);
    m_ui->actionLine_Numbers->setChecked(m_struct.showLineNumbers);  
+
+   m_ui->actionWord_Wrap->setCheckable(true);
+   m_ui->actionWord_Wrap->setChecked(m_struct.isWordWrap);
 
    m_ui->actionColumn_Mode->setCheckable(true);
    m_ui->actionColumn_Mode->setChecked(m_struct.isColumnMode);  
@@ -1310,7 +1456,7 @@ void MainWindow::createToggles()
 
    //
    connect(m_tabWidget, SIGNAL(currentChanged(int)),    this, SLOT(tabChanged(int)));
-   connect(m_tabWidget, SIGNAL(tabCloseRequested(int)), this, SLOT(tabClose()));
+   connect(m_tabWidget, SIGNAL(tabCloseRequested(int)), this, SLOT(tabClose(int)));
 }
 
 void MainWindow::createShortCuts()
@@ -1331,7 +1477,7 @@ void MainWindow::createShortCuts()
    m_ui->actionCopy->setShortcuts(QKeySequence::Copy);
    m_ui->actionPaste->setShortcuts(QKeySequence::Paste);   
    m_ui->actionGo_Top->setShortcuts(QKeySequence::MoveToStartOfDocument);
-   // MoveToEndOfDocument
+   m_ui->actionGo_Top->setShortcuts(QKeySequence::MoveToEndOfDocument);
 
    //search
    m_ui->actionFind->setShortcuts(QKeySequence::Find);
@@ -1339,7 +1485,7 @@ void MainWindow::createShortCuts()
    m_ui->actionFind_Next->setShortcuts(QKeySequence::FindNext);
    m_ui->actionFind_Prev->setShortcuts(QKeySequence::FindPrevious);
 
-   // window
+   // tab
    m_ui->actionTab_New->setShortcuts(QKeySequence::AddTab);
 
    // help
@@ -1394,7 +1540,7 @@ void MainWindow::createToolBars()
    toolsToolBar->addAction(m_ui->actionMacro_Start);
    toolsToolBar->addAction(m_ui->actionMacro_Stop);
    toolsToolBar->addAction(m_ui->actionMacro_Play);
-   toolsToolBar->addAction(m_ui->actionSpell_Check);
+   toolsToolBar->addAction(m_ui->actionSpell_Check);       
 }
 
 void MainWindow::createStatusBar()

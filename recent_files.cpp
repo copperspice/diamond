@@ -58,7 +58,7 @@ void MainWindow::rf_CreateMenus()
       QString tName;
 
       QMenu   *fileMenu = m_ui->menuFile;
-      QAction *action = fileMenu->insertSeparator(m_ui->actionExit);
+      QAction *action   = fileMenu->insertSeparator(m_ui->actionExit);
 
       for (int i = 0; i < rf_MaxCnt; ++i) {
 
@@ -69,6 +69,10 @@ void MainWindow::rf_CreateMenus()
          }
 
          rf_Actions[i] = new QAction(tName, this);
+
+         // allow user to delete this file
+         // rf_Actions[i]->hovered();  setMenu( rf_DeleteMenu(tName) );
+
          fileMenu->insertAction(action, rf_Actions[i]);
 
          if (i >= cnt)  {
@@ -79,6 +83,30 @@ void MainWindow::rf_CreateMenus()
       }
 
       fileMenu->insertSeparator(rf_Actions[rf_MaxCnt]);
+   }
+}
+
+QMenu * MainWindow::rf_DeleteMenu(QString tName)
+{
+   QMenu *delMenu = new QMenu(this);
+
+   QAction *action = new QAction("Remove Recent File Name", this);
+   action->setWhatsThis(tName);
+
+   delMenu->addAction(action);
+
+   connect(action, SIGNAL(triggered()), this, SLOT(rf_DeleteName()) );
+
+   return delMenu;
+}
+
+void MainWindow::rf_DeleteName()
+{
+   QAction *action;
+   action = (QAction *)sender();
+
+   if (action) {
+      csMsg( "should be file name " + action->whatsThis() );
    }
 }
 
