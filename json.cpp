@@ -22,17 +22,15 @@
 #include "mainwindow.h"
 #include "util.h"
 
+#include <QByteArray>
 #include <QDir>
 #include <QFlags>
 #include <QFileDialog>
 #include <QJsonArray>
 #include <QJsonDocument>
-#include <QJsonValue>
-#include <QJsonObject>
 #include <QSettings>
-
-
-#include <QByteArray>
+#include <Qt>
+#include <QMetaEnum>
 
 bool MainWindow::json_Read()
 {
@@ -106,6 +104,18 @@ bool MainWindow::json_Read()
       m_struct.dictMain   = object.value("dictMain").toString();
       m_struct.dictUser   = object.value("dictUser").toString();
       m_struct.aboutUrl   = object.value("aboutUrl").toString();
+
+      // keys                  
+      // uint temp = json_SetKey(object.value("key-selectLine").toString());
+
+      m_struct.key_selectLine  = object.value("key-selectLine").toString();
+      m_struct.key_selectWord  = object.value("key-selectWord").toString();
+      m_struct.key_selectBlock = object.value("key-selectBlock").toString();
+      m_struct.key_upper       = object.value("key-upper").toString();
+      m_struct.key_lower       = object.value("key-lower").toString();
+      m_struct.key_goLine      = object.value("key-goLine").toString();
+      m_struct.key_columnMode  = object.value("key-columnMode").toString();
+      m_struct.key_macroPlay   = object.value("key-macroPlay").toString();
 
       //
       value = object.value("font");
@@ -203,7 +213,6 @@ bool MainWindow::json_Write(Option route)
             break;
 
          case COLORS:
-
             object.insert("color-text",     json_GetRGB(m_struct.colorText) );
             object.insert("color-back",     json_GetRGB(m_struct.colorBack));
             object.insert("color-highText", json_GetRGB(m_struct.colorHighText));
@@ -240,6 +249,18 @@ bool MainWindow::json_Write(Option route)
          case FORMAT_TIME:
             object.insert("formatTime", m_struct.formatTime);
             break;                        
+
+         case KEYS:
+            // keys
+            object.insert("key-selectLine",  m_struct.key_selectLine);
+            object.insert("key-selectWord",  m_struct.key_selectWord);
+            object.insert("key-selectBlock", m_struct.key_selectBlock);
+            object.insert("key-upper",       m_struct.key_upper);
+            object.insert("key-lower",       m_struct.key_lower);
+            object.insert("key-goLine",      m_struct.key_goLine);
+            object.insert("key-columnMode",  m_struct.key_columnMode);
+            object.insert("key-macroPlay",   m_struct.key_macroPlay);
+            break;
 
          case PATH_PRIOR:
             object.insert("pathPrior", m_struct.pathPrior);
@@ -403,7 +424,7 @@ bool MainWindow::json_CreateNew()
    value = QJsonValue(QString("h:mm ap"));
    object.insert("formatTime", value);
 
-   value = QJsonValue(QString( QDir::currentPath() ));
+   value = QJsonValue(QString(QDir::currentPath() ));
    object.insert("pathPrior", value);
 
    value = QJsonValue(QString(syntaxPath));
@@ -417,6 +438,31 @@ bool MainWindow::json_CreateNew()
 
    value = QJsonValue(QString( QDir::currentPath() + "/html/index.html" ));
    object.insert("aboutUrl", value);
+
+   // keys
+   value = QJsonValue(QString("Ctrl+E"));
+   object.insert("key-selectLine",  value );
+
+   value = QJsonValue(QString("Ctrl+D"));
+   object.insert("key-selectWord",  value );
+
+   value = QJsonValue(QString("Ctrl+B"));
+   object.insert("key-selectBlock", value );
+
+   value = QJsonValue(QString("Ctrl+U"));
+   object.insert("key-upper",       value);
+
+   value = QJsonValue(QString("Ctrl+L"));
+   object.insert("key-lower",       value);
+
+   value = QJsonValue(QString("Alt+G"));
+   object.insert("key-goLine",      value);
+
+   value = QJsonValue(QString("Alt+C"));
+   object.insert("key-columnMode",  value);
+
+   value = QJsonValue(QString("Alt+Enter"));
+   object.insert("key-macroPlay",  value);
 
    //
    value = QJsonValue(QString("Courier,12,-1,5,50,0,0,0,0,0"));
@@ -510,6 +556,20 @@ QString MainWindow::json_GetRGB(QColor color)
    QString values = list.join(",");
 
    return values;
+}
+
+uint MainWindow::json_SetKey(QString values)
+{
+   QStringList list = values.split(",");
+   QString key1  = list[0];
+   QString key2  = list[1];
+
+   //QMetaEnum meta;
+   //int foobar = meta.keyToValue(two.toStdString().c_str());
+   //csMsg("what is TWO ", foobar);
+
+   uint keyValue = 0x04000045;
+   return keyValue;
 }
 
 QJsonObject MainWindow::json_SaveSyntax(QJsonObject object)

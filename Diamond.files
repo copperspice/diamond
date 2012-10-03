@@ -58,3 +58,5 @@ dialog_replace.cpp
 dialog_replace.ui
 about.h
 about.cpp
+keylineedit.h
+keylineedit.cpp

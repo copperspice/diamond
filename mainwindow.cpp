@@ -30,9 +30,9 @@
 #include <QtGui>
 #include <QDir>
 #include <QFileInfo>
-#include <QString>
-#include <QStringList>
 #include <QFontMetrics>
+#include <QStringList>
+#include <QKeySequence>
 
 MainWindow::MainWindow()
    : m_ui(new Ui::MainWindow)
@@ -63,6 +63,12 @@ MainWindow::MainWindow()
 
    // spell check  
    createSpellCheck();
+
+   //  test code for filemenu
+   m_ui->menuFile->setContextMenuPolicy(Qt::CustomContextMenu);
+   connect(m_ui->menuFile, SIGNAL(customContextMenuRequested(const QPoint&)), this, SLOT(showContextMenu(const QPoint &)));
+   //
+
 
    //
    tabNew();
@@ -1098,7 +1104,16 @@ void MainWindow::setOptions()
    options.formatTime = m_struct.formatTime;
    options.dictMain   = m_struct.dictMain;
    options.dictUser   = m_struct.dictUser;
-   options.aboutUrl   = m_struct.aboutUrl;
+   options.aboutUrl   = m_struct.aboutUrl;   
+
+   options.key_selectLine  = m_struct.key_selectLine;
+   options.key_selectWord  = m_struct.key_selectWord;
+   options.key_selectBlock = m_struct.key_selectBlock;
+   options.key_upper       = m_struct.key_upper;
+   options.key_lower       = m_struct.key_lower;
+   options.key_goLine      = m_struct.key_goLine;
+   options.key_columnMode  = m_struct.key_columnMode;
+   options.key_macroPlay   = m_struct.key_macroPlay;
 
    Dialog_Options *dw = new Dialog_Options(this, options);
    int result = dw->exec();
@@ -1142,11 +1157,24 @@ void MainWindow::setOptions()
          m_struct.aboutUrl = options.aboutUrl;
          json_Write(ABOUTURL);
       }
+
+      // keys
+      m_struct.key_selectLine  = options.key_selectLine;
+      m_struct.key_selectWord  = options.key_selectWord;
+      m_struct.key_selectBlock = options.key_selectBlock;
+      m_struct.key_upper       = options.key_upper;
+      m_struct.key_lower       = options.key_lower;
+      m_struct.key_goLine      = options.key_goLine;
+      m_struct.key_columnMode  = options.key_columnMode;
+      m_struct.key_macroPlay   = options.key_macroPlay;
+      json_Write(KEYS);
+
+      //
+      createShortCuts();
    }
 
    delete dw;
 }
-
 
 // **window, tabs
 void MainWindow::tabNew()
@@ -1475,9 +1503,11 @@ void MainWindow::createShortCuts()
    m_ui->actionRedo->setShortcuts(QKeySequence::Redo);
    m_ui->actionCut->setShortcuts(QKeySequence::Cut);
    m_ui->actionCopy->setShortcuts(QKeySequence::Copy);
-   m_ui->actionPaste->setShortcuts(QKeySequence::Paste);   
+   m_ui->actionPaste->setShortcuts(QKeySequence::Paste);      
+
+   m_ui->actionSelect_All->setShortcuts(QKeySequence::SelectAll);
    m_ui->actionGo_Top->setShortcuts(QKeySequence::MoveToStartOfDocument);
-   m_ui->actionGo_Top->setShortcuts(QKeySequence::MoveToEndOfDocument);
+   m_ui->actionGo_Bottom->setShortcuts(QKeySequence::MoveToEndOfDocument);
 
    //search
    m_ui->actionFind->setShortcuts(QKeySequence::Find);
@@ -1490,7 +1520,24 @@ void MainWindow::createShortCuts()
 
    // help
    m_ui->actionDiamond_Help->setShortcuts(QKeySequence::HelpContents);
+
+   // ** user definded
+
+   // edit
+   m_ui->actionSelect_Line->setShortcut(QKeySequence(m_struct.key_selectLine) );
+   m_ui->actionSelect_Word->setShortcut(QKeySequence(m_struct.key_selectWord) );
+   m_ui->actionSelect_Block->setShortcut(QKeySequence(m_struct.key_selectBlock) );
+   m_ui->actionCase_Upper->setShortcut(QKeySequence(m_struct.key_upper) );
+   m_ui->actionCase_Lower->setShortcut(QKeySequence(m_struct.key_lower) );
+   m_ui->actionColumn_Mode->setShortcut(QKeySequence(m_struct.key_columnMode) );
+
+   // search
+   m_ui->actionGo_Line->setShortcut(QKeySequence(m_struct.key_goLine) );
+
+   // tools
+   m_ui->actionMacro_Play->setShortcut(QKeySequence(m_struct.key_macroPlay) );
 }
+
 
 void MainWindow::createToolBars()
 {

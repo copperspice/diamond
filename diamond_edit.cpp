@@ -169,20 +169,15 @@ void DiamondTextEdit::contextMenuEvent(QContextMenuEvent *event)
          menu->addAction("Add to User Dictionary",  m_mainWindow, SLOT(add_UserDict()) );
          menu->addSeparator();
       }
-
-
-   } else  {
-      csMsg("Spell Check is off");
-
    }
 
-   menu->addAction("Undo",          this, SLOT(undo())  );
-   menu->addAction("Redo",          this, SLOT(redo())  );
+   menu->addAction("Undo",   this, SLOT(undo())  );
+   menu->addAction("Redo",   this, SLOT(redo())  );
 
    menu->addSeparator();
-   menu->addAction("Cut",           this, SLOT(cut())   );
-   menu->addAction("Copy",          this, SLOT(copy())  );
-   menu->addAction("Paste",         this, SLOT(paste()) );
+   menu->addAction("Cut",    this, SLOT(cut())   );
+   menu->addAction("Copy",   this, SLOT(copy())  );
+   menu->addAction("Paste",  this, SLOT(paste()) );
 
    if (isSelected) {
       menu->addSeparator();

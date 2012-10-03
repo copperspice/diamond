@@ -22,6 +22,9 @@
 #include "mainwindow.h"
 #include "util.h"
 
+#include <QVariant>
+#include <QStringList>
+
 void MainWindow::rf_Open()
 {
    QAction *action;
@@ -31,10 +34,9 @@ void MainWindow::rf_Open()
       bool ok = loadFile(action->text(), true);
 
       if (! ok) {
-         // remove file which did not load
+         // remove file from list which did not load
 
-         int index;
-         index = m_rf_List.indexOf(action->text());
+         int index = m_rf_List.indexOf(action->text());
 
          if (index >= 0) {
             m_rf_List.removeAt(index);
@@ -54,7 +56,6 @@ void MainWindow::rf_CreateMenus()
    int cnt = m_rf_List.count();
 
    if (cnt > 0)  {
-
       QString tName;
 
       QMenu   *fileMenu = m_ui->menuFile;
@@ -69,9 +70,7 @@ void MainWindow::rf_CreateMenus()
          }
 
          rf_Actions[i] = new QAction(tName, this);
-
-         // allow user to delete this file
-         // rf_Actions[i]->hovered();  setMenu( rf_DeleteMenu(tName) );
+         rf_Actions[i]->setData("recent-file");
 
          fileMenu->insertAction(action, rf_Actions[i]);
 
@@ -86,18 +85,65 @@ void MainWindow::rf_CreateMenus()
    }
 }
 
-QMenu * MainWindow::rf_DeleteMenu(QString tName)
+void MainWindow::showContextMenu(const QPoint &pt)
 {
-   QMenu *delMenu = new QMenu(this);
+   QAction *action = m_ui->menuFile->actionAt(pt);
 
-   QAction *action = new QAction("Remove Recent File Name", this);
-   action->setWhatsThis(tName);
+   if (action)  {
+      QString data = action->data().toString();
 
-   delMenu->addAction(action);
+      if (data == "recent-file")  {
+         QString fName = action->text();
 
-   connect(action, SIGNAL(triggered()), this, SLOT(rf_DeleteName()) );
+         QMenu *menu = new QMenu(this);
+         menu->addAction("Clear Recent File List",  this, SLOT(rf_ClearList()) );
 
-   return delMenu;
+         QAction *rfAction = menu->addAction("Remove " + fName, this,  SLOT(rf_RemoveFName() ));
+         rfAction->setData(fName);
+
+         menu->exec(m_ui->menuFile->mapToGlobal(pt));
+
+         delete menu;
+      }
+   }
+}
+
+void MainWindow::rf_ClearList()
+{
+   QAction *action;
+   action = (QAction *)sender();
+
+   if (action) {
+      m_rf_List.clear();
+
+      // save new list of files
+      json_Write(RECENTFILE);
+
+      // update actions
+      rf_UpdateActions();
+   }
+}
+
+void MainWindow::rf_RemoveFName()
+{
+   QAction *action;
+   action = (QAction *)sender();
+
+   if (action) {
+      QString fName = action->data().toString();
+
+      int index = m_rf_List.indexOf(fName);
+
+      if (index >= 0) {
+         m_rf_List.removeAt(index);
+
+         // save new list of files
+         json_Write(RECENTFILE);
+
+         // update actions
+         rf_UpdateActions();
+      }
+   }
 }
 
 void MainWindow::rf_DeleteName()

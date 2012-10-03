@@ -82,7 +82,6 @@ class MainWindow : public QMainWindow
       static const int rf_MaxCnt = 10;
       QAction *rf_Actions[rf_MaxCnt];
       QStringList m_rf_List;
-      QMenu *rf_DeleteMenu(QString tName);
 
       // spell check     
       void createSpellCheck();
@@ -100,7 +99,7 @@ class MainWindow : public QMainWindow
       QLabel *m_statusName;    
 
       enum Option {CLOSE, COLORS, COLUMN_MODE, DICT_MAIN, DICT_USER, FONT, FORMAT_DATE, FORMAT_TIME,
-                   PATH_SYNTAX, PATH_PRIOR, RECENTFILE, ABOUTURL,
+                   KEYS, PATH_SYNTAX, PATH_PRIOR, RECENTFILE, ABOUTURL,
                    SHOW_LINEHIGHLIGHT, SHOW_LINENUMBERS, WORDWRAP, SPELLCHECK, TAB_SPACING};
 
       void setScreenColors();
@@ -131,9 +130,10 @@ class MainWindow : public QMainWindow
       QString get_SyntaxPath();
       QColor  json_SetColor(QString values);
       QString json_GetRGB(QColor color);
+      uint json_SetKey(QString values);
       QJsonObject json_SaveSyntax(QJsonObject object);
 
-      // rencent files
+      // recent files
       void rf_CreateMenus();
       void rf_Update();
       void rf_UpdateActions();
@@ -256,6 +256,11 @@ class MainWindow : public QMainWindow
       // spell check
       void add_UserDict();
       void replaceWord();
+
+      // file menu, recent file list
+      void showContextMenu(const QPoint &pt);
+      void rf_ClearList();
+      void rf_RemoveFName();
 };
 
 #endif

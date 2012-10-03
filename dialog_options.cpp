@@ -88,6 +88,15 @@ void Dialog_Options::initData()
    m_ui->dictMain->setText(m_options.dictMain);
    m_ui->dictUser->setText(m_options.dictUser);
    m_ui->about->setText(m_options.aboutUrl);
+
+   m_ui->key_selectLine->setText(m_options.key_selectLine);
+   m_ui->key_selectWord->setText(m_options.key_selectWord);
+   m_ui->key_selectBlock->setText(m_options.key_selectBlock);
+   m_ui->key_upper->setText(m_options.key_upper);
+   m_ui->key_lower->setText(m_options.key_lower);  
+   m_ui->key_columnMode->setText(m_options.key_columnMode);
+   m_ui->key_goLine->setText(m_options.key_goLine);
+   m_ui->key_macroPlay->setText(m_options.key_macroPlay);
 }
 
 void Dialog_Options::Save()
@@ -154,7 +163,6 @@ void Dialog_Options::pick_About()
    }
 }
 
-
 struct Options Dialog_Options::get_Results()
 {
    QString value = m_ui->tabSpacing_CB->currentText();
@@ -166,8 +174,21 @@ struct Options Dialog_Options::get_Results()
    m_options.dictUser   = m_ui->dictUser->text();
    m_options.aboutUrl   = m_ui->about->text();
 
+   m_options.key_selectLine   = m_ui->key_selectLine->text();
+   m_options.key_selectWord   = m_ui->key_selectWord->text();
+   m_options.key_selectBlock  = m_ui->key_selectBlock->text();
+   m_options.key_upper        = m_ui->key_upper->text();
+   m_options.key_lower        = m_ui->key_lower->text();
+   m_options.key_columnMode   = m_ui->key_columnMode->text();
+   m_options.key_goLine       = m_ui->key_goLine->text();
+   m_options.key_macroPlay    = m_ui->key_macroPlay->text();
+
    return m_options;
 }
+
+
+
+
 
 
 

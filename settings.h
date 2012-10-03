@@ -2,8 +2,8 @@
 #define SETTINGS_H
 
 #include <QColor>
-#include <QString>
 #include <QFont>
+#include <QString>
 
 struct Settings {
    int     tabSpacing;
@@ -25,6 +25,15 @@ struct Settings {
    QColor  colorBack;
    QColor  colorHighText;
    QColor  colorHighBack;
+
+   QString key_selectLine;
+   QString key_selectWord;
+   QString key_selectBlock;
+   QString key_upper;
+   QString key_lower;
+   QString key_goLine;
+   QString key_columnMode;
+   QString key_macroPlay;
 
    int    syn_KeyWeight;
    bool   syn_KeyItalic;
@@ -56,6 +65,15 @@ struct Options {
    QString dictMain;
    QString dictUser;
    QString aboutUrl;
+
+   QString key_selectLine;
+   QString key_selectWord;
+   QString key_selectBlock;
+   QString key_upper;
+   QString key_lower;
+   QString key_goLine;
+   QString key_columnMode;
+   QString key_macroPlay;
 };
 
 enum SyntaxTypes {SYN_C, SYN_CLIPPER, SYN_CSS, SYN_DOX, SYN_HTML, SYN_JAVA, SYN_JS,

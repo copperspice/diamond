@@ -13,7 +13,7 @@ hunspell_dll=/z/Hunspell/deploy/bin/libhunspell-1.3-0.dll
 hunspell_la=/z/Hunspell/deploy/lib/libhunspell-1.3.la
 
 # location of includes, libs, defines for compiling, turn off debugging
-AM_CXXFLAGS+=-mwindows -std=c++11   -I/z/Hunspell/deploy/include/hunspell
+AM_CXXFLAGS+=-mwindows -std=c++11   -I/z/Hunspell/deploy/include/hunspell  -I..
 
 # 'KitchenSink-Cs1' target app name
 deploy_PROGRAMS = Diamond
@@ -43,6 +43,7 @@ Diamond_SOURCES = \
 	diamond_edit.cpp \
 	diamond_tab.cpp \
 	json.cpp \
+	keylineedit.cpp \
 	main.cpp \
     mainwindow.cpp \
     recent_files.cpp \
@@ -63,6 +64,7 @@ noinst_HEADERS = \
 	dialog_symbols.h \
 	diamond_edit.h \
 	diamond_tab.h \
+	keylineedit.h \
 	mainwindow.h  \
 	settings.h \
 	spellcheck.h \
@@ -81,6 +83,7 @@ MOCS = \
 	dialog_symbols.h \
 	diamond_edit.h  \
 	diamond_tab.h \
+	keylineedit.h \
 	mainwindow.h  \
 	syntax.h
 	
