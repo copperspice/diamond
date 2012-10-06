@@ -97,6 +97,7 @@ void Dialog_Options::initData()
    m_ui->key_columnMode->setText(m_options.key_columnMode);
    m_ui->key_goLine->setText(m_options.key_goLine);
    m_ui->key_macroPlay->setText(m_options.key_macroPlay);
+   m_ui->key_spellCheck->setText(m_options.key_spellCheck);
 }
 
 void Dialog_Options::Save()
@@ -182,6 +183,7 @@ struct Options Dialog_Options::get_Results()
    m_options.key_columnMode   = m_ui->key_columnMode->text();
    m_options.key_goLine       = m_ui->key_goLine->text();
    m_options.key_macroPlay    = m_ui->key_macroPlay->text();
+   m_options.key_spellCheck   = m_ui->key_spellCheck->text();
 
    return m_options;
 }

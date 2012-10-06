@@ -13,6 +13,7 @@ syntax/syn_clipper.json
 syntax/syn_php.json
 syntax/syn_py.json
 syntax/syn_none.json
+syntax/syn_nsi.json
 configure.ac
 Makefile.am
 diamond.qrc
@@ -60,3 +61,4 @@ about.h
 about.cpp
 keylineedit.h
 keylineedit.cpp
+syntax/syn_nsi.json

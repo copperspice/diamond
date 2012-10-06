@@ -25,6 +25,9 @@
 
 #include <QFile>
 #include <QFileInfo>
+#include <QDragEnterEvent>
+#include <QMimeData>
+#include <QUrl>
 
 void MainWindow::closeEvent(QCloseEvent *event)
 {
@@ -245,5 +248,49 @@ void MainWindow::setStatus_FName(QString fullName)
 {
    m_statusName->setText(" " + fullName + "  ");
 }
+
+// drag & drop
+void MainWindow::dragEnterEvent(QDragEnterEvent *event)
+{
+   // QStringList list = event->mimeData()->formats();
+   // QString type = list.join("\n");
+   // csMsg("Mine Types\n" + type);
+
+   if (event->mimeData()->hasFormat("text/uri-list"))  {
+      event->acceptProposedAction();
+
+   } else if (event->mimeData()->hasFormat("text/plain"))  {
+      event->acceptProposedAction();
+
+   }
+
+}
+
+void MainWindow::dropEvent(QDropEvent *event)
+{
+   const QMimeData *mimeData = event->mimeData();
+
+   if (mimeData->hasUrls()) {
+
+      QList<QUrl> urls = mimeData->urls();
+      if (urls.isEmpty()) {
+         return;
+      }
+
+      QString fileName = urls.first().toLocalFile();
+      if (! fileName.isEmpty()) {
+         loadFile(fileName, TRUE);
+      }
+
+   } else if (mimeData->hasText()) {
+       m_textEdit->setPlainText(mimeData->text());
+
+   }
+
+}
+
+
+
+
 
 

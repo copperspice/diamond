@@ -116,6 +116,7 @@ bool MainWindow::json_Read()
       m_struct.key_goLine      = object.value("key-goLine").toString();
       m_struct.key_columnMode  = object.value("key-columnMode").toString();
       m_struct.key_macroPlay   = object.value("key-macroPlay").toString();
+      m_struct.key_spellCheck  = object.value("key-spellCheck").toString();
 
       //
       value = object.value("font");
@@ -260,6 +261,7 @@ bool MainWindow::json_Write(Option route)
             object.insert("key-goLine",      m_struct.key_goLine);
             object.insert("key-columnMode",  m_struct.key_columnMode);
             object.insert("key-macroPlay",   m_struct.key_macroPlay);
+            object.insert("key-spellCheck",  m_struct.key_spellCheck);
             break;
 
          case PATH_PRIOR:
@@ -461,8 +463,11 @@ bool MainWindow::json_CreateNew()
    value = QJsonValue(QString("Alt+C"));
    object.insert("key-columnMode",  value);
 
-   value = QJsonValue(QString("Alt+Enter"));
+   value = QJsonValue(QString("Alt+Return"));
    object.insert("key-macroPlay",  value);
+
+   value = QJsonValue(QString("F7"));
+   object.insert("key-spellCheck",  value);
 
    //
    value = QJsonValue(QString("Courier,12,-1,5,50,0,0,0,0,0"));

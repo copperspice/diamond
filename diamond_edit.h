@@ -68,9 +68,10 @@ class DiamondTextEdit : public QPlainTextEdit
       QList<QKeyEvent *> get_KeyList();
 
    protected:
-      void resizeEvent(QResizeEvent *event);
       void contextMenuEvent(QContextMenuEvent *event);
-      void keyPressEvent(QKeyEvent *event);    
+      bool event(QEvent *event);
+      void keyPressEvent(QKeyEvent *event);      
+      void resizeEvent(QResizeEvent *event);      
 
    private:
       MainWindow *m_mainWindow;
@@ -103,7 +104,7 @@ class DiamondTextEdit : public QPlainTextEdit
    public slots:     
       void cut();
       void copy();
-      void paste();         
+      void paste();      
 };
 
 

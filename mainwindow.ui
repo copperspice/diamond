@@ -162,6 +162,7 @@
      <addaction name="actionSyn_Javascript"/>
      <addaction name="actionSyn_Json"/>
      <addaction name="actionSyn_Makefile"/>
+     <addaction name="actionSyn_Nsis"/>
      <addaction name="actionSyn_Text"/>
      <addaction name="actionSyn_Shell_S"/>
      <addaction name="actionSyn_Perl"/>
@@ -708,6 +709,11 @@
   <action name="actionDisplay_HTML">
    <property name="text">
     <string>Display as HTML</string>
+   </property>
+  </action>
+  <action name="actionSyn_Nsis">
+   <property name="text">
+    <string>Nsis</string>
    </property>
   </action>
  </widget>

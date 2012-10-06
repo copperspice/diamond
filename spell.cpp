@@ -30,7 +30,7 @@ void MainWindow::createSpellCheck()
    m_spellCheck = new SpellCheck(m_struct.dictMain,  m_struct.dictUser);
 }
 
-void MainWindow::add_UserDict()
+void MainWindow::spell_addUserDict()
 {
    // retrieve saved cursor
    QTextCursor cursor = m_textEdit->get_Cursor();
@@ -42,7 +42,7 @@ void MainWindow::add_UserDict()
    }
 }
 
-void MainWindow::replaceWord()
+void MainWindow::spell_replaceWord()
 {
    QAction *action;
    action = (QAction *)sender();
@@ -54,7 +54,7 @@ void MainWindow::replaceWord()
    }
 }
 
-QStringList MainWindow::get_Maybe(QString word)
+QStringList MainWindow::spell_getMaybe(QString word)
 {
    if ( m_spellCheck->spell(word) )   {
       return QStringList();
@@ -94,11 +94,20 @@ void MainWindow::setSyntax()
       } else if (fname == "configure" || fname == "configure.ac") {
          suffix = "make";
 
-      } else if (suffix == "htm") {
+      } else if (suffix == "htm" || suffix == "shtml") {
          suffix = "html";
 
       } else if (fname == "makefile" || fname == "makefile.am" || fname == "makefile.in") {
          suffix = "make";
+
+      } else if (suffix == "nsis") {
+         suffix = "nsi";
+
+      } else if (suffix == "perl" || suffix == "pm") {
+         suffix = "pl";
+
+      } else if (suffix == "php3" || suffix == "php4") {
+         suffix = "php";
 
       }
    }
@@ -146,7 +155,10 @@ void MainWindow::setSyntax()
          m_syntaxEnum = SYN_JSON;
 
       } else if ( suffix == "make")  {
-         m_syntaxEnum = SYN_MAKE;
+         m_syntaxEnum = SYN_MAKE;         
+
+      } else if (suffix == "nsi")  {
+         m_syntaxEnum = SYN_NSIS;
 
       } else if (suffix == "txt")  {
          m_syntaxEnum = SYN_TEXT;
@@ -214,6 +226,10 @@ void MainWindow::forceSyntax(SyntaxTypes data)
 
       case SYN_MAKE:
         synFName = m_struct.pathSyntax + "syn_make.json";
+         break;
+
+      case SYN_NSIS:
+         synFName = m_struct.pathSyntax + "syn_nsi.json";
          break;
 
       case SYN_TEXT:

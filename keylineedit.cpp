@@ -20,6 +20,7 @@
 **************************************************************************/
 
 #include "keylineedit.h"
+#include "util.h"
 
 #include <QString>
 #include <QKeyEvent>
@@ -33,26 +34,80 @@ KeyLineEdit::KeyLineEdit(QWidget *parent) :
 void KeyLineEdit::keyPressEvent(QKeyEvent *event)
 {
    QString keyPress;
-   int modifiers = event->modifiers();
 
-   if(modifiers & Qt::ControlModifier) {
-      keyPress.append("Ctrl+");
+   int key = event->key();
+   int modifiers = event->modifiers();   
+
+   if (key == Qt::Key_Control || key == Qt::Key_Shift || key == Qt::Key_Alt || key == Qt::Key_Meta)  {
+      // do nothing yet
+
+   } else  {
+
+      if (modifiers & Qt::ControlModifier) {
+         keyPress.append("Ctrl+");
+      }
+
+      if (modifiers & Qt::ShiftModifier) {
+         keyPress.append("Shift+");
+      }
+
+      if (modifiers & Qt::AltModifier) {
+         keyPress.append("Alt+");
+      }
+
+      if (modifiers & Qt::MetaModifier) {
+         keyPress.append("Alt+");
+      }
+
+      //
+      if (key == Qt::Key_Return) {
+         // not the one on the keypad
+         keyPress.append("Return");
+
+      } else if (key == Qt::Key_Enter) {
+        // on the keypad
+        keyPress.append("Enter");
+
+      } else if (key == Qt::Key_F1) {
+         keyPress.append("F1");
+
+      } else if (key == Qt::Key_F2) {
+         keyPress.append("F2");
+
+      } else if (key == Qt::Key_F3) {
+         keyPress.append("F3");
+
+      } else if (key == Qt::Key_F4) {
+         keyPress.append("F4");
+
+      } else if (key == Qt::Key_F5) {
+         keyPress.append("F5");
+
+      } else if (key == Qt::Key_F6) {
+         keyPress.append("F6");
+
+      } else if (key == Qt::Key_F7) {
+         keyPress.append("F7");
+
+      } else if (key == Qt::Key_F8) {
+         keyPress.append("F8");
+
+      } else if (key == Qt::Key_F9) {
+         keyPress.append("F9");
+
+      } else if (key == Qt::Key_F10) {
+         keyPress.append("F10");
+
+      } else if (key == Qt::Key_F11) {
+         keyPress.append("F11");
+
+      } else if (key == Qt::Key_F12) {
+         keyPress.append("F12");
+
+      } else {
+          keyPress.append(key);
+      }
+
+      this->setText(keyPress);
    }
-
-   if(modifiers & Qt::ShiftModifier) {
-      keyPress.append("Shift+");
-   }
-
-   if(modifiers & Qt::AltModifier) {
-      keyPress.append("Alt+");
-   }
-
-// if (modifiers & Qt::NoModifier) {
-// }
-
-   keyPress.append(event->key());
-   this->setText(keyPress);
-
-   // keypress completed
-   // QLineEdit::keyPressEvent(event);
 }

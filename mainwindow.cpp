@@ -28,11 +28,13 @@
 #include "dialog_symbols.h"
 
 #include <QtGui>
+#include <QChar>
 #include <QDir>
 #include <QFileInfo>
 #include <QFontMetrics>
-#include <QStringList>
 #include <QKeySequence>
+#include <QStringList>
+#include <QTextBlock>
 
 MainWindow::MainWindow()
    : m_ui(new Ui::MainWindow)
@@ -43,6 +45,12 @@ MainWindow::MainWindow()
    if ( ! json_Read()  ) {
       csError(tr("Settings File"), tr("Unable to locate or open the Settings file."));
    }
+
+   // BROOM, hard set move to json
+   m_struct.useSpaces = true;
+
+   // drag & drop
+   setAcceptDrops(true);
 
    // remaining methods must be done after jsson_Read
    m_tabWidget = new QTabWidget;      
@@ -481,26 +489,122 @@ void MainWindow::insertSymbol()
 
 void MainWindow::indentIncr()
 {
+   const QString tabLen = QString(m_struct.tabSpacing, ' ');
+
    QTextCursor cursor(m_textEdit->textCursor());
+   cursor.beginEditBlock();
 
    if (cursor.hasSelection()) {
-      QString newText = cursor.selectedText();
+      int posStart = cursor.selectionStart();
+      int posEnd   = cursor.selectionEnd();
 
-      // just one line
-      newText = "   " + newText;
+      // reset posEnd to the end to the last selected line
+      cursor.setPosition(posEnd);
+      cursor.movePosition(QTextCursor::EndOfLine);
+      posEnd = cursor.position();
 
-      cursor.insertText(newText);
+      // reset posStart to the beginning of the first selected line
+      cursor.setPosition(posStart);
+      cursor.movePosition(QTextCursor::StartOfLine);
+      posStart = cursor.position();
+
+      while (true) {
+         cursor.movePosition(QTextCursor::StartOfLine);
+
+         if (m_struct.useSpaces) {
+            cursor.insertText(tabLen);
+            posEnd += m_struct.tabSpacing;
+
+         } else {
+            cursor.insertText(QChar('\t'));
+            posEnd += 1;
+
+         }
+
+         if (! cursor.movePosition(QTextCursor::NextBlock))  {
+             break;
+         }
+
+         if (cursor.position() >= posEnd) {
+            break;
+         }
+      }
+
+      // reselect highlighted text
+      cursor.clearSelection();
+
+      cursor.setPosition(posStart);
+      cursor.setPosition(posEnd, QTextCursor::KeepAnchor);
+
+      m_textEdit->setTextCursor(cursor);
+
+   }  else {
+      cursor.movePosition(QTextCursor::StartOfLine);
+      cursor.insertText(tabLen);
    }
 
-   //QTextBlockFormat bFormat = cursor.blockFormat();
-   //bFormat.setTextIndent(10);
-   //cursor.setBlockFormat(bFormat);
+   cursor.endEditBlock();
 }
 
 void MainWindow::indentDecr()
 {
-   // * * *
-   showNotDone("Edit Decrease Indent");
+   QTextCursor cursor(m_textEdit->textCursor());
+   cursor.beginEditBlock();
+
+   if (cursor.hasSelection()) {
+      int posStart = cursor.selectionStart();
+      int posEnd   = cursor.selectionEnd();
+
+      // reset posEnd to the end to the last selected line
+      cursor.setPosition(posEnd);
+      cursor.movePosition(QTextCursor::EndOfLine);
+      posEnd = cursor.position();
+
+      // reset posStart to the beginning of the first selected line
+      cursor.setPosition(posStart);
+      cursor.movePosition(QTextCursor::StartOfLine);
+      posStart = cursor.position();
+
+      while (true) {
+
+
+         // missing code
+         break;
+
+
+      }
+
+      // reselect highlighted text
+      cursor.clearSelection();
+
+      cursor.setPosition(posStart);
+      cursor.setPosition(posEnd, QTextCursor::KeepAnchor);
+
+      m_textEdit->setTextCursor(cursor);
+
+   }  else {
+      cursor.movePosition(QTextCursor::StartOfLine);
+      int posStart = cursor.position();
+
+      QString temp;
+
+      for (int k=0; k < m_struct.tabSpacing; ++k) {
+
+         cursor.movePosition(QTextCursor::NextCharacter, QTextCursor::KeepAnchor, 1);
+         temp = cursor.selectedText().trimmed();
+
+         if (! temp.isEmpty())  {
+            break;
+         }
+
+         cursor.deleteChar();
+      }
+
+      cursor.setPosition(posStart, QTextCursor::MoveAnchor);
+      m_textEdit->setTextCursor(cursor);
+   }
+
+   cursor.endEditBlock();
 }
 
 void MainWindow::columnMode()
@@ -779,6 +883,11 @@ void MainWindow::setSyn_Makefile()
    forceSyntax(SYN_MAKE);
 }
 
+void MainWindow::setSyn_Nsis()
+{
+   forceSyntax(SYN_NSIS);
+}
+
 void MainWindow::setSyn_Text()
 {
    forceSyntax(SYN_TEXT);
@@ -821,6 +930,7 @@ void MainWindow::setSynType(SyntaxTypes data)
    m_ui->actionSyn_Javascript->setChecked(false);
    m_ui->actionSyn_Json->setChecked(false);
    m_ui->actionSyn_Makefile->setChecked(false);
+   m_ui->actionSyn_Nsis->setChecked(false);
    m_ui->actionSyn_Text->setChecked(false);
    m_ui->actionSyn_Shell_S->setChecked(false);
    m_ui->actionSyn_Perl->setChecked(false);
@@ -863,6 +973,10 @@ void MainWindow::setSynType(SyntaxTypes data)
 
       case SYN_MAKE:
          m_ui->actionSyn_Makefile->setChecked(true);
+         break;
+
+      case SYN_NSIS:
+         m_ui->actionSyn_Nsis->setChecked(true);
          break;
 
       case SYN_TEXT:
@@ -948,22 +1062,25 @@ void MainWindow::macroPlay()
       csError("Macro Playback", "Unable to play back a macro while recording");
 
    }  else {
-
       QList<QKeyEvent *> keyList;
-      keyList = m_textEdit->get_KeyList();
+      keyList = m_textEdit->get_KeyList();    
 
-      QKeyEvent *event;
-
-      //
       int cnt = keyList.count();
 
-      for (int k = 0; k < cnt; ++k)   {
-         event = keyList.at(k);
+      if (cnt == 0) {
+         csError("Macro Playback", "No macro to play back");
 
-         QKeyEvent *newEvent;
-         newEvent = new QKeyEvent(*event);
+      } else {
+         QKeyEvent *event;
 
-         QApplication::postEvent(m_textEdit, newEvent);
+         for (int k = 0; k < cnt; ++k)   {
+            event = keyList.at(k);
+
+            QKeyEvent *newEvent;
+            newEvent = new QKeyEvent(*event);
+
+            QApplication::postEvent(m_textEdit, newEvent);
+         }
       }
    }
 }
@@ -1114,12 +1231,12 @@ void MainWindow::setOptions()
    options.key_goLine      = m_struct.key_goLine;
    options.key_columnMode  = m_struct.key_columnMode;
    options.key_macroPlay   = m_struct.key_macroPlay;
+   options.key_spellCheck  = m_struct.key_spellCheck;
 
    Dialog_Options *dw = new Dialog_Options(this, options);
    int result = dw->exec();
 
-   if ( result = QDialog::Accepted) {
-
+   if ( result == QDialog::Accepted) {
       options = dw->get_Results();
 
       //
@@ -1167,6 +1284,7 @@ void MainWindow::setOptions()
       m_struct.key_goLine      = options.key_goLine;
       m_struct.key_columnMode  = options.key_columnMode;
       m_struct.key_macroPlay   = options.key_macroPlay;
+      m_struct.key_spellCheck  = options.key_spellCheck;
       json_Write(KEYS);
 
       //
@@ -1199,6 +1317,7 @@ void MainWindow::tabNew()
    m_textEdit->setTabStopWidth( temp * m_struct.tabSpacing );     // BROOM, must examine and change all tabs
 
    //
+   // connect(m_textEdit, SIGNAL(fileDropped(const QString &)),  this, SLOT(fileDropped(const QString &)));
    connect(m_textEdit->document(), SIGNAL(contentsChanged()), this, SLOT(documentWasModified()));
 
    connect(m_textEdit, SIGNAL(cursorPositionChanged()), this, SLOT(move_lineHighlight()));
@@ -1406,6 +1525,7 @@ void MainWindow::createConnections()
    connect(m_ui->actionSyn_Javascript,    SIGNAL(triggered()), this, SLOT(setSyn_Javascript()));
    connect(m_ui->actionSyn_Json,          SIGNAL(triggered()), this, SLOT(setSyn_Json()));
    connect(m_ui->actionSyn_Makefile,      SIGNAL(triggered()), this, SLOT(setSyn_Makefile()));
+   connect(m_ui->actionSyn_Nsis,          SIGNAL(triggered()), this, SLOT(setSyn_Nsis()));
    connect(m_ui->actionSyn_Text,          SIGNAL(triggered()), this, SLOT(setSyn_Text()));
    connect(m_ui->actionSyn_Shell_S,       SIGNAL(triggered()), this, SLOT(setSyn_Shell_S()));
    connect(m_ui->actionSyn_Perl,          SIGNAL(triggered()), this, SLOT(setSyn_Perl()));
@@ -1454,6 +1574,7 @@ void MainWindow::createToggles()
    m_ui->actionSyn_Javascript->setCheckable(true);
    m_ui->actionSyn_Json->setCheckable(true);
    m_ui->actionSyn_Makefile->setCheckable(true);
+   m_ui->actionSyn_Nsis->setCheckable(true);
    m_ui->actionSyn_Text->setCheckable(true);
    m_ui->actionSyn_Shell_S->setCheckable(true);
    m_ui->actionSyn_Perl->setCheckable(true);
@@ -1536,6 +1657,7 @@ void MainWindow::createShortCuts()
 
    // tools
    m_ui->actionMacro_Play->setShortcut(QKeySequence(m_struct.key_macroPlay) );
+   m_ui->actionSpell_Check->setShortcut(QKeySequence(m_struct.key_spellCheck) );
 }
 
 
@@ -1566,9 +1688,7 @@ void MainWindow::createToolBars()
    fileToolBar->addAction(m_ui->actionNew);
    fileToolBar->addAction(m_ui->actionOpen);
    fileToolBar->addAction(m_ui->actionClose);
-   // fileToolBar->addAction(m_ui->actionClose_All);
    fileToolBar->addAction(m_ui->actionSave);
-   // fileToolBar->addAction(m_ui->actionSave_All);
    fileToolBar->addAction(m_ui->actionPrint);
    fileToolBar->addAction(m_ui->actionPrint_Pdf);
 

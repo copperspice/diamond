@@ -43,12 +43,17 @@ class MainWindow : public QMainWindow
    Q_OBJECT
 
    public:      
-      MainWindow();
+      MainWindow();      
       struct Settings get_StructData();           
-      QStringList get_Maybe(QString word);
+      bool loadFile(const QString &fileName, bool newTab);
+
+      // spell
+      QStringList spell_getMaybe(QString word);
 
    protected:
       void closeEvent(QCloseEvent *event);
+      void dragEnterEvent(QDragEnterEvent *event);
+      void dropEvent(QDropEvent *event);
 
    private:
       Ui::MainWindow *m_ui;
@@ -140,8 +145,7 @@ class MainWindow : public QMainWindow
 
       // support
       int get_Value1(const QString route);
-      bool querySave();
-      bool loadFile(const QString &fileName, bool newTab);
+      bool querySave();     
       bool saveFile(const QString &fileName, bool isSaveOne);
       bool saveAs(bool isSaveOne);
 
@@ -179,9 +183,7 @@ class MainWindow : public QMainWindow
 
       void insertDate();
       void insertTime();
-      void insertSymbol();
-      void indentIncr();
-      void indentDecr();
+      void insertSymbol();      
       void columnMode();
 
       void find();
@@ -212,6 +214,7 @@ class MainWindow : public QMainWindow
       void setSyn_Javascript();
       void setSyn_Json();
       void setSyn_Makefile();
+      void setSyn_Nsis();
       void setSyn_Text();
       void setSyn_Shell_S();
       void setSyn_Perl();
@@ -254,13 +257,18 @@ class MainWindow : public QMainWindow
       void rf_DeleteName();
 
       // spell check
-      void add_UserDict();
-      void replaceWord();
+      void spell_addUserDict();
+      void spell_replaceWord();
 
       // file menu, recent file list
       void showContextMenu(const QPoint &pt);
       void rf_ClearList();
       void rf_RemoveFName();
+
+   public slots:
+      // indent
+      void indentIncr();
+      void indentDecr();
 };
 
 #endif

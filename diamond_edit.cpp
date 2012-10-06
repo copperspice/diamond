@@ -24,6 +24,10 @@
 #include "util.h"
 
 #include <QtGui>
+#include <QStringList>
+#include <Qt>
+
+const QColor FILL_COLOR = QColor(0xD0D0D0);
 
 DiamondTextEdit::DiamondTextEdit(MainWindow *from, struct Settings settings, SpellCheck *spell)
       : QPlainTextEdit()
@@ -47,6 +51,9 @@ DiamondTextEdit::DiamondTextEdit(MainWindow *from, struct Settings settings, Spe
    m_lineNumArea = new LineNumArea(this);
    update_LineNumWidth(0);
 
+   // drag & drop
+   setAcceptDrops(false);
+
    // line highlight
    connect(this, SIGNAL(blockCountChanged(int)),   this, SLOT(update_LineNumWidth(int)));
    connect(this, SIGNAL(updateRequest(QRect,int)), this, SLOT(update_LineNumArea(QRect,int)));  
@@ -65,19 +72,19 @@ void DiamondTextEdit::lineNum_PaintEvent(QPaintEvent *event)
    if (m_showlineNum)  {
 
       QPainter painter(m_lineNumArea);
-      painter.fillRect(event->rect(), Qt::lightGray);
+      painter.fillRect(event->rect(), FILL_COLOR );
 
       QTextBlock block = firstVisibleBlock();
       int blockNumber = block.blockNumber();
-      int top = (int) blockBoundingGeometry(block).translated(contentOffset()).top();
+      int top    = (int) blockBoundingGeometry(block).translated(contentOffset()).top();
       int bottom = top + (int) blockBoundingRect(block).height();
 
       while (block.isValid() && top <= event->rect().bottom()) {
          if (block.isVisible() && bottom >= event->rect().top()) {
             QString number = QString::number(blockNumber + 1);
 
-            painter.setPen(Qt::black);
-            painter.drawText(0, top, m_lineNumArea->width(), fontMetrics().height(),Qt::AlignRight, number);
+            painter.setPen(Qt::darkGray);
+            painter.drawText(0, top, m_lineNumArea->width()-7, fontMetrics().height(), Qt::AlignRight, number);
          }
 
          block = block.next();
@@ -90,14 +97,14 @@ void DiamondTextEdit::lineNum_PaintEvent(QPaintEvent *event)
 
 int DiamondTextEdit::lineNum_Width()
 {
-   int digits = 3;
+   int digits = 4;
    int max = blockCount();
 
-   for (int k=100; k < max; k *= 10)  {
+   for (int k=1000; k < max; k *= 10)  {
       ++digits;
    }
 
-   int space = 3 + fontMetrics().width(QLatin1Char('9')) * digits;
+   int space = 8 + fontMetrics().width(QLatin1Char('9')) * digits;
    return space;
 }
 
@@ -158,15 +165,15 @@ void DiamondTextEdit::contextMenuEvent(QContextMenuEvent *event)
       // save to use in add_userDict() and replaceWord()
       m_cursor = cursor;
 
-      QStringList m_maybeList =  m_mainWindow->get_Maybe(selectedText);
+      QStringList m_maybeList =  m_mainWindow->spell_getMaybe(selectedText);
       int cnt = m_maybeList.count();
 
       if (cnt > 0)  {
          for (int k = 0; k < cnt; ++k)  {
-            menu->addAction(m_maybeList[k],  m_mainWindow, SLOT(replaceWord())  );
+            menu->addAction(m_maybeList[k],  m_mainWindow, SLOT(spell_replaceWord())  );
          }
 
-         menu->addAction("Add to User Dictionary",  m_mainWindow, SLOT(add_UserDict()) );
+         menu->addAction("Add to User Dictionary",  m_mainWindow, SLOT(spell_addUserDict()) );
          menu->addSeparator();
       }
    }
@@ -323,20 +330,67 @@ QList<QKeyEvent *> DiamondTextEdit::get_KeyList()
    return m_keyList;
 }
 
-void DiamondTextEdit::keyPressEvent(QKeyEvent *event)
+
+// ** process key press
+bool DiamondTextEdit::event(QEvent *event)
 {
-   if (m_record)  {
+   if (event->type() == QEvent::KeyPress) {
 
-      if (event->key() == Qt::Key_unknown) {
-         // lose this one?
+      QKeyEvent *keyPressEvent = dynamic_cast<QKeyEvent *>(event);
 
-      } else {
-         QKeyEvent *newEvent;
-         newEvent = new QKeyEvent(*event);
+      int key = keyPressEvent->key();
+      int modifiers = keyPressEvent->modifiers();
 
-         m_keyList.append(newEvent);         
+      if (key == Qt::Key_Tab && (modifiers == Qt::NoModifier) ) {
+
+         if (m_record)  {
+            QKeyEvent *newEvent;
+            newEvent = new QKeyEvent(*keyPressEvent);
+
+            m_keyList.append(newEvent);
+         }
+
+         m_mainWindow->indentIncr();
+         return true;
+
+      } else if (key == Qt::Key_Backtab ||
+            (key == Qt::Key_Tab  && (modifiers == Qt::ShiftModifier)) ) {
+
+         if (m_record)  {
+            QKeyEvent *newEvent;
+            newEvent = new QKeyEvent(*keyPressEvent);
+
+            m_keyList.append(newEvent);
+         }
+
+         m_mainWindow->indentDecr();
+         return true;
       }
+
    }
 
-   return QPlainTextEdit::keyPressEvent(event);
+   return QPlainTextEdit::event(event);
 }
+
+void DiamondTextEdit::keyPressEvent(QKeyEvent *event)
+{
+   // int key = event->key();
+   // int modifiers = event->modifiers();
+
+   if (m_record)  {
+
+      QKeyEvent *newEvent;
+      newEvent = new QKeyEvent(*event);
+
+      m_keyList.append(newEvent);
+
+      // now call the parent
+      QPlainTextEdit::keyPressEvent(event);
+
+   }  else {
+      // now call the parent
+      QPlainTextEdit::keyPressEvent(event);
+   }
+}
+
+

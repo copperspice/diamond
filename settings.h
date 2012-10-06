@@ -7,6 +7,7 @@
 
 struct Settings {
    int     tabSpacing;
+   bool    useSpaces;
    bool    showLineHighlight;
    bool    showLineNumbers;
    bool    isColumnMode;
@@ -34,6 +35,7 @@ struct Settings {
    QString key_goLine;
    QString key_columnMode;
    QString key_macroPlay;
+   QString key_spellCheck;
 
    int    syn_KeyWeight;
    bool   syn_KeyItalic;
@@ -60,6 +62,7 @@ struct Settings {
 
 struct Options {
    int     tabSpacing;
+   bool    useSpaces;
    QString formatDate;
    QString formatTime;
    QString dictMain;
@@ -74,9 +77,11 @@ struct Options {
    QString key_goLine;
    QString key_columnMode;
    QString key_macroPlay;
+   QString key_spellCheck;
 };
 
 enum SyntaxTypes {SYN_C, SYN_CLIPPER, SYN_CSS, SYN_DOX, SYN_HTML, SYN_JAVA, SYN_JS,
-                  SYN_JSON, SYN_MAKE, SYN_TEXT, SYN_SHELL_S, SYN_PERL, SYN_PHP, SYN_PYTHON, SYN_NONE };
+                  SYN_JSON, SYN_MAKE, SYN_NSIS, SYN_TEXT, SYN_SHELL_S, SYN_PERL,
+                  SYN_PHP, SYN_PYTHON, SYN_NONE };
 
 #endif

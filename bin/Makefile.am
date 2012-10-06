@@ -21,9 +21,9 @@ deploy_PROGRAMS = Diamond
 # copy the required CopperSpice and gcc files for deployment - windows only
 install-data-hook:	
 	mkdir -p $(deploydir)	  
-	cp --preserve=timestamps  $(patsubst %,$(gccpath)/bin/%.dll,$(gcclibs))  $(deploydir)
-	cp --preserve=timestamps  $(patsubst %,$(CS_HOME)/bin/libCs%1-0.dll,$(cslibs))  $(deploydir)
-	cp --preserve=timestamps  $(hunspell_dll)  $(deploydir)
+#	cp --preserve=timestamps  $(patsubst %,$(gccpath)/bin/%.dll,$(gcclibs))  $(deploydir)
+#	cp --preserve=timestamps  $(patsubst %,$(CS_HOME)/bin/libCs%1-0.dll,$(cslibs))  $(deploydir)
+#	cp --preserve=timestamps  $(hunspell_dll)  $(deploydir)
     
 # search path for source
 VPATH = ../
