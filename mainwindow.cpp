@@ -27,6 +27,8 @@
 #include "dialog_options.h"
 #include "dialog_symbols.h"
 
+#include <stdexcept>
+
 #include <QtGui>
 #include <QChar>
 #include <QDir>
@@ -43,16 +45,15 @@ MainWindow::MainWindow()
    setWindowFilePath("untitled.txt");
 
    if ( ! json_Read()  ) {
-      csError(tr("Settings File"), tr("Unable to locate or open the Settings file."));
+      // do not start program
+      csError(tr("Configuration File Missing"), tr("Unable to locate or open the Diamond Configuration file."));
+      throw std::runtime_error("");
    }
-
-   // BROOM, hard set move to json
-   m_struct.useSpaces = true;
 
    // drag & drop
    setAcceptDrops(true);
 
-   // remaining methods must be done after jsson_Read
+   // remaining methods must be done after json_Read
    m_tabWidget = new QTabWidget;      
 
    m_tabWidget->setTabsClosable(true);
@@ -72,11 +73,9 @@ MainWindow::MainWindow()
    // spell check  
    createSpellCheck();
 
-   //  test code for filemenu
+   //  recent files, context menu
    m_ui->menuFile->setContextMenuPolicy(Qt::CustomContextMenu);
-   connect(m_ui->menuFile, SIGNAL(customContextMenuRequested(const QPoint&)), this, SLOT(showContextMenu(const QPoint &)));
-   //
-
+   connect(m_ui->menuFile, SIGNAL(customContextMenuRequested(const QPoint&)), this, SLOT(showContextMenu(const QPoint &)));   
 
    //
    tabNew();
@@ -196,7 +195,7 @@ void MainWindow::reload()
       quest.setText( fileName + tr(" has been modified. Reload file?"));
 
       QPushButton *reload = quest.addButton("Reload", QMessageBox::AcceptRole );
-      quest.setStandardButtons( QMessageBox::Cancel );
+      quest.setStandardButtons(QMessageBox::Cancel);
       quest.setDefaultButton(QMessageBox::Cancel);
 
       quest.exec();
@@ -487,7 +486,12 @@ void MainWindow::insertSymbol()
    delete dw;
 }
 
-void MainWindow::indentIncr()
+void MainWindow::mw_indentIncr()
+{
+   indentIncr("indent");
+}
+
+void MainWindow::indentIncr(QString route)
 {
    const QString tabLen = QString(m_struct.tabSpacing, ' ');
 
@@ -516,6 +520,8 @@ void MainWindow::indentIncr()
             posEnd += m_struct.tabSpacing;
 
          } else {
+            csMsg("using tabs");
+
             cursor.insertText(QChar('\t'));
             posEnd += 1;
 
@@ -539,14 +545,22 @@ void MainWindow::indentIncr()
       m_textEdit->setTextCursor(cursor);
 
    }  else {
-      cursor.movePosition(QTextCursor::StartOfLine);
+
+      if (route == "indent") {
+         cursor.movePosition(QTextCursor::StartOfLine);
+      }
       cursor.insertText(tabLen);
    }
 
    cursor.endEditBlock();
 }
 
-void MainWindow::indentDecr()
+void MainWindow::mw_indentDecr()
+{
+   indentDecr("indent");
+}
+
+void MainWindow::indentDecr(QString route)
 {
    QTextCursor cursor(m_textEdit->textCursor());
    cursor.beginEditBlock();
@@ -583,8 +597,12 @@ void MainWindow::indentDecr()
       m_textEdit->setTextCursor(cursor);
 
    }  else {
-      cursor.movePosition(QTextCursor::StartOfLine);
+
       int posStart = cursor.position();
+
+      if (route == "indent") {
+         cursor.movePosition(QTextCursor::StartOfLine);
+      }
 
       QString temp;
 
@@ -598,11 +616,28 @@ void MainWindow::indentDecr()
          }
 
          cursor.deleteChar();
+
+         if (route == "indent") {
+            posStart -=1;
+         }
       }
 
+      //
       cursor.setPosition(posStart, QTextCursor::MoveAnchor);
       m_textEdit->setTextCursor(cursor);
    }
+
+   cursor.endEditBlock();
+}
+
+void MainWindow::deleteEOL()
+{
+   QTextCursor cursor(m_textEdit->textCursor());
+   cursor.beginEditBlock();
+
+   cursor.movePosition(QTextCursor::EndOfLine, QTextCursor::KeepAnchor);
+   cursor.removeSelectedText();
+   m_textEdit->setTextCursor(cursor);
 
    cursor.endEditBlock();
 }
@@ -1052,6 +1087,10 @@ void MainWindow::mw_macroStop()
    if ( m_record ) {
       m_record = false;
       m_textEdit->macroStop();
+
+      // save macro
+      json_Write(MACRO);
+
       setStatusBar(tr("Macro recorded"), 1000);
    }
 }
@@ -1068,7 +1107,7 @@ void MainWindow::macroPlay()
       int cnt = keyList.count();
 
       if (cnt == 0) {
-         csError("Macro Playback", "No macro to play back");
+         csError("Macro Playback", "No macros to play back");
 
       } else {
          QKeyEvent *event;
@@ -1085,16 +1124,11 @@ void MainWindow::macroPlay()
    }
 }
 
-void MainWindow::macroSelect()
+void MainWindow::macroLoad()
 {
-   showNotDone("Macro, Get saved");
+   showNotDone("Macro, Show saved macro");
 }
 
-
-void MainWindow::macroSelectPlay()
-{
-   showNotDone("Macro, Play saved");
-}
 
 void MainWindow::spellCheck()
 {
@@ -1216,11 +1250,13 @@ void MainWindow::setFont()
 void MainWindow::setOptions()
 {
    struct Options options;
+   options.useSpaces  = m_struct.useSpaces;
    options.tabSpacing = m_struct.tabSpacing;
    options.formatDate = m_struct.formatDate;
    options.formatTime = m_struct.formatTime;
    options.dictMain   = m_struct.dictMain;
    options.dictUser   = m_struct.dictUser;
+   options.pathSyntax = m_struct.pathSyntax;
    options.aboutUrl   = m_struct.aboutUrl;   
 
    options.key_selectLine  = m_struct.key_selectLine;
@@ -1228,8 +1264,11 @@ void MainWindow::setOptions()
    options.key_selectBlock = m_struct.key_selectBlock;
    options.key_upper       = m_struct.key_upper;
    options.key_lower       = m_struct.key_lower;
-   options.key_goLine      = m_struct.key_goLine;
+   options.key_indentIncr  = m_struct.key_indentIncr;
+   options.key_indentDecr  = m_struct.key_indentDecr;
+   options.key_deleteEOL   = m_struct.key_deleteEOL;
    options.key_columnMode  = m_struct.key_columnMode;
+   options.key_goLine      = m_struct.key_goLine;
    options.key_macroPlay   = m_struct.key_macroPlay;
    options.key_spellCheck  = m_struct.key_spellCheck;
 
@@ -1243,6 +1282,11 @@ void MainWindow::setOptions()
       if ( m_struct.tabSpacing != options.tabSpacing)  {
          m_struct.tabSpacing = options.tabSpacing;
          json_Write(TAB_SPACING);
+      }
+
+      if ( m_struct.useSpaces != options.useSpaces)  {
+         m_struct.useSpaces = options.useSpaces;
+         json_Write(USESPACES);
       }
 
       //
@@ -1270,6 +1314,12 @@ void MainWindow::setOptions()
       }
 
       //
+      if (m_struct.pathSyntax != options.pathSyntax ) {
+         m_struct.pathSyntax = options.pathSyntax;
+         json_Write(PATH_SYNTAX);
+      }
+
+      //
       if (m_struct.aboutUrl != options.aboutUrl ) {
          m_struct.aboutUrl = options.aboutUrl;
          json_Write(ABOUTURL);
@@ -1281,8 +1331,11 @@ void MainWindow::setOptions()
       m_struct.key_selectBlock = options.key_selectBlock;
       m_struct.key_upper       = options.key_upper;
       m_struct.key_lower       = options.key_lower;
-      m_struct.key_goLine      = options.key_goLine;
+      m_struct.key_indentIncr  = options.key_indentIncr;
+      m_struct.key_indentDecr  = options.key_indentDecr;
+      m_struct.key_deleteEOL   = options.key_deleteEOL;
       m_struct.key_columnMode  = options.key_columnMode;
+      m_struct.key_goLine      = options.key_goLine;
       m_struct.key_macroPlay   = options.key_macroPlay;
       m_struct.key_spellCheck  = options.key_spellCheck;
       json_Write(KEYS);
@@ -1472,26 +1525,28 @@ void MainWindow::createConnections()
    connect(m_ui->actionExit,           SIGNAL(triggered()), this, SLOT(close()));
 
    // edit
-   connect(m_ui->actionUndo,           SIGNAL(triggered()), this, SLOT(mw_undo()));
-   connect(m_ui->actionRedo,           SIGNAL(triggered()), this, SLOT(mw_redo()));
-   connect(m_ui->actionCut,            SIGNAL(triggered()), this, SLOT(mw_cut()));
-   connect(m_ui->actionCopy,           SIGNAL(triggered()), this, SLOT(mw_copy()));
-   connect(m_ui->actionPaste,          SIGNAL(triggered()), this, SLOT(mw_paste()));
+   connect(m_ui->actionUndo,              SIGNAL(triggered()), this, SLOT(mw_undo()));
+   connect(m_ui->actionRedo,              SIGNAL(triggered()), this, SLOT(mw_redo()));
+   connect(m_ui->actionCut,               SIGNAL(triggered()), this, SLOT(mw_cut()));
+   connect(m_ui->actionCopy,              SIGNAL(triggered()), this, SLOT(mw_copy()));
+   connect(m_ui->actionPaste,             SIGNAL(triggered()), this, SLOT(mw_paste()));
 
-   connect(m_ui->actionSelect_All,     SIGNAL(triggered()), this, SLOT(selectAll()));
-   connect(m_ui->actionSelect_Block,   SIGNAL(triggered()), this, SLOT(selectBlock()));
-   connect(m_ui->actionSelect_Line,    SIGNAL(triggered()), this, SLOT(selectLine()));
-   connect(m_ui->actionSelect_Word,    SIGNAL(triggered()), this, SLOT(selectWord()));
-   connect(m_ui->actionCase_Upper,     SIGNAL(triggered()), this, SLOT(caseUpper()));
-   connect(m_ui->actionCase_Lower,     SIGNAL(triggered()), this, SLOT(caseLower()));
-   connect(m_ui->actionCase_Cap,       SIGNAL(triggered()), this, SLOT(caseCap()));
+   connect(m_ui->actionSelect_All,        SIGNAL(triggered()), this, SLOT(selectAll()));
+   connect(m_ui->actionSelect_Block,      SIGNAL(triggered()), this, SLOT(selectBlock()));
+   connect(m_ui->actionSelect_Line,       SIGNAL(triggered()), this, SLOT(selectLine()));
+   connect(m_ui->actionSelect_Word,       SIGNAL(triggered()), this, SLOT(selectWord()));
+   connect(m_ui->actionCase_Upper,        SIGNAL(triggered()), this, SLOT(caseUpper()));
+   connect(m_ui->actionCase_Lower,        SIGNAL(triggered()), this, SLOT(caseLower()));
+   connect(m_ui->actionCase_Cap,          SIGNAL(triggered()), this, SLOT(caseCap()));
 
-   connect(m_ui->actionInsert_Date,    SIGNAL(triggered()), this, SLOT(insertDate()));
-   connect(m_ui->actionInsert_Time,    SIGNAL(triggered()), this, SLOT(insertTime()));
-   connect(m_ui->actionInsert_Symbol,  SIGNAL(triggered()), this, SLOT(insertSymbol()));
-   connect(m_ui->actionIndent_Incr,    SIGNAL(triggered()), this, SLOT(indentIncr()));
-   connect(m_ui->actionIndent_Decr,    SIGNAL(triggered()), this, SLOT(indentDecr()));
-   connect(m_ui->actionColumn_Mode,    SIGNAL(triggered()), this, SLOT(columnMode()));
+   connect(m_ui->actionIndent_Incr,       SIGNAL(triggered()), this, SLOT(mw_indentIncr()));
+   connect(m_ui->actionIndent_Decr,       SIGNAL(triggered()), this, SLOT(mw_indentDecr()));
+   connect(m_ui->actionDelete_EOL ,       SIGNAL(triggered()), this, SLOT(deleteEOL()));
+
+   connect(m_ui->actionInsert_Date,       SIGNAL(triggered()), this, SLOT(insertDate()));
+   connect(m_ui->actionInsert_Time,       SIGNAL(triggered()), this, SLOT(insertTime()));
+   connect(m_ui->actionInsert_Symbol,     SIGNAL(triggered()), this, SLOT(insertSymbol()));
+   connect(m_ui->actionColumn_Mode,       SIGNAL(triggered()), this, SLOT(columnMode()));
 
    // search
    connect(m_ui->actionFind,              SIGNAL(triggered()), this, SLOT(find()));
@@ -1545,8 +1600,7 @@ void MainWindow::createConnections()
    connect(m_ui->actionMacro_Start,       SIGNAL(triggered()), this, SLOT(mw_macroStart()));
    connect(m_ui->actionMacro_Stop,        SIGNAL(triggered()), this, SLOT(mw_macroStop()));
    connect(m_ui->actionMacro_Play,        SIGNAL(triggered()), this, SLOT(macroPlay()));
-   connect(m_ui->actionMacro_Select,      SIGNAL(triggered()), this, SLOT(macroSelect()));
-   connect(m_ui->actionMacro_SelectPlay,  SIGNAL(triggered()), this, SLOT(macroSelectPlay()));
+   connect(m_ui->actionMacro_Load,        SIGNAL(triggered()), this, SLOT(macroLoad()));
    connect(m_ui->actionSpell_Check,       SIGNAL(triggered()), this, SLOT(spellCheck()));
 
    // settings
@@ -1645,11 +1699,15 @@ void MainWindow::createShortCuts()
    // ** user definded
 
    // edit
-   m_ui->actionSelect_Line->setShortcut(QKeySequence(m_struct.key_selectLine) );
-   m_ui->actionSelect_Word->setShortcut(QKeySequence(m_struct.key_selectWord) );
+   m_ui->actionSelect_Line->setShortcut(QKeySequence(m_struct.key_selectLine)   );
+   m_ui->actionSelect_Word->setShortcut(QKeySequence(m_struct.key_selectWord)   );
    m_ui->actionSelect_Block->setShortcut(QKeySequence(m_struct.key_selectBlock) );
    m_ui->actionCase_Upper->setShortcut(QKeySequence(m_struct.key_upper) );
    m_ui->actionCase_Lower->setShortcut(QKeySequence(m_struct.key_lower) );
+
+   m_ui->actionIndent_Incr->setShortcut(QKeySequence(m_struct.key_indentIncr) );
+   m_ui->actionIndent_Decr->setShortcut(QKeySequence(m_struct.key_indentDecr) );
+   m_ui->actionDelete_EOL->setShortcut(QKeySequence(m_struct.key_deleteEOL)   );
    m_ui->actionColumn_Mode->setShortcut(QKeySequence(m_struct.key_columnMode) );
 
    // search

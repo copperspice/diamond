@@ -39,6 +39,7 @@ Dialog_Options::Dialog_Options(MainWindow *from, struct Options data)
 
    connect(m_ui->dictMain_TB, SIGNAL(clicked()), this, SLOT(pick_Main()));
    connect(m_ui->dictUser_TB, SIGNAL(clicked()), this, SLOT(pick_User()));
+   connect(m_ui->syntax_TB,   SIGNAL(clicked()), this, SLOT(pick_Syntax()));
    connect(m_ui->about_TB,    SIGNAL(clicked()), this, SLOT(pick_About()));
 
    connect(m_ui->save_PB,     SIGNAL(clicked()), this, SLOT(Save()));
@@ -81,12 +82,17 @@ void Dialog_Options::initData()
    m_ui->tabSpacing_CB->addItems(list);
    m_ui->tabSpacing_CB->setEditable(false);
 
+   if (m_options.useSpaces)  {
+      m_ui->useSpaces_CKB->setChecked(true);
+   }
+
    index = m_ui->tabSpacing_CB->findText(QString::number(m_options.tabSpacing));
    m_ui->tabSpacing_CB->setCurrentIndex(index);
 
    //
    m_ui->dictMain->setText(m_options.dictMain);
    m_ui->dictUser->setText(m_options.dictUser);
+   m_ui->syntax->setText(m_options.pathSyntax);
    m_ui->about->setText(m_options.aboutUrl);
 
    m_ui->key_selectLine->setText(m_options.key_selectLine);
@@ -94,6 +100,9 @@ void Dialog_Options::initData()
    m_ui->key_selectBlock->setText(m_options.key_selectBlock);
    m_ui->key_upper->setText(m_options.key_upper);
    m_ui->key_lower->setText(m_options.key_lower);  
+   m_ui->key_indentIncr->setText(m_options.key_indentIncr);
+   m_ui->key_indentDecr->setText(m_options.key_indentDecr);
+   m_ui->key_deleteEOL->setText(m_options.key_deleteEOL);
    m_ui->key_columnMode->setText(m_options.key_columnMode);
    m_ui->key_goLine->setText(m_options.key_goLine);
    m_ui->key_macroPlay->setText(m_options.key_macroPlay);
@@ -102,6 +111,8 @@ void Dialog_Options::initData()
 
 void Dialog_Options::Save()
 {
+   m_options.useSpaces = m_ui->useSpaces_CKB->isChecked();
+
    this->done(QDialog::Accepted);
 }
 
@@ -121,7 +132,7 @@ void Dialog_Options::pick_Main()
    QString selectedFilter;
 
    QString fileName = QFileDialog::getOpenFileName(this, tr("Select Dictionary"),
-         m_ui->dictMain->text(), tr("All Files (*)"), &selectedFilter, options);
+         m_ui->dictMain->text(), tr("Dictionary Files (*.dic)"), &selectedFilter, options);
 
    if (! fileName.isEmpty()) {
       m_ui->dictMain->setText(fileName);
@@ -139,10 +150,22 @@ void Dialog_Options::pick_User()
    QString selectedFilter;
 
    QString fileName = QFileDialog::getOpenFileName(this, tr("Select User Dictionary"),
-         m_ui->dictUser->text(), tr("All Files (*)"), &selectedFilter, options);
+         m_ui->dictUser->text(), tr("User Dictionary Files (*.txt)"), &selectedFilter, options);
 
    if (! fileName.isEmpty()) {
       m_ui->dictUser->setText(fileName);
+   }
+}
+
+void Dialog_Options::pick_Syntax()
+{
+   QString msg  = tr("Select locaton of Diamond Syntax Files");
+   QString path = m_ui->syntax->text();
+
+   path = m_parent->get_DirPath(msg, path);
+
+   if (! path.isEmpty()) {
+      m_ui->syntax->setText(path);
    }
 }
 
@@ -156,8 +179,8 @@ void Dialog_Options::pick_About()
 
    QString selectedFilter;
 
-   QString fileName = QFileDialog::getOpenFileName(this, tr("Select Diamond About"),
-         m_ui->about->text(), tr("All Files (*)"), &selectedFilter, options);
+   QString fileName = QFileDialog::getOpenFileName(this, tr("Select Diamond Help (Html)"),
+         m_ui->about->text(), tr("All Files (index.html)"), &selectedFilter, options);
 
    if (! fileName.isEmpty()) {
       m_ui->about->setText(fileName);
@@ -173,6 +196,7 @@ struct Options Dialog_Options::get_Results()
    m_options.formatTime = m_ui->timeFormat_CB->currentText();
    m_options.dictMain   = m_ui->dictMain->text();
    m_options.dictUser   = m_ui->dictUser->text();
+   m_options.pathSyntax = m_ui->syntax->text();
    m_options.aboutUrl   = m_ui->about->text();
 
    m_options.key_selectLine   = m_ui->key_selectLine->text();
@@ -180,6 +204,9 @@ struct Options Dialog_Options::get_Results()
    m_options.key_selectBlock  = m_ui->key_selectBlock->text();
    m_options.key_upper        = m_ui->key_upper->text();
    m_options.key_lower        = m_ui->key_lower->text();
+   m_options.key_indentIncr   = m_ui->key_indentIncr->text();
+   m_options.key_indentDecr   = m_ui->key_indentDecr->text();
+   m_options.key_deleteEOL    = m_ui->key_deleteEOL->text();
    m_options.key_columnMode   = m_ui->key_columnMode->text();
    m_options.key_goLine       = m_ui->key_goLine->text();
    m_options.key_macroPlay    = m_ui->key_macroPlay->text();

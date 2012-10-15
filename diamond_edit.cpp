@@ -350,7 +350,7 @@ bool DiamondTextEdit::event(QEvent *event)
             m_keyList.append(newEvent);
          }
 
-         m_mainWindow->indentIncr();
+         m_mainWindow->indentIncr("tab");
          return true;
 
       } else if (key == Qt::Key_Backtab ||
@@ -363,7 +363,7 @@ bool DiamondTextEdit::event(QEvent *event)
             m_keyList.append(newEvent);
          }
 
-         m_mainWindow->indentDecr();
+         m_mainWindow->indentDecr("tab");
          return true;
       }
 

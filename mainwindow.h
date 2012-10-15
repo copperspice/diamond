@@ -45,6 +45,8 @@ class MainWindow : public QMainWindow
    public:      
       MainWindow();      
       struct Settings get_StructData();           
+
+      QString get_DirPath(QString message, QString path);
       bool loadFile(const QString &fileName, bool newTab);
 
       // spell
@@ -103,9 +105,9 @@ class MainWindow : public QMainWindow
       QLabel *m_statusMode;
       QLabel *m_statusName;    
 
-      enum Option {CLOSE, COLORS, COLUMN_MODE, DICT_MAIN, DICT_USER, FONT, FORMAT_DATE, FORMAT_TIME,
-                   KEYS, PATH_SYNTAX, PATH_PRIOR, RECENTFILE, ABOUTURL,
-                   SHOW_LINEHIGHLIGHT, SHOW_LINENUMBERS, WORDWRAP, SPELLCHECK, TAB_SPACING};
+      enum Option { ABOUTURL, CLOSE, COLORS, COLUMN_MODE, DICT_MAIN, DICT_USER, FONT, FORMAT_DATE, FORMAT_TIME,
+                    KEYS, MACRO, PATH_SYNTAX, PATH_PRIOR, RECENTFILE,
+                    SHOW_LINEHIGHLIGHT, SHOW_LINENUMBERS, SPELLCHECK, TAB_SPACING, USESPACES, WORDWRAP};
 
       void setScreenColors();
       void setSyntax();
@@ -134,8 +136,7 @@ class MainWindow : public QMainWindow
 
       QString get_SyntaxPath();
       QColor  json_SetColor(QString values);
-      QString json_GetRGB(QColor color);
-      uint json_SetKey(QString values);
+      QString json_GetRGB(QColor color);     
       QJsonObject json_SaveSyntax(QJsonObject object);
 
       // recent files
@@ -143,7 +144,7 @@ class MainWindow : public QMainWindow
       void rf_Update();
       void rf_UpdateActions();
 
-      // support
+      // support     
       int get_Value1(const QString route);
       bool querySave();     
       bool saveFile(const QString &fileName, bool isSaveOne);
@@ -180,6 +181,10 @@ class MainWindow : public QMainWindow
       void caseUpper();
       void caseLower();
       void caseCap();
+
+      void mw_indentIncr();
+      void mw_indentDecr();
+      void deleteEOL();
 
       void insertDate();
       void insertTime();
@@ -232,8 +237,7 @@ class MainWindow : public QMainWindow
       void mw_macroStart();
       void mw_macroStop();
       void macroPlay();
-      void macroSelect();
-      void macroSelectPlay();
+      void macroLoad();
       void spellCheck();
 
       void setColors();
@@ -267,8 +271,8 @@ class MainWindow : public QMainWindow
 
    public slots:
       // indent
-      void indentIncr();
-      void indentDecr();
+      void indentIncr(QString route);
+      void indentDecr(QString route);
 };
 
 #endif

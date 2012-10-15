@@ -25,6 +25,7 @@
 
 #include <QFile>
 #include <QFileInfo>
+#include <QFileDialog>
 #include <QDragEnterEvent>
 #include <QMimeData>
 #include <QUrl>
@@ -48,6 +49,28 @@ void MainWindow::documentWasModified()
    setWindowModified(m_textEdit->document()->isModified());
 }
 
+QString MainWindow::get_DirPath(QString message, QString path)
+{
+   QFileDialog::Options options;
+
+   if (false)  {  //(Q_OS_DARWIM) {
+      options |= QFileDialog::DontUseNativeDialog;
+   }
+
+   options |= QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks;
+
+   // on OS X the title bar may not be displayed
+   path = QFileDialog::getExistingDirectory(this, message, path, options);
+   path = path.trimmed() + "/";
+
+   return path;
+}
+
+struct Settings MainWindow::get_StructData()
+{
+   return m_struct;
+}
+
 int MainWindow::get_Value1(const QString route)
 {
    Dialog_Get1 *dw = new Dialog_Get1();
@@ -66,11 +89,6 @@ int MainWindow::get_Value1(const QString route)
    delete dw;
 
    return col;
-}
-
-QString MainWindow::suffixName() const
-{
-   return QFileInfo(m_curFile).suffix().toLower();
 }
 
 bool MainWindow::loadFile(const QString &fileName, bool addNewTab)
@@ -105,11 +123,6 @@ bool MainWindow::loadFile(const QString &fileName, bool addNewTab)
    setStatusBar(tr("File loaded"), 1500);
 
    return true;
-}
-
-struct Settings MainWindow::get_StructData()
-{
-   return m_struct;
 }
 
 QString MainWindow::pathName(QString fileName) const
@@ -176,6 +189,11 @@ bool MainWindow::saveFile(const QString &fileName, bool isSaveOne)
 QString MainWindow::strippedName(const QString fileName)
 {
    return QFileInfo(fileName).fileName();
+}
+
+QString MainWindow::suffixName() const
+{
+   return QFileInfo(m_curFile).suffix().toLower();
 }
 
 

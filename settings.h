@@ -31,9 +31,12 @@ struct Settings {
    QString key_selectWord;
    QString key_selectBlock;
    QString key_upper;
-   QString key_lower;
-   QString key_goLine;
+   QString key_lower; 
+   QString key_indentIncr;
+   QString key_indentDecr;
+   QString key_deleteEOL;
    QString key_columnMode;
+   QString key_goLine;
    QString key_macroPlay;
    QString key_spellCheck;
 
@@ -67,6 +70,7 @@ struct Options {
    QString formatTime;
    QString dictMain;
    QString dictUser;
+   QString pathSyntax;
    QString aboutUrl;
 
    QString key_selectLine;
@@ -74,8 +78,11 @@ struct Options {
    QString key_selectBlock;
    QString key_upper;
    QString key_lower;
-   QString key_goLine;
+   QString key_indentIncr;
+   QString key_indentDecr;
+   QString key_deleteEOL;
    QString key_columnMode;
+   QString key_goLine;
    QString key_macroPlay;
    QString key_spellCheck;
 };

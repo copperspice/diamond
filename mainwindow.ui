@@ -68,10 +68,12 @@
     </widget>
     <widget class="QMenu" name="menuAdvanced">
      <property name="title">
-      <string>Advanced *</string>
+      <string>Advanced</string>
      </property>
      <addaction name="actionIndent_Incr"/>
      <addaction name="actionIndent_Decr"/>
+     <addaction name="separator"/>
+     <addaction name="actionDelete_EOL"/>
     </widget>
     <addaction name="actionUndo"/>
     <addaction name="actionRedo"/>
@@ -203,8 +205,7 @@
      <addaction name="actionMacro_Stop"/>
      <addaction name="actionMacro_Play"/>
      <addaction name="separator"/>
-     <addaction name="actionMacro_Select"/>
-     <addaction name="actionMacro_SelectPlay"/>
+     <addaction name="actionMacro_Load"/>
     </widget>
     <addaction name="menuMacros"/>
     <addaction name="actionSpell_Check"/>
@@ -686,9 +687,9 @@
     <string>None</string>
    </property>
   </action>
-  <action name="actionMacro_Select">
+  <action name="actionMacro_Load">
    <property name="text">
-    <string>Select Saved Macro...</string>
+    <string>Load Macro...</string>
    </property>
   </action>
   <action name="actionMacro_SelectPlay">
@@ -714,6 +715,16 @@
   <action name="actionSyn_Nsis">
    <property name="text">
     <string>Nsis</string>
+   </property>
+  </action>
+  <action name="actionSave_Current_Macro">
+   <property name="text">
+    <string>Save Current Macro</string>
+   </property>
+  </action>
+  <action name="actionDelete_EOL">
+   <property name="text">
+    <string>Delete to End of Line</string>
    </property>
   </action>
  </widget>

@@ -28,9 +28,9 @@
 #include <QFileDialog>
 #include <QJsonArray>
 #include <QJsonDocument>
+#include <QPushButton>
 #include <QSettings>
 #include <Qt>
-#include <QMetaEnum>
 
 bool MainWindow::json_Read()
 {
@@ -86,6 +86,8 @@ bool MainWindow::json_Read()
       resize(size);
 
       //
+      m_struct.useSpaces = object.value("useSpaces").toBool();
+
       value = object.value("tabSpacing");
       m_struct.tabSpacing = value.toDouble();
 
@@ -105,16 +107,17 @@ bool MainWindow::json_Read()
       m_struct.dictUser   = object.value("dictUser").toString();
       m_struct.aboutUrl   = object.value("aboutUrl").toString();
 
-      // keys                  
-      // uint temp = json_SetKey(object.value("key-selectLine").toString());
-
+      // keys                       
       m_struct.key_selectLine  = object.value("key-selectLine").toString();
       m_struct.key_selectWord  = object.value("key-selectWord").toString();
       m_struct.key_selectBlock = object.value("key-selectBlock").toString();
       m_struct.key_upper       = object.value("key-upper").toString();
-      m_struct.key_lower       = object.value("key-lower").toString();
-      m_struct.key_goLine      = object.value("key-goLine").toString();
+      m_struct.key_lower       = object.value("key-lower").toString();      
+      m_struct.key_indentIncr  = object.value("key-indentIncr").toString();
+      m_struct.key_indentDecr  = object.value("key-indentDecr").toString();
+      m_struct.key_deleteEOL   = object.value("key-deleteEOL").toString();
       m_struct.key_columnMode  = object.value("key-columnMode").toString();
+      m_struct.key_goLine      = object.value("key-goLine").toString();
       m_struct.key_macroPlay   = object.value("key-macroPlay").toString();
       m_struct.key_spellCheck  = object.value("key-spellCheck").toString();
 
@@ -205,6 +208,10 @@ bool MainWindow::json_Write(Option route)
 
       switch (route)  {
 
+         case ABOUTURL:
+            object.insert("aboutUrl", m_struct.aboutUrl);
+            break;
+
          case CLOSE:
             object.insert("pos-x",       pos().x()  );
             object.insert("pos-y",       pos().y()  );
@@ -258,8 +265,11 @@ bool MainWindow::json_Write(Option route)
             object.insert("key-selectBlock", m_struct.key_selectBlock);
             object.insert("key-upper",       m_struct.key_upper);
             object.insert("key-lower",       m_struct.key_lower);
-            object.insert("key-goLine",      m_struct.key_goLine);
+            object.insert("key-indentIncr",  m_struct.key_indentIncr);
+            object.insert("key-indentDecr",  m_struct.key_indentDecr);            
+            object.insert("key-deleteEOL",   m_struct.key_deleteEOL);
             object.insert("key-columnMode",  m_struct.key_columnMode);
+            object.insert("key-goLine",      m_struct.key_goLine);
             object.insert("key-macroPlay",   m_struct.key_macroPlay);
             object.insert("key-spellCheck",  m_struct.key_spellCheck);
             break;
@@ -272,9 +282,23 @@ bool MainWindow::json_Write(Option route)
             object.insert("pathSyntax", m_struct.pathSyntax);
             break;
 
-         case ABOUTURL:
-            object.insert("aboutUrl", m_struct.aboutUrl);
-            break;
+         case MACRO:
+            {
+               QList<QKeyEvent *> keyList;
+               keyList = m_textEdit->get_KeyList();
+
+               int count = keyList.count();
+
+               QJsonValue value;
+               QJsonArray temp(QJsonArray);
+
+               for (int k= 0; k < count; ++k) {
+                  // temp.append( );
+               }
+
+               object.insert("macro1", temp);
+               break;
+            }
 
          case SHOW_LINEHIGHLIGHT:
             object.insert("showLineHighlight", m_struct.showLineHighlight);
@@ -290,6 +314,10 @@ bool MainWindow::json_Write(Option route)
 
          case TAB_SPACING:
             object.insert("tabSpacing", m_struct.tabSpacing);
+            break;
+
+         case USESPACES:
+            object.insert("useSpaces", m_struct.useSpaces);
             break;
 
          case WORDWRAP:
@@ -322,52 +350,45 @@ void MainWindow::json_getFileName()
 
    QMessageBox quest;
    quest.setWindowTitle(tr("Diamond Editor"));
-   quest.setText(tr("Settings file may be missing. Create new Settings File?"));
-   quest.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
-   quest.setDefaultButton(QMessageBox::Yes);
+   quest.setText(tr("Diamond configuration file is missing.\n\n"
+                    "Create a new configuration file or select an existing Diamond configuration file.\n"));
 
-   int retval = quest.exec();
+   QPushButton *createNew    = quest.addButton("Create", QMessageBox::AcceptRole );
+   QPushButton *selectConfig = quest.addButton("Select", QMessageBox::AcceptRole );
+   quest.setStandardButtons(QMessageBox::Cancel);
+   quest.setDefaultButton(QMessageBox::Cancel);
 
-   if (retval == QMessageBox::Yes) {
+   quest.exec();
 
-      QString selectedFilter;
-      m_jsonFname = QFileDialog::getSaveFileName(this, tr("Create new Settings File"),
-            "", tr("All Files (*.json)"), &selectedFilter, options);
-
-   } else {
+   if (quest.clickedButton() == createNew) {
 
       QString selectedFilter;
-      m_jsonFname = QFileDialog::getOpenFileName(this, tr("Select existing Settings File"),
-            "", tr("All Files (*.json)"), &selectedFilter, options);
+      m_jsonFname = QFileDialog::getSaveFileName(this, tr("Create new Configuration File"),
+            "config.json", tr("All Files (*.json)"), &selectedFilter, options);
+
+   } else if (quest.clickedButton() == selectConfig) {
+
+      QString selectedFilter;
+      m_jsonFname = QFileDialog::getOpenFileName(this, tr("Select Diamond Configuration File"),
+            "config.json", tr("All Files (*.json)"), &selectedFilter, options);
    }
 }
 
 QString MainWindow::get_SyntaxPath()
 {
-   QString dir;
+   QString msg  = tr("Select locaton of Diamond Syntax Files");
+   QString path = m_struct.pathSyntax;
 
-   QFileDialog::Options options;
+   path = get_DirPath(msg, path);
 
-   if (false)  {  //(Q_OS_DARWIM) {
-      options |= QFileDialog::DontUseNativeDialog;
-   }
-
-   options |= QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks;
-
-   // BROOM, unsure how to show the title on X11 and OS X
-   dir = QFileDialog::getExistingDirectory(this, tr("Select location for the existing Diamond Editor Syntax Files"),
-      "", options);
-
-   dir = dir.trimmed() + "/";
-
-   return dir;
+   return path;
 }
 
 bool MainWindow::json_SaveFile(QByteArray data)
 {
    QFile file(m_jsonFname);
    if (! file.open(QFile::ReadWrite | QFile::Truncate | QFile::Text)) {
-      const QString msg = tr("Unable to save Settings file: ") +  m_jsonFname + " : " + file.errorString();
+      const QString msg = tr("Unable to save Configurtion File: ") +  m_jsonFname + " : " + file.errorString();
       csError(tr("Save Json"), msg);
       return false;
    }
@@ -385,7 +406,7 @@ QByteArray MainWindow::json_ReadFile()
 
    QFile file(m_jsonFname);
    if (! file.open(QFile::ReadWrite | QFile::Text)) {
-      const QString msg = tr("Unable to open settings file: ") +  m_jsonFname + " : " + file.errorString();
+      const QString msg = tr("Unable to open Configurtion File: ") +  m_jsonFname + " : " + file.errorString();
       csError(tr("Read Json"), msg);
       return data;
    }
@@ -412,6 +433,7 @@ bool MainWindow::json_CreateNew()
    object.insert("size-width", 800);
    object.insert("size-height", 600);
 
+   object.insert("useSpaces",  true);
    object.insert("tabSpacing", 4);
 
    object.insert("showLineNumbers",   true);
@@ -457,11 +479,20 @@ bool MainWindow::json_CreateNew()
    value = QJsonValue(QString("Ctrl+L"));
    object.insert("key-lower",       value);
 
-   value = QJsonValue(QString("Alt+G"));
-   object.insert("key-goLine",      value);
+   value = QJsonValue(QString("Ctrl+I"));
+   object.insert("key-indentIncr",  value);
+
+   value = QJsonValue(QString("Ctrl+Shift+I"));
+   object.insert("key-indentDecr",  value);
+
+   value = QJsonValue(QString("Ctrl+K"));
+   object.insert("key-deleteEOL",  value);
 
    value = QJsonValue(QString("Alt+C"));
    object.insert("key-columnMode",  value);
+
+   value = QJsonValue(QString("Alt+G"));
+   object.insert("key-goLine",      value);
 
    value = QJsonValue(QString("Alt+Return"));
    object.insert("key-macroPlay",  value);
@@ -561,20 +592,6 @@ QString MainWindow::json_GetRGB(QColor color)
    QString values = list.join(",");
 
    return values;
-}
-
-uint MainWindow::json_SetKey(QString values)
-{
-   QStringList list = values.split(",");
-   QString key1  = list[0];
-   QString key2  = list[1];
-
-   //QMetaEnum meta;
-   //int foobar = meta.keyToValue(two.toStdString().c_str());
-   //csMsg("what is TWO ", foobar);
-
-   uint keyValue = 0x04000045;
-   return keyValue;
 }
 
 QJsonObject MainWindow::json_SaveSyntax(QJsonObject object)

@@ -28,8 +28,17 @@ int main(int argc, char *argv[])
    app.setOrganizationName("BG Consulting");
    app.setApplicationName("Diamond Editor");
 
-   MainWindow dw;
-   dw.show();
+   int retval = 0;
 
-   return app.exec();
+   try{
+      MainWindow dw;
+      dw.show();
+
+      retval = app.exec();
+
+   } catch (std::exception &e) {
+
+   }
+
+   return retval;
 }
