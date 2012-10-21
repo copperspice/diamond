@@ -36,7 +36,6 @@
 #include <QFontMetrics>
 #include <QKeySequence>
 #include <QStringList>
-#include <QTextBlock>
 
 MainWindow::MainWindow()
    : m_ui(new Ui::MainWindow)
@@ -49,6 +48,21 @@ MainWindow::MainWindow()
       csError(tr("Configuration File Missing"), tr("Unable to locate or open the Diamond Configuration file."));
       throw std::runtime_error("");
    }
+
+
+   // move to Json !
+   m_printer.header     = "This is the header text, but you can render anything here.\nLine Two.";
+   m_printer.footer     = "This is the footer text.\nLine Two.";
+   m_printer.marTop     = 0.75;
+   m_printer.marBottom  = 0.75;
+   m_printer.marLeft    = 0.50;
+   m_printer.marRight   = 0.50;
+
+   m_printer.fontHeader = QFont("Courier New", 10);
+   m_printer.fontFooter = QFont("Courier New", 10);
+   m_printer.fontText   = QFont("Arial", 14);
+
+
 
    // drag & drop
    setAcceptDrops(true);
@@ -295,66 +309,6 @@ bool MainWindow::saveAll()
    setStatusBar(tr("File(s) saved"), 2000);
 }
 
-void MainWindow::print()
-{
-   QPrinter printer;
-   QPrintDialog *dw = new QPrintDialog(&printer, this);
-   dw->setWindowTitle(tr("Select Printer"));
-
-   if (m_textEdit->textCursor().hasSelection()) {
-      dw->addEnabledOption(QAbstractPrintDialog::PrintSelection);
-   }
-
-   if (dw->exec() == QDialog::Accepted) {
-      m_textEdit->print(&printer);
-   }
-
-   delete dw;
-}
-
-void MainWindow::printPreview()
-{
-   QPrinter printer;
-
-   QPrintPreviewDialog preview(&printer, this);
-   preview.setWindowTitle(m_curFile);
-
-   connect(&preview, SIGNAL(paintRequested(QPrinter *)), this, SLOT(printPreview(QPrinter*)));
-   preview.exec();
-}
-
-void MainWindow::printPreview(QPrinter *printer)
-{
-   m_textEdit->print(printer);
-}
-
-void MainWindow::printPdf()
-{
-   QFileDialog::Options options;
-
-   if (false)  {  //(Q_OS_DARWIM) {
-      options |= QFileDialog::DontUseNativeDialog;
-   }
-
-   QString selectedFilter;
-   QString fileName = QFileDialog::getSaveFileName(this, tr("Print to PDF"),
-         "document1.pdf", tr("PDF File (*.pdf)"), &selectedFilter, options);
-
-   if (! fileName.isEmpty()) {
-
-      if (QFileInfo(fileName).suffix().isEmpty()) {
-         fileName.append(".pdf");
-      }
-
-      QPrinter printer;
-      printer.setOutputFormat(QPrinter::PdfFormat);
-      printer.setOutputFileName(fileName);
-
-      m_textEdit->document()->print(&printer);
-   }
-}
-
-
 // **edit
 void MainWindow::mw_undo()
 {
@@ -519,9 +473,7 @@ void MainWindow::indentIncr(QString route)
             cursor.insertText(tabLen);
             posEnd += m_struct.tabSpacing;
 
-         } else {
-            csMsg("using tabs");
-
+         } else {           
             cursor.insertText(QChar('\t'));
             posEnd += 1;
 
@@ -549,7 +501,14 @@ void MainWindow::indentIncr(QString route)
       if (route == "indent") {
          cursor.movePosition(QTextCursor::StartOfLine);
       }
-      cursor.insertText(tabLen);
+
+      if (m_struct.useSpaces) {
+         cursor.insertText(tabLen);
+
+      } else {
+         cursor.insertText(QChar('\t'));
+
+      }
    }
 
    cursor.endEditBlock();
@@ -583,6 +542,7 @@ void MainWindow::indentDecr(QString route)
 
 
          // missing code
+         csMsg("Un Tab or Un Indent - disabled");
          break;
 
 
@@ -615,7 +575,11 @@ void MainWindow::indentDecr(QString route)
             break;
          }
 
-         cursor.deleteChar();
+         if (m_struct.useSpaces) {
+            cursor.deleteChar();
+         } else {
+            cursor.deleteChar();
+         }
 
          if (route == "indent") {
             posStart -=1;
@@ -806,6 +770,7 @@ void MainWindow::move_lineHighlight()
    selection.format.setForeground(textColor);
    selection.format.setBackground(backColor);
    selection.format.setProperty(QTextFormat::FullWidthSelection, true);
+   selection.format.setProperty(QTextFormat::UserProperty, "highlightbar");
 
    selection.cursor = m_textEdit->textCursor();
    selection.cursor.clearSelection();

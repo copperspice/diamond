@@ -59,7 +59,7 @@ DiamondTextEdit::DiamondTextEdit(MainWindow *from, struct Settings settings, Spe
    connect(this, SIGNAL(updateRequest(QRect,int)), this, SLOT(update_LineNumArea(QRect,int)));  
 
    // column mode
-   connect(this, SIGNAL(selectionChanged()),       this, SLOT(selectionChanged()));
+
 }
 
 DiamondTextEdit::~DiamondTextEdit()
@@ -117,7 +117,6 @@ void DiamondTextEdit::update_LineNumArea(const QRect &rect, int dy)
 {
    if (dy) {
        m_lineNumArea->scroll(0, dy);
-
    }  else {
        m_lineNumArea->update(0, rect.y(), m_lineNumArea->width(), rect.height());
    }
@@ -251,6 +250,9 @@ void DiamondTextEdit::set_Spell(bool value)
 void DiamondTextEdit::set_ColumnMode(bool data)
 {
    m_isColumnMode = data;
+
+   // reset
+   colHighlight = false;
 }
 
 void DiamondTextEdit::set_ShowLineNum(bool data)
@@ -258,20 +260,33 @@ void DiamondTextEdit::set_ShowLineNum(bool data)
    m_showlineNum = data;
 }
 
-void DiamondTextEdit::selectionChanged()
+
+/*
+void DiamondTextEdit::mouseMoveEvent(QMouseEvent *event)
 {
    if (m_isColumnMode) {
-
-      // QString data = this->textCursor().selectedText();
-      // csMsg("Column Mode - selection changed  " + data );
+      // Show x and y coordinate values of mouse cursor here
+//    QString text = "X:"+QString::number(event->x())+"-- Y:"+QString::number(event->y());
+//    m_mainWindow->setStatus_FName2(text);
    }
 }
+*/
+
 
 void DiamondTextEdit::cut()
 {
    if (m_isColumnMode) {
-      // * * *
-      showNotDone("Column Mode CUT");
+
+/*    QTextCursor cursor(this->textCursor());
+      cursor.beginEditBlock();
+
+      cursor.removeSelectedText();
+      this->setTextCursor(cursor);
+
+      cursor.endEditBlock();
+*/
+
+      QPlainTextEdit::cut();
 
    } else {
       QPlainTextEdit::cut();
@@ -282,31 +297,53 @@ void DiamondTextEdit::cut()
 void DiamondTextEdit::copy()
 {
    if (m_isColumnMode) {
+      // QTextCursor cursor( this->textCursor());
+      // QString text = cursor().selectedText();
 
-      QTextCursor cursor( this->textCursor());
-      //QTextBlockFormat bFormat = cursor.blockFormat();
-
-      cursor.select(QTextCursor::BlockUnderCursor);
-
-      //cursor.setBlockFormat(bFormat);
-      this->setTextCursor(cursor);
+      QPlainTextEdit::copy();
 
    } else {     
       QPlainTextEdit::copy();
-
    }
 }
 
 void DiamondTextEdit::paste()
 {
    if (m_isColumnMode) {
-      showNotDone("Column Mode, PASTE");
+      QPlainTextEdit::paste();
 
    } else {
       QPlainTextEdit::paste();
 
    }
 }
+
+
+/*
+
+::copy()
+{
+   if ( !m_cursor.hasSelection() ) {
+      return;
+   }
+
+   QApplication::clipboard()->setText(m_cursor.selectedText());
+}
+
+::paste()
+{
+   const QMimeData *d = QApplication::clipboard()->mimeData();
+   if ( d ) {
+      insertFromMimeData(d);
+   }
+}
+
+   QClipboard *clip = QApplication::clipboard();
+   QString text = textCursor().selection().toPlainText();
+   data->setText(result);
+   clip->setMimeData(data);
+*/
+
 
 void DiamondTextEdit::showNotDone(QString item)
 {
@@ -343,6 +380,9 @@ bool DiamondTextEdit::event(QEvent *event)
 
       if (key == Qt::Key_Tab && (modifiers == Qt::NoModifier) ) {
 
+         // reset
+         colHighlight = false;
+
          if (m_record)  {
             QKeyEvent *newEvent;
             newEvent = new QKeyEvent(*keyPressEvent);
@@ -356,6 +396,9 @@ bool DiamondTextEdit::event(QEvent *event)
       } else if (key == Qt::Key_Backtab ||
             (key == Qt::Key_Tab  && (modifiers == Qt::ShiftModifier)) ) {
 
+         // reset
+         colHighlight = false;
+
          if (m_record)  {
             QKeyEvent *newEvent;
             newEvent = new QKeyEvent(*keyPressEvent);
@@ -364,9 +407,108 @@ bool DiamondTextEdit::event(QEvent *event)
          }
 
          m_mainWindow->indentDecr("tab");
+         return true;         
+
+/*
+
+      } else if (m_isColumnMode && (modifiers == Qt::ShiftModifier) &&
+            ( (key == Qt::Key_Up)   || (key == Qt::Key_Down) ||
+              (key == Qt::Key_Left) || (key == Qt::Key_Right)) ) {
+
+         QTextCursor cursor(this->textCursor());
+
+         if (! colHighlight) {
+            startRow = cursor.blockNumber()+1;
+            startCol = cursor.columnNumber();
+
+            endRow = startRow;
+            endCol = startCol;
+
+            colHighlight = true;
+         }
+
+         QColor textColor = QColor(Qt::white);
+         QColor backColor = QColor(Qt::red);
+
+         QList<QTextEdit::ExtraSelection> extraSelections;
+         QTextEdit::ExtraSelection selection;
+
+         QList<QTextEdit::ExtraSelection> oldSelections = this->extraSelections();
+
+         for (int k=0; k < oldSelections.size(); ++k) {
+
+            if (oldSelections[k].format.property(QTextFormat::UserProperty) == "highlightbar") {
+               extraSelections.append(oldSelections[k]);
+               break;
+            }
+         }
+
+         //
+         selection.format.setForeground(textColor);
+         selection.format.setBackground(backColor);
+
+         selection.cursor = cursor;
+
+         // **
+         if (key == Qt::Key_Up) {
+
+            --endRow;
+            selection.cursor.movePosition(QTextCursor::Start);
+            selection.cursor.movePosition(QTextCursor::Down, QTextCursor::MoveAnchor, startRow-1);
+
+            for(int k=startRow; k <= endRow; ++k)   {
+               selection.cursor.movePosition(QTextCursor::StartOfLine);
+               selection.cursor.movePosition(QTextCursor::Right, QTextCursor::KeepAnchor, endCol-startCol);
+
+               if (k < endRow) {
+                  extraSelections.append(selection);
+                  selection.cursor.movePosition(QTextCursor::Down,  QTextCursor::MoveAnchor, 1);
+               }
+            }
+
+         } else if (key == Qt::Key_Down)   {
+
+            ++endRow;
+
+            selection.cursor.movePosition(QTextCursor::Start);
+            selection.cursor.movePosition(QTextCursor::Down, QTextCursor::MoveAnchor, startRow-1);
+
+            for(int k=startRow; k <= endRow; ++k)   {
+               selection.cursor.movePosition(QTextCursor::StartOfLine);
+               selection.cursor.movePosition(QTextCursor::Right, QTextCursor::KeepAnchor, endCol-startCol);
+
+               if (k < endRow) {
+                  extraSelections.append(selection);
+                  selection.cursor.movePosition(QTextCursor::Down,  QTextCursor::MoveAnchor, 1);
+               }
+            }
+
+         } else if (key == Qt::Key_Right)   {
+
+            ++endCol;
+            selection.cursor.movePosition(QTextCursor::Right, QTextCursor::KeepAnchor, endCol-startCol);
+
+         } else if (key == Qt::Key_Left)   {
+
+            --endCol;
+            selection.cursor.movePosition(QTextCursor::Right, QTextCursor::KeepAnchor, endCol-startCol);
+
+         }
+
+         extraSelections.append(selection);
+         this->setExtraSelections(extraSelections);
+
+         // TEST
+         m_mainWindow->setStatus_FName2( QString::number(endRow) + "  " + QString::number(endCol));
+
          return true;
+*/
+
       }
 
+   } else {
+      // reset
+      colHighlight = false;
    }
 
    return QPlainTextEdit::event(event);

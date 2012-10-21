@@ -72,6 +72,7 @@ class DiamondTextEdit : public QPlainTextEdit
       bool event(QEvent *event);
       void keyPressEvent(QKeyEvent *event);      
       void resizeEvent(QResizeEvent *event);      
+      // void mouseMoveEvent(QMouseEvent *event);
 
    private:
       MainWindow *m_mainWindow;
@@ -91,15 +92,21 @@ class DiamondTextEdit : public QPlainTextEdit
       bool m_record;
       QList<QKeyEvent *> m_keyList;
 
+      // column
       bool m_showlineNum;
       bool m_isColumnMode;
+      bool colHighlight;
+
+      int startRow;
+      int startCol;
+      int endRow;
+      int endCol;
 
       void showNotDone(QString item);
 
    private slots:
       void update_LineNumWidth(int newBlockCount);
       void update_LineNumArea(const QRect &rect, int value);
-      void selectionChanged();
 
    public slots:     
       void cut();

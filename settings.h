@@ -87,6 +87,19 @@ struct Options {
    QString key_spellCheck;
 };
 
+struct PrintSettings {
+   QString header;
+   QString footer;
+   double marLeft;
+   double marTop;
+   double marRight;
+   double marBottom;
+
+   QFont fontHeader;
+   QFont fontFooter;
+   QFont fontText;
+};
+
 enum SyntaxTypes {SYN_C, SYN_CLIPPER, SYN_CSS, SYN_DOX, SYN_HTML, SYN_JAVA, SYN_JS,
                   SYN_JSON, SYN_MAKE, SYN_NSIS, SYN_TEXT, SYN_SHELL_S, SYN_PERL,
                   SYN_PHP, SYN_PYTHON, SYN_NONE };

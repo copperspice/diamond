@@ -50,10 +50,9 @@ dialog_colors.cpp
 dialog_colors.ui
 json.cpp
 settings.h
+spell.cpp
 spellcheck.cpp
 spellcheck.h
-
-spell.cpp
 dialog_replace.h
 dialog_replace.cpp
 dialog_replace.ui
@@ -61,4 +60,4 @@ about.h
 about.cpp
 keylineedit.h
 keylineedit.cpp
-syntax/syn_nsi.json
+print.cpp

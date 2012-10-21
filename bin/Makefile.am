@@ -46,6 +46,7 @@ Diamond_SOURCES = \
 	keylineedit.cpp \
 	main.cpp \
     mainwindow.cpp \
+    print.cpp \
     recent_files.cpp \
     spell.cpp \
     spellcheck.cpp \

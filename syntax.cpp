@@ -49,7 +49,7 @@ Syntax::Syntax(QTextDocument *document, QString synFName, const struct Settings 
    //
    bool ignoreCase = object.value("ignore-case").toBool();
 
-   // key
+   // * key
    QStringList key_Patterns;
 
    list = object.value("keywords").toArray();
@@ -90,7 +90,7 @@ Syntax::Syntax(QTextDocument *document, QString synFName, const struct Settings 
    }
 
 
-   //
+   // *
    HighlightingRule rule;
 
    foreach (const QString &pattern, key_Patterns) {
@@ -165,21 +165,14 @@ Syntax::Syntax(QTextDocument *document, QString synFName, const struct Settings 
       highlightingRules.append(rule);
    }
 
-   // class - rule is for Qt*()
-   rule.format.setFontWeight(settings.syn_ClassWeight);
-   rule.format.setFontItalic(settings.syn_ClassItalic);
-   rule.format.setForeground(settings.syn_ClassText);
-   rule.pattern = QRegExp("\\bQ[A-Za-z]+\\b");
-   highlightingRules.append(rule);
-
-   // functions
+   // functions - everyone
    rule.format.setFontWeight(settings.syn_FuncWeight);
    rule.format.setFontItalic(settings.syn_FuncItalic);
    rule.format.setForeground(settings.syn_FuncText);
    rule.pattern = QRegExp("\\b[A-Za-z0-9_]+(?=\\()");
    highlightingRules.append(rule);
 
-   // quoted text
+   // quoted text - everyone
    rule.format.setFontWeight(settings.syn_QuoteWeight);
    rule.format.setFontItalic(settings.syn_QuoteItalic);
    rule.format.setForeground(settings.syn_QuoteText);

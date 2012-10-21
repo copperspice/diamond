@@ -52,6 +52,8 @@ class MainWindow : public QMainWindow
       // spell
       QStringList spell_getMaybe(QString word);
 
+      void setStatus_FName2(QString name);
+
    protected:
       void closeEvent(QCloseEvent *event);
       void dragEnterEvent(QDragEnterEvent *event);
@@ -84,6 +86,7 @@ class MainWindow : public QMainWindow
 
       // settings
       struct Settings m_struct;
+      struct PrintSettings m_printer;
 
       // recent files
       static const int rf_MaxCnt = 10;
@@ -143,6 +146,11 @@ class MainWindow : public QMainWindow
       void rf_CreateMenus();
       void rf_Update();
       void rf_UpdateActions();
+
+      // printing
+      void printOut(QPrinter *printer);
+      int doHeader(QPainter *painter);
+      int doFooter(QPainter *painter, QRect printArea);
 
       // support     
       int get_Value1(const QString route);

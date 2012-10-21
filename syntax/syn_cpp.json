@@ -1,5 +1,6 @@
 {
    "classes": [
+      "\\bQ[A-Za-z]+\\b",
       "\\band\\b",
       "\\band_eq\\b",  
       "\\bbad_cast\\b",      
@@ -15,6 +16,7 @@
       "\\bxor_eq\\b"
     ],
     "functions": [
+      "\\bQ_[A-Z]+\\b"
     ],
     "ignore-case" : false,
     "keywords": [     

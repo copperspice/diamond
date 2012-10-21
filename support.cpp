@@ -247,7 +247,7 @@ void MainWindow::setStatus_LineCol()
 {
    QTextCursor cursor(m_textEdit->textCursor());   
    m_statusLine->setText(" Line: "  + QString::number(cursor.blockNumber()+1) +
-                         "  Col: " + QString::number(cursor.columnNumber()+1) + "  ");
+                         "  Col: "  + QString::number(cursor.columnNumber()+1) + "  ");
 }
 
 void MainWindow::setStatus_ColMode()
@@ -266,6 +266,12 @@ void MainWindow::setStatus_FName(QString fullName)
 {
    m_statusName->setText(" " + fullName + "  ");
 }
+
+void MainWindow::setStatus_FName2(QString text)
+{
+   m_statusName->setText(" " + text + " ");
+}
+
 
 // drag & drop
 void MainWindow::dragEnterEvent(QDragEnterEvent *event)
@@ -306,6 +312,9 @@ void MainWindow::dropEvent(QDropEvent *event)
    }
 
 }
+
+
+
 
 
 
