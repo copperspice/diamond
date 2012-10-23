@@ -173,13 +173,16 @@ void MainWindow::printOut(QPrinter *printer)
 
 int MainWindow::doHeader(QPainter *painter)
 {
+   QString header = m_printer.header_line2;
+
+   //
    painter->save();
    painter->resetTransform();
 
    painter->setFont(m_printer.fontHeader);
 
-   QRect boundingRect = painter->boundingRect(painter->window(), Qt::TextWordWrap, m_printer.header);
-   painter->drawText(boundingRect, Qt::TextWordWrap, m_printer.header);
+   QRect boundingRect = painter->boundingRect(painter->window(), Qt::TextWordWrap, header);
+   painter->drawText(boundingRect, Qt::TextWordWrap, header);
 
    // line after header
    painter->drawLine(boundingRect.left(), boundingRect.bottom(), painter->window().width(), boundingRect.bottom() );
@@ -189,16 +192,19 @@ int MainWindow::doHeader(QPainter *painter)
 }
 
 int MainWindow::doFooter(QPainter *painter, QRect printArea)
-{      
+{
+   QString footer = m_printer.footer_line2;
+
+   //
    painter->save();
    painter->resetTransform();
 
    painter->setFont(m_printer.fontFooter);
 
-   QRect boundingRect = painter->boundingRect(printArea, Qt::TextWordWrap, m_printer.footer);
+   QRect boundingRect = painter->boundingRect(printArea, Qt::TextWordWrap, footer);
 
    painter->translate(0, printArea.height() - boundingRect.height());
-   painter->drawText(boundingRect, Qt::TextWordWrap, m_printer.footer);
+   painter->drawText(boundingRect, Qt::TextWordWrap, footer);
 
    // line before footer
    painter->drawLine(boundingRect.left(), boundingRect.top(), painter->window().width(), boundingRect.top() );

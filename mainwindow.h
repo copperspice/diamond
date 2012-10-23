@@ -67,6 +67,10 @@ class MainWindow : public QMainWindow
       QTabWidget *m_tabWidget;      
       QString m_curFile;
 
+      //
+      void autoLoad();
+      QStringList m_openedFiles;
+
       // syntax
       QString m_jsonFname;
       SyntaxTypes m_syntaxEnum;
@@ -108,8 +112,8 @@ class MainWindow : public QMainWindow
       QLabel *m_statusMode;
       QLabel *m_statusName;    
 
-      enum Option { ABOUTURL, CLOSE, COLORS, COLUMN_MODE, DICT_MAIN, DICT_USER, FONT, FORMAT_DATE, FORMAT_TIME,
-                    KEYS, MACRO, PATH_SYNTAX, PATH_PRIOR, RECENTFILE,
+      enum Option { ABOUTURL, AUTOLOAD, CLOSE, COLORS, COLUMN_MODE, DICT_MAIN, DICT_USER, FONT,
+                    FORMAT_DATE, FORMAT_TIME, KEYS, MACRO, PATH_SYNTAX, PATH_PRIOR, PRINT_OPTIONS, RECENTFILE,
                     SHOW_LINEHIGHLIGHT, SHOW_LINENUMBERS, SPELLCHECK, TAB_SPACING, USESPACES, WORDWRAP};
 
       void setScreenColors();
@@ -138,6 +142,7 @@ class MainWindow : public QMainWindow
       QByteArray json_ReadFile();
 
       QString get_SyntaxPath();
+      QFont json_SetFont(QString value);
       QColor  json_SetColor(QString values);
       QString json_GetRGB(QColor color);     
       QJsonObject json_SaveSyntax(QJsonObject object);
@@ -152,7 +157,7 @@ class MainWindow : public QMainWindow
       int doHeader(QPainter *painter);
       int doFooter(QPainter *painter, QRect printArea);
 
-      // support     
+      // support           
       int get_Value1(const QString route);
       bool querySave();     
       bool saveFile(const QString &fileName, bool isSaveOne);
@@ -251,6 +256,7 @@ class MainWindow : public QMainWindow
       void setColors();
       void setFont();
       void setOptions();
+      void setPrintOptions();
 
       void tabNew();
       void tabClose(int index);

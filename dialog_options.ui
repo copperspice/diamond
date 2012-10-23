@@ -14,7 +14,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Diamond Options</string>
+   <string>Diamond General Options</string>
   </property>
   <property name="modal">
    <bool>false</bool>

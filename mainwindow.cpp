@@ -20,12 +20,10 @@
 **************************************************************************/
 
 #include "about.h"
-#include "mainwindow.h"
-#include "dialog_colors.h"
 #include "dialog_find.h"
 #include "dialog_replace.h"
-#include "dialog_options.h"
 #include "dialog_symbols.h"
+#include "mainwindow.h"
 
 #include <stdexcept>
 
@@ -48,21 +46,6 @@ MainWindow::MainWindow()
       csError(tr("Configuration File Missing"), tr("Unable to locate or open the Diamond Configuration file."));
       throw std::runtime_error("");
    }
-
-
-   // move to Json !
-   m_printer.header     = "This is the header text, but you can render anything here.\nLine Two.";
-   m_printer.footer     = "This is the footer text.\nLine Two.";
-   m_printer.marTop     = 0.75;
-   m_printer.marBottom  = 0.75;
-   m_printer.marLeft    = 0.50;
-   m_printer.marRight   = 0.50;
-
-   m_printer.fontHeader = QFont("Courier New", 10);
-   m_printer.fontFooter = QFont("Courier New", 10);
-   m_printer.fontText   = QFont("Arial", 14);
-
-
 
    // drag & drop
    setAcceptDrops(true);
@@ -93,6 +76,9 @@ MainWindow::MainWindow()
 
    //
    tabNew();
+   if (m_struct.autoLoad) {
+      autoLoad();
+   }
 
    setStatus_ColMode();
    setStatusBar(tr("Ready"), 0);   
@@ -154,6 +140,9 @@ bool MainWindow::closeAll_Doc()
    int count = m_tabWidget->count();
    int whichTab = 0;
 
+   //
+   m_openedFiles.clear();
+
    for (int k = 0; k < count; ++k) {
 
       temp = m_tabWidget->widget(whichTab);
@@ -164,6 +153,10 @@ bool MainWindow::closeAll_Doc()
          m_curFile  = m_tabWidget->tabWhatsThis(whichTab);
 
          if (querySave())  {
+
+            // save for OpenFileList
+            // if ( m_curFile != "untitled.txt" ) {
+            m_openedFiles.append(m_curFile);
 
             if (m_tabWidget->count() == 1) {
                // do not remove !
@@ -235,7 +228,7 @@ bool MainWindow::save()
 
 bool MainWindow::saveAs()
 {
-   // slot called from menu
+   // called from clicking on the menu
    return saveAs(true);
 }
 
@@ -259,6 +252,10 @@ bool MainWindow::saveAs(bool isSaveOne)
       retval = false;
    } else {
       retval = saveFile(fileName, isSaveOne);
+
+      if (retval) {
+         setCurrentFile(fileName);
+      }
    }
 
    return retval;
@@ -1127,190 +1124,7 @@ void MainWindow::spellCheck()
    }     
 }
 
-// **settings
-void MainWindow::setColors()
-{
-   // save the old colors
-   QColor old_TextColor = m_struct.colorText;
-   QColor old_BackColor = m_struct.colorBack;
 
-   //
-   Dialog_Colors *dw = new Dialog_Colors(this);
-   int result = dw->exec();
-
-   if (result = QDialog::Accepted) {
-
-      if (m_struct.showLineHighlight)  {
-         // clear the old highlight first
-         QList<QTextEdit::ExtraSelection> extraSelections;
-         QTextEdit::ExtraSelection selection;
-
-         selection.format.setForeground(old_TextColor);
-         selection.format.setBackground(old_BackColor);
-         selection.format.setProperty(QTextFormat::FullWidthSelection, true);
-
-         selection.cursor = m_textEdit->textCursor();
-         selection.cursor.clearSelection();
-
-         extraSelections.append(selection);
-         m_textEdit->setExtraSelections(extraSelections);
-      }
-
-      // update colors in settings structure
-      m_struct = dw->get_Colors();
-      json_Write(COLORS);
-
-      QPalette colors = m_textEdit->palette();
-      colors.setColor(QPalette::Text, m_struct.colorText);
-      colors.setColor(QPalette::Base, m_struct.colorBack);
-      m_textEdit->setPalette(colors);
-
-      // get saved value
-      QString synFName = m_textEdit->get_SyntaxFile();
-
-      // run for every tab
-      DiamondTextEdit *cur_textEdit  = m_textEdit;
-      int count = m_tabWidget->count();
-
-      QWidget *temp;
-      DiamondTextEdit *textEdit;
-
-      for (int k=0; k < count; ++k)  {
-
-         temp     = m_tabWidget->widget(k);
-         textEdit = dynamic_cast<DiamondTextEdit *>(temp);
-
-         if (textEdit) {
-            m_textEdit = textEdit;
-
-            // get saved value
-            synFName = m_textEdit->get_SyntaxFile();
-
-            // reloads the syntax blocks based on new colors
-            runSyntax(synFName);
-         }
-      }
-
-      // reassign current tab
-      m_textEdit = cur_textEdit;
-
-      // for this tab only, updated every time we change tabs
-      move_lineHighlight();
-   }
-
-   delete dw;
-}
-
-void MainWindow::setFont()
-{        
-   bool ok;
-   m_struct.font = QFontDialog::getFont(&ok, m_textEdit->font(), this);
-
-   if (ok) {
-      m_textEdit->setFont(m_struct.font);
-      json_Write(FONT);
-   }
-}
-
-void MainWindow::setOptions()
-{
-   struct Options options;
-   options.useSpaces  = m_struct.useSpaces;
-   options.tabSpacing = m_struct.tabSpacing;
-   options.formatDate = m_struct.formatDate;
-   options.formatTime = m_struct.formatTime;
-   options.dictMain   = m_struct.dictMain;
-   options.dictUser   = m_struct.dictUser;
-   options.pathSyntax = m_struct.pathSyntax;
-   options.aboutUrl   = m_struct.aboutUrl;   
-
-   options.key_selectLine  = m_struct.key_selectLine;
-   options.key_selectWord  = m_struct.key_selectWord;
-   options.key_selectBlock = m_struct.key_selectBlock;
-   options.key_upper       = m_struct.key_upper;
-   options.key_lower       = m_struct.key_lower;
-   options.key_indentIncr  = m_struct.key_indentIncr;
-   options.key_indentDecr  = m_struct.key_indentDecr;
-   options.key_deleteEOL   = m_struct.key_deleteEOL;
-   options.key_columnMode  = m_struct.key_columnMode;
-   options.key_goLine      = m_struct.key_goLine;
-   options.key_macroPlay   = m_struct.key_macroPlay;
-   options.key_spellCheck  = m_struct.key_spellCheck;
-
-   Dialog_Options *dw = new Dialog_Options(this, options);
-   int result = dw->exec();
-
-   if ( result == QDialog::Accepted) {
-      options = dw->get_Results();
-
-      //
-      if ( m_struct.tabSpacing != options.tabSpacing)  {
-         m_struct.tabSpacing = options.tabSpacing;
-         json_Write(TAB_SPACING);
-      }
-
-      if ( m_struct.useSpaces != options.useSpaces)  {
-         m_struct.useSpaces = options.useSpaces;
-         json_Write(USESPACES);
-      }
-
-      //
-      if ( m_struct.formatDate != options.formatDate)  {
-         m_struct.formatDate = options.formatDate;
-         json_Write(FORMAT_DATE);
-      }
-
-      //
-      if ( m_struct.formatTime != options.formatTime)  {
-         m_struct.formatTime = options.formatTime;
-         json_Write(FORMAT_TIME);
-      } 
-
-      //
-      if (m_struct.dictMain != options.dictMain ) {
-         m_struct.dictMain = options.dictMain;
-         json_Write(DICT_MAIN);
-      }
-
-      //
-      if (m_struct.dictUser != options.dictUser ) {
-         m_struct.dictUser = options.dictUser;
-         json_Write(DICT_USER);
-      }
-
-      //
-      if (m_struct.pathSyntax != options.pathSyntax ) {
-         m_struct.pathSyntax = options.pathSyntax;
-         json_Write(PATH_SYNTAX);
-      }
-
-      //
-      if (m_struct.aboutUrl != options.aboutUrl ) {
-         m_struct.aboutUrl = options.aboutUrl;
-         json_Write(ABOUTURL);
-      }
-
-      // keys
-      m_struct.key_selectLine  = options.key_selectLine;
-      m_struct.key_selectWord  = options.key_selectWord;
-      m_struct.key_selectBlock = options.key_selectBlock;
-      m_struct.key_upper       = options.key_upper;
-      m_struct.key_lower       = options.key_lower;
-      m_struct.key_indentIncr  = options.key_indentIncr;
-      m_struct.key_indentDecr  = options.key_indentDecr;
-      m_struct.key_deleteEOL   = options.key_deleteEOL;
-      m_struct.key_columnMode  = options.key_columnMode;
-      m_struct.key_goLine      = options.key_goLine;
-      m_struct.key_macroPlay   = options.key_macroPlay;
-      m_struct.key_spellCheck  = options.key_spellCheck;
-      json_Write(KEYS);
-
-      //
-      createShortCuts();
-   }
-
-   delete dw;
-}
 
 // **window, tabs
 void MainWindow::tabNew()
@@ -1572,6 +1386,7 @@ void MainWindow::createConnections()
    connect(m_ui->actionColors,            SIGNAL(triggered()), this, SLOT(setColors()));
    connect(m_ui->actionFonts,             SIGNAL(triggered()), this, SLOT(setFont()));
    connect(m_ui->actionOptions,           SIGNAL(triggered()), this, SLOT(setOptions()));
+   connect(m_ui->actionPrintOptions,      SIGNAL(triggered()), this, SLOT(setPrintOptions()));
 
    // tabs
    connect(m_ui->actionTab_New,           SIGNAL(triggered()), this, SLOT(tabNew()));

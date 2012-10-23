@@ -38,6 +38,7 @@ Diamond_SOURCES = \
 	dialog_find.cpp \
 	dialog_get1.cpp \
 	dialog_options.cpp \
+	dialog_print_opt.cpp \
 	dialog_replace.cpp \
 	dialog_symbols.cpp \
 	diamond_edit.cpp \
@@ -46,6 +47,7 @@ Diamond_SOURCES = \
 	keylineedit.cpp \
 	main.cpp \
     mainwindow.cpp \
+    options.cpp \
     print.cpp \
     recent_files.cpp \
     spell.cpp \
@@ -80,6 +82,7 @@ MOCS = \
 	dialog_find.h \
 	dialog_get1.h  \
 	dialog_options.h \
+	dialog_print_opt.h \
 	dialog_replace.h  \
 	dialog_symbols.h \
 	diamond_edit.h  \
@@ -98,6 +101,7 @@ FORMS =	\
 	dialog_find.ui \
 	dialog_get1.ui \
 	dialog_options.ui \
+	dialog_print_opt.ui \
 	dialog_replace.ui \
 	dialog_symbols.ui \
 	mainwindow.ui

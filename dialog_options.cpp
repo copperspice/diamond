@@ -111,8 +111,6 @@ void Dialog_Options::initData()
 
 void Dialog_Options::Save()
 {
-   m_options.useSpaces = m_ui->useSpaces_CKB->isChecked();
-
    this->done(QDialog::Accepted);
 }
 
@@ -190,7 +188,8 @@ void Dialog_Options::pick_About()
 struct Options Dialog_Options::get_Results()
 {
    QString value = m_ui->tabSpacing_CB->currentText();
-   m_options.tabSpacing = value.toInt();
+   m_options.tabSpacing = value.toInt();   
+   m_options.useSpaces  = m_ui->useSpaces_CKB->isChecked();
 
    m_options.formatDate = m_ui->dateFormat_CB->currentText();
    m_options.formatTime = m_ui->timeFormat_CB->currentText();

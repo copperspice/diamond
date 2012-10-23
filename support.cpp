@@ -27,11 +27,28 @@
 #include <QFileInfo>
 #include <QFileDialog>
 #include <QDragEnterEvent>
+#include <QStringList>
 #include <QMimeData>
 #include <QUrl>
 
-void MainWindow::closeEvent(QCloseEvent *event)
+void MainWindow::autoLoad()
 {
+   QString fileName;
+   int count = m_openedFiles.size();
+
+   for (int k = 0; k < count; k++)  {
+      fileName = m_openedFiles.at(k);
+
+      if ( k == 0 ) {
+         loadFile(fileName, false);
+      } else {
+         loadFile(fileName, true);
+      }
+   }
+}
+
+void MainWindow::closeEvent(QCloseEvent *event)
+{   
    bool exit = closeAll_Doc();
 
    if (exit) {
@@ -96,7 +113,7 @@ bool MainWindow::loadFile(const QString &fileName, bool addNewTab)
    QFile file(fileName);
 
    if (! file.open(QFile::ReadOnly | QFile::Text)) {
-      QString error = tr("Unable to read file %1:\n%2.").arg(fileName).arg(file.errorString());
+      QString error = tr("Unable to open or read file:  %1\n%2.").arg(fileName).arg(file.errorString());
       csError(tr("Load File"), error);
       return false;
    }
@@ -223,7 +240,7 @@ void MainWindow::setCurrentFile(const QString &fileName)
    } else {
       // called when loading an existing file
 
-      //  change the name on the tab to m_curFile
+      // change the name on the tab to m_curFile
       int index = m_tabWidget->currentIndex();
 
       m_tabWidget->setTabText(index, strippedName(m_curFile) );
@@ -269,6 +286,7 @@ void MainWindow::setStatus_FName(QString fullName)
 
 void MainWindow::setStatus_FName2(QString text)
 {
+   // test only !
    m_statusName->setText(" " + text + " ");
 }
 
@@ -276,10 +294,6 @@ void MainWindow::setStatus_FName2(QString text)
 // drag & drop
 void MainWindow::dragEnterEvent(QDragEnterEvent *event)
 {
-   // QStringList list = event->mimeData()->formats();
-   // QString type = list.join("\n");
-   // csMsg("Mine Types\n" + type);
-
    if (event->mimeData()->hasFormat("text/uri-list"))  {
       event->acceptProposedAction();
 
@@ -287,7 +301,6 @@ void MainWindow::dragEnterEvent(QDragEnterEvent *event)
       event->acceptProposedAction();
 
    }
-
 }
 
 void MainWindow::dropEvent(QDropEvent *event)

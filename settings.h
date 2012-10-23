@@ -12,7 +12,8 @@ struct Settings {
    bool    showLineNumbers;
    bool    isColumnMode;
    bool    isSpellCheck;
-   bool    isWordWrap;
+   bool    isWordWrap;  
+   bool    autoLoad;
    QString pathSyntax;
    QString pathPrior;
    QString formatDate;
@@ -65,13 +66,14 @@ struct Settings {
 
 struct Options {
    int     tabSpacing;
-   bool    useSpaces;
+   bool    useSpaces;   
+   bool    autoLoad;
    QString formatDate;
    QString formatTime;
    QString dictMain;
    QString dictUser;
    QString pathSyntax;
-   QString aboutUrl;
+   QString aboutUrl;   
 
    QString key_selectLine;
    QString key_selectWord;
@@ -87,9 +89,18 @@ struct Options {
    QString key_spellCheck;
 };
 
-struct PrintSettings {
-   QString header;
-   QString footer;
+struct PrintSettings {   
+   bool    printHeader;
+   bool    printFooter;
+   QString header_left;
+   QString header_center;
+   QString header_right;
+   QString header_line2;
+   QString footer_left;
+   QString footer_center;
+   QString footer_right;
+   QString footer_line2;
+
    double marLeft;
    double marTop;
    double marRight;

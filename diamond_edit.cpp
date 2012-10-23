@@ -268,9 +268,13 @@ void DiamondTextEdit::mouseMoveEvent(QMouseEvent *event)
       // Show x and y coordinate values of mouse cursor here
 //    QString text = "X:"+QString::number(event->x())+"-- Y:"+QString::number(event->y());
 //    m_mainWindow->setStatus_FName2(text);
+
+      return true;
    }
-}
-*/
+
+   return QPlainTextEdit::mouseMoveEvent(event)
+
+}  */
 
 
 void DiamondTextEdit::cut()

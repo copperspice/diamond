@@ -96,6 +96,7 @@ bool MainWindow::json_Read()
       m_struct.isWordWrap        = object.value("word-wrap").toBool();
       m_struct.isColumnMode      = object.value("column-mode").toBool();      
       m_struct.isSpellCheck      = object.value("spellcheck").toBool();
+      m_struct.autoLoad          = object.value("autoLoad").toBool();
 
       //
       m_struct.formatDate = object.value("formatDate").toString();
@@ -106,6 +107,27 @@ bool MainWindow::json_Read()
       m_struct.dictMain   = object.value("dictMain").toString();
       m_struct.dictUser   = object.value("dictUser").toString();
       m_struct.aboutUrl   = object.value("aboutUrl").toString();
+
+      // printer options      
+      m_printer.printHeader    = object.value("prt-pritnHeader").toBool();
+      m_printer.printFooter    = object.value("prt-printFooter").toBool();
+      m_printer.header_left    = object.value("prt-headerLeft").toString();
+      m_printer.header_center  = object.value("prt-headerCenter").toString();
+      m_printer.header_right   = object.value("prt-headerRight").toString();
+      m_printer.header_line2   = object.value("prt-headerLine2").toString();
+      m_printer.footer_left    = object.value("prt-footerLeft").toString();
+      m_printer.footer_center  = object.value("prt-footerCenter").toString();
+      m_printer.footer_right   = object.value("prt-footerRight").toString();
+      m_printer.footer_line2   = object.value("prt-footerLine2").toString();
+
+      m_printer.marTop         = object.value("prt-marginTop").toDouble();
+      m_printer.marBottom      = object.value("prt-marginBottom").toDouble();
+      m_printer.marLeft        = object.value("prt-marginLeft").toDouble();
+      m_printer.marRight       = object.value("prt-marginRight").toDouble();
+
+      m_printer.fontHeader     = json_SetFont(object.value("prt-fontHeader").toString());
+      m_printer.fontFooter     = json_SetFont(object.value("prt-fontFooter").toString());
+      m_printer.fontText       = json_SetFont(object.value("prt-fontText").toString());
 
       // keys                       
       m_struct.key_selectLine  = object.value("key-selectLine").toString();
@@ -121,13 +143,8 @@ bool MainWindow::json_Read()
       m_struct.key_macroPlay   = object.value("key-macroPlay").toString();
       m_struct.key_spellCheck  = object.value("key-spellCheck").toString();
 
-      //
-      value = object.value("font");
-      {
-         QFont temp;
-         temp.fromString(value.toString());
-         m_struct.font = temp;
-      }
+      // font
+      m_struct.font = json_SetFont(object.value("font").toString());
 
       // colors
       m_struct.colorText     = json_SetColor(object.value("color-text").toString()    );
@@ -177,6 +194,14 @@ bool MainWindow::json_Read()
       for (int k = 0; k < cnt; k++)  {
          m_rf_List.append(list.at(k).toString());
       }
+
+      // opened files
+      list = object.value("opened-files").toArray();
+      cnt  = list.count();
+
+      for (int k = 0; k < cnt; k++)  {
+         m_openedFiles.append(list.at(k).toString());
+      }
    }
 
    return ok;
@@ -212,11 +237,20 @@ bool MainWindow::json_Write(Option route)
             object.insert("aboutUrl", m_struct.aboutUrl);
             break;
 
+         case AUTOLOAD:
+            object.insert("autoLoad", m_struct.autoLoad);
+            break;
+
          case CLOSE:
             object.insert("pos-x",       pos().x()  );
             object.insert("pos-y",       pos().y()  );
             object.insert("size-width",  size().width()  );
             object.insert("size-height", size().height() );
+
+            {
+              QJsonArray temp = QJsonArray::fromStringList(m_openedFiles);
+              object.insert("opened-files", temp);
+            }
 
             break;
 
@@ -280,6 +314,38 @@ bool MainWindow::json_Write(Option route)
 
          case PATH_SYNTAX:
             object.insert("pathSyntax", m_struct.pathSyntax);
+            break;
+
+         case PRINT_OPTIONS:
+            object.insert("prt-pritnHeader",  m_printer.printHeader);
+            object.insert("prt-printFooter",  m_printer.printFooter);
+            object.insert("prt-headerLeft",   m_printer.header_left);
+            object.insert("prt-headerCenter", m_printer.header_center);
+            object.insert("prt-headerRight",  m_printer.header_right);
+            object.insert("prt-headerLine2",  m_printer.header_line2);
+            object.insert("prt-footerLeft",   m_printer.footer_left);
+            object.insert("prt-footerCenter", m_printer.footer_center);
+            object.insert("prt-footerRight",  m_printer.footer_right);
+            object.insert("prt-footerLine2",  m_printer.footer_line2);
+
+            object.insert("prt-marginTop",    m_printer.marTop);
+            object.insert("prt-marginBottom", m_printer.marBottom);
+            object.insert("prt-marginLeft",   m_printer.marLeft);
+            object.insert("prt-marginRight",  m_printer.marRight);
+
+            {
+               QString temp;
+
+               temp = m_printer.fontHeader.toString();
+               object.insert("prt-fontHeader", temp);
+
+               temp = m_printer.fontFooter.toString();
+               object.insert("prt-fontFooter", temp);
+
+               temp = m_printer.fontText.toString();
+               object.insert("prt-fontText",   temp);
+            }
+
             break;
 
          case MACRO:
@@ -441,6 +507,7 @@ bool MainWindow::json_CreateNew()
    object.insert("word-wrap",   false);
    object.insert("column-mode", false);
    object.insert("spellcheck",  false);
+   object.insert("autoLoad",    true);
 
    value = QJsonValue(QString("MM/dd/yyyy"));
    object.insert("formatDate", value);
@@ -462,6 +529,35 @@ bool MainWindow::json_CreateNew()
 
    value = QJsonValue(QString( QDir::currentPath() + "/html/index.html" ));
    object.insert("aboutUrl", value);
+
+   // print options
+   value = QJsonValue(QString(""));
+
+   object.insert("prt-pritnHeader",  true);
+   object.insert("prt-printFooter",  true);
+
+   object.insert("prt-headerLeft",   value);
+   object.insert("prt-headerCenter", value);
+   object.insert("prt_headerRight",  value);
+   object.insert("prt-headerLine2",  value);
+   object.insert("prt-footerLeft",   value);
+   object.insert("prt-footerCenter", value);
+   object.insert("prt-footerRight",  QJsonValue(QString("Diamond Editor")));
+   object.insert("prt-footerLine2",  value);
+
+   object.insert("prt-marginTop",    0.75);
+   object.insert("prt-marginBottom", 0.75);
+   object.insert("prt-marginLeft",   0.50);
+   object.insert("prt-marginRight",  0.50);
+
+   value = QJsonValue(QString("Courier New,10,-1,5,50,0,0,0,0,0"));
+   object.insert("prt-fontHeader",   value);
+
+   value = QJsonValue(QString("Courier New,10,-1,5,50,0,0,0,0,0"));
+   object.insert("prt-fontFooter",   value);
+
+   value = QJsonValue(QString("Arial,12,-1,5,50,0,0,0,0,0"));
+   object.insert("prt-fontText",     value);
 
    // keys
    value = QJsonValue(QString("Ctrl+E"));
@@ -559,11 +655,22 @@ bool MainWindow::json_CreateNew()
    value = QJsonValue(QJsonArray());
    object.insert("recent-files", value);
 
+   value = QJsonValue(QJsonArray());
+   object.insert("opened-files", value);
+
    // save the data
    QJsonDocument doc(object);
    QByteArray data = doc.toJson();
 
    json_SaveFile(data);
+}
+
+QFont MainWindow::json_SetFont(QString value)
+{
+   QFont temp;
+   temp.fromString(value);
+
+   return temp;
 }
 
 QColor MainWindow::json_SetColor(QString values)
