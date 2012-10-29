@@ -34,6 +34,7 @@ Diamond_LDFLAGS=$(AM_LDFLAGS)   $(patsubst %,-lCs%1,$(cslibs))
 # 'Diamond' must match the app name ( dash had to be replaced )
 Diamond_SOURCES = \
 	about.cpp \
+	dialog_advfind.cpp \
 	dialog_colors.cpp \
 	dialog_find.cpp \
 	dialog_get1.cpp \
@@ -59,6 +60,7 @@ Diamond_SOURCES = \
 #              
 noinst_HEADERS = \
 	about.h \
+	dialog_advfind.h \
 	dialog_colors.h \
 	dialog_find.h \
 	dialog_get1.h  \
@@ -78,6 +80,7 @@ noinst_HEADERS = \
 # list of files that require compiling with moc
 MOCS = \
 	about.h \
+	dialog_advfind.h \
 	dialog_colors.h\
 	dialog_find.h \
 	dialog_get1.h  \
@@ -90,21 +93,21 @@ MOCS = \
 	keylineedit.h \
 	mainwindow.h  \
 	syntax.h
-	
-	   
+		   
     
 Diamond_LDADD=$(patsubst %.h,moc_%.$(OBJEXT),$(MOCS))   $(hunspell_la)
            
 #
 FORMS =	\
-	dialog_colors.ui \
-	dialog_find.ui \
-	dialog_get1.ui \
-	dialog_options.ui \
-	dialog_print_opt.ui \
-	dialog_replace.ui \
-	dialog_symbols.ui \
-	mainwindow.ui
+	forms/dialog_advfind.ui \
+	forms/dialog_colors.ui \
+	forms/dialog_find.ui \
+	forms/dialog_get1.ui \
+	forms/dialog_options.ui \
+	forms/dialog_print_opt.ui \
+	forms/dialog_replace.ui \
+	forms/dialog_symbols.ui \
+	forms/mainwindow.ui
     
           
 #

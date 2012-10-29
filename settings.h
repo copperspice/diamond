@@ -13,6 +13,8 @@ struct Settings {
    bool    isColumnMode;
    bool    isSpellCheck;
    bool    isWordWrap;  
+   bool    showSpaces;
+   bool    showEOL;
    bool    autoLoad;
    QString pathSyntax;
    QString pathPrior;

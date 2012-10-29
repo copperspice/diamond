@@ -79,10 +79,17 @@ class MainWindow : public QMainWindow
 
       // find
       QString m_findText;
-      QTextDocument::FindFlags m_flags;      
+      QTextDocument::FindFlags m_flags;
       bool m_fDirection;
       bool m_fCase;
       bool m_fWholeWords;
+
+      // advanced find
+      QString m_advFindText;
+      QTextDocument::FindFlags m_advFlags;
+      bool m_advfCase;
+      bool m_advfWholeWords;
+      bool m_advfFolders;
 
       // macros
       bool m_record;
@@ -114,7 +121,8 @@ class MainWindow : public QMainWindow
 
       enum Option { ABOUTURL, AUTOLOAD, CLOSE, COLORS, COLUMN_MODE, DICT_MAIN, DICT_USER, FONT,
                     FORMAT_DATE, FORMAT_TIME, KEYS, MACRO, PATH_SYNTAX, PATH_PRIOR, PRINT_OPTIONS, RECENTFILE,
-                    SHOW_LINEHIGHLIGHT, SHOW_LINENUMBERS, SPELLCHECK, TAB_SPACING, USESPACES, WORDWRAP};
+                    SHOW_LINEHIGHLIGHT, SHOW_LINENUMBERS, SHOW_SPACES, SHOW_EOL,
+                    SPELLCHECK, TAB_SPACING, USESPACES, WORDWRAP};
 
       void setScreenColors();
       void setSyntax();
@@ -153,9 +161,17 @@ class MainWindow : public QMainWindow
       void rf_UpdateActions();
 
       // printing
+      int m_pageNo;
+      int m_pageCount;
+      QRect m_printArea;
+
+      int get_HeaderSize(QPainter *painter);
+      int get_FooterSize(QPainter *painter);
+
       void printOut(QPrinter *printer);
-      int doHeader(QPainter *painter);
-      int doFooter(QPainter *painter, QRect printArea);
+      void doHeader(QPainter *painter);
+      void doFooter(QPainter *painter);
+      QString macroExpand(QString macro);
 
       // support           
       int get_Value1(const QString route);
@@ -218,8 +234,7 @@ class MainWindow : public QMainWindow
       void move_lineHighlight();
       void lineNumbers();
       void wordWrap();
-      void showSpaces();      
-      void showTabs();
+      void showSpaces();           
       void showEOL();
       void displayHTML();
 

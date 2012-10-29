@@ -19,54 +19,32 @@
 *
 **************************************************************************/
 
-#ifndef DIALOG_PRINT_OPT_H
-#define DIALOG_PRINT_OPT_H
+#ifndef DIALOG_ADVFIND_H
+#define DIALOG_ADVFIND_H
 
-#include "ui_dialog_print_opt.h"
-#include "mainwindow.h"
-#include "settings.h"
+#include "ui_dialog_advfind.h"
 
 #include <QDialog>
-#include <QToolButton>
 
-class Dialog_PrintOptions: public QDialog
-{
+class Dialog_AdvFind : public QDialog
+{     
    Q_OBJECT
 
    public:
-      Dialog_PrintOptions(MainWindow *from, struct PrintSettings data);
-      ~Dialog_PrintOptions();
+      Dialog_AdvFind(QString text = "");
+      ~Dialog_AdvFind();
 
-      struct PrintSettings get_Results();
+      QString get_Value();     
+      bool get_Case();
+      bool get_WholeWords();
+      bool get_Folders();
 
    private:
-      Ui::Dialog_PrintOptions *m_ui;
-      MainWindow *m_parent;
-
-      struct PrintSettings m_print;      
-      QString m_menuText;
-
-      void initData();
-      void macroMenu(QToolButton *widget);
+      Ui::Dialog_AdvFind *m_ui;
 
    private slots:
-      void Save();
+      void Find();
       void Cancel();
-
-      void fileName();
-      void pathFileName();
-      void pageNumber();
-      void totalPages();
-      void pages();
-      void date();
-      void time();
-
-      void headerLeft();
-      void headerCenter();
-      void headerRight();
-      void footerLeft();
-      void footerCenter();
-      void footerRight();
 };
 
 #endif

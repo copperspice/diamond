@@ -19,54 +19,51 @@
 *
 **************************************************************************/
 
-#include "dialog_find.h"
+#include "dialog_advfind.h"
 
-Dialog_Find::Dialog_Find(QString findText)
-   : m_ui(new Ui::Dialog_Find)
+Dialog_AdvFind::Dialog_AdvFind(QString findText)
+   : m_ui(new Ui::Dialog_AdvFind)
 {
    m_ui->setupUi(this);
    m_ui->find->setText(findText);
-   m_ui->down_RB->setChecked(true);
 
    connect(m_ui->find_PB,   SIGNAL(clicked()),this, SLOT(Find()));
    connect(m_ui->cancel_PB, SIGNAL(clicked()),this, SLOT(Cancel()));
 }
 
-Dialog_Find::~Dialog_Find()
+Dialog_AdvFind::~Dialog_AdvFind()
 {
    delete m_ui;
 }
 
-void Dialog_Find::Find()
+void Dialog_AdvFind::Find()
 {
    this->done(1);
 }
 
-void Dialog_Find::Cancel()
+void Dialog_AdvFind::Cancel()
 {
    this->done(0);
 }
 
-QString Dialog_Find::get_Value()
+QString Dialog_AdvFind::get_Value()
 {
    return m_ui->find->text();
 }
 
-bool Dialog_Find::get_Direction()
-{
-   if (m_ui->down_RB->isChecked()) {
-      return true;
-   } else {
-      return false;
-   }
-}
 
-bool Dialog_Find::get_Case()
+bool Dialog_AdvFind::get_Case()
 {
    return m_ui->case_CKB->isChecked();
 }
 
-bool Dialog_Find::get_WholeWords()
+bool Dialog_AdvFind::get_WholeWords()
 {
    return m_ui->wholeWords_CKB->isChecked();
 }
+
+bool Dialog_AdvFind::get_Folders()
+{
+   return m_ui->folders_CKB->isChecked();
+}
+

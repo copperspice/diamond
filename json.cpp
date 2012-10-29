@@ -93,7 +93,9 @@ bool MainWindow::json_Read()
 
       m_struct.showLineHighlight = object.value("showLineHighlight").toBool();
       m_struct.showLineNumbers   = object.value("showLineNumbers").toBool();
-      m_struct.isWordWrap        = object.value("word-wrap").toBool();
+      m_struct.isWordWrap        = object.value("word-wrap").toBool();      
+      m_struct.showSpaces        = object.value("showSpaces").toBool();
+      m_struct.showEOL           = object.value("showEOL").toBool();
       m_struct.isColumnMode      = object.value("column-mode").toBool();      
       m_struct.isSpellCheck      = object.value("spellcheck").toBool();
       m_struct.autoLoad          = object.value("autoLoad").toBool();
@@ -374,6 +376,14 @@ bool MainWindow::json_Write(Option route)
             object.insert("showLineNumbers", m_struct.showLineNumbers);
             break;
 
+         case SHOW_SPACES:
+            object.insert("showSpaces", m_struct.showSpaces);
+            break;
+
+         case SHOW_EOL:
+            object.insert("showEOL", m_struct.showEOL);
+            break;
+
          case SPELLCHECK:
             object.insert("spellcheck", m_struct.isSpellCheck);
             break;
@@ -505,6 +515,8 @@ bool MainWindow::json_CreateNew()
    object.insert("showLineNumbers",   true);
    object.insert("showLineHighlight", true);
    object.insert("word-wrap",   false);
+   object.insert("showSpaces",  false);
+   object.insert("showEOL",     false);
    object.insert("column-mode", false);
    object.insert("spellcheck",  false);
    object.insert("autoLoad",    true);

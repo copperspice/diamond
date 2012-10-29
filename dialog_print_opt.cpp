@@ -32,9 +32,12 @@ Dialog_PrintOptions::Dialog_PrintOptions(MainWindow *from, struct PrintSettings 
 
    initData();
 
-   connect(m_ui->headerLeft_TB, SIGNAL(clicked()), this, SLOT(headerLeft()));
+   connect(m_ui->headerLeft_TB,   SIGNAL(clicked()), this, SLOT(headerLeft()));
    connect(m_ui->headerCenter_TB, SIGNAL(clicked()), this, SLOT(headerCenter()));
-   connect(m_ui->headerRight_TB, SIGNAL(clicked()), this, SLOT(headerRight()));
+   connect(m_ui->headerRight_TB,  SIGNAL(clicked()), this, SLOT(headerRight()));
+   connect(m_ui->footerLeft_TB,   SIGNAL(clicked()), this, SLOT(footerLeft()));
+   connect(m_ui->footerCenter_TB, SIGNAL(clicked()), this, SLOT(footerCenter()));
+   connect(m_ui->footerRight_TB,  SIGNAL(clicked()), this, SLOT(footerRight()));
 
    connect(m_ui->save_PB,    SIGNAL(clicked()), this, SLOT(Save()));
    connect(m_ui->cancel_PB,  SIGNAL(clicked()), this, SLOT(Cancel()));
@@ -77,11 +80,13 @@ void Dialog_PrintOptions::Cancel()
 
 struct PrintSettings Dialog_PrintOptions::get_Results()
 {
+   m_print.printHeader   = m_ui->print_header_CKB->isChecked();
    m_print.header_left   = m_ui->header_Left->text();
    m_print.header_center = m_ui->header_Center->text();
    m_print.header_right  = m_ui->header_Right->text();
    m_print.header_line2  = m_ui->header_Line2->text();
 
+   m_print.printFooter   = m_ui->print_footer_CKB->isChecked();
    m_print.footer_left   = m_ui->footer_Left->text();
    m_print.footer_center = m_ui->footer_Center->text();
    m_print.footer_right  = m_ui->footer_Right->text();
@@ -95,12 +100,10 @@ struct PrintSettings Dialog_PrintOptions::get_Results()
    return m_print;
 }
 
-void Dialog_PrintOptions::headerLeft()
+void Dialog_PrintOptions::macroMenu(QToolButton *widget)
 {
-   QString text = m_ui->header_Left->text();
    m_menuText = "";
 
-   //
    QMenu *menu = new QMenu(this);
    menu->addAction("File Name Only",        this, SLOT(fileName())  );
    menu->addAction("File Name with Path",   this, SLOT(pathFileName())  );
@@ -114,22 +117,75 @@ void Dialog_PrintOptions::headerLeft()
    menu->addAction("Date",  this, SLOT(date())  );
    menu->addAction("Time",  this, SLOT(time())  );
 
-   menu->exec(m_ui->headerLeft_TB->mapToGlobal(QPoint(40,0)));
-
-   if (! m_menuText.isEmpty()) {
-      text = text + m_menuText;
-      m_ui->header_Left->setText(text);
-   }
+   menu->exec(widget->mapToGlobal(QPoint(40,0)));
 
    delete menu;
 }
 
+void Dialog_PrintOptions::headerLeft()
+{
+   QString text = m_ui->header_Left->text();
+   macroMenu(m_ui->headerLeft_TB);
+
+   if (! m_menuText.isEmpty()) {
+      text = text + m_menuText;
+      m_ui->header_Left->setText(text);
+   } 
+}
+
 void Dialog_PrintOptions::headerCenter()
 {
+   QString text = m_ui->header_Center->text();
+    macroMenu(m_ui->headerCenter_TB);
+
+   if (! m_menuText.isEmpty()) {
+      text = text + m_menuText;
+      m_ui->header_Center->setText(text);
+   }
 }
 
 void Dialog_PrintOptions::headerRight()
 {
+   QString text = m_ui->header_Right->text();
+   macroMenu(m_ui->headerRight_TB);
+
+   if (! m_menuText.isEmpty()) {
+      text = text + m_menuText;
+      m_ui->header_Right->setText(text);
+   }
+}
+
+void Dialog_PrintOptions::footerLeft()
+{
+   QString text = m_ui->footer_Left->text();
+   macroMenu(m_ui->footerLeft_TB);
+
+   if (! m_menuText.isEmpty()) {
+      text = text + m_menuText;
+      m_ui->footer_Left->setText(text);
+   }
+}
+
+void Dialog_PrintOptions::footerCenter()
+{
+   QString text = m_ui->footer_Center->text();
+   macroMenu(m_ui->footerCenter_TB);
+
+   if (! m_menuText.isEmpty()) {
+      text = text + m_menuText;
+      m_ui->footer_Center->setText(text);
+   }
+}
+
+void Dialog_PrintOptions::footerRight()
+{
+   QString text = m_ui->footer_Right->text();
+   macroMenu( m_ui->footerRight_TB);
+
+   if (! m_menuText.isEmpty()) {
+      text = text + m_menuText;
+      m_ui->footer_Right->setText(text);
+   }
 }
 
 // menu slots
@@ -155,7 +211,7 @@ void Dialog_PrintOptions::totalPages()
 
 void Dialog_PrintOptions::pages()
 {
-   m_menuText = "$(PageNumber) of $(TotalPages)";
+   m_menuText = "$(PageNo) of $(TotalPages)";
 }
 
 void Dialog_PrintOptions::date()
@@ -165,7 +221,7 @@ void Dialog_PrintOptions::date()
 
 void Dialog_PrintOptions::time()
 {
-   m_menuText = "$(Tsime)";
+   m_menuText = "$(Time)";
 }
 
 

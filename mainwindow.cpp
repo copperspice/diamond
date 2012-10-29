@@ -20,6 +20,7 @@
 **************************************************************************/
 
 #include "about.h"
+#include "dialog_advfind.h"
 #include "dialog_find.h"
 #include "dialog_replace.h"
 #include "dialog_symbols.h"
@@ -155,8 +156,9 @@ bool MainWindow::closeAll_Doc()
          if (querySave())  {
 
             // save for OpenFileList
-            // if ( m_curFile != "untitled.txt" ) {
-            m_openedFiles.append(m_curFile);
+            if ( m_curFile != "untitled.txt" ) {
+               m_openedFiles.append(m_curFile);
+            }
 
             if (m_tabWidget->count() == 1) {
                // do not remove !
@@ -689,7 +691,40 @@ void MainWindow::findPrevious()
 
 void MainWindow::advFind()
 {
-   showNotDone("Search Advanced Search");
+   Dialog_AdvFind *dw = new Dialog_AdvFind(m_findText);
+   int result = dw->exec();
+
+   if ( result == QDialog::Accepted) {
+
+      m_advFindText = dw->get_Value();
+      m_advFlags = 0;
+
+      m_advfCase = dw->get_Case();
+      if (m_fCase) {
+         m_advFlags |= QTextDocument::FindCaseSensitively;
+      }
+
+      m_advfWholeWords = dw->get_WholeWords();
+      if (m_fWholeWords){
+         m_advFlags |= QTextDocument::FindWholeWords;
+      }
+
+      m_advfFolders = dw->get_Folders();
+      if (m_fWholeWords){
+         m_advFlags |= QTextDocument::FindWholeWords;
+      }
+
+      if (! m_findText.isEmpty())  {
+         // bool found = m_textEdit->advFind(m_advFindText, m_advFlags);
+         bool found = false;
+
+         if (! found)  {
+            csError("Advanced Find", m_advFindText + " was not found");
+         }
+      }
+         }
+
+   delete dw;
 }
 
 void MainWindow::goLine()
@@ -809,18 +844,77 @@ void MainWindow::wordWrap()
 }
 
 void MainWindow::showSpaces()
-{
-   showNotDone("View Show Spaces");
-}
+{   
+   QTextDocument *td = m_textEdit->document();
+   QTextOption textOpt = td->defaultTextOption();
 
-void MainWindow::showTabs()
-{
-   showNotDone("View Show Tabs");
+   if (m_ui->actionShow_Spaces->isChecked()) {
+      //on
+      m_struct.showSpaces = true;
+
+      if (m_struct.showEOL) {
+       textOpt.setFlags(QTextOption::ShowTabsAndSpaces | QTextOption::ShowLineAndParagraphSeparators);
+
+      } else {
+        textOpt.setFlags(QTextOption::ShowTabsAndSpaces);
+
+      }
+
+      td->setDefaultTextOption(textOpt);
+
+   } else {
+      // off
+       m_struct.showSpaces = false;
+
+       if (m_struct.showEOL) {
+         textOpt.setFlags(QTextOption::ShowLineAndParagraphSeparators);
+
+       } else {
+         textOpt.setFlags(0);
+
+       }
+
+       td->setDefaultTextOption(textOpt);
+   }
+
+   json_Write(SHOW_SPACES);
 }
 
 void MainWindow::showEOL()
 {
-   showNotDone("View Show Spaces EOL");
+   QTextDocument *td = m_textEdit->document();
+   QTextOption textOpt = td->defaultTextOption();
+
+   if (m_ui->actionShow_EOL->isChecked()) {
+      //on
+      m_struct.showEOL = true;
+
+      if (m_struct.showSpaces) {
+         textOpt.setFlags(QTextOption::ShowTabsAndSpaces | QTextOption::ShowLineAndParagraphSeparators);
+
+      } else {
+         textOpt.setFlags(QTextOption::ShowLineAndParagraphSeparators);
+
+      }
+
+      td->setDefaultTextOption(textOpt);
+
+   } else {
+      // off
+      m_struct.showEOL = false;
+
+      if (m_struct.showSpaces) {
+        textOpt.setFlags(QTextOption::ShowTabsAndSpaces);
+
+      } else {
+        textOpt.setFlags(0);
+
+      }
+
+      td->setDefaultTextOption(textOpt);
+   }
+
+   json_Write(SHOW_EOL);
 }
 
 void MainWindow::displayHTML()
@@ -1234,6 +1328,9 @@ void MainWindow::tabChanged(int index)
 
       // adjust hightlight
       move_lineHighlight();      
+
+      showSpaces();
+      showEOL();
    }
 }
 
@@ -1344,7 +1441,6 @@ void MainWindow::createConnections()
    connect(m_ui->actionWord_Wrap,         SIGNAL(triggered()), this, SLOT(wordWrap()));
 
    connect(m_ui->actionShow_Spaces,       SIGNAL(triggered()), this, SLOT(showSpaces()));
-   connect(m_ui->actionShow_Tabs,         SIGNAL(triggered()), this, SLOT(showTabs()));
    connect(m_ui->actionShow_EOL,          SIGNAL(triggered()), this, SLOT(showEOL()));
 
    connect(m_ui->actionDisplay_HTML,      SIGNAL(triggered()), this, SLOT(displayHTML()));
@@ -1371,8 +1467,7 @@ void MainWindow::createConnections()
    connect(m_ui->actionFormat_Unix,       SIGNAL(triggered()), this, SLOT(formatUnix()));
    connect(m_ui->actionFormat_Mac,        SIGNAL(triggered()), this, SLOT(formatMac()));
 
-   connect(m_ui->actionFix_Tab_Spaces,    SIGNAL(triggered()), this, SLOT(fixTab_Spaces()));
-   connect(m_ui->actionFix_Spaces_Tab,    SIGNAL(triggered()), this, SLOT(fixSpaces_Tabs()));
+   connect(m_ui->actionFix_Tab_Spaces,    SIGNAL(triggered()), this, SLOT(fixTab_Spaces()));  
    connect(m_ui->actionFix_Spaces_EOL,    SIGNAL(triggered()), this, SLOT(fixSpaces_EOL()));
 
    // tools
@@ -1424,6 +1519,12 @@ void MainWindow::createToggles()
 
    m_ui->actionWord_Wrap->setCheckable(true);
    m_ui->actionWord_Wrap->setChecked(m_struct.isWordWrap);
+
+   m_ui->actionShow_Spaces->setCheckable(true);
+   m_ui->actionShow_Spaces->setChecked(m_struct.showSpaces);
+
+   m_ui->actionShow_EOL->setCheckable(true);
+   m_ui->actionShow_EOL->setChecked(m_struct.showEOL);
 
    m_ui->actionColumn_Mode->setCheckable(true);
    m_ui->actionColumn_Mode->setChecked(m_struct.isColumnMode);  
@@ -1497,7 +1598,6 @@ void MainWindow::createShortCuts()
    m_ui->actionMacro_Play->setShortcut(QKeySequence(m_struct.key_macroPlay) );
    m_ui->actionSpell_Check->setShortcut(QKeySequence(m_struct.key_spellCheck) );
 }
-
 
 void MainWindow::createToolBars()
 {

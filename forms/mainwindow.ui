@@ -134,7 +134,6 @@
     <addaction name="actionWord_Wrap"/>
     <addaction name="separator"/>
     <addaction name="actionShow_Spaces"/>
-    <addaction name="actionShow_Tabs"/>
     <addaction name="actionShow_EOL"/>
     <addaction name="separator"/>
     <addaction name="actionDisplay_HTML"/>
@@ -494,7 +493,7 @@
   </action>
   <action name="actionAdv_Find">
    <property name="text">
-    <string>Advanced Find... *</string>
+    <string>Advanced Find...</string>
    </property>
   </action>
   <action name="actionGo_Line">
@@ -538,12 +537,12 @@
   </action>
   <action name="actionShow_EOL">
    <property name="text">
-    <string>Show EOL *</string>
+    <string>Show Line Breaks</string>
    </property>
   </action>
   <action name="actionShow_Spaces">
    <property name="text">
-    <string>Show Spaces *</string>
+    <string>Show Tab &amp;&amp; Spaces</string>
    </property>
   </action>
   <action name="actionShow_Spaces_EOL">

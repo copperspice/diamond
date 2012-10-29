@@ -9,8 +9,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>408</width>
-    <height>176</height>
+    <width>407</width>
+    <height>191</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -46,6 +46,11 @@
       </property>
       <item row="1" column="0">
        <widget class="QRadioButton" name="down_RB">
+        <property name="font">
+         <font>
+          <pointsize>10</pointsize>
+         </font>
+        </property>
         <property name="text">
          <string>Down</string>
         </property>
@@ -53,6 +58,11 @@
       </item>
       <item row="0" column="0">
        <widget class="QRadioButton" name="up_RB">
+        <property name="font">
+         <font>
+          <pointsize>10</pointsize>
+         </font>
+        </property>
         <property name="text">
          <string>Up</string>
         </property>
@@ -63,6 +73,11 @@
    </item>
    <item row="5" column="1">
     <widget class="QCheckBox" name="wholeWords_CKB">
+     <property name="font">
+      <font>
+       <pointsize>10</pointsize>
+      </font>
+     </property>
      <property name="text">
       <string>Match Whole Words</string>
      </property>
@@ -79,7 +94,7 @@
      <property name="sizeHint" stdset="0">
       <size>
        <width>100</width>
-       <height>6</height>
+       <height>10</height>
       </size>
      </property>
     </spacer>
@@ -95,13 +110,18 @@
      <property name="sizeHint" stdset="0">
       <size>
        <width>20</width>
-       <height>10</height>
+       <height>13</height>
       </size>
      </property>
     </spacer>
    </item>
    <item row="4" column="1">
     <widget class="QCheckBox" name="case_CKB">
+     <property name="font">
+      <font>
+       <pointsize>10</pointsize>
+      </font>
+     </property>
      <property name="text">
       <string>Match Case</string>
      </property>
@@ -131,12 +151,17 @@
       </widget>
      </item>
      <item>
-      <widget class="QLineEdit" name="value">
+      <widget class="QLineEdit" name="find">
        <property name="minimumSize">
         <size>
          <width>350</width>
          <height>20</height>
         </size>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>10</pointsize>
+        </font>
        </property>
       </widget>
      </item>
@@ -205,7 +230,7 @@
   </layout>
  </widget>
  <tabstops>
-  <tabstop>value</tabstop>
+  <tabstop>find</tabstop>
   <tabstop>case_CKB</tabstop>
   <tabstop>wholeWords_CKB</tabstop>
   <tabstop>up_RB</tabstop>

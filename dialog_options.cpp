@@ -56,9 +56,11 @@ void Dialog_Options::initData()
    QStringList list;
    int index;
 
+   // ** tab one
+
    // 1
-   list << "MM/dd/yyyy" << "dd/MM/yyyy" << "MMM dd, yyyy" << "MMMM dd, yyyy"
-        << "yyyyMMdd";
+   list << "MM/dd/yyyy" << "dd/MM/yyyy" << "MMM dd, yyyy"
+        << "MMMM dd, yyyy" << "yyyyMMdd";
 
    m_ui->dateFormat_CB->addItems(list);
    m_ui->dateFormat_CB->setEditable(false);
@@ -82,14 +84,18 @@ void Dialog_Options::initData()
    m_ui->tabSpacing_CB->addItems(list);
    m_ui->tabSpacing_CB->setEditable(false);
 
+   index = m_ui->tabSpacing_CB->findText(QString::number(m_options.tabSpacing));
+   m_ui->tabSpacing_CB->setCurrentIndex(index);
+
    if (m_options.useSpaces)  {
       m_ui->useSpaces_CKB->setChecked(true);
    }
 
-   index = m_ui->tabSpacing_CB->findText(QString::number(m_options.tabSpacing));
-   m_ui->tabSpacing_CB->setCurrentIndex(index);
+   if (m_options.autoLoad)  {
+      m_ui->autoLoad_CKB->setChecked(true);
+   }
 
-   //
+   // ** tab two
    m_ui->dictMain->setText(m_options.dictMain);
    m_ui->dictUser->setText(m_options.dictUser);
    m_ui->syntax->setText(m_options.pathSyntax);
@@ -187,10 +193,7 @@ void Dialog_Options::pick_About()
 
 struct Options Dialog_Options::get_Results()
 {
-   QString value = m_ui->tabSpacing_CB->currentText();
-   m_options.tabSpacing = value.toInt();   
-   m_options.useSpaces  = m_ui->useSpaces_CKB->isChecked();
-
+   // ** tab 1
    m_options.formatDate = m_ui->dateFormat_CB->currentText();
    m_options.formatTime = m_ui->timeFormat_CB->currentText();
    m_options.dictMain   = m_ui->dictMain->text();
@@ -198,6 +201,13 @@ struct Options Dialog_Options::get_Results()
    m_options.pathSyntax = m_ui->syntax->text();
    m_options.aboutUrl   = m_ui->about->text();
 
+   QString value = m_ui->tabSpacing_CB->currentText();
+   m_options.tabSpacing = value.toInt();
+   m_options.useSpaces  = m_ui->useSpaces_CKB->isChecked();
+
+   m_options.autoLoad   = m_ui->autoLoad_CKB->isChecked();
+
+   // ** tab 2
    m_options.key_selectLine   = m_ui->key_selectLine->text();
    m_options.key_selectWord   = m_ui->key_selectWord->text();
    m_options.key_selectBlock  = m_ui->key_selectBlock->text();

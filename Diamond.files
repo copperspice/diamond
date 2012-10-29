@@ -18,6 +18,16 @@ configure.ac
 Makefile.am
 diamond.qrc
 
+forms/dialog_advfind.ui
+forms/dialog_colors.ui
+forms/dialog_find.ui
+forms/dialog_get1.ui
+forms/dialog_options.ui
+forms/dialog_print_opt.ui
+forms/dialog_symbols.ui
+forms/dialog_replace.ui
+forms/mainwindow.ui
+
 about.h
 about.cpp
 diamond_edit.cpp
@@ -30,7 +40,6 @@ keylineedit.cpp
 main.cpp
 mainwindow.h
 mainwindow.cpp
-mainwindow.ui
 options.cpp
 recent_files.cpp
 settings.h
@@ -46,23 +55,18 @@ util.cpp
 
 dialog_get1.h
 dialog_get1.cpp
-dialog_get1.ui
 dialog_options.h
 dialog_options.cpp
-dialog_options.ui
 dialog_print_opt.h
 dialog_print_opt.cpp
 dialog_symbols.h
 dialog_symbols.cpp
-dialog_symbols.ui
 dialog_find.h
 dialog_find.cpp
-dialog_find.ui
+dialog_advfind.h
+dialog_advfind.cpp
 dialog_colors.h
 dialog_colors.cpp
-dialog_colors.ui
 dialog_replace.h
 dialog_replace.cpp
-dialog_replace.ui
-
-dialog_print_opt.ui
+advanced_find.cpp
