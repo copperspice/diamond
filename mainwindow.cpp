@@ -515,7 +515,7 @@ void MainWindow::indentIncr(QString route)
 
 void MainWindow::mw_indentDecr()
 {
-   indentDecr("indent");
+   indentDecr("unindent");
 }
 
 void MainWindow::indentDecr(QString route)
@@ -537,14 +537,39 @@ void MainWindow::indentDecr(QString route)
       cursor.movePosition(QTextCursor::StartOfLine);
       posStart = cursor.position();
 
+      QString temp;
+
       while (true) {
+         cursor.movePosition(QTextCursor::StartOfLine);
 
+         for (int k=0; k < m_struct.tabSpacing; ++k) {
 
-         // missing code
-         csMsg("Un Tab or Un Indent - disabled");
-         break;
+            cursor.movePosition(QTextCursor::NextCharacter, QTextCursor::KeepAnchor, 1);
+            temp = cursor.selectedText().trimmed();
 
+            if (! temp.isEmpty())  {
+               break;
+            }
 
+            if (m_struct.useSpaces) {
+               cursor.deleteChar();
+            } else {
+               // what about tabs
+               cursor.deleteChar();
+            }
+
+            posEnd -=1;
+
+         }
+
+         //
+         if (! cursor.movePosition(QTextCursor::NextBlock))  {
+             break;
+         }
+
+         if (cursor.position() >= posEnd) {
+            break;
+         }
       }
 
       // reselect highlighted text
@@ -559,7 +584,7 @@ void MainWindow::indentDecr(QString route)
 
       int posStart = cursor.position();
 
-      if (route == "indent") {
+      if (route == "unindent") {
          cursor.movePosition(QTextCursor::StartOfLine);
       }
 
@@ -577,10 +602,11 @@ void MainWindow::indentDecr(QString route)
          if (m_struct.useSpaces) {
             cursor.deleteChar();
          } else {
+            // what about tabs
             cursor.deleteChar();
          }
 
-         if (route == "indent") {
+         if (route == "unindent") {
             posStart -=1;
          }
       }
