@@ -1,7 +1,8 @@
 AUTOMAKE_OPTIONS=subdir-objects
 
 # adjustment for windows slash vs backslash
-CS_HOME:=$(shell cd $(CS_HOME); pwd)
+# CS_HOME:=$(shell cd $(CS_HOME); pwd)
+CS_HOME:=/z/cs2_Lib
 
 # location of includes, libs, defines for compiling
 AM_CXXFLAGS=$(AM_CFLAGS) -DQT_NO_STYLE_S60   \

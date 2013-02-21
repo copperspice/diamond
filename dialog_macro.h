@@ -19,31 +19,50 @@
 *
 **************************************************************************/
 
-#ifndef DIALOG_SYMBOLS_H
-#define DIALOG_SYMBOLS_H
+#ifndef DIALOG_MACRO_H
+#define DIALOG_MACRO_H
 
-#include "ui_dialog_symbols.h"
+#include "ui_dialog_macro.h"
 #include "mainwindow.h"
 
 #include <QDialog>
+#include <QModelIndex>
+#include <QStringList>
+#include <QStandardItemModel>
 
-class Dialog_Symbols : public QDialog
+class Dialog_Macro : public QDialog
 {
    Q_OBJECT
 
    public:
-      Dialog_Symbols(MainWindow *from);
-      ~Dialog_Symbols();
-      QString get_Symbol();
+      enum MacroEnum { MACRO_LOAD, MACRO_SELECT, MACRO_EDITNAMES };
+
+      Dialog_Macro(MainWindow *from, MacroEnum enumValue, QStringList macroIds, QStringList macroNames);
+      ~Dialog_Macro();
+      QString get_Macro();
+      static const int MACRO_MAX_COUNT = 2;
 
    private:
-      Ui::Dialog_Symbols *m_ui;
+      Ui::Dialog_Macro *m_ui;
       MainWindow *m_parent;
-      QStringList initData();
+      QStandardItemModel *m_model;
+      QStringList m_macroIds;
+      QStringList m_macroNames;
+      int m_maxCount;
+      bool m_updateNames = false;
+
+      void initData();
+      void setUpView();
+
+      MacroEnum m_enum;
+      QStringList m_macroList;
 
    private slots:
-      void Insert();
-      void Cancel();     
+      void Select();
+      void View();
+      void Cancel();
+      void tableClicked(const QModelIndex & index);
+      void tableDataChanged(const QModelIndex & topLeft, const QModelIndex & bottomRight);
 };
 
 #endif

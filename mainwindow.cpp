@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright (c) 2012 Barbara Geller
+* Copyright (c) 2012-2013 Barbara Geller
 * All rights reserved.
 *
 * This file is part of Diamond Editor.
@@ -22,6 +22,7 @@
 #include "about.h"
 #include "dialog_advfind.h"
 #include "dialog_find.h"
+#include "dialog_macro.h"
 #include "dialog_replace.h"
 #include "dialog_symbols.h"
 #include "mainwindow.h"
@@ -40,7 +41,7 @@ MainWindow::MainWindow()
    : m_ui(new Ui::MainWindow)
 {
    m_ui->setupUi(this);
-   setWindowFilePath("untitled.txt");
+   this->setDiamondTitle("untitled.txt");
 
    if ( ! json_Read()  ) {
       // do not start program
@@ -65,21 +66,31 @@ MainWindow::MainWindow()
    createToggles();
    createConnections();
 
+   // recent folders
+   rfolder_CreateMenus();
+
    // recent files
-   rf_CreateMenus();
+   rf_CreateMenus(); 
 
    // spell check  
    createSpellCheck();
 
-   //  recent files, context menu
+   // recent files, context menu
    m_ui->menuFile->setContextMenuPolicy(Qt::CustomContextMenu);
-   connect(m_ui->menuFile, SIGNAL(customContextMenuRequested(const QPoint&)), this, SLOT(showContextMenu(const QPoint &)));   
+   connect(m_ui->menuFile, SIGNAL(customContextMenuRequested(const QPoint&)), this, SLOT(showContextMenuFile(const QPoint &)));
 
    //
    tabNew();
    if (m_struct.autoLoad) {
       autoLoad();
    }
+
+   // currently open files
+   openF_CreateMenus();
+
+   // currently open files, context menu
+   // m_ui->menuWindow->setContextMenuPolicy(Qt::CustomContextMenu);
+   // connect(m_ui->menuWindow, SIGNAL(customContextMenuRequested(const QPoint&)), this, SLOT(showContextMenuWindow(const QPoint &)));
 
    setStatus_ColMode();
    setStatusBar(tr("Ready"), 0);   
@@ -97,7 +108,12 @@ void MainWindow::newFile()
    }
 }
 
-void MainWindow::open()
+void MainWindow::mw_open()
+{
+   this->open(m_struct.pathPrior);
+}
+
+void MainWindow::open(QString path)
 {       
    QFileDialog::Options options;
 
@@ -108,7 +124,7 @@ void MainWindow::open()
    QString selectedFilter;
 
    QStringList fileList = QFileDialog::getOpenFileNames(this, tr("Select File"),
-         m_struct.pathPrior, tr("All Files (*)"), &selectedFilter, options);
+         path, tr("All Files (*)"), &selectedFilter, options);
 
    int cnt = fileList.count();
 
@@ -116,7 +132,7 @@ void MainWindow::open()
       QString fileName = fileList.at(k);
 
       if (! fileName.isEmpty()) {
-         loadFile(fileName, true);
+         loadFile(fileName, true, false);
       }
    }
 }
@@ -126,6 +142,9 @@ void MainWindow::close_Doc()
    bool okClose = querySave();
 
    if (okClose) {
+      // update open list
+      openF_Delete();
+
       m_textEdit->clear();
       setCurrentFile("");
    }
@@ -184,6 +203,9 @@ bool MainWindow::closeAll_Doc()
    //
    m_tabWidget->setCurrentIndex(0);
 
+   // update open list
+   openF_UpdateActions();
+
    return allClosed;
 }
 
@@ -210,11 +232,11 @@ void MainWindow::reload()
       quest.exec();
 
       if (quest.clickedButton() == reload) {
-        loadFile(m_curFile, false);
+        loadFile(m_curFile, false, false);
       }
 
    } else {
-      loadFile(m_curFile, false);
+      loadFile(m_curFile, false, false);
 
    }
 }
@@ -1153,13 +1175,13 @@ void MainWindow::fixSpaces_EOL()
 }
 
 
-
-// **tools
+// ** tools
 void MainWindow::mw_macroStart()
 {
    if ( ! m_record ) {
       m_record = true;
       m_textEdit->macroStart();
+
       setStatusBar(tr("Recording macro. . ."), 0);
    }
 }
@@ -1183,19 +1205,19 @@ void MainWindow::macroPlay()
       csError("Macro Playback", "Unable to play back a macro while recording");
 
    }  else {
-      QList<QKeyEvent *> keyList;
-      keyList = m_textEdit->get_KeyList();    
+      QList<QKeyEvent *> macroList;
+      macroList = m_textEdit->get_MacroKeyList();
 
-      int cnt = keyList.count();
+      int cnt = macroList.count();
 
       if (cnt == 0) {
-         csError("Macro Playback", "No macros to play back");
+         csError("Macro Playback", "No macro to play back");
 
       } else {
          QKeyEvent *event;
 
          for (int k = 0; k < cnt; ++k)   {
-            event = keyList.at(k);
+            event = macroList.at(k);
 
             QKeyEvent *newEvent;
             newEvent = new QKeyEvent(*event);
@@ -1208,10 +1230,32 @@ void MainWindow::macroPlay()
 
 void MainWindow::macroLoad()
 {
-   showNotDone("Macro, Show saved macro");
+   QStringList macroIds = json_Load_MacroIds();
+
+   //
+   Dialog_Macro *dw = new Dialog_Macro(this, Dialog_Macro::MACRO_LOAD, macroIds, m_macroNames);
+   int result = dw->exec();
+
+   if (result == QDialog::Accepted) {
+      QString text = dw->get_Macro();
+      json_Load_Macro(text);
+   }
+
+   delete dw;
 }
 
+void MainWindow::macroEditNames()
+{
+   QStringList macroIds = json_Load_MacroIds();
 
+   //
+   Dialog_Macro *dw = new Dialog_Macro(this, Dialog_Macro::MACRO_EDITNAMES, macroIds, m_macroNames);
+   dw->exec();
+
+   delete dw;
+}
+
+// **
 void MainWindow::spellCheck()
 {
    if (m_ui->actionSpell_Check->isChecked()) {
@@ -1282,7 +1326,7 @@ void MainWindow::tabNew()
 }
 
 void MainWindow::mw_tabClose()
-{
+{     
    int index = m_tabWidget->currentIndex();
    tabClose(index);
 }
@@ -1303,6 +1347,10 @@ void MainWindow::tabClose(int index)
       bool okClose = querySave();
 
       if (okClose)  {
+         // update open list
+         openF_Delete();
+
+         //
          int count = m_tabWidget->count();
 
          if (count == 1) {
@@ -1340,7 +1388,7 @@ void MainWindow::tabChanged(int index)
       setStatus_LineCol();
       setStatus_FName(m_curFile);
 
-      setWindowFilePath(m_curFile);
+      this->setDiamondTitle(m_curFile);
 
       m_textEdit->set_ColumnMode(m_struct.isColumnMode);
       m_textEdit->set_ShowLineNum(m_struct.showLineNumbers);
@@ -1378,7 +1426,7 @@ void MainWindow::about()
                       "<tr><td style=padding-right:25><nobr>Developed by Ansel Sermersheim</nobr></td><td>ansel@copperspice.com</td></tr>"
                       "</table></font>"
                       "<br>"
-                      "<p><small>Copyright 2012 BG Consulting, All rights reserved.<br>"
+                      "<p><small>Copyright 2012-2013 BG Consulting, All rights reserved.<br>"
                       "This program is provided AS IS with no warranty of any kind.<br></small></p>";
 
    //
@@ -1387,7 +1435,7 @@ void MainWindow::about()
    msgB.setWindowIcon( QIcon("://resources/plus.png"));
 
    msgB.setWindowTitle(tr("About Diamond"));
-   msgB.setText(tr("<p style=margin-right:25><center><h5>Version: 1.0<br>Build # 10.01.2012</h5></center></p>"));
+   msgB.setText(tr("<p style=margin-right:25><center><h5>Version: 1.0<br>Build # 02.15.2013</h5></center></p>"));
    msgB.setInformativeText(textBody);
 
    msgB.setStandardButtons(QMessageBox::Ok);
@@ -1412,7 +1460,7 @@ void MainWindow::createConnections()
 {
    // file
    connect(m_ui->actionNew,            SIGNAL(triggered()), this, SLOT(newFile()));
-   connect(m_ui->actionOpen,           SIGNAL(triggered()), this, SLOT(open()));
+   connect(m_ui->actionOpen,           SIGNAL(triggered()), this, SLOT(mw_open()));
    connect(m_ui->actionClose,          SIGNAL(triggered()), this, SLOT(close_Doc()));
    connect(m_ui->actionClose_All,      SIGNAL(triggered()), this, SLOT(closeAll_Doc()));
    connect(m_ui->actionReload,         SIGNAL(triggered()), this, SLOT(reload()));
@@ -1501,6 +1549,7 @@ void MainWindow::createConnections()
    connect(m_ui->actionMacro_Stop,        SIGNAL(triggered()), this, SLOT(mw_macroStop()));
    connect(m_ui->actionMacro_Play,        SIGNAL(triggered()), this, SLOT(macroPlay()));
    connect(m_ui->actionMacro_Load,        SIGNAL(triggered()), this, SLOT(macroLoad()));
+   connect(m_ui->actionMacro_EditNames,   SIGNAL(triggered()), this, SLOT(macroEditNames()));
    connect(m_ui->actionSpell_Check,       SIGNAL(triggered()), this, SLOT(spellCheck()));
 
    // settings

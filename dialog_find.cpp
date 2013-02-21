@@ -21,12 +21,17 @@
 
 #include "dialog_find.h"
 
+#include <QTextCursor>
+
 Dialog_Find::Dialog_Find(QString findText)
    : m_ui(new Ui::Dialog_Find)
 {
    m_ui->setupUi(this);
    m_ui->find->setText(findText);
    m_ui->down_RB->setChecked(true);
+
+   // any key deletes first, right arrow to continue typing
+   m_ui->find->selectAll();
 
    connect(m_ui->find_PB,   SIGNAL(clicked()),this, SLOT(Find()));
    connect(m_ui->cancel_PB, SIGNAL(clicked()),this, SLOT(Cancel()));

@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright (c) 2012 Barbara Geller
+* Copyright (c) 2012-2013 Barbara Geller
 * All rights reserved.
 *
 * This file is part of Diamond Editor.
@@ -359,6 +359,9 @@ void DiamondTextEdit::showNotDone(QString item)
 void DiamondTextEdit::macroStart()
 {
    m_record = true;
+
+   // delete prior macro
+   m_macroKeyList.clear();
 }
 
 void DiamondTextEdit::macroStop()
@@ -366,9 +369,14 @@ void DiamondTextEdit::macroStop()
    m_record = false;
 }
 
-QList<QKeyEvent *> DiamondTextEdit::get_KeyList()
+QList<QKeyEvent *> DiamondTextEdit::get_MacroKeyList()
 {
-   return m_keyList;
+   return m_macroKeyList;
+}
+
+void DiamondTextEdit::add_MacroEvent(QKeyEvent *event)
+{
+  m_macroKeyList.append(event);
 }
 
 
@@ -391,7 +399,7 @@ bool DiamondTextEdit::event(QEvent *event)
             QKeyEvent *newEvent;
             newEvent = new QKeyEvent(*keyPressEvent);
 
-            m_keyList.append(newEvent);
+            m_macroKeyList.append(newEvent);
          }
 
          m_mainWindow->indentIncr("tab");
@@ -407,7 +415,7 @@ bool DiamondTextEdit::event(QEvent *event)
             QKeyEvent *newEvent;
             newEvent = new QKeyEvent(*keyPressEvent);
 
-            m_keyList.append(newEvent);
+            m_macroKeyList.append(newEvent);
          }
 
          m_mainWindow->indentDecr("tab");
@@ -520,23 +528,17 @@ bool DiamondTextEdit::event(QEvent *event)
 
 void DiamondTextEdit::keyPressEvent(QKeyEvent *event)
 {
-   // int key = event->key();
-   // int modifiers = event->modifiers();
-
    if (m_record)  {
 
       QKeyEvent *newEvent;
       newEvent = new QKeyEvent(*event);
 
-      m_keyList.append(newEvent);
+      m_macroKeyList.append(newEvent);
 
-      // now call the parent
-      QPlainTextEdit::keyPressEvent(event);
-
-   }  else {
-      // now call the parent
-      QPlainTextEdit::keyPressEvent(event);
    }
+
+   // now call the parent
+   QPlainTextEdit::keyPressEvent(event);
 }
 
 

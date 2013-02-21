@@ -40,9 +40,9 @@ void MainWindow::autoLoad()
       fileName = m_openedFiles.at(k);
 
       if ( k == 0 ) {
-         loadFile(fileName, false);
+         loadFile(fileName, false, true);
       } else {
-         loadFile(fileName, true);
+         loadFile(fileName, true, true);
       }
    }
 }
@@ -108,7 +108,7 @@ int MainWindow::get_Value1(const QString route)
    return col;
 }
 
-bool MainWindow::loadFile(const QString &fileName, bool addNewTab)
+bool MainWindow::loadFile(const QString &fileName, bool addNewTab, bool isAuto)
 {
    QFile file(fileName);
 
@@ -138,6 +138,14 @@ bool MainWindow::loadFile(const QString &fileName, bool addNewTab)
 
    setCurrentFile(fileName);
    setStatusBar(tr("File loaded"), 1500);
+
+   // recent folders
+   rfolder_Add();
+
+   if (! isAuto) {
+      // update open list
+      openF_Add();
+   }
 
    return true;
 }
@@ -193,8 +201,8 @@ bool MainWindow::saveFile(const QString &fileName, bool isSaveOne)
 
    if (isSaveOne) {
       m_textEdit->document()->setModified(false);
-      setWindowModified(false);
-      setWindowFilePath(m_curFile);
+      setWindowModified(false);     
+      setDiamondTitle(m_curFile);
 
       //
       setStatusBar(tr("File saved"), 2000);
@@ -257,7 +265,17 @@ void MainWindow::setCurrentFile(const QString &fileName)
       }
    }
 
-   setWindowFilePath(showName);
+   this->setDiamondTitle(showName);
+}
+
+void MainWindow::setDiamondTitle(QString title)
+{
+   // displays as: File Name[*] --- Diamond Editor
+   // setWindowFilePath(showName);
+
+   // displays as: Diamond Editor --  File Name[*]
+   QString temp = QChar(0x02014);
+   setWindowTitle( "Diamond Editor " + temp + " " + title + " [*]" );
 }
 
 void MainWindow::setStatus_LineCol()
@@ -296,7 +314,6 @@ void MainWindow::dragEnterEvent(QDragEnterEvent *event)
 {
    if (event->mimeData()->hasFormat("text/uri-list"))  {
       event->acceptProposedAction();
-
    } else if (event->mimeData()->hasFormat("text/plain"))  {
       event->acceptProposedAction();
 
@@ -316,7 +333,7 @@ void MainWindow::dropEvent(QDropEvent *event)
 
       QString fileName = urls.first().toLocalFile();
       if (! fileName.isEmpty()) {
-         loadFile(fileName, TRUE);
+         loadFile(fileName, true, false);
       }
 
    } else if (mimeData->hasText()) {

@@ -65,7 +65,8 @@ class DiamondTextEdit : public QPlainTextEdit
       // macro
       void macroStart();
       void macroStop();
-      QList<QKeyEvent *> get_KeyList();
+      QList<QKeyEvent *> get_MacroKeyList();
+      void add_MacroEvent(QKeyEvent *event);
 
    protected:
       void contextMenuEvent(QContextMenuEvent *event);
@@ -90,7 +91,7 @@ class DiamondTextEdit : public QPlainTextEdit
 
       // macro
       bool m_record;
-      QList<QKeyEvent *> m_keyList;
+      QList<QKeyEvent *> m_macroKeyList;
 
       // column
       bool m_showlineNum;

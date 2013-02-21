@@ -12,7 +12,7 @@ cslibs=Core Gui Network Script WebKit
 hunspell_dll=/z/Hunspell/deploy/bin/libhunspell-1.3-0.dll
 hunspell_la=/z/Hunspell/deploy/lib/libhunspell-1.3.la
 
-# location of includes, libs, defines for compiling, turn off debugging
+# location of includes, libs, defines for compiling
 AM_CXXFLAGS+=-mwindows -std=c++11   -I/z/Hunspell/deploy/include/hunspell  -I..
 
 # 'KitchenSink-Cs1' target app name
@@ -39,6 +39,7 @@ Diamond_SOURCES = \
 	dialog_find.cpp \
 	dialog_get1.cpp \
 	dialog_options.cpp \
+    dialog_macro.cpp \
 	dialog_print_opt.cpp \
 	dialog_replace.cpp \
 	dialog_symbols.cpp \
@@ -48,6 +49,7 @@ Diamond_SOURCES = \
 	keylineedit.cpp \
 	main.cpp \
     mainwindow.cpp \
+    open_files.cpp \
     options.cpp \
     print.cpp \
     recent_files.cpp \
@@ -65,6 +67,7 @@ noinst_HEADERS = \
 	dialog_find.h \
 	dialog_get1.h  \
 	dialog_options.h \
+    dialog_macro.h \
 	dialog_replace.h  \
 	dialog_symbols.h \
 	diamond_edit.h \
@@ -85,6 +88,7 @@ MOCS = \
 	dialog_find.h \
 	dialog_get1.h  \
 	dialog_options.h \
+    dialog_macro.h \
 	dialog_print_opt.h \
 	dialog_replace.h  \
 	dialog_symbols.h \
@@ -104,6 +108,7 @@ FORMS =	\
 	forms/dialog_find.ui \
 	forms/dialog_get1.ui \
 	forms/dialog_options.ui \
+    forms/dialog_macro.ui \
 	forms/dialog_print_opt.ui \
 	forms/dialog_replace.ui \
 	forms/dialog_symbols.ui \

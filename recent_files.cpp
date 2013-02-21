@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright (c) 2012 Barbara Geller
+* Copyright (c) 2012-2013 Barbara Geller
 * All rights reserved.
 *
 * This file is part of Diamond Editor.
@@ -31,7 +31,7 @@ void MainWindow::rf_Open()
    action = (QAction *)sender();
 
    if (action) {
-      bool ok = loadFile(action->text(), true);
+      bool ok = loadFile(action->text(), true, false);
 
       if (! ok) {
          // remove file from list which did not load
@@ -55,37 +55,36 @@ void MainWindow::rf_CreateMenus()
 {
    int cnt = m_rf_List.count();
 
-   if (cnt > 0)  {
-      QString tName;
+   QString tName;
 
-      QMenu   *fileMenu = m_ui->menuFile;
-      QAction *action   = fileMenu->insertSeparator(m_ui->actionExit);
+   QMenu   *fileMenu = m_ui->menuFile;
+   QAction *action   = fileMenu->insertSeparator(m_ui->actionExit);
 
-      for (int i = 0; i < rf_MaxCnt; ++i) {
+   for (int i = 0; i < rf_MaxCnt; ++i) {
 
-         if (i < cnt)  {
-            tName = m_rf_List[i];
-         } else {
-            tName = "file"+QString::number(i);
-         }
-
-         rf_Actions[i] = new QAction(tName, this);
-         rf_Actions[i]->setData("recent-file");
-
-         fileMenu->insertAction(action, rf_Actions[i]);
-
-         if (i >= cnt)  {
-            rf_Actions[i]->setVisible(false);
-         }
-
-         connect(rf_Actions[i], SIGNAL(triggered()), this, SLOT(rf_Open()));
+      if (i < cnt)  {
+         tName = m_rf_List[i];
+      } else {
+         tName = "file"+QString::number(i);
       }
 
-      fileMenu->insertSeparator(rf_Actions[rf_MaxCnt]);
+      rf_Actions[i] = new QAction(tName, this);
+      rf_Actions[i]->setData("recent-file");
+
+      fileMenu->insertAction(action, rf_Actions[i]);
+
+      if (i >= cnt)  {
+         rf_Actions[i]->setVisible(false);
+      }
+
+      connect(rf_Actions[i], SIGNAL(triggered()), this, SLOT(rf_Open()));
    }
+
+   fileMenu->insertSeparator(rf_Actions[rf_MaxCnt]);
+
 }
 
-void MainWindow::showContextMenu(const QPoint &pt)
+void MainWindow::showContextMenuFile(const QPoint &pt)
 {
    QAction *action = m_ui->menuFile->actionAt(pt);
 
@@ -152,7 +151,7 @@ void MainWindow::rf_DeleteName()
    action = (QAction *)sender();
 
    if (action) {
-      csMsg( "should be file name " + action->whatsThis() );
+      csMsg( "File name " + action->whatsThis() );
    }
 }
 
@@ -189,3 +188,92 @@ void MainWindow::rf_UpdateActions()
 
    }   
 }
+
+
+// ****  recent folders
+void MainWindow::rfolder_CreateMenus()
+{
+   int cnt = m_rfolder_List.count();
+
+   QString tName;
+   QMenu *menu = new QMenu(this);
+
+   for (int i = 0; i < rfolder_MaxCnt; ++i) {
+
+      if (i < cnt)  {
+         tName = m_rfolder_List[i];
+      } else {
+         tName = "folder"+QString::number(i);
+      }
+
+      rfolder_Actions[i] = new QAction(tName, this);
+      rfolder_Actions[i]->setData("recent-folder");
+
+      menu->addAction(rfolder_Actions[i]);
+
+      if (i >= cnt)  {
+         rfolder_Actions[i]->setVisible(false);
+      }
+
+      connect(rfolder_Actions[i], SIGNAL(triggered()), this, SLOT(rfolder_Open()));
+   }
+
+   m_ui->actionOpen_RecentFolder->setMenu(menu);
+
+}
+
+
+void MainWindow::rfolder_Open()
+{
+   QAction *action;
+   action = (QAction *)sender();
+
+   if (action) {
+      // pass the path
+      this->open(action->text());
+   }
+}
+
+void MainWindow::rfolder_Add()
+{
+   int cnt = m_rfolder_List.count();
+
+   if (cnt >= rfolder_MaxCnt ) {
+      m_rfolder_List.removeFirst();
+   }
+
+   QString temp = this->pathName(m_curFile);
+   m_rfolder_List.append(temp);
+
+
+   // resolve so this is not required  BROOM
+   if ( m_rfolder_List.size() > 1) {
+      m_rfolder_List.removeDuplicates();
+   }
+
+
+   // save new list of files
+   json_Write(RECENTFOLDER);
+
+   // update actions
+   rfolder_UpdateActions();
+}
+
+void MainWindow::rfolder_UpdateActions()
+{
+   int cnt = m_rfolder_List.count();
+
+   for (int i = 0; i < rfolder_MaxCnt; ++i) {
+
+     if (i < cnt)  {
+        rfolder_Actions[i]->setText(m_rfolder_List[i]);
+        rfolder_Actions[i]->setVisible(true);
+
+     } else {
+        rfolder_Actions[i]->setVisible(false);
+     }
+
+   }
+}
+
+

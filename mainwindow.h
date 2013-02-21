@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright (c) 2012 Barbara Geller
+* Copyright (c) 2012-2013 Barbara Geller
 * All rights reserved.
 *
 * This file is part of Diamond Editor.
@@ -38,6 +38,13 @@
 #include <QPlainTextEdit>
 #include <QTabWidget>
 
+struct macroStruct
+{
+   int key;
+   int modifier;
+   QString text;
+};
+
 class MainWindow : public QMainWindow
 {
    Q_OBJECT
@@ -47,7 +54,11 @@ class MainWindow : public QMainWindow
       struct Settings get_StructData();           
 
       QString get_DirPath(QString message, QString path);
-      bool loadFile(const QString &fileName, bool newTab);
+      bool loadFile(const QString &fileName, bool newTab, bool isAuto);
+
+      // macros
+      void json_Save_MacroNames(QStringList m_macroNames);
+      QList<macroStruct> json_View_Macro(QString macroName);
 
       // spell
       QStringList spell_getMaybe(QString word);
@@ -61,6 +72,7 @@ class MainWindow : public QMainWindow
 
    private:
       Ui::MainWindow *m_ui;
+      void setDiamondTitle(QString title);
 
       // textEdit
       DiamondTextEdit *m_textEdit;
@@ -91,18 +103,42 @@ class MainWindow : public QMainWindow
       bool m_advfWholeWords;
       bool m_advfFolders;
 
-      // macros
+      // macros    
       bool m_record;
       QList<QKeyEvent *> m_keyList;
+      QStringList m_macroNames;     
 
       // settings
       struct Settings m_struct;
       struct PrintSettings m_printer;
 
+      // recent folders
+      static const int rfolder_MaxCnt = 10;
+      QAction *rfolder_Actions[rfolder_MaxCnt];
+      QStringList m_rfolder_List;
+
+      void rfolder_CreateMenus();
+      void rfolder_Add();
+      void rfolder_UpdateActions();
+      void open(QString path);
+
       // recent files
       static const int rf_MaxCnt = 10;
       QAction *rf_Actions[rf_MaxCnt];
       QStringList m_rf_List;
+
+      void rf_CreateMenus();
+      void rf_Update();
+      void rf_UpdateActions();
+
+      // currently open files
+      static const int openF_MaxCnt = 20;
+      QAction *openF_Actions[openF_MaxCnt];
+
+      void openF_CreateMenus();
+      void openF_Add();
+      void openF_Delete();
+      void openF_UpdateActions();
 
       // spell check     
       void createSpellCheck();
@@ -120,8 +156,8 @@ class MainWindow : public QMainWindow
       QLabel *m_statusName;    
 
       enum Option { ABOUTURL, AUTOLOAD, CLOSE, COLORS, COLUMN_MODE, DICT_MAIN, DICT_USER, FONT,
-                    FORMAT_DATE, FORMAT_TIME, KEYS, MACRO, PATH_SYNTAX, PATH_PRIOR, PRINT_OPTIONS, RECENTFILE,
-                    SHOW_LINEHIGHLIGHT, SHOW_LINENUMBERS, SHOW_SPACES, SHOW_EOL,
+                    FORMAT_DATE, FORMAT_TIME, KEYS, MACRO, MACRO_NAMES, PATH_SYNTAX, PATH_PRIOR, PRINT_OPTIONS,
+                    RECENTFOLDER, RECENTFILE, SHOW_LINEHIGHLIGHT, SHOW_LINENUMBERS, SHOW_SPACES, SHOW_EOL,
                     SPELLCHECK, TAB_SPACING, USESPACES, WORDWRAP};
 
       void setScreenColors();
@@ -149,16 +185,14 @@ class MainWindow : public QMainWindow
       bool json_SaveFile(QByteArray route);
       QByteArray json_ReadFile();
 
+      QStringList json_Load_MacroIds();
+      bool json_Load_Macro(QString macroName);
+
       QString get_SyntaxPath();
       QFont json_SetFont(QString value);
       QColor  json_SetColor(QString values);
       QString json_GetRGB(QColor color);     
       QJsonObject json_SaveSyntax(QJsonObject object);
-
-      // recent files
-      void rf_CreateMenus();
-      void rf_Update();
-      void rf_UpdateActions();
 
       // printing
       int m_pageNo;
@@ -186,7 +220,7 @@ class MainWindow : public QMainWindow
 
    private slots:
       void newFile();
-      void open();
+      void mw_open();
       void close_Doc();
       bool closeAll_Doc();
       void reload();
@@ -266,6 +300,7 @@ class MainWindow : public QMainWindow
       void mw_macroStop();
       void macroPlay();
       void macroLoad();
+      void macroEditNames();
       void spellCheck();
 
       void setColors();
@@ -286,17 +321,23 @@ class MainWindow : public QMainWindow
       void mw_tabClose();
       void tabChanged(int index);
 
-      void rf_Open();
-      void rf_DeleteName();
-
       // spell check
       void spell_addUserDict();
       void spell_replaceWord();
 
-      // file menu, recent file list
-      void showContextMenu(const QPoint &pt);
+      // recent folders
+      void rfolder_Open();
+
+      // recent files
+      void showContextMenuFile(const QPoint &pt);
+      void rf_Open();
       void rf_ClearList();
+      void rf_DeleteName();
       void rf_RemoveFName();
+
+      // open files
+      // void showContextMenuWindow(const QPoint &pt);
+      void openF_SelectTab();
 
    public slots:
       // indent

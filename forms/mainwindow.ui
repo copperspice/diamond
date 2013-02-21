@@ -29,6 +29,7 @@
     </property>
     <addaction name="actionNew"/>
     <addaction name="actionOpen"/>
+    <addaction name="actionOpen_RecentFolder"/>
     <addaction name="separator"/>
     <addaction name="actionClose"/>
     <addaction name="actionClose_All"/>
@@ -188,7 +189,7 @@
    </widget>
    <widget class="QMenu" name="menuWindow">
     <property name="title">
-     <string>Tabs</string>
+     <string>Window</string>
     </property>
     <addaction name="actionTab_New"/>
     <addaction name="actionTab_Close"/>
@@ -206,6 +207,7 @@
      <addaction name="actionMacro_Play"/>
      <addaction name="separator"/>
      <addaction name="actionMacro_Load"/>
+     <addaction name="actionMacro_EditNames"/>
     </widget>
     <addaction name="menuMacros"/>
     <addaction name="actionSpell_Check"/>
@@ -689,7 +691,7 @@
   </action>
   <action name="actionMacro_Load">
    <property name="text">
-    <string>Load Macro...</string>
+    <string>Load Macro</string>
    </property>
   </action>
   <action name="actionMacro_SelectPlay">
@@ -730,6 +732,16 @@
   <action name="actionPrintOptions">
    <property name="text">
     <string>Print Options</string>
+   </property>
+  </action>
+  <action name="actionMacro_EditNames">
+   <property name="text">
+    <string>Edit Macro Names</string>
+   </property>
+  </action>
+  <action name="actionOpen_RecentFolder">
+   <property name="text">
+    <string>Open Recent Folder</string>
    </property>
   </action>
  </widget>

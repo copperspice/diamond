@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright (c) 2012 Barbara Geller
+* Copyright (c) 2012-2013 Barbara Geller
 * All rights reserved.
 *
 * This file is part of Diamond Editor.
@@ -19,6 +19,7 @@
 *
 **************************************************************************/
 
+#include "dialog_macro.h"
 #include "mainwindow.h"
 #include "util.h"
 
@@ -189,9 +190,43 @@ bool MainWindow::json_Read()
       m_struct.syn_MLineItalic = list.at(1).toBool();
       m_struct.syn_MLineText   = json_SetColor(list.at(2).toString());
 
+      // macro names
+      list = object.value("macro-names").toArray();
+      int cnt = list.count();
+
+      for (int k = 0; k < cnt; k++)  {
+         m_macroNames.append(list.at(k).toString());
+      }
+
+      // ensure there is a name for each macro id
+      QStringList macroIds = json_Load_MacroIds();
+
+      int maxCount  = macroIds.size();
+      bool modified = false;
+
+      for (int id = 0; id < maxCount; ++id) {
+
+         if (m_macroNames.size() <= id || m_macroNames.at(id).isEmpty()) {
+            m_macroNames.append("Macro Name " + QString::number(id+1) );
+            modified  = true;
+         }
+      }
+
+      if (modified) {
+         json_Write(MACRO_NAMES);
+      }
+
+      // recent folders
+      list = object.value("recent-folders").toArray();
+      cnt = list.count();
+
+      for (int k = 0; k < cnt; k++)  {
+         m_rfolder_List.append(list.at(k).toString());
+      }
+
       // recent files
       list = object.value("recent-files").toArray();
-      int cnt = list.count();
+      cnt = list.count();
 
       for (int k = 0; k < cnt; k++)  {
          m_rf_List.append(list.at(k).toString());
@@ -209,9 +244,113 @@ bool MainWindow::json_Read()
    return ok;
 }
 
-bool MainWindow::json_Write(Option route)
+QStringList MainWindow::json_Load_MacroIds()
+{
+   // get existing json data
+   QByteArray data = json_ReadFile();
+
+   QJsonDocument doc = QJsonDocument::fromJson(data);
+   QJsonObject object = doc.object();
+
+   //
+   QStringList keyList = object.keys();
+   QStringList macroList;
+
+   int count = keyList.count();
+
+   for (int k = 0; k < count; k++)  {
+      QString key = keyList.at(k);
+
+      if (key.left(5) == "macro" && key != "macro-names" && key != "macro-next"  ) {
+         macroList.append(key);
+      }
+   }
+
+   return macroList;
+}
+
+bool MainWindow::json_Load_Macro(QString macroName)
 {
    bool ok = true;
+
+   // get existing json data
+   QByteArray data = json_ReadFile();
+
+   QJsonDocument doc = QJsonDocument::fromJson(data);
+
+   QJsonObject object = doc.object();
+   QJsonArray list;
+
+   // macro data
+   list = object.value(macroName).toArray();
+   int cnt = list.count();
+
+   m_textEdit->macroStart();
+
+   for (int k = 0; k < cnt; k++)  {
+
+      QJsonArray element = list.at(k).toArray();
+
+      // hard coded order
+      int key      = element.at(0).toString().toInt();
+      Qt::KeyboardModifier modifier = Qt::KeyboardModifier( element.at(1).toString().toInt() );
+      QString text = element.at(2).toString();
+
+      QKeyEvent *event = new QKeyEvent(QEvent::KeyPress, key, modifier, text);
+
+      m_textEdit->add_MacroEvent(event);
+   }
+
+   m_textEdit->macroStop();
+
+   return ok;
+}
+
+QList<macroStruct> MainWindow::json_View_Macro(QString macroName)
+{
+   QList<macroStruct> retval;
+
+   // get existing json data
+   QByteArray data = json_ReadFile();
+
+   QJsonDocument doc = QJsonDocument::fromJson(data);
+
+   QJsonObject object = doc.object();
+   QJsonArray list;
+
+   // macro data
+   list = object.value(macroName).toArray();
+   int cnt = list.count();
+
+   for (int k = 0; k < cnt; k++)  {
+
+      QJsonArray element = list.at(k).toArray();
+
+      // hard coded order
+      int key      = element.at(0).toString().toInt();
+      Qt::KeyboardModifier modifier = Qt::KeyboardModifier( element.at(1).toString().toInt() );
+      QString text = element.at(2).toString();
+
+      struct macroStruct temp;
+      temp.key       = key;
+      temp.modifier  = modifier;
+      temp.text      = text;
+
+      retval.append(temp);
+   }
+
+   return retval;
+}
+
+void MainWindow::json_Save_MacroNames(QStringList list)
+{  
+   m_macroNames = list;
+   json_Write(MACRO_NAMES);
+}
+
+bool MainWindow::json_Write(Option route)
+{
+   bool ok = true;   
 
    QSettings settings("Diamond Editor", "Settings");
    m_jsonFname = settings.value("jsonName").toString();
@@ -351,20 +490,80 @@ bool MainWindow::json_Write(Option route)
             break;
 
          case MACRO:
+
             {
-               QList<QKeyEvent *> keyList;
-               keyList = m_textEdit->get_KeyList();
+               QList<QKeyEvent *> eventList;
+               eventList = m_textEdit->get_MacroKeyList();
 
-               int count = keyList.count();
+               int count = eventList.count();
 
-               QJsonValue value;
-               QJsonArray temp(QJsonArray);
+               if (count > 0)  {
+                  QVariantList macroList;
 
-               for (int k= 0; k < count; ++k) {
-                  // temp.append( );
+                  QKeyEvent *event;
+
+                  for (int k = 0; k < count; ++k) {
+                     event = eventList.at(k);
+
+                     // hard coded order
+                     QStringList eventList;
+                     eventList.append( QString::number(event->key()) );
+                     eventList.append( QString::number(event->modifiers()));
+                     eventList.append( event->text() );
+
+                     //
+                     macroList.append( eventList );
+                  }
+
+                  bool ok = true;
+
+                  // get next macro name
+                  QString macroName = object.value("macro-next").toString();
+
+                  // increment next macro name
+                  int id = macroName.right(1).toInt() + 1;
+
+                  if (id > Dialog_Macro::MACRO_MAX_COUNT )  {
+
+                     QStringList macroIds = json_Load_MacroIds();
+
+                     // select macro id to overwrite
+                     Dialog_Macro *dw = new Dialog_Macro(this, Dialog_Macro::MACRO_SELECT, macroIds, m_macroNames);
+                     int result = dw->exec();
+
+                     if (result == QDialog::Accepted) {
+                        // over write
+                        QString text = dw->get_Macro();                                             
+                        macroName = text;
+
+                     } else {
+                        // do not save
+                        ok = false;
+                     }
+
+                     delete dw;
+
+                  } else   {
+                     // save next macro name
+                     macroName = "macro" + QString::number(id);
+                     object.insert("macro-next", macroName);
+
+                  }
+
+                  if (ok)  {
+                     // save macro
+                     QJsonArray temp = QJsonArray::fromVariantList(macroList);
+                     object.insert(macroName, temp);                    
+                  }
                }
 
-               object.insert("macro1", temp);
+               break;
+            }
+
+         case MACRO_NAMES:
+            {
+               QJsonArray temp = QJsonArray::fromStringList(m_macroNames);
+               object.insert("macro-names", temp);
                break;
             }
 
@@ -399,6 +598,13 @@ bool MainWindow::json_Write(Option route)
          case WORDWRAP:
             object.insert("word-wrap", m_struct.isWordWrap);
             break;
+
+         case RECENTFOLDER:
+            {
+               QJsonArray temp = QJsonArray::fromStringList(m_rfolder_List);
+               object.insert("recent-folders", temp);
+               break;
+            }
 
          case RECENTFILE:            
             {
@@ -506,7 +712,7 @@ bool MainWindow::json_CreateNew()
 
    object.insert("pos-x", 400);
    object.insert("pos-y", 200);
-   object.insert("size-width", 800);
+   object.insert("size-width",  800);
    object.insert("size-height", 600);
 
    object.insert("useSpaces",  true);
@@ -663,6 +869,19 @@ bool MainWindow::json_CreateNew()
    list.replace(1, false);
    list.replace(2, QString("0,128,0"));         // dark green
    object.insert("syntax-mline", list);
+
+   // next macro name
+   value = QJsonValue(QString("macro1"));
+   object.insert("macro-next", value);   
+
+   value = QJsonValue(QJsonArray());
+   object.insert("macro-names", value);
+
+   value = QJsonValue(QJsonArray());
+   object.insert("macro1", value);
+
+   value = QJsonValue(QJsonArray());
+   object.insert("recent-folders", value);
 
    value = QJsonValue(QJsonArray());
    object.insert("recent-files", value);
