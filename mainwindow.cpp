@@ -41,6 +41,9 @@ MainWindow::MainWindow()
    : m_ui(new Ui::MainWindow)
 {
    m_ui->setupUi(this);
+   setIconSize(QSize(32,32));
+   setWindowIcon( QIcon("://resources/diamond.png"));
+
    this->setDiamondTitle("untitled.txt");
 
    if ( ! json_Read()  ) {
@@ -72,8 +75,13 @@ MainWindow::MainWindow()
    // recent files
    rf_CreateMenus(); 
 
-   // spell check  
+   // spell check
    createSpellCheck();
+
+   // recent folders, context menu
+   QMenu *menuFolder = m_ui->actionOpen_RecentFolder->menu();
+   menuFolder->setContextMenuPolicy(Qt::CustomContextMenu);
+   connect(menuFolder, SIGNAL(customContextMenuRequested(const QPoint&)), this, SLOT(showContextMenuFolder(const QPoint &)));
 
    // recent files, context menu
    m_ui->menuFile->setContextMenuPolicy(Qt::CustomContextMenu);
@@ -85,12 +93,8 @@ MainWindow::MainWindow()
       autoLoad();
    }
 
-   // currently open files
-   openF_CreateMenus();
-
-   // currently open files, context menu
-   // m_ui->menuWindow->setContextMenuPolicy(Qt::CustomContextMenu);
-   // connect(m_ui->menuWindow, SIGNAL(customContextMenuRequested(const QPoint&)), this, SLOT(showContextMenuWindow(const QPoint &)));
+   // currently open tabs
+   openTab_CreateMenus();
 
    setStatus_ColMode();
    setStatusBar(tr("Ready"), 0);   
@@ -142,8 +146,8 @@ void MainWindow::close_Doc()
    bool okClose = querySave();
 
    if (okClose) {
-      // update open list
-      openF_Delete();
+      // update open tab list
+      openTab_Delete();
 
       m_textEdit->clear();
       setCurrentFile("");
@@ -203,8 +207,8 @@ bool MainWindow::closeAll_Doc()
    //
    m_tabWidget->setCurrentIndex(0);
 
-   // update open list
-   openF_UpdateActions();
+   // update open tab list
+   openTab_UpdateActions();
 
    return allClosed;
 }
@@ -285,7 +289,7 @@ bool MainWindow::saveAs(bool isSaveOne)
    return retval;
 }
 
-bool MainWindow::saveAll()
+void MainWindow::saveAll()
 {
    QString file;
 
@@ -637,6 +641,19 @@ void MainWindow::indentDecr(QString route)
       cursor.setPosition(posStart, QTextCursor::MoveAnchor);
       m_textEdit->setTextCursor(cursor);
    }
+
+   cursor.endEditBlock();
+}
+
+void MainWindow::deleteLine()
+{
+   QTextCursor cursor(m_textEdit->textCursor());
+   cursor.beginEditBlock();
+
+   cursor.movePosition(QTextCursor::StartOfLine, QTextCursor::MoveAnchor);
+   cursor.movePosition(QTextCursor::EndOfLine, QTextCursor::KeepAnchor);
+   cursor.removeSelectedText();
+   m_textEdit->setTextCursor(cursor);
 
    cursor.endEditBlock();
 }
@@ -1347,8 +1364,8 @@ void MainWindow::tabClose(int index)
       bool okClose = querySave();
 
       if (okClose)  {
-         // update open list
-         openF_Delete();
+         // update open tab list
+         openTab_Delete();
 
          //
          int count = m_tabWidget->count();
@@ -1408,6 +1425,23 @@ void MainWindow::tabChanged(int index)
    }
 }
 
+void MainWindow::split_Horizontal()
+{
+   showNotDone("Horizontal Split");
+}
+
+void MainWindow::split_Vertical()
+{
+   int index = m_tabWidget->currentIndex();
+
+   // QSplitter *splitter = new QSplitter(Qt::Vertical, this);
+   // splitter->addWidget(m_textEdit);
+
+   // splitter->show();
+   // m_tabWidget->currentWidget()
+
+}
+
 // **help
 void MainWindow::diamondHelp()
 {   
@@ -1432,10 +1466,10 @@ void MainWindow::about()
    //
    QMessageBox msgB;
    msgB.setIcon(QMessageBox::NoIcon);
-   msgB.setWindowIcon( QIcon("://resources/plus.png"));
+   msgB.setWindowIcon(QIcon("://resources/diamond.png"));
 
    msgB.setWindowTitle(tr("About Diamond"));
-   msgB.setText(tr("<p style=margin-right:25><center><h5>Version: 1.0<br>Build # 02.15.2013</h5></center></p>"));
+   msgB.setText(tr("<p style=margin-right:25><center><h5>Version: 1.0<br>Build # 03.01.2013</h5></center></p>"));
    msgB.setInformativeText(textBody);
 
    msgB.setStandardButtons(QMessageBox::Ok);
@@ -1491,7 +1525,8 @@ void MainWindow::createConnections()
 
    connect(m_ui->actionIndent_Incr,       SIGNAL(triggered()), this, SLOT(mw_indentIncr()));
    connect(m_ui->actionIndent_Decr,       SIGNAL(triggered()), this, SLOT(mw_indentDecr()));
-   connect(m_ui->actionDelete_EOL ,       SIGNAL(triggered()), this, SLOT(deleteEOL()));
+   connect(m_ui->actionDelete_Line,       SIGNAL(triggered()), this, SLOT(deleteLine()));
+   connect(m_ui->actionDelete_EOL,        SIGNAL(triggered()), this, SLOT(deleteEOL()));
 
    connect(m_ui->actionInsert_Date,       SIGNAL(triggered()), this, SLOT(insertDate()));
    connect(m_ui->actionInsert_Time,       SIGNAL(triggered()), this, SLOT(insertTime()));
@@ -1558,9 +1593,11 @@ void MainWindow::createConnections()
    connect(m_ui->actionOptions,           SIGNAL(triggered()), this, SLOT(setOptions()));
    connect(m_ui->actionPrintOptions,      SIGNAL(triggered()), this, SLOT(setPrintOptions()));
 
-   // tabs
+   // window
    connect(m_ui->actionTab_New,           SIGNAL(triggered()), this, SLOT(tabNew()));
    connect(m_ui->actionTab_Close,         SIGNAL(triggered()), this, SLOT(mw_tabClose()));
+   connect(m_ui->actionSplit_Horizontal,  SIGNAL(triggered()), this, SLOT(split_Horizontal()));
+   connect(m_ui->actionSplit_Vertical,    SIGNAL(triggered()), this, SLOT(split_Vertical()));
 
    // help menu
    connect(m_ui->actionDiamond_Help,      SIGNAL(triggered()), this, SLOT(diamondHelp()));
@@ -1620,8 +1657,7 @@ void MainWindow::createToggles()
 
 void MainWindow::createShortCuts()
 {
-   // file
-   m_ui->actionNew->setShortcuts(QKeySequence::New);
+   // file   
    m_ui->actionOpen->setShortcuts(QKeySequence::Open);
    m_ui->actionClose->setShortcuts(QKeySequence::Close);
    m_ui->actionSave->setShortcuts(QKeySequence::Save);
@@ -1663,6 +1699,7 @@ void MainWindow::createShortCuts()
 
    m_ui->actionIndent_Incr->setShortcut(QKeySequence(m_struct.key_indentIncr) );
    m_ui->actionIndent_Decr->setShortcut(QKeySequence(m_struct.key_indentDecr) );
+   m_ui->actionDelete_Line->setShortcut(QKeySequence(m_struct.key_deleteLine) );
    m_ui->actionDelete_EOL->setShortcut(QKeySequence(m_struct.key_deleteEOL)   );
    m_ui->actionColumn_Mode->setShortcut(QKeySequence(m_struct.key_columnMode) );
 
@@ -1676,12 +1713,15 @@ void MainWindow::createShortCuts()
 
 void MainWindow::createToolBars()
 {
-   m_ui->actionNew->setIcon(QIcon(":/resources/new.png"));
-   m_ui->actionOpen->setIcon(QIcon(":/resources/open.png"));
-   m_ui->actionClose->setIcon(QIcon(":/resources/close_folder.png"));
+   m_ui->actionTab_New->setIcon(QIcon(":/resources/tab_new.png"));
+   m_ui->actionTab_Close->setIcon(QIcon(":/resources/tab_remove.png"));
+
+   m_ui->actionOpen->setIcon(QIcon(":/resources/file_open.png"));
+   m_ui->actionClose->setIcon(QIcon(":/resources/file_close.png"));
    m_ui->actionSave->setIcon(QIcon(":/resources/save.png"));
+
    m_ui->actionPrint->setIcon(QIcon(":/resources/print.png"));
-   m_ui->actionPrint_Pdf->setIcon(QIcon(":/resources/exportpdf.png"));
+   m_ui->actionPrint_Pdf->setIcon(QIcon(":/resources/print_pdf.png"));
 
    m_ui->actionUndo->setIcon(QIcon(":/resources/undo.png"));
    m_ui->actionRedo->setIcon(QIcon(":/resources/redo.png"));
@@ -1690,20 +1730,28 @@ void MainWindow::createToolBars()
    m_ui->actionPaste->setIcon(QIcon(":/resources/paste.png"));
 
    m_ui->actionFind->setIcon(QIcon(":/resources/find.png"));
+   m_ui->actionReplace->setIcon(QIcon(":/resources/find_replace.png"));
 
-   m_ui->actionMacro_Start->setIcon(QIcon(":/resources/camera.png"));
-   m_ui->actionMacro_Stop->setIcon(QIcon(":/resources/stop.png"));
-   m_ui->actionMacro_Play->setIcon(QIcon(":/resources/play.png"));
-   m_ui->actionSpell_Check->setIcon(QIcon(":/resources/spell.png"));
+   m_ui->actionShow_Spaces->setIcon(QIcon(":/resources/show_spaces.png"));
+   m_ui->actionShow_EOL->setIcon(QIcon(":/resources/show_eol.png"));
+
+   m_ui->actionMacro_Start->setIcon(QIcon(":/resources/macro_rec.png"));
+   m_ui->actionMacro_Stop->setIcon(QIcon(":/resources/macro_stop.png"));
+   m_ui->actionMacro_Play->setIcon(QIcon(":/resources/macro_play.png"));
+   m_ui->actionSpell_Check->setIcon(QIcon(":/resources/spellcheck.png"));
 
    //
-   fileToolBar = addToolBar(tr("File"));
-   fileToolBar->addAction(m_ui->actionNew);
+   fileToolBar = addToolBar(tr("File")); 
    fileToolBar->addAction(m_ui->actionOpen);
    fileToolBar->addAction(m_ui->actionClose);
    fileToolBar->addAction(m_ui->actionSave);
+   fileToolBar->addSeparator();
    fileToolBar->addAction(m_ui->actionPrint);
    fileToolBar->addAction(m_ui->actionPrint_Pdf);
+
+   fileToolBar = addToolBar(tr("Window"));
+   fileToolBar->addAction(m_ui->actionTab_New);
+   fileToolBar->addAction(m_ui->actionTab_Close);
 
    editToolBar = addToolBar(tr("Edit"));
    editToolBar->addAction(m_ui->actionUndo);
@@ -1716,11 +1764,16 @@ void MainWindow::createToolBars()
    searchToolBar->addAction(m_ui->actionFind);
    searchToolBar->addAction(m_ui->actionReplace);
 
+   viewToolBar = addToolBar(tr("View"));
+   viewToolBar->addAction(m_ui->actionShow_Spaces);
+   viewToolBar->addAction(m_ui->actionShow_EOL);
+
    toolsToolBar = addToolBar(tr("Tools"));
    toolsToolBar->addAction(m_ui->actionMacro_Start);
    toolsToolBar->addAction(m_ui->actionMacro_Stop);
    toolsToolBar->addAction(m_ui->actionMacro_Play);
-   toolsToolBar->addAction(m_ui->actionSpell_Check);       
+   toolsToolBar->addSeparator();
+   toolsToolBar->addAction(m_ui->actionSpell_Check);
 }
 
 void MainWindow::createStatusBar()

@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright (c) 2012 Barbara Geller
+* Copyright (c) 2012-2013 Barbara Geller
 * All rights reserved.
 *
 * This file is part of Diamond Editor.
@@ -38,7 +38,7 @@ void MainWindow::setColors()
    Dialog_Colors *dw = new Dialog_Colors(this);
    int result = dw->exec();
 
-   if (result = QDialog::Accepted) {
+   if (result == QDialog::Accepted) {
 
       if (m_struct.showLineHighlight)  {
          // clear the old highlight first
@@ -132,6 +132,7 @@ void MainWindow::setOptions()
    options.key_lower       = m_struct.key_lower;
    options.key_indentIncr  = m_struct.key_indentIncr;
    options.key_indentDecr  = m_struct.key_indentDecr;
+   options.key_deleteLine  = m_struct.key_deleteLine;
    options.key_deleteEOL   = m_struct.key_deleteEOL;
    options.key_columnMode  = m_struct.key_columnMode;
    options.key_goLine      = m_struct.key_goLine;
@@ -205,6 +206,7 @@ void MainWindow::setOptions()
       m_struct.key_lower       = options.key_lower;
       m_struct.key_indentIncr  = options.key_indentIncr;
       m_struct.key_indentDecr  = options.key_indentDecr;
+      m_struct.key_deleteLine  = options.key_deleteLine;
       m_struct.key_deleteEOL   = options.key_deleteEOL;
       m_struct.key_columnMode  = options.key_columnMode;
       m_struct.key_goLine      = options.key_goLine;

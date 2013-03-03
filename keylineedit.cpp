@@ -44,7 +44,7 @@ void KeyLineEdit::keyPressEvent(QKeyEvent *event)
    } else  {
 
       if (modifiers & Qt::ControlModifier) {
-         keyPress.append("Ctrl+");
+         keyPress.append("Ctrl+");   // Qt::CTRL
       }
 
       if (modifiers & Qt::ShiftModifier) {
@@ -56,7 +56,8 @@ void KeyLineEdit::keyPressEvent(QKeyEvent *event)
       }
 
       if (modifiers & Qt::MetaModifier) {
-         keyPress.append("Alt+");
+         // OS X
+         keyPress.append("Splat+");  // Qt::META
       }
 
       //
@@ -67,6 +68,24 @@ void KeyLineEdit::keyPressEvent(QKeyEvent *event)
       } else if (key == Qt::Key_Enter) {
         // on the keypad
         keyPress.append("Enter");
+
+      } else if (key == Qt::Key_Delete) {
+         keyPress.append("Del");
+
+      } else if (key == Qt::Key_Insert) {
+         keyPress.append("Ins");
+
+      } else if (key == Qt::Key_Home) {
+         keyPress.append("Home");
+
+      } else if (key == Qt::Key_End) {
+         keyPress.append("End");
+
+      } else if (key == Qt::Key_PageUp) {
+         keyPress.append("PgUp");
+
+      } else if (key == Qt::Key_PageDown) {
+         keyPress.append("PgDn");
 
       } else if (key == Qt::Key_F1) {
          keyPress.append("F1");

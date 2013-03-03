@@ -131,14 +131,14 @@ class MainWindow : public QMainWindow
       void rf_Update();
       void rf_UpdateActions();
 
-      // currently open files
-      static const int openF_MaxCnt = 20;
-      QAction *openF_Actions[openF_MaxCnt];
+      // currently open tabs
+      static const int openTab_MaxCnt = 20;
+      QAction *openTab_Actions[openTab_MaxCnt];
 
-      void openF_CreateMenus();
-      void openF_Add();
-      void openF_Delete();
-      void openF_UpdateActions();
+      void openTab_CreateMenus();
+      void openTab_Add();
+      void openTab_Delete();
+      void openTab_UpdateActions();
 
       // spell check     
       void createSpellCheck();
@@ -148,6 +148,7 @@ class MainWindow : public QMainWindow
       QToolBar *fileToolBar;
       QToolBar *editToolBar;
       QToolBar *searchToolBar;
+      QToolBar *viewToolBar;
       QToolBar *toolsToolBar;
 
       // status bar
@@ -226,7 +227,7 @@ class MainWindow : public QMainWindow
       void reload();
       bool save();
       bool saveAs();
-      bool saveAll();
+      void saveAll();
       void print();
       void printPreview();
       void printPdf();
@@ -247,6 +248,7 @@ class MainWindow : public QMainWindow
 
       void mw_indentIncr();
       void mw_indentDecr();
+      void deleteLine();
       void deleteEOL();
 
       void insertDate();
@@ -310,6 +312,9 @@ class MainWindow : public QMainWindow
 
       void tabNew();
       void tabClose(int index);
+      void split_Horizontal();
+      void split_Vertical();
+
       void diamondHelp();
       void about();
 
@@ -326,7 +331,10 @@ class MainWindow : public QMainWindow
       void spell_replaceWord();
 
       // recent folders
+      void showContextMenuFolder(const QPoint &pt);
       void rfolder_Open();
+      void rfolder_ClearList();
+      void rfolder_RemoveFName();
 
       // recent files
       void showContextMenuFile(const QPoint &pt);
@@ -335,9 +343,8 @@ class MainWindow : public QMainWindow
       void rf_DeleteName();
       void rf_RemoveFName();
 
-      // open files
-      // void showContextMenuWindow(const QPoint &pt);
-      void openF_SelectTab();
+      // open (tab) files
+      void openTab_Select();
 
    public slots:
       // indent

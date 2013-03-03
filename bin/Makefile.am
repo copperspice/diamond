@@ -3,27 +3,35 @@ include copperspice.am
 # path to gcc
 gccpath=/c/MingW
 
-# list of gcc libraries your app uses
+#path to hunspell
+hunspell_path=/z/Hunspell/deploy/
+
+# list of gcc libraries
 gcclibs=libgcc_s_sjlj-1  libstdc++-6  libwinpthread-1
 
-# list of CopperSpice libraries your app uses
+# list of CopperSpice libraries
 cslibs=Core Gui Network Script WebKit 
 
-hunspell_dll=/z/Hunspell/deploy/bin/libhunspell-1.3-0.dll
-hunspell_la=/z/Hunspell/deploy/lib/libhunspell-1.3.la
+# windows only
+hunspell_dll=$(hunspell_path)bin/libhunspell-1.3-0.dll
+hunspell_la=$(hunspell_path)lib/libhunspell-1.3.la
 
-# location of includes, libs, defines for compiling
+# x11 only 
+# hunspell_dll=$(hunspell_path)bin/libhunspell.so
+# hunspell_la=$(hunspell_path)lib/libhunspell.a
+
+# disable console on window, location of includes, defines
 AM_CXXFLAGS+=-mwindows -std=c++11   -I/z/Hunspell/deploy/include/hunspell  -I..
 
-# 'KitchenSink-Cs1' target app name
+# target app name
 deploy_PROGRAMS = Diamond
     
 # copy the required CopperSpice and gcc files for deployment - windows only
 install-data-hook:	
 	mkdir -p $(deploydir)	  
-#	cp --preserve=timestamps  $(patsubst %,$(gccpath)/bin/%.dll,$(gcclibs))  $(deploydir)
-#	cp --preserve=timestamps  $(patsubst %,$(CS_HOME)/bin/libCs%1-0.dll,$(cslibs))  $(deploydir)
-#	cp --preserve=timestamps  $(hunspell_dll)  $(deploydir)
+	cp --preserve=timestamps -u $(patsubst %,$(gccpath)/bin/%.dll,$(gcclibs))  $(deploydir)
+	cp --preserve=timestamps -u $(patsubst %,$(CS_HOME)/bin/libCs%1-0.dll,$(cslibs))  $(deploydir)
+#	cp --preserve=timestamps -u $(hunspell_dll)  $(deploydir)
     
 # search path for source
 VPATH = ../
@@ -31,7 +39,7 @@ VPATH = ../
 # linking
 Diamond_LDFLAGS=$(AM_LDFLAGS)   $(patsubst %,-lCs%1,$(cslibs))
 
-# 'Diamond' must match the app name ( dash had to be replaced )
+# 'Diamond' must match the app name
 Diamond_SOURCES = \
 	about.cpp \
 	dialog_advfind.cpp \
@@ -49,10 +57,10 @@ Diamond_SOURCES = \
 	keylineedit.cpp \
 	main.cpp \
     mainwindow.cpp \
-    open_files.cpp \
     options.cpp \
     print.cpp \
     recent_files.cpp \
+	recent_tabs.cpp \
     spell.cpp \
     spellcheck.cpp \
     syntax.cpp  \
@@ -76,11 +84,9 @@ noinst_HEADERS = \
 	mainwindow.h  \
 	settings.h \
 	spellcheck.h \
-	util.h
-	
-   
+	util.h	  
                 
-# list of files that require compiling with moc
+# 
 MOCS = \
 	about.h \
 	dialog_advfind.h \
@@ -96,8 +102,7 @@ MOCS = \
 	diamond_tab.h \
 	keylineedit.h \
 	mainwindow.h  \
-	syntax.h
-		   
+	syntax.h	   
     
 Diamond_LDADD=$(patsubst %.h,moc_%.$(OBJEXT),$(MOCS))   $(hunspell_la)
            
@@ -112,13 +117,11 @@ FORMS =	\
 	forms/dialog_print_opt.ui \
 	forms/dialog_replace.ui \
 	forms/dialog_symbols.ui \
-	forms/mainwindow.ui
-    
-          
+	forms/mainwindow.ui   
+         
 #
 TRANSLATIONS =
   
-
 #
 RESOURCES  =  diamond.qrc
 

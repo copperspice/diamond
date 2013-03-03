@@ -25,13 +25,16 @@
 
 #include <QByteArray>
 #include <QDir>
+#include <QFile>
 #include <QFlags>
 #include <QFileDialog>
 #include <QJsonArray>
 #include <QJsonDocument>
+#include <QPoint>
 #include <QPushButton>
 #include <QSettings>
-#include <Qt>
+
+// #include <Qt::KeyboardModifier>
 
 bool MainWindow::json_Read()
 {
@@ -95,21 +98,21 @@ bool MainWindow::json_Read()
       m_struct.showLineHighlight = object.value("showLineHighlight").toBool();
       m_struct.showLineNumbers   = object.value("showLineNumbers").toBool();
       m_struct.isWordWrap        = object.value("word-wrap").toBool();      
-      m_struct.showSpaces        = object.value("showSpaces").toBool();
+      m_struct.showSpaces        = object.value("showSpaces").toBool();      
       m_struct.showEOL           = object.value("showEOL").toBool();
       m_struct.isColumnMode      = object.value("column-mode").toBool();      
       m_struct.isSpellCheck      = object.value("spellcheck").toBool();
       m_struct.autoLoad          = object.value("autoLoad").toBool();
 
       //
-      m_struct.formatDate = object.value("formatDate").toString();
-      m_struct.formatTime = object.value("formatTime").toString();
-      m_struct.pathPrior  = object.value("pathPrior").toString();
-      m_struct.pathSyntax = object.value("pathSyntax").toString();
+      m_struct.formatDate  = object.value("formatDate").toString();
+      m_struct.formatTime  = object.value("formatTime").toString();
+      m_struct.pathPrior   = object.value("pathPrior").toString();
+      m_struct.pathSyntax  = object.value("pathSyntax").toString();
 
-      m_struct.dictMain   = object.value("dictMain").toString();
-      m_struct.dictUser   = object.value("dictUser").toString();
-      m_struct.aboutUrl   = object.value("aboutUrl").toString();
+      m_struct.dictMain    = object.value("dictMain").toString();
+      m_struct.dictUser    = object.value("dictUser").toString();
+      m_struct.aboutUrl    = object.value("aboutUrl").toString();
 
       // printer options      
       m_printer.printHeader    = object.value("prt-pritnHeader").toBool();
@@ -140,6 +143,7 @@ bool MainWindow::json_Read()
       m_struct.key_lower       = object.value("key-lower").toString();      
       m_struct.key_indentIncr  = object.value("key-indentIncr").toString();
       m_struct.key_indentDecr  = object.value("key-indentDecr").toString();
+      m_struct.key_deleteLine  = object.value("key-deleteLine").toString();
       m_struct.key_deleteEOL   = object.value("key-deleteEOL").toString();
       m_struct.key_columnMode  = object.value("key-columnMode").toString();
       m_struct.key_goLine      = object.value("key-goLine").toString();
@@ -350,8 +354,6 @@ void MainWindow::json_Save_MacroNames(QStringList list)
 
 bool MainWindow::json_Write(Option route)
 {
-   bool ok = true;   
-
    QSettings settings("Diamond Editor", "Settings");
    m_jsonFname = settings.value("jsonName").toString();
 
@@ -365,7 +367,7 @@ bool MainWindow::json_Write(Option route)
       settings.setValue("jsonName",  m_jsonFname);
    }
 
-   if (ok) {
+   if (true) {
       // get existing json data
       QByteArray data = json_ReadFile();
 
@@ -442,6 +444,7 @@ bool MainWindow::json_Write(Option route)
             object.insert("key-lower",       m_struct.key_lower);
             object.insert("key-indentIncr",  m_struct.key_indentIncr);
             object.insert("key-indentDecr",  m_struct.key_indentDecr);            
+            object.insert("key-deleteLine",  m_struct.key_deleteLine);
             object.insert("key-deleteEOL",   m_struct.key_deleteEOL);
             object.insert("key-columnMode",  m_struct.key_columnMode);
             object.insert("key-goLine",      m_struct.key_goLine);
@@ -620,6 +623,8 @@ bool MainWindow::json_Write(Option route)
 
       json_SaveFile(data);
    }
+
+   return true;
 }
 
 void MainWindow::json_getFileName()
@@ -658,8 +663,8 @@ void MainWindow::json_getFileName()
 
 QString MainWindow::get_SyntaxPath()
 {
-   QString msg  = tr("Select locaton of Diamond Syntax Files");
-   QString path = m_struct.pathSyntax;
+   QString msg  = tr("Select Diamond Syntax Folder");
+   QString path = "/syntax";
 
    path = get_DirPath(msg, path);
 
@@ -799,6 +804,9 @@ bool MainWindow::json_CreateNew()
    value = QJsonValue(QString("Ctrl+Shift+I"));
    object.insert("key-indentDecr",  value);
 
+   value = QJsonValue(QString("Alt+D"));
+   object.insert("key-deleteLine",  value);
+
    value = QJsonValue(QString("Ctrl+K"));
    object.insert("key-deleteEOL",  value);
 
@@ -893,7 +901,9 @@ bool MainWindow::json_CreateNew()
    QJsonDocument doc(object);
    QByteArray data = doc.toJson();
 
-   json_SaveFile(data);
+   bool ok = json_SaveFile(data);
+
+   return ok;
 }
 
 QFont MainWindow::json_SetFont(QString value)

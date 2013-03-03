@@ -23,6 +23,7 @@
 #include "util.h"
 
 #include <QDialog>
+#include <QFileInfo>
 #include <QDate>
 #include <QLine>
 #include <QFileDialog>

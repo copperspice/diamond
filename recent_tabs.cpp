@@ -25,16 +25,14 @@
 #include <QVariant>
 #include <QStringList>
 
-void MainWindow::openF_CreateMenus()
+void MainWindow::openTab_CreateMenus()
 {
    int cnt = m_openedFiles.count();
 
    QString tName;
-
    QMenu   *windowMenu = m_ui->menuWindow;
-   QAction *action     = windowMenu->addSeparator();
 
-   for (int i = 0; i < openF_MaxCnt; ++i) {
+   for (int i = 0; i < openTab_MaxCnt; ++i) {
 
       if (i < cnt)  {
          tName = m_openedFiles[i];
@@ -42,21 +40,20 @@ void MainWindow::openF_CreateMenus()
          tName = "file"+QString::number(i);
       }
 
-      openF_Actions[i] = new QAction(tName, this);
-      openF_Actions[i]->setData("open-file");
+      openTab_Actions[i] = new QAction(tName, this);
+      openTab_Actions[i]->setData("open-file");
 
-      windowMenu->addAction(openF_Actions[i]);
+      windowMenu->addAction(openTab_Actions[i]);
 
       if (i >= cnt)  {
-         openF_Actions[i]->setVisible(false);
+         openTab_Actions[i]->setVisible(false);
       }
 
-      connect(openF_Actions[i], SIGNAL(triggered()), this, SLOT(openF_SelectTab()));
+      connect(openTab_Actions[i], SIGNAL(triggered()), this, SLOT(openTab_Select()));
    }
-
 }
 
-void MainWindow::openF_SelectTab()
+void MainWindow::openTab_Select()
 {
    QAction *action;
    action = (QAction *)sender();
@@ -73,7 +70,7 @@ void MainWindow::openF_SelectTab()
          int max   = m_tabWidget->count();
          int index = m_tabWidget->currentIndex();
 
-         for (int k; k < max; ++k) {
+         for (int k = 0; k < max; ++k) {
             QString curFile = m_tabWidget->tabWhatsThis(k);
 
             if (curFile == fileName) {
@@ -92,41 +89,41 @@ void MainWindow::openF_SelectTab()
             m_openedFiles.removeOne(fileName);
 
             // update actions
-            openF_UpdateActions();
+            openTab_UpdateActions();
          }
 
       } // fileName.isEmpty()
    }
 }
 
-void MainWindow::openF_Add()
+void MainWindow::openTab_Add()
 {
    m_openedFiles.append(m_curFile);
 
    // update actions
-   openF_UpdateActions();
+   openTab_UpdateActions();
 }
 
-void MainWindow::openF_Delete()
+void MainWindow::openTab_Delete()
 {
    m_openedFiles.removeOne(m_curFile);
 
    // update actions
-   openF_UpdateActions();
+   openTab_UpdateActions();
 }
 
-void MainWindow::openF_UpdateActions()
+void MainWindow::openTab_UpdateActions()
 {
    int cnt = m_openedFiles.count();
 
-   for (int i = 0; i < openF_MaxCnt; ++i) {
+   for (int i = 0; i < openTab_MaxCnt; ++i) {
 
       if (i < cnt)  {
-         openF_Actions[i]->setText(m_openedFiles[i]);
-         openF_Actions[i]->setVisible(true);
+         openTab_Actions[i]->setText(m_openedFiles[i]);
+         openTab_Actions[i]->setVisible(true);
 
      } else {        
-         openF_Actions[i]->setVisible(false);
+         openTab_Actions[i]->setVisible(false);
      }
 
    }

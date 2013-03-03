@@ -58,7 +58,7 @@ SpellCheck::SpellCheck(const QString &dictMain, const QString &dictUser)
 
       if (! file.open(QFile::ReadOnly)) {
          QString error = QObject::tr("Unable to read file %1:\n%2.").arg(m_userFname).arg(file.errorString());
-         csError(QObject::tr("Diamond Editor"), error);
+         csError("Spell Check", error);
          return;
       }
 
@@ -71,7 +71,7 @@ SpellCheck::SpellCheck(const QString &dictMain, const QString &dictUser)
       file.close();
 
    } else {
-      csError("Diamond Editor", "Unable to find user dictionary " + m_userFname);
+      csError("Spell Check", "Unable to find user dictionary " + m_userFname);
 
    }
 }
@@ -142,7 +142,7 @@ void SpellCheck::addToUserDict(const QString &word)
 
       if (! file.open(QFile::Append)) {
          QString error = QObject::tr("Unable to read file %1:\n%2.").arg(m_userFname).arg(file.errorString());
-         csError(QObject::tr("Diamond Editor"), error);
+         csError("Spell Check", error);
          return;
       }
 
@@ -152,7 +152,7 @@ void SpellCheck::addToUserDict(const QString &word)
       file.close();
 
    } else {
-      csError("Diamond Editor", "Unable to find user dictionary " + m_userFname);
+      csError("Spell Check", "Unable to find user dictionary " + m_userFname);
 
    }
 }

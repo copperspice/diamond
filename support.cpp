@@ -99,7 +99,7 @@ int MainWindow::get_Value1(const QString route)
    int result = dw->exec();
    int col = 1;
 
-   if ( result = QDialog::Accepted) {
+   if ( result == QDialog::Accepted) {
       col = dw->get_Value().toInt();
    }
 
@@ -143,8 +143,8 @@ bool MainWindow::loadFile(const QString &fileName, bool addNewTab, bool isAuto)
    rfolder_Add();
 
    if (! isAuto) {
-      // update open list
-      openF_Add();
+      // update open tab list
+      openTab_Add();
    }
 
    return true;

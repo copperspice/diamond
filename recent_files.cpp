@@ -25,32 +25,6 @@
 #include <QVariant>
 #include <QStringList>
 
-void MainWindow::rf_Open()
-{
-   QAction *action;
-   action = (QAction *)sender();
-
-   if (action) {
-      bool ok = loadFile(action->text(), true, false);
-
-      if (! ok) {
-         // remove file from list which did not load
-
-         int index = m_rf_List.indexOf(action->text());
-
-         if (index >= 0) {
-            m_rf_List.removeAt(index);
-
-            // save new list of files
-            json_Write(RECENTFILE);
-
-            // update actions
-            rf_UpdateActions();
-         }
-      }
-   }
-}
-
 void MainWindow::rf_CreateMenus()
 {
    int cnt = m_rf_List.count();
@@ -80,8 +54,32 @@ void MainWindow::rf_CreateMenus()
       connect(rf_Actions[i], SIGNAL(triggered()), this, SLOT(rf_Open()));
    }
 
-   fileMenu->insertSeparator(rf_Actions[rf_MaxCnt]);
+   fileMenu->insertSeparator(rf_Actions[rf_MaxCnt-1]);
+}
 
+void MainWindow::rf_Open()
+{
+   QAction *action;
+   action = (QAction *)sender();
+
+   if (action) {
+      bool ok = loadFile(action->text(), true, false);
+
+      if (! ok) {
+         // remove file from list since it did not load
+         int index = m_rf_List.indexOf(action->text());
+
+         if (index >= 0) {
+            m_rf_List.removeAt(index);
+
+            // save new list of files
+            json_Write(RECENTFILE);
+
+            // update actions
+            rf_UpdateActions();
+         }
+      }
+   }
 }
 
 void MainWindow::showContextMenuFile(const QPoint &pt)
@@ -95,14 +93,14 @@ void MainWindow::showContextMenuFile(const QPoint &pt)
          QString fName = action->text();
 
          QMenu *menu = new QMenu(this);
-         menu->addAction("Clear Recent File List",  this, SLOT(rf_ClearList()) );
+         menu->addAction("Clear Recent File List", this, SLOT(rf_ClearList()) );
 
-         QAction *rfAction = menu->addAction("Remove " + fName, this,  SLOT(rf_RemoveFName() ));
+         QAction *rfAction = menu->addAction("Remove " + fName, this, SLOT(rf_RemoveFName() ));
          rfAction->setData(fName);
 
          menu->exec(m_ui->menuFile->mapToGlobal(pt));
 
-         delete menu;
+         delete menu;    
       }
    }
 }
@@ -190,6 +188,8 @@ void MainWindow::rf_UpdateActions()
 }
 
 
+
+
 // ****  recent folders
 void MainWindow::rfolder_CreateMenus()
 {
@@ -222,7 +222,6 @@ void MainWindow::rfolder_CreateMenus()
 
 }
 
-
 void MainWindow::rfolder_Open()
 {
    QAction *action;
@@ -233,6 +232,68 @@ void MainWindow::rfolder_Open()
       this->open(action->text());
    }
 }
+
+void MainWindow::showContextMenuFolder(const QPoint &pt)
+{
+   QAction *action = m_ui->actionOpen_RecentFolder->menu()->actionAt(pt);
+
+   if (action)  {
+      QString data = action->data().toString();
+
+      if (data == "recent-folder")  {
+         QString fName = action->text();
+
+         QMenu *menu = new QMenu(this);
+         menu->addAction("Clear Recent Folder List",  this, SLOT(rfolder_ClearList()) );
+
+         QAction *rfAction = menu->addAction("Remove Folder " + fName, this,  SLOT(rfolder_RemoveFName() ));
+         rfAction->setData(fName);
+
+         menu->exec(m_ui->menuFile->mapToGlobal(pt));
+
+         delete menu;
+      }
+   }
+}
+
+void MainWindow::rfolder_ClearList()
+{
+   QAction *action;
+   action = (QAction *)sender();
+
+   if (action) {
+      m_rfolder_List.clear();
+
+      // save new list of files
+      json_Write(RECENTFOLDER);
+
+      // update actions
+      rfolder_UpdateActions();
+   }
+}
+
+void MainWindow::rfolder_RemoveFName()
+{
+   QAction *action;
+   action = (QAction *)sender();
+
+   if (action) {
+      QString fName = action->data().toString();
+
+      int index = m_rfolder_List.indexOf(fName);
+
+      if (index >= 0) {
+         m_rfolder_List.removeAt(index);
+
+         // save new list of files
+         json_Write(RECENTFOLDER);
+
+         // update actions
+         rfolder_UpdateActions();
+      }
+   }
+}
+
 
 void MainWindow::rfolder_Add()
 {

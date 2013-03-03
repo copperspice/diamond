@@ -13,6 +13,12 @@
   <property name="windowTitle">
    <string/>
   </property>
+  <property name="iconSize">
+   <size>
+    <width>32</width>
+    <height>32</height>
+   </size>
+  </property>
   <widget class="QWidget" name="centralwidget"/>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
@@ -74,6 +80,7 @@
      <addaction name="actionIndent_Incr"/>
      <addaction name="actionIndent_Decr"/>
      <addaction name="separator"/>
+     <addaction name="actionDelete_Line"/>
      <addaction name="actionDelete_EOL"/>
     </widget>
     <addaction name="actionUndo"/>
@@ -193,6 +200,9 @@
     </property>
     <addaction name="actionTab_New"/>
     <addaction name="actionTab_Close"/>
+    <addaction name="separator"/>
+    <addaction name="actionSplit_Horizontal"/>
+    <addaction name="actionSplit_Vertical"/>
    </widget>
    <widget class="QMenu" name="menuTools">
     <property name="title">
@@ -228,7 +238,7 @@
     <string>New</string>
    </property>
    <property name="toolTip">
-    <string>Create a new document</string>
+    <string>New file in Current Tab</string>
    </property>
   </action>
   <action name="actionOpen">
@@ -236,7 +246,7 @@
     <string>Open...</string>
    </property>
    <property name="toolTip">
-    <string>Open an existing document</string>
+    <string>Open File</string>
    </property>
   </action>
   <action name="actionSave">
@@ -244,7 +254,7 @@
     <string>Save </string>
    </property>
    <property name="toolTip">
-    <string>Save current document</string>
+    <string>Save File</string>
    </property>
   </action>
   <action name="actionSave_As">
@@ -252,7 +262,7 @@
     <string>Save As...</string>
    </property>
    <property name="toolTip">
-    <string>Save document with a new name</string>
+    <string>Save File with new Name</string>
    </property>
   </action>
   <action name="actionClose">
@@ -260,7 +270,7 @@
     <string>Close</string>
    </property>
    <property name="toolTip">
-    <string>Close document</string>
+    <string>Close File</string>
    </property>
   </action>
   <action name="actionCut">
@@ -408,7 +418,7 @@
     <string>Close All</string>
    </property>
    <property name="toolTip">
-    <string>Close all open documents</string>
+    <string>Close all open Files</string>
    </property>
   </action>
   <action name="actionReload">
@@ -416,7 +426,7 @@
     <string>Reload</string>
    </property>
    <property name="toolTip">
-    <string>Reload current document</string>
+    <string>Reload current File</string>
    </property>
    <property name="shortcutContext">
     <enum>Qt::WindowShortcut</enum>
@@ -427,7 +437,7 @@
     <string>Save All</string>
    </property>
    <property name="toolTip">
-    <string>Save all open documents</string>
+    <string>Save all open Files</string>
    </property>
   </action>
   <action name="actionPrint">
@@ -742,6 +752,21 @@
   <action name="actionOpen_RecentFolder">
    <property name="text">
     <string>Open Recent Folder</string>
+   </property>
+  </action>
+  <action name="actionDelete_Line">
+   <property name="text">
+    <string>Delete Line</string>
+   </property>
+  </action>
+  <action name="actionSplit_Vertical">
+   <property name="text">
+    <string>Split Vertical</string>
+   </property>
+  </action>
+  <action name="actionSplit_Horizontal">
+   <property name="text">
+    <string>Split Horizontal</string>
    </property>
   </action>
  </widget>

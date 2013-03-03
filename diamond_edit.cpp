@@ -24,6 +24,7 @@
 #include "util.h"
 
 #include <QtGui>
+#include <QLatin1Char>
 #include <QStringList>
 #include <Qt>
 
@@ -184,6 +185,10 @@ void DiamondTextEdit::contextMenuEvent(QContextMenuEvent *event)
    menu->addAction("Cut",    this, SLOT(cut())   );
    menu->addAction("Copy",   this, SLOT(copy())  );
    menu->addAction("Paste",  this, SLOT(paste()) );
+
+   menu->addSeparator();
+   menu->addAction("Delete Line",    m_mainWindow, SLOT(deleteLine()) );
+   menu->addAction("Delete to EOL",  m_mainWindow, SLOT(deleteEOL()) );
 
    if (isSelected) {
       menu->addSeparator();
@@ -419,8 +424,7 @@ bool DiamondTextEdit::event(QEvent *event)
          }
 
          m_mainWindow->indentDecr("tab");
-         return true;         
-
+         return true;
 /*
 
       } else if (m_isColumnMode && (modifiers == Qt::ShiftModifier) &&
@@ -533,8 +537,7 @@ void DiamondTextEdit::keyPressEvent(QKeyEvent *event)
       QKeyEvent *newEvent;
       newEvent = new QKeyEvent(*event);
 
-      m_macroKeyList.append(newEvent);
-
+      m_macroKeyList.append(newEvent);   
    }
 
    // now call the parent

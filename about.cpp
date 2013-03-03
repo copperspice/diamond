@@ -58,16 +58,19 @@ About::About(QString file)
    QFileInfo temp(m_url);
 
    if (m_url.isEmpty())  {
-      csError("Diamond Editor", "No file was specified for the Display Viewer.");
+      csError("Help", "No file was specified for Diamond Help.");
       throw std::runtime_error("");
 
    } else if (! temp.exists() )  {
-      csError("Diamond Editor", "Display Viewer file " +  m_url + " was not found.");
+      csError("Help", "Help file was not found:\n" +  m_url + "\n\n"
+              "To specify the location of the Diamond Help file, select 'Settings' from the menu. "
+              "Then select General Options and click on the Options tab.\n");
+
       throw std::runtime_error("");
    }
 
    m_url = "file:///" + m_url;
-   setWindowTitle("Diamond Viewer");
+   setWindowTitle("Diamond Help");
 
    //
    m_viewer = new QWebView;   

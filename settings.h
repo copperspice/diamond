@@ -37,6 +37,7 @@ struct Settings {
    QString key_lower; 
    QString key_indentIncr;
    QString key_indentDecr;
+   QString key_deleteLine;
    QString key_deleteEOL;
    QString key_columnMode;
    QString key_goLine;
@@ -84,6 +85,7 @@ struct Options {
    QString key_lower;
    QString key_indentIncr;
    QString key_indentDecr;
+   QString key_deleteLine;
    QString key_deleteEOL;
    QString key_columnMode;
    QString key_goLine;

@@ -108,6 +108,7 @@ void Dialog_Options::initData()
    m_ui->key_lower->setText(m_options.key_lower);  
    m_ui->key_indentIncr->setText(m_options.key_indentIncr);
    m_ui->key_indentDecr->setText(m_options.key_indentDecr);
+   m_ui->key_deleteLine->setText(m_options.key_deleteLine);
    m_ui->key_deleteEOL->setText(m_options.key_deleteEOL);
    m_ui->key_columnMode->setText(m_options.key_columnMode);
    m_ui->key_goLine->setText(m_options.key_goLine);
@@ -163,7 +164,7 @@ void Dialog_Options::pick_User()
 
 void Dialog_Options::pick_Syntax()
 {
-   QString msg  = tr("Select locaton of Diamond Syntax Files");
+   QString msg  = tr("Select Diamond Syntax Folder");
    QString path = m_ui->syntax->text();
 
    path = m_parent->get_DirPath(msg, path);
@@ -215,6 +216,7 @@ struct Options Dialog_Options::get_Results()
    m_options.key_lower        = m_ui->key_lower->text();
    m_options.key_indentIncr   = m_ui->key_indentIncr->text();
    m_options.key_indentDecr   = m_ui->key_indentDecr->text();
+   m_options.key_deleteLine   = m_ui->key_deleteLine->text();
    m_options.key_deleteEOL    = m_ui->key_deleteEOL->text();
    m_options.key_columnMode   = m_ui->key_columnMode->text();
    m_options.key_goLine       = m_ui->key_goLine->text();
@@ -223,19 +225,6 @@ struct Options Dialog_Options::get_Results()
 
    return m_options;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

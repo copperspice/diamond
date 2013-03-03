@@ -1,5 +1,10 @@
+configure.ac
+Makefile.am
+diamond.qrc
+
 bin/copperspice.am
 bin/Makefile.am
+
 syntax/syn_txt.json
 syntax/syn_sh.json
 syntax/syn_make.json
@@ -14,9 +19,6 @@ syntax/syn_php.json
 syntax/syn_py.json
 syntax/syn_none.json
 syntax/syn_nsi.json
-configure.ac
-Makefile.am
-diamond.qrc
 
 forms/dialog_advfind.ui
 forms/dialog_colors.ui
@@ -53,6 +55,8 @@ syntax.h
 syntax.cpp
 util.h
 util.cpp
+advanced_find.cpp
+recent_tabs.cpp
 
 dialog_get1.h
 dialog_get1.cpp
@@ -72,5 +76,4 @@ dialog_colors.h
 dialog_colors.cpp
 dialog_replace.h
 dialog_replace.cpp
-advanced_find.cpp
-open_files.cpp
+

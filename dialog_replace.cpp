@@ -68,7 +68,7 @@ void Dialog_Replace::Find()
       bool found = m_textEdit->find(findText, flags);
 
       if (! found)  {
-         csError("Find ", findText + " was not found");
+         csError("Find", findText + " was not found");
       }
    }
 }
