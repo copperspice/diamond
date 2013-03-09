@@ -25,6 +25,7 @@
 #include "ui_dialog_advfind.h"
 
 #include <QDialog>
+#include <QString>
 
 class Dialog_AdvFind : public QDialog
 {     
@@ -34,15 +35,19 @@ class Dialog_AdvFind : public QDialog
       Dialog_AdvFind(QString text = "");
       ~Dialog_AdvFind();
 
-      QString get_Value();     
+      QString get_findText();      
+      QString get_findType();
+      QString get_findFolder();
+
       bool get_Case();
       bool get_WholeWords();
-      bool get_Folders();
+      bool get_SearchSubFolders();
 
    private:
       Ui::Dialog_AdvFind *m_ui;
 
    private slots:
+      void pick_Folder();
       void Find();
       void Cancel();
 };

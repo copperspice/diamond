@@ -1,6 +1,9 @@
 {
 	"classes": [
 	],
+	"comment-multi-start": "(?!E)E",
+    "comment-multi-end": "(?!E)E",
+	"comment-single": "(?!E)E",
 	"functions": [
    	],
 	"ignore-case" : true,

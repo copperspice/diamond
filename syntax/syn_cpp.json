@@ -1,6 +1,7 @@
 {
    "classes": [
       "\\bQ[A-Za-z]+\\b",
+      "</?Q[^>]*>",
       "\\band\\b",
       "\\band_eq\\b",  
       "\\bbad_cast\\b",      
@@ -15,6 +16,9 @@
       "\\bxor\\b",
       "\\bxor_eq\\b"
     ],
+	"comment-multi-start": "/\\*",
+    "comment-multi-end": "\\*/",
+    "comment-single": "//[^\n]*",
     "functions": [
       "\\bQ_[A-Z]+\\b"
     ],

@@ -59,7 +59,7 @@ void csError(QString title, QString msg)
 {
    QMessageBox msgB;
 
-   msgB.setWindowTitle("Diamond Editor - " + title);
+   msgB.setWindowTitle(title);
    msgB.setIcon(QMessageBox::Warning);
    msgB.setText(msg);
    msgB.exec();

@@ -26,6 +26,8 @@
 #include <QKeyEvent>
 #include <Qt>
 
+#include <qglobal.h>
+
 KeyLineEdit::KeyLineEdit(QWidget *parent) :
    QLineEdit(parent)
 {
@@ -43,9 +45,23 @@ void KeyLineEdit::keyPressEvent(QKeyEvent *event)
 
    } else  {
 
+#ifdef Q_OS_MAC
       if (modifiers & Qt::ControlModifier) {
-         keyPress.append("Ctrl+");   // Qt::CTRL
+         keyPress.append("Meta+");
       }
+
+      if (modifiers & Qt::MetaModifier) {
+         keyPress.append("Ctrl+");
+      }
+#else
+      if (modifiers & Qt::ControlModifier) {
+         keyPress.append("Ctrl+");
+      }
+
+      if (modifiers & Qt::MetaModifier) {
+         keyPress.append("Meta+");
+      }
+#endif
 
       if (modifiers & Qt::ShiftModifier) {
          keyPress.append("Shift+");
@@ -53,11 +69,6 @@ void KeyLineEdit::keyPressEvent(QKeyEvent *event)
 
       if (modifiers & Qt::AltModifier) {
          keyPress.append("Alt+");
-      }
-
-      if (modifiers & Qt::MetaModifier) {
-         // OS X
-         keyPress.append("Splat+");  // Qt::META
       }
 
       //

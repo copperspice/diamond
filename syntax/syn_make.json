@@ -1,6 +1,14 @@
 {
 	"classes": [
+        "\\bAM_CXXFLAGS\\b",
+        "\\bdeploy_PROGRAMS\\b",
+        "\\binstall-exec-hook\\b",
+        "\\bnoinst_HEADERS\\b",
+        "\\bVPATH\\b"
 	],
+	"comment-multi-start": "(?!E)E",
+    "comment-multi-end": "(?!E)E",
+    "comment-single": "#[^\n]*",
 	"functions": [
       	"\\bcall\\b",
         "\\bsubst\\b",
@@ -40,7 +48,7 @@
    	],
 	"ignore-case" : true,
 	"keywords": [     
-	    "\\binclude\\b",
+	    "^\\s*-?include\\b",
         "\\bdefine\\b",
         "\\belse\\b",
         "\\bendif\\b",

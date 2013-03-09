@@ -46,7 +46,7 @@ MainWindow::MainWindow()
 
    this->setDiamondTitle("untitled.txt");
 
-   if ( ! json_Read()  ) {
+   if ( ! json_Read() ) {
       // do not start program
       csError(tr("Configuration File Missing"), tr("Unable to locate or open the Diamond Configuration file."));
       throw std::runtime_error("");
@@ -63,7 +63,7 @@ MainWindow::MainWindow()
    setCentralWidget(m_tabWidget);
 
    // screen setup
-   createShortCuts();      
+   createShortCuts(true);
    createToolBars();
    createStatusBar();
    createToggles();
@@ -81,11 +81,11 @@ MainWindow::MainWindow()
    // recent folders, context menu
    QMenu *menuFolder = m_ui->actionOpen_RecentFolder->menu();
    menuFolder->setContextMenuPolicy(Qt::CustomContextMenu);
-   connect(menuFolder, SIGNAL(customContextMenuRequested(const QPoint&)), this, SLOT(showContextMenuFolder(const QPoint &)));
+   connect(menuFolder, SIGNAL(customContextMenuRequested(const QPoint &)), this, SLOT(showContextMenuFolder(const QPoint &)));
 
    // recent files, context menu
    m_ui->menuFile->setContextMenuPolicy(Qt::CustomContextMenu);
-   connect(m_ui->menuFile, SIGNAL(customContextMenuRequested(const QPoint&)), this, SLOT(showContextMenuFile(const QPoint &)));
+   connect(m_ui->menuFile, SIGNAL(customContextMenuRequested(const QPoint &)), this, SLOT(showContextMenuFile(const QPoint &)));
 
    //
    tabNew();
@@ -95,6 +95,10 @@ MainWindow::MainWindow()
 
    // currently open tabs
    openTab_CreateMenus();
+
+   if (! m_findList.isEmpty()) {
+    m_findText = m_findList.first();
+   }
 
    setStatus_ColMode();
    setStatusBar(tr("Ready"), 0);   
@@ -108,7 +112,7 @@ void MainWindow::newFile()
 
    if (okClose) {
       m_textEdit->clear();
-      setCurrentFile("");
+      setCurrentTitle("");
    }
 }
 
@@ -120,11 +124,6 @@ void MainWindow::mw_open()
 void MainWindow::open(QString path)
 {       
    QFileDialog::Options options;
-
-   if (false)  {  //(Q_OS_DARWIM) {
-      options |= QFileDialog::DontUseNativeDialog;
-   }
-
    QString selectedFilter;
 
    QStringList fileList = QFileDialog::getOpenFileNames(this, tr("Select File"),
@@ -150,7 +149,7 @@ void MainWindow::close_Doc()
       openTab_Delete();
 
       m_textEdit->clear();
-      setCurrentFile("");
+      setCurrentTitle("");
    }
 }
 
@@ -174,7 +173,7 @@ bool MainWindow::closeAll_Doc()
 
       if (textEdit) {
          m_textEdit = textEdit;
-         m_curFile  = m_tabWidget->tabWhatsThis(whichTab);
+         m_curFile  = this->get_curFileName(whichTab);
 
          if (querySave())  {
 
@@ -187,7 +186,7 @@ bool MainWindow::closeAll_Doc()
                // do not remove !
                m_textEdit->clear();
 
-               setCurrentFile("");
+               setCurrentTitle("");
 
             } else {
                // may need to delete the widget
@@ -214,20 +213,15 @@ bool MainWindow::closeAll_Doc()
 }
 
 void MainWindow::reload()
-{
+{   
    if (m_curFile.isEmpty()) {
       csError("Reload", tr("Unable to reload a file which was not saved."));
 
    } else if (m_textEdit->document()->isModified()) {
 
-      QString fileName = m_curFile;
-      if (fileName.isEmpty()){
-         fileName = "Untitled.txt";
-      }
-
       QMessageBox quest;
-      quest.setWindowTitle(tr("Diamond Editor"));
-      quest.setText( fileName + tr(" has been modified. Reload file?"));
+      quest.setWindowTitle(tr("Reload File"));
+      quest.setText( "File: " + m_curFile + tr(" has been modified. Reload file?"));
 
       QPushButton *reload = quest.addButton("Reload", QMessageBox::AcceptRole );
       quest.setStandardButtons(QMessageBox::Cancel);
@@ -266,23 +260,20 @@ bool MainWindow::saveAs(bool isSaveOne)
 
    QFileDialog::Options options;
 
-   if (false)  {  // broom  (Q_OS_DARWIM) {
-      options |= QFileDialog::DontUseNativeDialog;
-   }
-
    QString selectedFilter;
-   QString path = pathName(m_curFile);
+   QString path = this->pathName(m_curFile);
 
    QString fileName = QFileDialog::getSaveFileName(this, tr("Create or Select File"),
         path, tr("All Files (*)"), &selectedFilter, options);
 
    if (fileName.isEmpty()) {
       retval = false;
+
    } else {
       retval = saveFile(fileName, isSaveOne);
 
       if (retval) {
-         setCurrentFile(fileName);
+         setCurrentTitle(fileName, false);
       }
    }
 
@@ -585,7 +576,6 @@ void MainWindow::indentDecr(QString route)
             }
 
             posEnd -=1;
-
          }
 
          //
@@ -691,13 +681,26 @@ void MainWindow::columnMode()
 // **search
 void MainWindow::find()
 {
-   Dialog_Find *dw = new Dialog_Find(m_findText);
+   Dialog_Find *dw = new Dialog_Find(m_findText, m_findList);
    int result = dw->exec();
 
-   if ( result == QDialog::Accepted) {
+   if (result == QDialog::Accepted) {
 
-      m_findText = dw->get_Value();
-      m_flags    = 0;
+      m_findText = dw->get_findText();
+      m_findList = dw->get_findList();
+
+      // add to list if not found
+      int index = m_findList.indexOf(m_findText);
+
+      if (index == -1) {
+         m_findList.prepend(m_findText);
+      } else {
+         m_findList.move(index,0);
+      }
+      json_Write(FIND_LIST);
+
+      // get the flags
+      m_flags = 0;
 
       m_fDirection  = dw->get_Direction();
       if (! m_fDirection) {
@@ -718,7 +721,7 @@ void MainWindow::find()
          bool found = m_textEdit->find(m_findText, m_flags);
 
          if (! found)  {
-            csError("Find", m_findText + " was not found");
+            csError("Find", "Not found: " + m_findText);
          }
       }
    }
@@ -742,7 +745,7 @@ void MainWindow::findNext()
    QTextDocument::FindFlags flags = QTextDocument::FindFlags(~QTextDocument::FindBackward & m_flags);
    bool found = m_textEdit->find(m_findText, flags);
    if (! found)  {
-      csError("Find", m_findText + " was not found");
+      csError("Find", "Not found: " + m_findText);
    }
 }
 
@@ -750,7 +753,7 @@ void MainWindow::findPrevious()
 {
    bool found = m_textEdit->find(m_findText, QTextDocument::FindBackward | m_flags );
    if (! found)  {
-      csError("Find", m_findText + " was not found");
+      csError("Find", "Not found: " + m_findText);
    }
 }
 
@@ -759,9 +762,12 @@ void MainWindow::advFind()
    Dialog_AdvFind *dw = new Dialog_AdvFind(m_findText);
    int result = dw->exec();
 
-   if ( result == QDialog::Accepted) {
+   if (result == QDialog::Accepted) {
 
-      m_advFindText = dw->get_Value();
+      m_advFindText     = dw->get_findText();
+      m_advFindFileType = dw->get_findType();
+      m_advFindFolder   = dw->get_findFolder();
+
       m_advFlags = 0;
 
       m_advfCase = dw->get_Case();
@@ -774,22 +780,103 @@ void MainWindow::advFind()
          m_advFlags |= QTextDocument::FindWholeWords;
       }
 
-      m_advfFolders = dw->get_Folders();
-      if (m_fWholeWords){
-         m_advFlags |= QTextDocument::FindWholeWords;
-      }
+      // BROOM - ignore for now
+      m_advfSearchSubFolders = dw->get_SearchSubFolders();
 
-      if (! m_findText.isEmpty())  {
-         // bool found = m_textEdit->advFind(m_advFindText, m_advFlags);
-         bool found = false;
+      if (! m_advFindText.isEmpty())  {
 
-         if (! found)  {
-            csError("Advanced Find", m_advFindText + " was not found");
+         if (m_advFindFileType.isEmpty()) {
+            m_advFindFileType = "*";
+         }
+
+         if (m_advFindFolder.isEmpty()) {
+            m_advFindFolder = QDir::currentPath();
+         }
+
+         //
+         QStringList foundList = this->advFind_getResults();
+
+         if (foundList.isEmpty())  {
+            csError("Advanced Find", "Not found: " + m_findText);
+
+         } else   {
+            // this->advFind_ShowFiles();
+
          }
       }
-         }
+   }
 
    delete dw;
+}
+
+QStringList MainWindow::advFind_getResults()
+{     
+   // part 1
+   QDir currentDir = QDir(m_advFindFolder);
+   QStringList searchList = currentDir.entryList(QStringList(m_advFindFileType), QDir::Files | QDir::NoSymLinks);
+
+/*
+   QProgressDialog progressDialog(this);
+   progressDialog.setCancelButtonText(tr("&Cancel"));
+   progressDialog.setRange(0, files.size());
+   progressDialog.setWindowTitle(tr("Find Files"));
+*/
+
+   // part 2
+   QStringList foundList;
+   int matchCount = 0;
+
+   // process each file
+   for (int k = 0; k < searchList.size(); ++k) {
+
+/*    progressDialog.setValue(k);
+      progressDialog.setLabelText(tr("Searching file %1 of %2...").arg(k).arg(searchList.size()));
+      qApp->processEvents();
+
+      if (progressDialog.wasCanceled()) {
+          break;
+      }
+*/
+
+      QString name = currentDir.absoluteFilePath(searchList[k]);
+
+      QFile file(name);
+
+      if (file.open(QIODevice::ReadOnly)) {
+         QString line;
+         QTextStream in(&file);
+
+         int lineCount = 0;
+
+         while (! in.atEnd()) {
+
+/*          if (progressDialog.wasCanceled())  {
+                break;
+            }
+*/
+            line = in.readLine();
+            lineCount++;
+
+            if (line.contains(m_advFindText)) {
+               matchCount++;
+
+               QString info = "[" + QString::number(matchCount) + "] " + name +
+                              " (Line:" + QString::number(lineCount) + "): " + line + "\n";
+
+               foundList.append(info);
+            }
+
+         }
+      }
+
+      file.close();
+   }
+
+   // test code
+   QString temp  = foundList.join("\n");
+   csMsg("Matched files list\n\n" + temp);
+
+   return foundList;
 }
 
 void MainWindow::goLine()
@@ -1161,14 +1248,14 @@ void MainWindow::setSynType(SyntaxTypes data)
    }
 }
 
-void MainWindow::formatDos()
-{
-   showNotDone("Document, format DOS (CR LF)");
-}
-
 void MainWindow::formatUnix()
 {
    showNotDone("Document, format Unix (LF)");
+}
+
+void MainWindow::formatWin()
+{
+   showNotDone("Document, format Windows (CR LF)");
 }
 
 void MainWindow::formatMac()
@@ -1181,14 +1268,31 @@ void MainWindow::fixTab_Spaces()
    showNotDone("Document, convert tab to spaces");
 }
 
-void MainWindow::fixSpaces_Tabs()
+void MainWindow::fixSpaces_Tab()
 {
    showNotDone("Document, convert spaces to tabs");
 }
 
-void MainWindow::fixSpaces_EOL()
-{
-   showNotDone("Document, Remove Spaces EOL");
+void MainWindow::deleteEOL_Spaces()
+{ 
+   QTextCursor cursor(m_textEdit->textCursor());
+
+   // position to start of document
+   cursor.movePosition(QTextCursor::Start);   
+
+   // set for undo
+   cursor.beginEditBlock();  
+
+   while (true) {
+      cursor.movePosition(QTextCursor::EndOfBlock);
+      cursor.insertText("ZZ");
+
+      if (! cursor.movePosition(QTextCursor::NextBlock))  {
+          break;
+      }
+   }
+
+   cursor.endEditBlock();  
 }
 
 
@@ -1323,11 +1427,11 @@ void MainWindow::tabNew()
    m_textEdit = textEdit;   
    m_textEdit->setFocus();
 
-   setCurrentFile("");
+   setCurrentTitle("");
    setScreenColors();
 
    int temp = m_textEdit->fontMetrics().width(" ");
-   m_textEdit->setTabStopWidth( temp * m_struct.tabSpacing );     // BROOM, must examine and change all tabs
+   m_textEdit->setTabStopWidth(temp * m_struct.tabSpacing);     // BROOM, must examine and change all tabs
 
    //
    // connect(m_textEdit, SIGNAL(fileDropped(const QString &)),  this, SLOT(fileDropped(const QString &)));
@@ -1356,10 +1460,8 @@ void MainWindow::tabClose(int index)
    textEdit = dynamic_cast<DiamondTextEdit *>(temp);
 
    if (textEdit) {
-      m_textEdit = textEdit;
-
-      // retrieve fullName for status bar
-      m_curFile = m_tabWidget->tabWhatsThis(index);
+      m_textEdit = textEdit;     
+      m_curFile  = this->get_curFileName(index);
 
       bool okClose = querySave();
 
@@ -1373,7 +1475,7 @@ void MainWindow::tabClose(int index)
          if (count == 1) {
             // do not remove !
             m_textEdit->clear();
-            setCurrentFile("");
+            setCurrentTitle("");
 
          } else {
             // hold textEdit and delete after tab is removed
@@ -1395,31 +1497,25 @@ void MainWindow::tabChanged(int index)
 
    if (textEdit) {
       m_textEdit = textEdit;
+      m_curFile  = this->get_curFileName(index);
 
-      // retrieve fullName for status bar
-      m_curFile = m_tabWidget->tabWhatsThis(index);
+      this->setCurrentTitle(m_curFile, true);
 
-      // adjust the * in the title bar
-      setWindowModified(m_textEdit->document()->isModified());
+      // ** retrieve slected syntax type
+      m_syntaxParser = m_textEdit->get_SyntaxParser();
 
+      // retrieve the menu enum
+      m_syntaxEnum = m_textEdit->get_SyntaxEnum();
+
+      // check the menu item
+      setSynType(m_syntaxEnum);
+
+      // **
       setStatus_LineCol();
-      setStatus_FName(m_curFile);
-
-      this->setDiamondTitle(m_curFile);
-
       m_textEdit->set_ColumnMode(m_struct.isColumnMode);
       m_textEdit->set_ShowLineNum(m_struct.showLineNumbers);
 
-      // get saved value
-      m_syntaxParser = m_textEdit->get_SyntaxParser();
-
-      // get which syntax should be checked
-      m_syntaxEnum = m_textEdit->get_SyntaxEnum();
-      setSynType(m_syntaxEnum);
-
-      // adjust hightlight
       move_lineHighlight();      
-
       showSpaces();
       showEOL();
    }
@@ -1469,7 +1565,7 @@ void MainWindow::about()
    msgB.setWindowIcon(QIcon("://resources/diamond.png"));
 
    msgB.setWindowTitle(tr("About Diamond"));
-   msgB.setText(tr("<p style=margin-right:25><center><h5>Version: 1.0<br>Build # 03.01.2013</h5></center></p>"));
+   msgB.setText(tr("<p style=margin-right:25><center><h5>Version: 1.0<br>Build # 03.15.2013</h5></center></p>"));
    msgB.setInformativeText(textBody);
 
    msgB.setStandardButtons(QMessageBox::Ok);
@@ -1572,12 +1668,13 @@ void MainWindow::createConnections()
    connect(m_ui->actionSyn_Python,        SIGNAL(triggered()), this, SLOT(setSyn_Python()));
    connect(m_ui->actionSyn_None,          SIGNAL(triggered()), this, SLOT(setSyn_None()));
 
-   connect(m_ui->actionFormat_Dos,        SIGNAL(triggered()), this, SLOT(formatDos()));
    connect(m_ui->actionFormat_Unix,       SIGNAL(triggered()), this, SLOT(formatUnix()));
+   connect(m_ui->actionFormat_Win,        SIGNAL(triggered()), this, SLOT(formatWin()));
    connect(m_ui->actionFormat_Mac,        SIGNAL(triggered()), this, SLOT(formatMac()));
 
    connect(m_ui->actionFix_Tab_Spaces,    SIGNAL(triggered()), this, SLOT(fixTab_Spaces()));  
-   connect(m_ui->actionFix_Spaces_EOL,    SIGNAL(triggered()), this, SLOT(fixSpaces_EOL()));
+   connect(m_ui->actionFix_Spaces_Tab,    SIGNAL(triggered()), this, SLOT(fixSpaces_Tab()));
+   connect(m_ui->actionDeleteEOL_Spaces,  SIGNAL(triggered()), this, SLOT(deleteEOL_Spaces()));
 
    // tools
    connect(m_ui->actionMacro_Start,       SIGNAL(triggered()), this, SLOT(mw_macroStart()));
@@ -1655,60 +1752,111 @@ void MainWindow::createToggles()
    connect(m_tabWidget, SIGNAL(tabCloseRequested(int)), this, SLOT(tabClose(int)));
 }
 
-void MainWindow::createShortCuts()
+void MainWindow::createShortCuts(bool setupAll)
 {
-   // file   
-   m_ui->actionOpen->setShortcuts(QKeySequence::Open);
-   m_ui->actionClose->setShortcuts(QKeySequence::Close);
-   m_ui->actionSave->setShortcuts(QKeySequence::Save);
-   m_ui->actionSave_As->setShortcuts(QKeySequence::SaveAs);
-   m_ui->actionPrint->setShortcuts(QKeySequence::Print);
-   m_ui->actionExit->setShortcuts(QKeySequence::Quit);
+   if (setupAll) {
+      // file
+      m_ui->actionOpen->setShortcuts(QKeySequence::Open);
+      m_ui->actionClose->setShortcuts(QKeySequence::Close);
+      m_ui->actionSave->setShortcuts(QKeySequence::Save);
+      m_ui->actionSave_As->setShortcuts(QKeySequence::SaveAs);
+      m_ui->actionPrint->setShortcuts(QKeySequence::Print);
+      m_ui->actionExit->setShortcuts(QKeySequence::Quit);
 
-   // edit
-   m_ui->actionUndo->setShortcuts(QKeySequence::Undo);
-   m_ui->actionRedo->setShortcuts(QKeySequence::Redo);
-   m_ui->actionCut->setShortcuts(QKeySequence::Cut);
-   m_ui->actionCopy->setShortcuts(QKeySequence::Copy);
-   m_ui->actionPaste->setShortcuts(QKeySequence::Paste);      
+      // edit
+      m_ui->actionUndo->setShortcuts(QKeySequence::Undo);
+      m_ui->actionRedo->setShortcuts(QKeySequence::Redo);
+      m_ui->actionCut->setShortcuts(QKeySequence::Cut);
+      m_ui->actionCopy->setShortcuts(QKeySequence::Copy);
+      m_ui->actionPaste->setShortcuts(QKeySequence::Paste);
 
-   m_ui->actionSelect_All->setShortcuts(QKeySequence::SelectAll);
-   m_ui->actionGo_Top->setShortcuts(QKeySequence::MoveToStartOfDocument);
-   m_ui->actionGo_Bottom->setShortcuts(QKeySequence::MoveToEndOfDocument);
+      m_ui->actionSelect_All->setShortcuts(QKeySequence::SelectAll);
+      m_ui->actionGo_Top->setShortcuts(QKeySequence::MoveToStartOfDocument);
+      m_ui->actionGo_Bottom->setShortcuts(QKeySequence::MoveToEndOfDocument);
 
-   //search
-   m_ui->actionFind->setShortcuts(QKeySequence::Find);
-   m_ui->actionReplace->setShortcuts(QKeySequence::Replace);
-   m_ui->actionFind_Next->setShortcuts(QKeySequence::FindNext);
-   m_ui->actionFind_Prev->setShortcuts(QKeySequence::FindPrevious);
+      //search
+      m_ui->actionFind->setShortcuts(QKeySequence::Find);
+      m_ui->actionReplace->setShortcuts(QKeySequence::Replace);
+      m_ui->actionFind_Next->setShortcuts(QKeySequence::FindNext);
+      m_ui->actionFind_Prev->setShortcuts(QKeySequence::FindPrevious);
 
-   // tab
-   m_ui->actionTab_New->setShortcuts(QKeySequence::AddTab);
+      // tab
+      m_ui->actionTab_New->setShortcuts(QKeySequence::AddTab);
 
-   // help
-   m_ui->actionDiamond_Help->setShortcuts(QKeySequence::HelpContents);
+      // help
+      m_ui->actionDiamond_Help->setShortcuts(QKeySequence::HelpContents);
+   }
 
    // ** user definded
 
-   // edit
-   m_ui->actionSelect_Line->setShortcut(QKeySequence(m_struct.key_selectLine)   );
-   m_ui->actionSelect_Word->setShortcut(QKeySequence(m_struct.key_selectWord)   );
-   m_ui->actionSelect_Block->setShortcut(QKeySequence(m_struct.key_selectBlock) );
-   m_ui->actionCase_Upper->setShortcut(QKeySequence(m_struct.key_upper) );
-   m_ui->actionCase_Lower->setShortcut(QKeySequence(m_struct.key_lower) );
+   // assign to temp value
+   struct Options struct_temp;
 
-   m_ui->actionIndent_Incr->setShortcut(QKeySequence(m_struct.key_indentIncr) );
-   m_ui->actionIndent_Decr->setShortcut(QKeySequence(m_struct.key_indentDecr) );
-   m_ui->actionDelete_Line->setShortcut(QKeySequence(m_struct.key_deleteLine) );
-   m_ui->actionDelete_EOL->setShortcut(QKeySequence(m_struct.key_deleteEOL)   );
-   m_ui->actionColumn_Mode->setShortcut(QKeySequence(m_struct.key_columnMode) );
+   struct_temp.key_selectLine   = m_struct.key_selectLine;
+   struct_temp.key_selectWord   = m_struct.key_selectWord ;
+   struct_temp.key_selectBlock  = m_struct.key_selectBlock;
+   struct_temp.key_upper        = m_struct.key_upper;
+   struct_temp.key_lower        = m_struct.key_lower;
+   struct_temp.key_indentIncr   = m_struct.key_indentIncr;
+   struct_temp.key_indentDecr   = m_struct.key_indentDecr;
+   struct_temp.key_deleteLine   = m_struct.key_deleteLine;
+   struct_temp.key_deleteEOL    = m_struct.key_deleteEOL;
+   struct_temp.key_columnMode   = m_struct.key_columnMode ;
+   struct_temp.key_goLine       = m_struct.key_goLine;
+   struct_temp.key_macroPlay    = m_struct.key_macroPlay;
+   struct_temp.key_spellCheck   = m_struct.key_spellCheck;
+
+#ifdef Q_OS_MAC
+   struct_temp.key_selectLine   = this->adjustKey(struct_temp.key_selectLine);
+   struct_temp.key_selectWord   = this->adjustKey(struct_temp.key_selectWord);
+   struct_temp.key_selectBlock  = this->adjustKey(struct_temp.key_selectBlock);
+   struct_temp.key_upper        = this->adjustKey(struct_temp.key_upper);
+   struct_temp.key_lower        = this->adjustKey(struct_temp.key_lower);
+   struct_temp.key_indentIncr   = this->adjustKey(struct_temp.key_indentIncr);
+   struct_temp.key_indentDecr   = this->adjustKey(struct_temp.key_indentDecr);
+   struct_temp.key_deleteLine   = this->adjustKey(struct_temp.key_deleteLine);
+   struct_temp.key_deleteEOL    = this->adjustKey(struct_temp.key_deleteEOL);
+   struct_temp.key_columnMode   = this->adjustKey(struct_temp.key_columnMode);
+   struct_temp.key_goLine       = this->adjustKey(struct_temp.key_goLine);
+   struct_temp.key_macroPlay    = this->adjustKey(struct_temp.key_macroPlay);
+   struct_temp.key_spellCheck   = this->adjustKey(struct_temp.key_spellCheck);
+
+#endif
+
+   // edit
+   m_ui->actionSelect_Line->setShortcut(QKeySequence(struct_temp.key_selectLine)   );
+   m_ui->actionSelect_Word->setShortcut(QKeySequence(struct_temp.key_selectWord)   );
+   m_ui->actionSelect_Block->setShortcut(QKeySequence(struct_temp.key_selectBlock) );
+   m_ui->actionCase_Upper->setShortcut(QKeySequence(struct_temp.key_upper) );
+   m_ui->actionCase_Lower->setShortcut(QKeySequence(struct_temp.key_lower) );
+
+   m_ui->actionIndent_Incr->setShortcut(QKeySequence(struct_temp.key_indentIncr) );
+   m_ui->actionIndent_Decr->setShortcut(QKeySequence(struct_temp.key_indentDecr) );
+   m_ui->actionDelete_Line->setShortcut(QKeySequence(struct_temp.key_deleteLine) );
+   m_ui->actionDelete_EOL->setShortcut(QKeySequence(struct_temp.key_deleteEOL)   );
+   m_ui->actionColumn_Mode->setShortcut(QKeySequence(struct_temp.key_columnMode) );
 
    // search
-   m_ui->actionGo_Line->setShortcut(QKeySequence(m_struct.key_goLine) );
+   m_ui->actionGo_Line->setShortcut(QKeySequence(struct_temp.key_goLine) );
 
    // tools
-   m_ui->actionMacro_Play->setShortcut(QKeySequence(m_struct.key_macroPlay) );
-   m_ui->actionSpell_Check->setShortcut(QKeySequence(m_struct.key_spellCheck) );
+   m_ui->actionMacro_Play->setShortcut(QKeySequence(struct_temp.key_macroPlay) );
+   m_ui->actionSpell_Check->setShortcut(QKeySequence(struct_temp.key_spellCheck) );
+}
+
+QString MainWindow::adjustKey(QString sequence)
+{
+   QString modifier = sequence.left(4);
+
+   if (modifier == "Ctrl") {
+      sequence.replace(0,4,"Meta");
+   }
+
+   if (modifier == "Meta") {
+      sequence.replace(0,4,"Ctrl");
+   }
+
+   return sequence;
 }
 
 void MainWindow::createToolBars()
@@ -1749,9 +1897,18 @@ void MainWindow::createToolBars()
    fileToolBar->addAction(m_ui->actionPrint);
    fileToolBar->addAction(m_ui->actionPrint_Pdf);
 
-   fileToolBar = addToolBar(tr("Window"));
-   fileToolBar->addAction(m_ui->actionTab_New);
-   fileToolBar->addAction(m_ui->actionTab_Close);
+#ifdef Q_OS_MAC
+   // os x does not support moving tool bars
+   fileToolBar->addSeparator();
+#endif
+
+   windowToolBar = addToolBar(tr("Window"));
+   windowToolBar->addAction(m_ui->actionTab_New);
+   windowToolBar->addAction(m_ui->actionTab_Close);
+
+#ifdef Q_OS_MAC
+   windowToolBar->addSeparator();
+#endif
 
    editToolBar = addToolBar(tr("Edit"));
    editToolBar->addAction(m_ui->actionUndo);
@@ -1760,13 +1917,25 @@ void MainWindow::createToolBars()
    editToolBar->addAction(m_ui->actionCopy);
    editToolBar->addAction(m_ui->actionPaste);
 
+#ifdef Q_OS_MAC
+   editToolBar->addSeparator();
+#endif
+
    searchToolBar = addToolBar(tr("Search"));
    searchToolBar->addAction(m_ui->actionFind);
    searchToolBar->addAction(m_ui->actionReplace);
 
+#ifdef Q_OS_MAC
+   searchToolBar->addSeparator();
+#endif
+
    viewToolBar = addToolBar(tr("View"));
    viewToolBar->addAction(m_ui->actionShow_Spaces);
    viewToolBar->addAction(m_ui->actionShow_EOL);
+
+#ifdef Q_OS_MAC
+   viewToolBar->addSeparator();
+#endif
 
    toolsToolBar = addToolBar(tr("Tools"));
    toolsToolBar->addAction(m_ui->actionMacro_Start);

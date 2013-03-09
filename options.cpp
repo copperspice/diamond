@@ -214,8 +214,8 @@ void MainWindow::setOptions()
       m_struct.key_spellCheck  = options.key_spellCheck;
       json_Write(KEYS);
 
-      //
-      createShortCuts();
+      // redisplay the user defined shortcuts only
+      this->createShortCuts(false);
    }
 
    delete dw;

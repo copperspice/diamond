@@ -22,8 +22,9 @@
 #include "mainwindow.h"
 #include "util.h"
 
-#include <QVariant>
+#include <QCursor>
 #include <QStringList>
+#include <QVariant>
 
 void MainWindow::rf_CreateMenus()
 {
@@ -52,9 +53,7 @@ void MainWindow::rf_CreateMenus()
       }
 
       connect(rf_Actions[i], SIGNAL(triggered()), this, SLOT(rf_Open()));
-   }
-
-   fileMenu->insertSeparator(rf_Actions[rf_MaxCnt-1]);
+   }   
 }
 
 void MainWindow::rf_Open()
@@ -249,7 +248,8 @@ void MainWindow::showContextMenuFolder(const QPoint &pt)
          QAction *rfAction = menu->addAction("Remove Folder " + fName, this,  SLOT(rfolder_RemoveFName() ));
          rfAction->setData(fName);
 
-         menu->exec(m_ui->menuFile->mapToGlobal(pt));
+//       menu->exec(m_ui->menuFile->mapToGlobal(pt));
+         menu->exec(QCursor::pos());
 
          delete menu;
       }
@@ -294,24 +294,25 @@ void MainWindow::rfolder_RemoveFName()
    }
 }
 
-
 void MainWindow::rfolder_Add()
 {
+   if (m_curFile.isEmpty()) {
+      return;
+   }
+
    int cnt = m_rfolder_List.count();
 
    if (cnt >= rfolder_MaxCnt ) {
       m_rfolder_List.removeFirst();
    }
 
-   QString temp = this->pathName(m_curFile);
-   m_rfolder_List.append(temp);
+   QString fileName = this->pathName(m_curFile);
 
-
-   // resolve so this is not required  BROOM
-   if ( m_rfolder_List.size() > 1) {
-      m_rfolder_List.removeDuplicates();
+   if (! m_rfolder_List.contains(fileName)) {
+      m_rfolder_List.append(fileName);
    }
 
+   m_rfolder_List.sort();
 
    // save new list of files
    json_Write(RECENTFOLDER);

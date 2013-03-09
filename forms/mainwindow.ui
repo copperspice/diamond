@@ -154,8 +154,8 @@
      <property name="title">
       <string>File Format *</string>
      </property>
-     <addaction name="actionFormat_Dos"/>
      <addaction name="actionFormat_Unix"/>
+     <addaction name="actionFormat_Win"/>
      <addaction name="actionFormat_Mac"/>
     </widget>
     <widget class="QMenu" name="menuSyntax_Type">
@@ -181,18 +181,13 @@
      <addaction name="separator"/>
      <addaction name="actionSyn_None"/>
     </widget>
-    <widget class="QMenu" name="menuTabs_Spaces">
-     <property name="title">
-      <string>Tabs / Spaces *</string>
-     </property>
-     <addaction name="actionFix_Tab_Spaces"/>
-     <addaction name="actionFix_Spaces_Tab"/>
-     <addaction name="actionFix_Spaces_EOL"/>
-    </widget>
     <addaction name="menuSyntax_Type"/>
     <addaction name="menuFile_Format"/>
     <addaction name="separator"/>
-    <addaction name="menuTabs_Spaces"/>
+    <addaction name="actionFix_Tab_Spaces"/>
+    <addaction name="actionFix_Spaces_Tab"/>
+    <addaction name="separator"/>
+    <addaction name="actionDeleteEOL_Spaces"/>
    </widget>
    <widget class="QMenu" name="menuWindow">
     <property name="title">
@@ -343,9 +338,9 @@
     <string>Fonts</string>
    </property>
   </action>
-  <action name="actionFormat_Dos">
+  <action name="actionFormat_Win">
    <property name="text">
-    <string>DOS Format (CR/LF)</string>
+    <string>Windows Format (CR/LF)</string>
    </property>
   </action>
   <action name="actionFormat_Unix">
@@ -355,7 +350,7 @@
   </action>
   <action name="actionFormat_Mac">
    <property name="text">
-    <string>Mac Format (CR Only)</string>
+    <string>Mac (old) Format (CR Only)</string>
    </property>
   </action>
   <action name="actionSyn_C">
@@ -480,7 +475,7 @@
   </action>
   <action name="actionColumn_Mode">
    <property name="text">
-    <string>Column Mode</string>
+    <string>Column Mode *</string>
    </property>
   </action>
   <action name="actionFind">
@@ -505,7 +500,7 @@
   </action>
   <action name="actionAdv_Find">
    <property name="text">
-    <string>Advanced Find...</string>
+    <string>Advanced Find... *</string>
    </property>
   </action>
   <action name="actionGo_Line">
@@ -567,17 +562,17 @@
   </action>
   <action name="actionFix_Tab_Spaces">
    <property name="text">
-    <string>Convert Tabs to Spaces</string>
+    <string>Convert Tabs to Spaces *</string>
    </property>
   </action>
   <action name="actionFix_Spaces_Tab">
    <property name="text">
-    <string>Convert Spaces to Tabs</string>
+    <string>Convert Spaces to Tabs *</string>
    </property>
   </action>
-  <action name="actionFix_Spaces_EOL">
+  <action name="actionDeleteEOL_Spaces">
    <property name="text">
-    <string>Remove Trailing Spaces</string>
+    <string>Remove Trailing Spaces *</string>
    </property>
    <property name="toolTip">
     <string>Remove Trailing Spaces at end of line</string>
@@ -761,12 +756,12 @@
   </action>
   <action name="actionSplit_Vertical">
    <property name="text">
-    <string>Split Vertical</string>
+    <string>Split Vertical *</string>
    </property>
   </action>
   <action name="actionSplit_Horizontal">
    <property name="text">
-    <string>Split Horizontal</string>
+    <string>Split Horizontal *</string>
    </property>
   </action>
  </widget>

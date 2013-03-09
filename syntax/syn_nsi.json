@@ -2,6 +2,9 @@
 	"classes": [
         "\\$\\{[^\\}]*\\}"
 	],
+	"comment-multi-start": "(?!E)E",
+    "comment-multi-end": "(?!E)E",
+    "comment-single": "//[^\n]*",
 	"functions": [
         "\\bBrandingText\\b",
         "\\bCaption\\b",

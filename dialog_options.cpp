@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright (c) 2012 Barbara Geller
+* Copyright (c) 2012-2013 Barbara Geller
 * All rights reserved.
 *
 * This file is part of Diamond Editor.
@@ -128,12 +128,7 @@ void Dialog_Options::Cancel()
 
 void Dialog_Options::pick_Main()
 {
-   QFileDialog::Options options;
-
-   if (false)  {  //(Q_OS_DARWIM) {
-      options |= QFileDialog::DontUseNativeDialog;
-   }
-
+   QFileDialog::Options options;   
    QString selectedFilter;
 
    QString fileName = QFileDialog::getOpenFileName(this, tr("Select Dictionary"),
@@ -147,11 +142,6 @@ void Dialog_Options::pick_Main()
 void Dialog_Options::pick_User()
 {
    QFileDialog::Options options;
-
-   if (false)  {  //(Q_OS_DARWIM) {
-      options |= QFileDialog::DontUseNativeDialog;
-   }
-
    QString selectedFilter;
 
    QString fileName = QFileDialog::getOpenFileName(this, tr("Select User Dictionary"),
@@ -177,11 +167,6 @@ void Dialog_Options::pick_Syntax()
 void Dialog_Options::pick_About()
 {
    QFileDialog::Options options;
-
-   if (false)  {  //(Q_OS_DARWIM) {
-      options |= QFileDialog::DontUseNativeDialog;
-   }
-
    QString selectedFilter;
 
    QString fileName = QFileDialog::getOpenFileName(this, tr("Select Diamond Help (Html)"),

@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright (c) 2012 Barbara Geller
+* Copyright (c) 2012-2013 Barbara Geller
 * All rights reserved.
 *
 * This file is part of Diamond Editor.
@@ -20,18 +20,27 @@
 **************************************************************************/
 
 #include "dialog_find.h"
+#include "util.h"
 
+#include <QComboBox>
+#include <QCursor>
+#include <QLineEdit>
+#include <QMenu>
 #include <QTextCursor>
 
-Dialog_Find::Dialog_Find(QString findText)
+Dialog_Find::Dialog_Find(QString findText, QStringList findList)
    : m_ui(new Ui::Dialog_Find)
-{
+{   
+   m_findList = findList;
+
    m_ui->setupUi(this);
-   m_ui->find->setText(findText);
-   m_ui->down_RB->setChecked(true);
+   this->setUp();
+
+   // display last edit value
+   m_ui->find_Combo->lineEdit()->setText(findText);
 
    // any key deletes first, right arrow to continue typing
-   m_ui->find->selectAll();
+   m_ui->find_Combo->lineEdit()->selectAll();
 
    connect(m_ui->find_PB,   SIGNAL(clicked()),this, SLOT(Find()));
    connect(m_ui->cancel_PB, SIGNAL(clicked()),this, SLOT(Cancel()));
@@ -40,6 +49,47 @@ Dialog_Find::Dialog_Find(QString findText)
 Dialog_Find::~Dialog_Find()
 {
    delete m_ui;
+}
+
+void Dialog_Find::setUp()
+{
+   m_ui->down_RB->setChecked(true);
+
+   //
+   m_ui->find_Combo->setEditable(true);
+   m_ui->find_Combo->addItems(m_findList);
+
+   // add a context menu
+   m_ui->find_Combo->setContextMenuPolicy(Qt::CustomContextMenu);
+   connect(m_ui->find_Combo, SIGNAL(customContextMenuRequested(const QPoint &)), this, SLOT(combo_ContextMenu(const QPoint &)));
+}
+
+void Dialog_Find::combo_ContextMenu(const QPoint &pt)
+{
+   QMenu *menu = m_ui->find_Combo->lineEdit()->createStandardContextMenu();
+
+   menu->addSeparator();
+   menu->addAction("Clear Find List",   this, SLOT(menu_clearList()) );
+   menu->addAction("Delete Find Entry", this, SLOT(menu_deleteEntry()) );
+   menu->popup(QCursor::pos());
+
+   // takes care of deleting the menu after displayed, avoids a memory leak
+   connect(menu, SIGNAL(aboutToHide()), menu, SLOT(deleteLater()));
+}
+
+void Dialog_Find::menu_clearList()
+{   
+   m_findList.clear();
+   m_ui->find_Combo->clear();
+}
+
+void Dialog_Find::menu_deleteEntry()
+{
+   QString text = m_ui->find_Combo->lineEdit()->text();
+   m_findList.removeOne(text);
+
+   int index = m_ui->find_Combo->currentIndex();
+   m_ui->find_Combo->removeItem(index);
 }
 
 void Dialog_Find::Find()
@@ -52,9 +102,14 @@ void Dialog_Find::Cancel()
    this->done(0);
 }
 
-QString Dialog_Find::get_Value()
+QString Dialog_Find::get_findText()
 {
-   return m_ui->find->text();
+   return m_ui->find_Combo->currentText();
+}
+
+QStringList Dialog_Find::get_findList()
+{
+   return m_findList;
 }
 
 bool Dialog_Find::get_Direction()

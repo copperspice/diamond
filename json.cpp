@@ -33,8 +33,9 @@
 #include <QPoint>
 #include <QPushButton>
 #include <QSettings>
+#include <Qt>
 
-// #include <Qt::KeyboardModifier>
+#include <qglobal.h>
 
 bool MainWindow::json_Read()
 {
@@ -43,7 +44,7 @@ bool MainWindow::json_Read()
    QSettings settings("Diamond Editor", "Settings");
    m_jsonFname = settings.value("jsonName").toString();
 
-   if ( m_jsonFname.isEmpty()) {
+   if (m_jsonFname.isEmpty()) {
       // get a new file name
       json_getFileName();
 
@@ -66,8 +67,10 @@ bool MainWindow::json_Read()
       QJsonDocument doc = QJsonDocument::fromJson(data);
 
       QJsonObject object = doc.object();
-      QJsonValue value;
+      QJsonValue value;            
       QJsonArray list;
+
+      int cnt;
 
       //
       value = object.value("pos-x");
@@ -194,9 +197,17 @@ bool MainWindow::json_Read()
       m_struct.syn_MLineItalic = list.at(1).toBool();
       m_struct.syn_MLineText   = json_SetColor(list.at(2).toString());
 
+      // find list
+      list = object.value("find-list").toArray();
+      cnt  = list.count();
+
+      for (int k = 0; k < cnt; k++)  {
+         m_findList.append(list.at(k).toString());
+      }
+
       // macro names
       list = object.value("macro-names").toArray();
-      int cnt = list.count();
+      cnt = list.count();
 
       for (int k = 0; k < cnt; k++)  {
          m_macroNames.append(list.at(k).toString());
@@ -241,7 +252,13 @@ bool MainWindow::json_Read()
       cnt  = list.count();
 
       for (int k = 0; k < cnt; k++)  {
-         m_openedFiles.append(list.at(k).toString());
+         QString fname = list.at(k).toString();
+
+         if (fname.isEmpty()) {
+           // maybe save the updated list
+         } else {
+            m_openedFiles.append(fname);
+         }
       }
    }
 
@@ -391,6 +408,7 @@ bool MainWindow::json_Write(Option route)
             object.insert("size-height", size().height() );
 
             {
+              // opened files
               QJsonArray temp = QJsonArray::fromStringList(m_openedFiles);
               object.insert("opened-files", temp);
             }
@@ -418,6 +436,13 @@ bool MainWindow::json_Write(Option route)
          case DICT_USER:
             object.insert("dictUser", m_struct.dictUser);
             break;
+
+         case FIND_LIST:
+            {
+               QJsonArray temp = QJsonArray::fromStringList(m_findList);
+               object.insert("find-list", temp);
+               break;
+            }
 
          case FONT:           
             {
@@ -570,6 +595,20 @@ bool MainWindow::json_Write(Option route)
                break;
             }
 
+         case RECENTFOLDER:
+            {
+               QJsonArray temp = QJsonArray::fromStringList(m_rfolder_List);
+               object.insert("recent-folders", temp);
+               break;
+            }
+
+         case RECENTFILE:
+            {
+               QJsonArray temp = QJsonArray::fromStringList(m_rf_List);
+               object.insert("recent-files", temp);
+               break;
+            }
+
          case SHOW_LINEHIGHLIGHT:
             object.insert("showLineHighlight", m_struct.showLineHighlight);
             break;
@@ -600,21 +639,7 @@ bool MainWindow::json_Write(Option route)
 
          case WORDWRAP:
             object.insert("word-wrap", m_struct.isWordWrap);
-            break;
-
-         case RECENTFOLDER:
-            {
-               QJsonArray temp = QJsonArray::fromStringList(m_rfolder_List);
-               object.insert("recent-folders", temp);
-               break;
-            }
-
-         case RECENTFILE:            
-            {
-               QJsonArray temp = QJsonArray::fromStringList(m_rf_List);
-               object.insert("recent-files", temp);
-               break;
-            }
+            break;  
       }
 
       // save the new data
@@ -630,10 +655,6 @@ bool MainWindow::json_Write(Option route)
 void MainWindow::json_getFileName()
 {
    QFileDialog::Options options;
-
-   if (false)  {  //(Q_OS_DARWIM) {
-      options |= QFileDialog::DontUseNativeDialog;
-   }
 
    QMessageBox quest;
    quest.setWindowTitle(tr("Diamond Editor"));
@@ -659,16 +680,6 @@ void MainWindow::json_getFileName()
       m_jsonFname = QFileDialog::getOpenFileName(this, tr("Select Diamond Configuration File"),
             "config.json", tr("All Files (*.json)"), &selectedFilter, options);
    }
-}
-
-QString MainWindow::get_SyntaxPath()
-{
-   QString msg  = tr("Select Diamond Syntax Folder");
-   QString path = "/syntax";
-
-   path = get_DirPath(msg, path);
-
-   return path;
 }
 
 bool MainWindow::json_SaveFile(QByteArray data)
@@ -707,10 +718,6 @@ QByteArray MainWindow::json_ReadFile()
 
 bool MainWindow::json_CreateNew()
 {
-   // get the syntax file location
-   QString syntaxPath = get_SyntaxPath();    
-
-   //
    QJsonObject object;
    QJsonValue value;
    QJsonArray list;
@@ -738,19 +745,38 @@ bool MainWindow::json_CreateNew()
    value = QJsonValue(QString("h:mm ap"));
    object.insert("formatTime", value);
 
-   value = QJsonValue(QString(QDir::currentPath() ));
+   value = QJsonValue(QString(QDir::currentPath()));
    object.insert("pathPrior", value);
+
+   // get syntax folder
+   QString syntaxPath = get_SyntaxPath();
 
    value = QJsonValue(QString(syntaxPath));
    object.insert("pathSyntax", value);
 
-   value = QJsonValue(QString(QDir::currentPath() + "/dictionary/en_US.dic" ));
+   // get dictionary file
+   QString dictFile = get_xxFile("Dictionary", "en_US.dic", "Dictionary Files (*.dic)" );
+
+   value = QJsonValue(QString(dictFile));
    object.insert("dictMain", value);
 
-   value = QJsonValue(QString(QDir::currentPath() + "/dictionary/userDict.txt" ));
-   object.insert("dictUser", value);
+   // default dictionary to dictPath
+   dictFile = this->pathName(dictFile) + "/userDict.txt";
 
-   value = QJsonValue(QString( QDir::currentPath() + "/html/index.html" ));
+   if (! QFile::exists(dictFile) ) {
+
+      QFile temp(dictFile);
+      temp.open(QIODevice::WriteOnly);
+      temp.close();
+   }
+
+   value = QJsonValue(QString( dictFile) );
+   object.insert("dictUser", value);   
+
+   // get aboutURL file
+   QString indexPath = get_xxFile("Help", "index.html", "HTML Files (index.html)" );
+
+   value = QJsonValue(QString(indexPath));
    object.insert("aboutUrl", value);
 
    // print options
@@ -782,32 +808,40 @@ bool MainWindow::json_CreateNew()
    value = QJsonValue(QString("Arial,12,-1,5,50,0,0,0,0,0"));
    object.insert("prt-fontText",     value);
 
-   // keys
-   value = QJsonValue(QString("Ctrl+E"));
+   // user defined shortcuts
+   QString modifier;
+
+#ifdef Q_OS_MAC
+   modifier = "Meta+";
+#else
+   modifier = "Ctrl+";
+#endif
+
+   value = QJsonValue(QString(modifier + "E"));
    object.insert("key-selectLine",  value );
 
-   value = QJsonValue(QString("Ctrl+D"));
+   value = QJsonValue(QString(modifier + "D"));
    object.insert("key-selectWord",  value );
 
-   value = QJsonValue(QString("Ctrl+B"));
+   value = QJsonValue(QString(modifier + "B"));
    object.insert("key-selectBlock", value );
 
-   value = QJsonValue(QString("Ctrl+U"));
+   value = QJsonValue(QString(modifier + "U"));
    object.insert("key-upper",       value);
 
-   value = QJsonValue(QString("Ctrl+L"));
+   value = QJsonValue(QString(modifier + "L"));
    object.insert("key-lower",       value);
 
-   value = QJsonValue(QString("Ctrl+I"));
+   value = QJsonValue(QString(modifier + "I"));
    object.insert("key-indentIncr",  value);
 
-   value = QJsonValue(QString("Ctrl+Shift+I"));
+   value = QJsonValue(QString(modifier + "Shift+I"));
    object.insert("key-indentDecr",  value);
 
    value = QJsonValue(QString("Alt+D"));
    object.insert("key-deleteLine",  value);
 
-   value = QJsonValue(QString("Ctrl+K"));
+   value = QJsonValue(QString(modifier + "K"));
    object.insert("key-deleteEOL",  value);
 
    value = QJsonValue(QString("Alt+C"));
@@ -878,6 +912,9 @@ bool MainWindow::json_CreateNew()
    list.replace(2, QString("0,128,0"));         // dark green
    object.insert("syntax-mline", list);
 
+   value = QJsonValue(QJsonArray());
+   object.insert("find-list", value);
+
    // next macro name
    value = QJsonValue(QString("macro1"));
    object.insert("macro-next", value);   
@@ -904,6 +941,27 @@ bool MainWindow::json_CreateNew()
    bool ok = json_SaveFile(data);
 
    return ok;
+}
+
+QString MainWindow::get_SyntaxPath()
+{
+   QString msg  = tr("Select Diamond Syntax Folder");
+   QString path = QDir::currentPath();
+
+   path = this->get_DirPath(msg, path);
+
+   return path;
+}
+
+QString MainWindow::get_xxFile(QString title, QString fname, QString filter)
+{
+   QFileDialog::Options options;
+   QString selectedFilter;
+
+   QString file = QFileDialog::getOpenFileName(this, "Select Diamond " + title,
+         fname, filter, &selectedFilter, options);
+
+   return file;
 }
 
 QFont MainWindow::json_SetFont(QString value)

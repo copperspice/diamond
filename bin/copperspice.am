@@ -5,8 +5,7 @@ AUTOMAKE_OPTIONS=subdir-objects
 CS_HOME:=/z/cs2_Lib
 
 # location of includes, libs, defines
-AM_CXXFLAGS=$(AM_CFLAGS) -DQT_NO_STYLE_S60   \
-     -I$(CS_HOME)/include   $(patsubst %,-I$(CS_HOME)/include/Qt%,$(cslibs))    
+AM_CXXFLAGS=$(AM_CFLAGS) -I$(CS_HOME)/include   $(patsubst %,-I$(CS_HOME)/include/Qt%,$(cslibs))    
      
 # location of CopperSpice libraries
 AM_LDFLAGS=-L$(CS_HOME)/lib     
@@ -24,8 +23,8 @@ deploydir=$(abs_top_builddir)/deploy
 BUILT_SOURCES=$(patsubst forms/%.ui, ui_%.h,$(FORMS))    
 EXTRA_DIST=$(FORMS)    
 
-# compiling .qrc files
-BUILT_SOURCES+=$(patsubst %.qrc,qrc_%.cpp,$(RESOURCES))    
+# compiling .qrc files 
+BUILT_SOURCES+=$(patsubst %.qrc, qrc_%.cpp,$(RESOURCES))    
 EXTRA_DIST+=$(RESOURCES)    
 
 # compiling .ts files

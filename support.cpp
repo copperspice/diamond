@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright (c) 2012 Barbara Geller
+* Copyright (c) 2012-2013 Barbara Geller
 * All rights reserved.
 *
 * This file is part of Diamond Editor.
@@ -39,9 +39,11 @@ void MainWindow::autoLoad()
    for (int k = 0; k < count; k++)  {
       fileName = m_openedFiles.at(k);
 
-      if ( k == 0 ) {
+      if (k == 0) {
+         // no files to load
          loadFile(fileName, false, true);
       } else {
+         // load existing files
          loadFile(fileName, true, true);
       }
    }
@@ -66,19 +68,28 @@ void MainWindow::documentWasModified()
    setWindowModified(m_textEdit->document()->isModified());
 }
 
+QString MainWindow::get_curFileName(int whichTab)
+{
+   QString name = m_tabWidget->tabWhatsThis(whichTab);
+
+   if (name == "untitled.txt") {
+      name = "";
+   }
+
+   return name;
+}
+
 QString MainWindow::get_DirPath(QString message, QString path)
 {
    QFileDialog::Options options;
-
-   if (false)  {  //(Q_OS_DARWIM) {
-      options |= QFileDialog::DontUseNativeDialog;
-   }
-
    options |= QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks;
 
-   // on OS X the title bar may not be displayed
+   // on X11 the title bar may not be displayed
    path = QFileDialog::getExistingDirectory(this, message, path, options);
-   path = path.trimmed() + "/";
+
+   // silly adjust for platform slash issue
+   QDir temp(path + "/");
+   path = temp.canonicalPath() + "/";
 
    return path;
 }
@@ -113,9 +124,19 @@ bool MainWindow::loadFile(const QString &fileName, bool addNewTab, bool isAuto)
    QFile file(fileName);
 
    if (! file.open(QFile::ReadOnly | QFile::Text)) {
-      QString error = tr("Unable to open or read file:  %1\n%2.").arg(fileName).arg(file.errorString());
-      csError(tr("Load File"), error);
-      return false;
+
+      if (! isAuto) {
+         // do not show this message
+
+         QString temp = fileName;
+         if (temp.isEmpty()) {
+            temp = "(No file name available)";
+         }
+
+         QString error = tr("Unable to open/read file:  %1\n%2.").arg(temp).arg(file.errorString());
+         csError(tr("Open/Read File"), error);
+         return false;
+      }
    }
 
    setStatusBar(tr("Loading File..."),0);
@@ -127,7 +148,7 @@ bool MainWindow::loadFile(const QString &fileName, bool addNewTab, bool isAuto)
    if (addNewTab) {
       tabNew();
 
-      m_struct.pathPrior = pathName(fileName);
+      m_struct.pathPrior = this->pathName(fileName);
       json_Write(PATH_PRIOR);
    }
 
@@ -136,7 +157,7 @@ bool MainWindow::loadFile(const QString &fileName, bool addNewTab, bool isAuto)
 
    QApplication::restoreOverrideCursor();
 
-   setCurrentFile(fileName);
+   setCurrentTitle(fileName);
    setStatusBar(tr("File loaded"), 1500);
 
    // recent folders
@@ -189,9 +210,15 @@ bool MainWindow::saveFile(const QString &fileName, bool isSaveOne)
 {
    QFile file(fileName);
 
-   if (! file.open(QFile::WriteOnly | QFile::Text)) {      
-      QString error = tr("Unable to write file %1:\n%2.").arg(fileName).arg(file.errorString());
-      csError(tr("Save File"), error);
+   if (! file.open(QFile::WriteOnly | QFile::Text)) {
+
+      QString temp = fileName;
+      if (temp.isEmpty()) {
+         temp = "(No file name available)";
+      }
+
+      QString error = tr("Unable to save/write file %1:\n%2.").arg(temp).arg(file.errorString());
+      csError(tr("Save/Write File"), error);
       return false;
    }
 
@@ -223,18 +250,18 @@ QString MainWindow::suffixName() const
 
 
 // title & status bar
-void MainWindow::setCurrentFile(const QString &fileName)
+void MainWindow::setCurrentTitle(const QString &fileName, bool tabChange)
 {
-   m_curFile = fileName;
-   m_textEdit->document()->setModified(false);   
+   QString showName;
 
-   setWindowModified(false);
+   if (fileName.isEmpty()) {
+      m_textEdit->document()->setModified(false);
+      setWindowModified(false);
 
-   //
-   QString showName = m_curFile;
+      m_curFile = "";
+      showName  = "untitled.txt";
 
-   if (m_curFile.isEmpty()) {
-      showName = "untitled.txt";
+      setStatus_FName(showName);
 
       // change the name on the tab to "untitled.txt"
       int index = m_tabWidget->currentIndex();
@@ -242,33 +269,38 @@ void MainWindow::setCurrentFile(const QString &fileName)
       m_tabWidget->setTabText(index, showName);
       m_tabWidget->setTabWhatsThis(index, showName);
 
-      setStatus_FName(showName);
       forceSyntax(SYN_TEXT);
 
    } else {
-      // called when loading an existing file
+      // loading an existing file
 
-      // change the name on the tab to m_curFile
-      int index = m_tabWidget->currentIndex();
+      // adjusts the * in the title bar
+      setWindowModified(m_textEdit->document()->isModified());
 
-      m_tabWidget->setTabText(index, strippedName(m_curFile) );
-      m_tabWidget->setTabWhatsThis(index, m_curFile);
+      m_curFile = fileName;
+      showName  = m_curFile;
 
       setStatus_FName(m_curFile);
-      setSyntax();
 
-      bool found = true;
-      found = m_rf_List.contains(m_curFile);
+      if (! tabChange)  {
+         // change the name on the tab to m_curFile
+         int index = m_tabWidget->currentIndex();
 
-      if (! found) {
-         rf_Update();
+         m_tabWidget->setTabText(index, strippedName(m_curFile) );
+         m_tabWidget->setTabWhatsThis(index, m_curFile);
+
+         setSyntax();
+
+         if (! m_rf_List.contains(m_curFile) ) {
+            rf_Update();
+         }
       }
    }
 
    this->setDiamondTitle(showName);
 }
 
-void MainWindow::setDiamondTitle(QString title)
+void MainWindow::setDiamondTitle(const QString title)
 {
    // displays as: File Name[*] --- Diamond Editor
    // setWindowFilePath(showName);

@@ -1,94 +1,4 @@
 
-
-//    fileComboBox = createComboBox(tr("*"));
-//    textComboBox = createComboBox();
-//    directoryComboBox = createComboBox(QDir::currentPath());
-
-
-
-
-//! [2]
-void Window::browse()
-{
-    QString directory = QFileDialog::getExistingDirectory(this,
-                               tr("Find Files"), QDir::currentPath());
-
-    if (!directory.isEmpty()) {
-        if (directoryComboBox->findText(directory) == -1)
-            directoryComboBox->addItem(directory);
-        directoryComboBox->setCurrentIndex(directoryComboBox->findText(directory));
-    }
-}
-//! [2]
-
-static void updateComboBox(QComboBox *comboBox)
-{
-    if (comboBox->findText(comboBox->currentText()) == -1)
-        comboBox->addItem(comboBox->currentText());
-}
-
-void Window::find()
-{
-    filesTable->setRowCount(0);
-
-    QString fileName = fileComboBox->currentText();
-    QString text = textComboBox->currentText();
-    QString path = directoryComboBox->currentText();
-
-    updateComboBox(fileComboBox);
-    updateComboBox(textComboBox);
-    updateComboBox(directoryComboBox);
-
-    currentDir = QDir(path);
-    QStringList files;
-    if (fileName.isEmpty())
-        fileName = "*";
-    files = currentDir.entryList(QStringList(fileName),
-                                 QDir::Files | QDir::NoSymLinks);
-
-    if (!text.isEmpty())
-        files = findFiles(files, text);
-    showFiles(files);
-}
-
-QStringList Window::findFiles(const QStringList &files, const QString &text)
-{
-    QProgressDialog progressDialog(this);
-    progressDialog.setCancelButtonText(tr("&Cancel"));
-    progressDialog.setRange(0, files.size());
-    progressDialog.setWindowTitle(tr("Find Files"));
-
-    QStringList foundFiles;
-
-    for (int i = 0; i < files.size(); ++i) {
-        progressDialog.setValue(i);
-        progressDialog.setLabelText(tr("Searching file number %1 of %2...")
-                                    .arg(i).arg(files.size()));
-        qApp->processEvents();
-
-
-        if (progressDialog.wasCanceled())
-            break;
-
-        QFile file(currentDir.absoluteFilePath(files[i]));
-
-        if (file.open(QIODevice::ReadOnly)) {
-            QString line;
-            QTextStream in(&file);
-            while (!in.atEnd()) {
-                if (progressDialog.wasCanceled())
-                    break;
-                line = in.readLine();
-                if (line.contains(text)) {
-                    foundFiles << files[i];
-                    break;
-                }
-            }
-        }
-    }
-    return foundFiles;
-}
-
 void Window::showFiles(const QStringList &files)
 {
     for (int i = 0; i < files.size(); ++i) {
@@ -108,21 +18,8 @@ void Window::showFiles(const QStringList &files)
         filesTable->setItem(row, 1, sizeItem);
     }
 
-    filesFoundLabel->setText(tr("%1 file(s) found").arg(files.size()) +
-                             (" (Double click on a file to open it)"));
-
+    filesFoundLabel->setText(tr("%1 file(s) found").arg(files.size()) + (" (Double click on a file to open it)"));
     filesFoundLabel->setWordWrap(true);
-}
-
-
-QComboBox *Window::createComboBox(const QString &text)
-{
-    QComboBox *comboBox = new QComboBox;
-    comboBox->setEditable(true);
-    comboBox->addItem(text);
-    comboBox->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
-
-    return comboBox;
 }
 
 void Window::createFilesTable()
@@ -137,8 +34,7 @@ void Window::createFilesTable()
     filesTable->verticalHeader()->hide();
     filesTable->setShowGrid(false);
 
-    connect(filesTable, SIGNAL(cellActivated(int,int)),
-            this, SLOT(openFileOfItem(int,int)));
+    connect(filesTable, SIGNAL(cellActivated(int,int)), this, SLOT(openFileOfItem(int,int)));
 }
 
 void Window::openFileOfItem(int row, int /* column */)

@@ -151,7 +151,7 @@
       </widget>
      </item>
      <item>
-      <widget class="QLineEdit" name="find">
+      <widget class="QComboBox" name="find_Combo">
        <property name="minimumSize">
         <size>
          <width>350</width>
@@ -230,7 +230,7 @@
   </layout>
  </widget>
  <tabstops>
-  <tabstop>find</tabstop>
+  <tabstop>find_Combo</tabstop>
   <tabstop>case_CKB</tabstop>
   <tabstop>wholeWords_CKB</tabstop>
   <tabstop>up_RB</tabstop>

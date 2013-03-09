@@ -42,7 +42,9 @@
 
 void MainWindow::print()
 {
-   QPrinter printer(QPrinter::HighResolution);
+   QPrinter printer(QPrinter::HighResolution);   
+
+   csMsg("In the print routine, line 47");
 
    QPrintDialog dialog(&printer);
    dialog.setWindowTitle("Print Document");

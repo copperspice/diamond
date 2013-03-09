@@ -1,10 +1,36 @@
 {
-	"classes": [
+	"classes": [        
+        "</?b[^>]*>",
+        "</?body[^>]*>",
+        "</?br[^>]*>",
+        "</?dir[^>]*>",
+        "</?div[^>]*>",
+        "</?font[^>]*>",
+        "</?head[^>]*>",
+        "</?html[^>]*>",
+        "</?meta[^>]*>",
+        "</?smal[^>]*>",
+        "</?span[^>]*>",
+        "</?table[^>]*>",
+        "</?td[^>]*>",
+        "</?th[^>]*>",
+        "</?tr[^>]*>",
+        "</?title[^>]*>",
+        "</?a[^>]*>",
+        "</?b[^>]*>",
+        "</?li[^>]*>",
+        "</?lu[^>]*>",
+        "</?p[^>]*>",
+        "</?u[^>]*>"
 	],
-	"functions": [
+	"comment-multi-start": "(?!E)E",
+    "comment-multi-end": "(?!E)E",
+	"comment-single": "(?!E)E",
+	"functions": [		
    	],
 	"ignore-case" : true,
-	"keywords": [     
+    "keywords": [
+        "\\&[^;]+;"
    	],
    	"types": [
    	] 

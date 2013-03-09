@@ -1,8 +1,10 @@
 {
     "classes": [
     ],
-    "functions": [
-    
+	"comment-multi-start": "/\\*",
+    "comment-multi-end": "\\*/",
+    "comment-single": "//[^\n]*",
+    "functions": [    
       "\\babs\\b",
       "\\bacos\\b",
       "\\bacosh\\b",

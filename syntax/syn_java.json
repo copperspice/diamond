@@ -1,6 +1,9 @@
 {
 	"classes": [
 	],
+	"comment-multi-start": "/\\*",
+    "comment-multi-end": "\\*/",
+    "comment-single": "//[^\n]*",
 	"functions": [
    	],
 	"ignore-case" : true,

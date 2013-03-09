@@ -25,26 +25,36 @@
 #include "ui_dialog_find.h"
 
 #include <QDialog>
+#include <QPoint>
+#include <QString>
+#include <QStringList>
 
 class Dialog_Find : public QDialog
 {     
    Q_OBJECT
 
    public:
-      Dialog_Find(QString text = "");
+      Dialog_Find(QString text, QStringList findList);
       ~Dialog_Find();
 
-      QString get_Value();
+      QString get_findText();
+      QStringList get_findList();
       bool get_Direction();
       bool get_Case();
       bool get_WholeWords();
 
    private:
       Ui::Dialog_Find *m_ui;
+      QStringList m_findList;
+      void setUp();      
 
    private slots:
       void Find();
       void Cancel();
+
+      void combo_ContextMenu(const QPoint &pt);
+      void menu_clearList();
+      void menu_deleteEntry();
 };
 
 #endif

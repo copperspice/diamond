@@ -91,13 +91,13 @@ void MainWindow::setSyntax()
       } else if (suffix == "doxy" || suffix == "doxygen") {
          suffix = "dox";
 
-      } else if (fname == "configure" || fname == "configure.ac") {
-         suffix = "make";
-
       } else if (suffix == "htm" || suffix == "shtml") {
          suffix = "html";
 
-      } else if (fname == "makefile" || fname == "makefile.am" || fname == "makefile.in") {
+      } else if (fname == "configure" || fname == "configure.ac"  || suffix == "ac") {
+         suffix = "make";
+
+      } else if (fname == "makefile" || fname == "makefile.in" || suffix == "am") {
          suffix = "make";
 
       } else if (suffix == "nsis") {
@@ -177,10 +177,11 @@ void MainWindow::setSyntax()
 
       }
 
+      // save the menu enum
       setSynType(m_syntaxEnum);
       m_textEdit->set_SyntaxEnum(m_syntaxEnum);
 
-      // check the box
+      // check the menu item
       setSynType(m_syntaxEnum);
 
       runSyntax(synFName);

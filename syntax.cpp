@@ -180,29 +180,23 @@ Syntax::Syntax(QTextDocument *document, QString synFName, const struct Settings 
    highlightingRules.append(rule);
 
    // single line comment
+   QString commentSingle = object.value("comment-single").toString();
+
    rule.format.setFontWeight(settings.syn_CommentWeight);
    rule.format.setFontItalic(settings.syn_CommentItalic);
    rule.format.setForeground(settings.syn_CommentText);
-   rule.pattern = QRegExp("//[^\n]*");
+   rule.pattern = QRegExp(commentSingle);
    highlightingRules.append(rule);
 
    // multi line comment
-   QString temp = QFileInfo(synFName).fileName();
-
-   if (temp == "syn_dox.json" || temp == "syn_txt.json" ||
-       temp == "syn_none.json" ) {
-
-      m_commentStartExpression = QRegExp("(?!E)E");
-      m_commentEndExpression   = QRegExp("(?!E)E");
-
-   } else {
-      m_commentStartExpression = QRegExp("/\\*");
-      m_commentEndExpression   = QRegExp("\\*/");
-   }
+   QString commentStart = object.value("comment-multi-start").toString();
+   QString commentEnd   = object.value("comment-multi-end").toString();
 
    m_multiLineCommentFormat.setFontWeight(settings.syn_MLineWeight);
    m_multiLineCommentFormat.setFontItalic(settings.syn_MLineItalic);
    m_multiLineCommentFormat.setForeground(settings.syn_MLineText);
+   m_commentStartExpression = QRegExp(commentStart);
+   m_commentEndExpression   = QRegExp(commentEnd);
 
    // spell check   
    m_spellCheckFormat.setUnderlineColor(QColor("red"));

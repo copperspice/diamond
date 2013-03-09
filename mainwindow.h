@@ -30,6 +30,7 @@
 #include "util.h"
 
 #include <QAction>
+#include <QFile>
 #include <QJsonObject>
 #include <QJsonValue>
 #include <QList>
@@ -53,6 +54,7 @@ class MainWindow : public QMainWindow
       MainWindow();      
       struct Settings get_StructData();           
 
+      // support
       QString get_DirPath(QString message, QString path);
       bool loadFile(const QString &fileName, bool newTab, bool isAuto);
 
@@ -72,7 +74,6 @@ class MainWindow : public QMainWindow
 
    private:
       Ui::MainWindow *m_ui;
-      void setDiamondTitle(QString title);
 
       // textEdit
       DiamondTextEdit *m_textEdit;
@@ -91,6 +92,7 @@ class MainWindow : public QMainWindow
 
       // find
       QString m_findText;
+      QStringList m_findList;
       QTextDocument::FindFlags m_flags;
       bool m_fDirection;
       bool m_fCase;
@@ -98,10 +100,14 @@ class MainWindow : public QMainWindow
 
       // advanced find
       QString m_advFindText;
+      QString m_advFindFileType;
+      QString m_advFindFolder;
       QTextDocument::FindFlags m_advFlags;
       bool m_advfCase;
       bool m_advfWholeWords;
-      bool m_advfFolders;
+      bool m_advfSearchSubFolders;
+
+      QStringList advFind_getResults();
 
       // macros    
       bool m_record;
@@ -150,13 +156,14 @@ class MainWindow : public QMainWindow
       QToolBar *searchToolBar;
       QToolBar *viewToolBar;
       QToolBar *toolsToolBar;
+      QToolBar *windowToolBar;
 
       // status bar
       QLabel *m_statusLine;
       QLabel *m_statusMode;
       QLabel *m_statusName;    
 
-      enum Option { ABOUTURL, AUTOLOAD, CLOSE, COLORS, COLUMN_MODE, DICT_MAIN, DICT_USER, FONT,
+      enum Option { ABOUTURL, AUTOLOAD, CLOSE, COLORS, COLUMN_MODE, DICT_MAIN, DICT_USER, FIND_LIST, FONT,
                     FORMAT_DATE, FORMAT_TIME, KEYS, MACRO, MACRO_NAMES, PATH_SYNTAX, PATH_PRIOR, PRINT_OPTIONS,
                     RECENTFOLDER, RECENTFILE, SHOW_LINEHIGHLIGHT, SHOW_LINENUMBERS, SHOW_SPACES, SHOW_EOL,
                     SPELLCHECK, TAB_SPACING, USESPACES, WORDWRAP};
@@ -167,11 +174,13 @@ class MainWindow : public QMainWindow
       void forceSyntax(SyntaxTypes data);
 
       // create shortcuts, menus, status bar
-      void createShortCuts();
+      void createShortCuts(bool setupAll);
       void createToolBars();
       void createStatusBar();
       void createConnections();
       void createToggles();
+
+      QString adjustKey(QString sequence);
 
       void setStatusBar(QString msg, int timeOut);
       void setStatus_ColMode();
@@ -190,8 +199,10 @@ class MainWindow : public QMainWindow
       bool json_Load_Macro(QString macroName);
 
       QString get_SyntaxPath();
+      QString get_xxFile(QString title, QString fname, QString filter);
+
       QFont json_SetFont(QString value);
-      QColor  json_SetColor(QString values);
+      QColor json_SetColor(QString values);
       QString json_GetRGB(QColor color);     
       QJsonObject json_SaveSyntax(QJsonObject object);
 
@@ -212,12 +223,15 @@ class MainWindow : public QMainWindow
       int get_Value1(const QString route);
       bool querySave();     
       bool saveFile(const QString &fileName, bool isSaveOne);
-      bool saveAs(bool isSaveOne);
+      bool saveAs(bool isSaveOne);      
 
-      void setCurrentFile(const QString &fileName);
+      void setCurrentTitle(const QString &fileName, bool tabChange = false);
+      void setDiamondTitle(const QString title);
+
+      QString get_curFileName(int whichTab);
       QString pathName(QString fileName) const;
       QString strippedName(const QString filename);
-      QString suffixName() const;
+      QString suffixName() const;   
 
    private slots:
       void newFile();
@@ -291,12 +305,12 @@ class MainWindow : public QMainWindow
       void setSyn_Python();
       void setSyn_None();
 
-      void formatDos();
       void formatUnix();
+      void formatWin();
       void formatMac();
       void fixTab_Spaces();
-      void fixSpaces_Tabs();
-      void fixSpaces_EOL();
+      void fixSpaces_Tab();
+      void deleteEOL_Spaces();
 
       void mw_macroStart();
       void mw_macroStop();

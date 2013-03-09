@@ -25,7 +25,11 @@ Dialog_Get1::Dialog_Get1()
    : m_ui(new Ui::Dialog_Get1)
 {
    m_ui->setupUi(this);
+
    m_ui->value->setText("1");
+
+   // any key deletes first, right arrow to continue typing
+   m_ui->value->selectAll();
 
    connect(m_ui->ok_PB,     SIGNAL(clicked()),this, SLOT(Ok()));
    connect(m_ui->cancel_PB, SIGNAL(clicked()),this, SLOT(Cancel()));

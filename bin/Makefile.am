@@ -21,7 +21,7 @@ hunspell_la=$(hunspell_path)lib/libhunspell-1.3.la
 # hunspell_la=$(hunspell_path)lib/libhunspell.a
 
 # disable console on window, location of includes, defines
-AM_CXXFLAGS+=-mwindows -std=c++11   -I/z/Hunspell/deploy/include/hunspell  -I..
+AM_CXXFLAGS+=-mwindows -I/z/Hunspell/deploy/include/hunspell  -I..
 
 # target app name
 deploy_PROGRAMS = Diamond

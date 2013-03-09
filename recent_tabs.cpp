@@ -30,7 +30,9 @@ void MainWindow::openTab_CreateMenus()
    int cnt = m_openedFiles.count();
 
    QString tName;
-   QMenu   *windowMenu = m_ui->menuWindow;
+
+   QMenu   *windowMenu = m_ui->menuWindow;   
+   QAction *action     = windowMenu->addSeparator();
 
    for (int i = 0; i < openTab_MaxCnt; ++i) {
 
@@ -41,15 +43,15 @@ void MainWindow::openTab_CreateMenus()
       }
 
       openTab_Actions[i] = new QAction(tName, this);
-      openTab_Actions[i]->setData("open-file");
+      openTab_Actions[i]->setData("select-tab");
 
       windowMenu->addAction(openTab_Actions[i]);
 
       if (i >= cnt)  {
-         openTab_Actions[i]->setVisible(false);
+         openTab_Actions[i]->setVisible(false);         
       }
 
-      connect(openTab_Actions[i], SIGNAL(triggered()), this, SLOT(openTab_Select()));
+      connect(openTab_Actions[i], SIGNAL(triggered()), this, SLOT(openTab_Select()));      
    }
 }
 
@@ -71,9 +73,9 @@ void MainWindow::openTab_Select()
          int index = m_tabWidget->currentIndex();
 
          for (int k = 0; k < max; ++k) {
-            QString curFile = m_tabWidget->tabWhatsThis(k);
+            QString tcurFile = this->get_curFileName(k);
 
-            if (curFile == fileName) {
+            if (tcurFile == fileName) {
                match = true;
                index = k;
                break;
@@ -85,7 +87,7 @@ void MainWindow::openTab_Select()
             m_tabWidget->setCurrentIndex(index);
 
          } else {
-            // delete entry from list
+            // delete entry from list since it did not exist
             m_openedFiles.removeOne(fileName);
 
             // update actions
@@ -98,6 +100,10 @@ void MainWindow::openTab_Select()
 
 void MainWindow::openTab_Add()
 {
+   if (m_curFile.isEmpty()) {
+      return;
+   }
+
    m_openedFiles.append(m_curFile);
 
    // update actions
@@ -115,11 +121,21 @@ void MainWindow::openTab_Delete()
 void MainWindow::openTab_UpdateActions()
 {
    int cnt = m_openedFiles.count();
+   QString isModified;
 
    for (int i = 0; i < openTab_MaxCnt; ++i) {
 
       if (i < cnt)  {
-         openTab_Actions[i]->setText(m_openedFiles[i]);
+
+/*       Not working as desired
+
+         if (m_textEdit->document()->isModified()) {
+            isModified = " *";
+         } else {
+            isModified = "";
+         }
+*/
+         openTab_Actions[i]->setText(m_openedFiles[i] + isModified);
          openTab_Actions[i]->setVisible(true);
 
      } else {        
