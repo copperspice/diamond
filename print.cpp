@@ -1,6 +1,6 @@
-/**************************************************************************
+ /**************************************************************************
 *
-* Copyright (c) 2012 Barbara Geller
+* Copyright (c) 2012-2013 Barbara Geller
 * All rights reserved.
 *
 * This file is part of Diamond Editor.
@@ -44,16 +44,14 @@ void MainWindow::print()
 {
    QPrinter printer(QPrinter::HighResolution);   
 
-   csMsg("In the print routine, line 47");
-
-   QPrintDialog dialog(&printer);
+   QPrintDialog dialog(&printer, this);
    dialog.setWindowTitle("Print Document");
 
    if (m_textEdit->textCursor().hasSelection()) {
       dialog.addEnabledOption(QAbstractPrintDialog::PrintSelection);
    }
 
-   if (dialog.exec() == QDialog::Accepted ) {
+   if (dialog.exec() == QDialog::Accepted) {
       this->printOut(&printer);
    }
 }
@@ -65,7 +63,7 @@ void MainWindow::printPreview()
    QPrintPreviewDialog preview(&printer, this);
    preview.setWindowTitle(m_curFile);
 
-   connect(&preview, SIGNAL(paintRequested(QPrinter *)), this, SLOT(printPreview(QPrinter*)));
+   connect(&preview, SIGNAL(paintRequested(QPrinter *)), this, SLOT(printPreview(QPrinter *)));
    preview.exec();
 }
 
@@ -76,11 +74,7 @@ void MainWindow::printPreview(QPrinter *printer)
 
 void MainWindow::printPdf()
 {
-   QFileDialog::Options options;
-
-   if (false)  {  //(Q_OS_DARWIM) {
-      options |= QFileDialog::DontUseNativeDialog;
-   }
+   QFileDialog::Options options;  
 
    QString selectedFilter;
    QString fileName = QFileDialog::getSaveFileName(this, tr("Print to PDF"),
@@ -104,7 +98,7 @@ void MainWindow::printPdf()
 
 // * *
 void MainWindow::printOut(QPrinter *printer)
-{     
+{
    printer->setPageMargins(m_printer.marLeft, m_printer.marTop,
                            m_printer.marRight, m_printer.marBottom,QPrinter::Inch);
 
@@ -120,9 +114,9 @@ void MainWindow::printOut(QPrinter *printer)
 
    if (painter.begin(printer)) {
 
-      painter.setFont(m_printer.fontText);
-      td->documentLayout()->setPaintDevice(painter.device());     
+      td->setDefaultFont(m_printer.fontText);
 
+      td->documentLayout()->setPaintDevice(painter.device());
       QRect printArea = printer->pageRect();
 
       // save for header and footer

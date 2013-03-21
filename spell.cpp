@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright (c) 2012 Barbara Geller
+* Copyright (c) 2012-2013 Barbara Geller
 * All rights reserved.
 *
 * This file is part of Diamond Editor.
@@ -82,7 +82,7 @@ void MainWindow::setSyntax()
       fname  = strippedName(m_curFile).toLower();
       suffix = suffixName();
 
-      if (suffix == "c" || fname == "cpp" || fname == "h") {
+      if (suffix == "h" || suffix == "c" || suffix == "cpp" || suffix == "m" || suffix == "mm") {
          suffix = "cpp";
 
       } else if (suffix == "prg") {
@@ -122,7 +122,6 @@ void MainWindow::setSyntax()
 
    //
    if (! QFile::exists(synFName)) {
-      // csError(tr("Syntax Highlighting"), tr("Syntax highlighting file was not found: \n\n") + synFName  + "  ");
       setSynType(SYN_NONE);
 
       m_syntaxEnum = SYN_NONE;
@@ -130,8 +129,9 @@ void MainWindow::setSyntax()
 
    } else {      
 
-      if (suffix == "c" || suffix == "cpp" || suffix == "h")  {
-         setSynType(SYN_C);
+      if (suffix == "cpp") {
+         // setSynType(SYN_C);
+         m_syntaxEnum = SYN_C;
 
       } else if (suffix == "clipper")  {
          m_syntaxEnum = SYN_CLIPPER;
@@ -258,7 +258,7 @@ void MainWindow::forceSyntax(SyntaxTypes data)
          break;
    }
 
-   if (! QFile::exists(synFName)) {
+   if (! QFile::exists(synFName)) {   
       csError(tr("Syntax Highlighting"), tr("Syntax highlighting file was not found: \n\n") + synFName  + "  ");
 
    } else {
@@ -278,6 +278,9 @@ void MainWindow::runSyntax(QString synFName)
    m_textEdit->set_SyntaxFile(synFName);
 
    m_syntaxParser = new Syntax(m_textEdit->document(), synFName, m_struct, m_spellCheck);
-   m_textEdit->set_SyntaxParser(m_syntaxParser);
+
+   if ( m_syntaxParser->processSyntax() ) {
+      m_textEdit->set_SyntaxParser(m_syntaxParser);
+   }
 }
 

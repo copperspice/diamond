@@ -19,46 +19,58 @@
 *
 **************************************************************************/
 
-#include "dialog_get1.h"
+#include "dialog_config.h"
+#include "util.h"
 
-Dialog_Get1::Dialog_Get1()
-   : m_ui(new Ui::Dialog_Get1)
+Dialog_Config::Dialog_Config(QString fileName)
+   : m_ui(new Ui::Dialog_Config)
 {
    m_ui->setupUi(this);
 
-   m_ui->value->setText("1");
+   m_ui->currentName->setText(fileName);
+   m_ui->newName->setText(fileName);
 
-   // any key deletes first, right arrow to continue typing
-   m_ui->value->selectAll();
-
-   connect(m_ui->ok_PB,     SIGNAL(clicked()),this, SLOT(Ok()));
-   connect(m_ui->cancel_PB, SIGNAL(clicked()),this, SLOT(Cancel()));
+   connect(m_ui->create_PB, SIGNAL(clicked()),this, SLOT(createNew()));
+   connect(m_ui->select_PB, SIGNAL(clicked()),this, SLOT(select()));
+   connect(m_ui->rename_PB, SIGNAL(clicked()),this, SLOT(rename()));
+   connect(m_ui->cancel_PB, SIGNAL(clicked()),this, SLOT(cancel()));
 }
 
-Dialog_Get1::~Dialog_Get1()
+Dialog_Config::~Dialog_Config()
 {
    delete m_ui;
 }
 
-void Dialog_Get1::Ok()
+void Dialog_Config::createNew()
 {
    this->done(1);
 }
 
-void Dialog_Get1::Cancel()
+void Dialog_Config::select()
+{
+   this->done(2);
+}
+
+void Dialog_Config::rename()
+{
+   QString name = m_ui->newName->text();
+
+   if (name.isEmpty())  {
+      csError("Rename Configuration File", "New file name can not be empty" );
+      return;
+   }
+
+   this->done(3);
+}
+
+void Dialog_Config::cancel()
 {
    this->done(0);
 }
 
-QString Dialog_Get1::get_Value()
+QString Dialog_Config::get_newName()
 {
-   return m_ui->value->text();
-}
-
-void Dialog_Get1::set_ColNo()
-{
-   setWindowTitle("Go to Column");
-   m_ui->label->setText("Column Number:");
+   return m_ui->newName->text();
 }
 
 

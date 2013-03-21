@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright (c) 2012 Barbara Geller
+* Copyright (c) 2012-2013 Barbara Geller
 * All rights reserved.
 *
 * This file is part of Diamond Editor.
@@ -36,8 +36,12 @@ Dialog_Colors::Dialog_Colors(MainWindow *from)
    m_ui->setupUi(this);
 
    m_struSettings = m_mainWindow->get_StructData();
-   m_syntaxFname  = m_struSettings.pathSyntax + "syn_cpp.json";
+   m_syntaxFname  = m_struSettings.pathSyntax + "syn_cpp.json";  
 
+   m_syntaxParser = new Syntax(m_ui->sample->document(), m_syntaxFname, m_struSettings);
+   updateParser(false);
+
+   //
    initData();
 
    connect(m_ui->text_TB,     SIGNAL(clicked()), this, SLOT(text_TB())     );
@@ -87,7 +91,7 @@ void Dialog_Colors::colorBox(QLineEdit *field, QColor color)
 }
 
 void Dialog_Colors::initData()
-{
+{   
    // 1
    m_ui->text_Color->setReadOnly(true);
    colorBox(m_ui->text_Color, m_struSettings.colorText);
@@ -164,10 +168,17 @@ void Dialog_Colors::initData()
    }
    m_ui->mline_Italic_CB->setChecked(m_struSettings.syn_MLineItalic);
 
-   // 3
-   m_syntaxParser = new Syntax(m_ui->sample->document(), m_syntaxFname, m_struSettings);
 }
 
+void Dialog_Colors::updateParser(bool newSettings)
+{
+   if (newSettings) {
+      m_syntaxParser->processSyntax(m_struSettings);
+
+   } else  {
+      m_syntaxParser->processSyntax();
+   }
+}
 
 QColor Dialog_Colors::pickColor(QColor oldColor)
 {
@@ -225,7 +236,7 @@ void Dialog_Colors::highText_TB()
 
    //
    colorBox(m_ui->highText_Color, m_struSettings.colorHighText);
-   m_syntaxParser = new Syntax(m_ui->sample->document(), m_syntaxFname, m_struSettings);
+   updateParser(true);
 }
 
 void Dialog_Colors::highBack_TB()
@@ -235,7 +246,7 @@ void Dialog_Colors::highBack_TB()
 
    //
    colorBox(m_ui->highBack_Color, m_struSettings.colorHighBack);
-   m_syntaxParser = new Syntax(m_ui->sample->document(), m_syntaxFname, m_struSettings);
+   updateParser(true);
 }
 
 void Dialog_Colors::key_TB()
@@ -245,7 +256,7 @@ void Dialog_Colors::key_TB()
 
    //
    colorBox(m_ui->key_Color, m_struSettings.syn_KeyText);
-   m_syntaxParser = new Syntax(m_ui->sample->document(), m_syntaxFname, m_struSettings);
+   updateParser(true);
 }
 
 void Dialog_Colors::type_TB()
@@ -255,7 +266,7 @@ void Dialog_Colors::type_TB()
 
    //
    colorBox(m_ui->type_Color, m_struSettings.syn_TypeText);
-   m_syntaxParser = new Syntax(m_ui->sample->document(), m_syntaxFname, m_struSettings);
+   updateParser(true);
 }
 
 void Dialog_Colors::class_TB()
@@ -265,7 +276,7 @@ void Dialog_Colors::class_TB()
 
    //
    colorBox(m_ui->class_Color, m_struSettings.syn_ClassText);
-   m_syntaxParser = new Syntax(m_ui->sample->document(), m_syntaxFname, m_struSettings);
+   updateParser(true);
 }
 
 void Dialog_Colors::func_TB()
@@ -275,7 +286,7 @@ void Dialog_Colors::func_TB()
 
    //
    colorBox(m_ui->func_Color, m_struSettings.syn_FuncText);
-   m_syntaxParser = new Syntax(m_ui->sample->document(), m_syntaxFname, m_struSettings);
+   updateParser(true);
 }
 
 void Dialog_Colors::quote_TB()
@@ -285,7 +296,7 @@ void Dialog_Colors::quote_TB()
 
    //
    colorBox(m_ui->quote_Color, m_struSettings.syn_QuoteText);
-   m_syntaxParser = new Syntax(m_ui->sample->document(), m_syntaxFname, m_struSettings);
+   updateParser(true);
 }
 
 void Dialog_Colors::comment_TB()
@@ -295,7 +306,7 @@ void Dialog_Colors::comment_TB()
 
    //
    colorBox(m_ui->comment_Color, m_struSettings.syn_CommentText);
-   m_syntaxParser = new Syntax(m_ui->sample->document(), m_syntaxFname, m_struSettings);
+   updateParser(true);
 }
 
 void Dialog_Colors::mline_TB()
@@ -305,8 +316,9 @@ void Dialog_Colors::mline_TB()
 
    //
    colorBox(m_ui->mline_Color, m_struSettings.syn_MLineText);
-   m_syntaxParser = new Syntax(m_ui->sample->document(), m_syntaxFname, m_struSettings);
+   updateParser(true);
 }
+
 
 /**/
 void Dialog_Colors::key_bold()
@@ -317,8 +329,7 @@ void Dialog_Colors::key_bold()
       m_struSettings.syn_KeyWeight = QFont::Normal;
    }
 
-   //
-   m_syntaxParser = new Syntax(m_ui->sample->document(), m_syntaxFname, m_struSettings);
+   updateParser(true);
 }
 
 void Dialog_Colors::key_italic()
@@ -329,8 +340,7 @@ void Dialog_Colors::key_italic()
       m_struSettings.syn_KeyItalic = false;
    }
 
-   //
-   m_syntaxParser = new Syntax(m_ui->sample->document(), m_syntaxFname, m_struSettings);
+   updateParser(true);
 }
 
 void Dialog_Colors::type_bold()
@@ -341,8 +351,7 @@ void Dialog_Colors::type_bold()
       m_struSettings.syn_TypeWeight = QFont::Normal;
    }
 
-   //
-   m_syntaxParser = new Syntax(m_ui->sample->document(), m_syntaxFname, m_struSettings);
+   updateParser(true);
 }
 
 void Dialog_Colors::type_italic()
@@ -353,8 +362,7 @@ void Dialog_Colors::type_italic()
       m_struSettings.syn_TypeItalic = false;
    }
 
-   //
-   m_syntaxParser = new Syntax(m_ui->sample->document(), m_syntaxFname, m_struSettings);
+   updateParser(true);
 }
 
 void Dialog_Colors::class_bold()
@@ -365,8 +373,7 @@ void Dialog_Colors::class_bold()
       m_struSettings.syn_ClassWeight = QFont::Normal;
    }
 
-   //
-   m_syntaxParser = new Syntax(m_ui->sample->document(), m_syntaxFname, m_struSettings);
+   updateParser(true);
 }
 
 void Dialog_Colors::class_italic()
@@ -377,8 +384,7 @@ void Dialog_Colors::class_italic()
       m_struSettings.syn_ClassItalic = false;
    }
 
-   //
-   m_syntaxParser = new Syntax(m_ui->sample->document(), m_syntaxFname, m_struSettings);
+   updateParser(true);
 }
 
 void Dialog_Colors::func_bold()
@@ -389,8 +395,7 @@ void Dialog_Colors::func_bold()
       m_struSettings.syn_FuncWeight = QFont::Normal;
    }
 
-   //
-   m_syntaxParser = new Syntax(m_ui->sample->document(), m_syntaxFname, m_struSettings);
+   updateParser(true);;
 }
 
 void Dialog_Colors::func_italic()
@@ -401,8 +406,7 @@ void Dialog_Colors::func_italic()
       m_struSettings.syn_FuncItalic = false;
    }
 
-   //
-   m_syntaxParser = new Syntax(m_ui->sample->document(), m_syntaxFname, m_struSettings);
+   updateParser(true);
 }
 
 void Dialog_Colors::quote_bold()
@@ -413,8 +417,7 @@ void Dialog_Colors::quote_bold()
       m_struSettings.syn_QuoteWeight = QFont::Normal;
    }
 
-   //
-   m_syntaxParser = new Syntax(m_ui->sample->document(), m_syntaxFname, m_struSettings);
+   updateParser(true);
 }
 
 void Dialog_Colors::quote_italic()
@@ -425,8 +428,7 @@ void Dialog_Colors::quote_italic()
       m_struSettings.syn_QuoteItalic = false;
    }
 
-   //
-   m_syntaxParser = new Syntax(m_ui->sample->document(), m_syntaxFname, m_struSettings);
+   updateParser(true);
 }
 
 void Dialog_Colors::comment_bold()
@@ -437,8 +439,7 @@ void Dialog_Colors::comment_bold()
       m_struSettings.syn_CommentWeight = QFont::Normal;
    }
 
-   //
-   m_syntaxParser = new Syntax(m_ui->sample->document(), m_syntaxFname, m_struSettings);
+   updateParser(true);
 }
 
 void Dialog_Colors::comment_italic()
@@ -449,8 +450,7 @@ void Dialog_Colors::comment_italic()
       m_struSettings.syn_CommentItalic = false;
    }
 
-   //
-   m_syntaxParser = new Syntax(m_ui->sample->document(), m_syntaxFname, m_struSettings);
+   updateParser(true);
 }
 
 void Dialog_Colors::mline_bold()
@@ -461,8 +461,7 @@ void Dialog_Colors::mline_bold()
       m_struSettings.syn_MLineWeight = QFont::Normal;
    }
 
-   //
-   m_syntaxParser = new Syntax(m_ui->sample->document(), m_syntaxFname, m_struSettings);
+   updateParser(true);
 }
 
 void Dialog_Colors::mline_italic()
@@ -473,8 +472,7 @@ void Dialog_Colors::mline_italic()
       m_struSettings.syn_MLineItalic = false;
    }
 
-   //
-   m_syntaxParser = new Syntax(m_ui->sample->document(), m_syntaxFname, m_struSettings);
+   updateParser(true);
 }
 
 

@@ -1,9 +1,4 @@
-configure.ac
-Makefile.am
 diamond.qrc
-
-bin/copperspice.am
-bin/Makefile.am
 
 syntax/syn_txt.json
 syntax/syn_sh.json
@@ -22,6 +17,7 @@ syntax/syn_nsi.json
 
 forms/dialog_advfind.ui
 forms/dialog_colors.ui
+forms/dialog_config.ui
 forms/dialog_find.ui
 forms/dialog_get1.ui
 forms/dialog_macro.ui
@@ -35,8 +31,6 @@ about.h
 about.cpp
 diamond_edit.cpp
 diamond_edit.h
-diamond_tab.h
-diamond_tab.cpp
 json.cpp
 keylineedit.h
 keylineedit.cpp
@@ -55,11 +49,13 @@ syntax.h
 syntax.cpp
 util.h
 util.cpp
-advanced_find.cpp
 recent_tabs.cpp
+split_window.cpp
 
 dialog_get1.h
 dialog_get1.cpp
+dialog_config.cpp
+dialog_config.h
 dialog_macro.h
 dialog_macro.cpp
 dialog_options.h
@@ -76,4 +72,3 @@ dialog_colors.h
 dialog_colors.cpp
 dialog_replace.h
 dialog_replace.cpp
-

@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright (c) 2012 Barbara Geller
+* Copyright (c) 2012-2013 Barbara Geller
 * All rights reserved.
 *
 * This file is part of Diamond Editor.
@@ -32,7 +32,7 @@ class Dialog_AdvFind : public QDialog
    Q_OBJECT
 
    public:
-      Dialog_AdvFind(QString text = "");
+      Dialog_AdvFind(QString text, QString fileType, QString findFolder);
       ~Dialog_AdvFind();
 
       QString get_findText();      

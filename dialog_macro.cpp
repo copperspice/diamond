@@ -167,20 +167,19 @@ void Dialog_Macro::View()
 
    QString msg;
 
-   for (int k; k < data.size(); ++k) {
+   for (int k = 0; k < data.size(); ++k) {
       msg += "Key:" + QString::number(data.at(k).key) +
              "  Modifier:" + QString::number(data.at(k).modifier);
 
 
       QString textAsc = data.at(k).text;
-      volatile auto foo = textAsc.toLatin1().data();
+      // volatile auto foo = textAsc.toLatin1().data();
 
       if (textAsc.isEmpty()) {
          msg += + "        \n";
 
          } else {
          msg += "  Text:" + textAsc + "        \n";
-
       }
    }
 

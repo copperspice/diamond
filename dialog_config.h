@@ -19,42 +19,31 @@
 *
 **************************************************************************/
 
-#ifndef DIALOG_FIND_H
-#define DIALOG_FIND_H
+#ifndef DIALOG_CONFIG_H
+#define DIALOG_CONFIG_H
 
-#include "ui_dialog_find.h"
+#include "ui_dialog_config.h"
 
 #include <QDialog>
-#include <QPoint>
 #include <QString>
-#include <QStringList>
 
-class Dialog_Find : public QDialog
+class Dialog_Config : public QDialog
 {     
    Q_OBJECT
 
    public:
-      Dialog_Find(QString text, QStringList findList);
-      ~Dialog_Find();
-
-      QString get_findText();
-      QStringList get_findList();
-      bool get_Direction();
-      bool get_Case();
-      bool get_WholeWords();
+      Dialog_Config(QString fileName);
+      ~Dialog_Config();
+      QString get_newName();
 
    private:
-      Ui::Dialog_Find *m_ui;
-      QStringList m_findList;
-      void setUp();      
+      Ui::Dialog_Config *m_ui;
 
    private slots:
-      void Find();
-      void Cancel();
-
-      void combo_ContextMenu(const QPoint &pt);
-      void menu_clearList();
-      void menu_deleteEntry();
+      void createNew();
+      void select();
+      void rename();
+      void cancel();
 };
 
 #endif

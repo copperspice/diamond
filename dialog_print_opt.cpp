@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright (c) 2012 Barbara Geller
+* Copyright (c) 2012-2013 Barbara Geller
 * All rights reserved.
 *
 * This file is part of Diamond Editor.
@@ -22,6 +22,8 @@
 #include "dialog_print_opt.h"
 #include "util.h"
 
+#include <QFontDialog>
+
 Dialog_PrintOptions::Dialog_PrintOptions(MainWindow *from, struct PrintSettings data)
    : m_ui(new Ui::Dialog_PrintOptions)
 {
@@ -38,6 +40,10 @@ Dialog_PrintOptions::Dialog_PrintOptions(MainWindow *from, struct PrintSettings 
    connect(m_ui->footerLeft_TB,   SIGNAL(clicked()), this, SLOT(footerLeft()));
    connect(m_ui->footerCenter_TB, SIGNAL(clicked()), this, SLOT(footerCenter()));
    connect(m_ui->footerRight_TB,  SIGNAL(clicked()), this, SLOT(footerRight()));
+
+   connect(m_ui->fontHeader_TB,   SIGNAL(clicked()), this, SLOT(fontHeader()));
+   connect(m_ui->fontFooter_TB,   SIGNAL(clicked()), this, SLOT(fontFooter()));
+   connect(m_ui->fontText_TB,     SIGNAL(clicked()), this, SLOT(fontText()));
 
    connect(m_ui->save_PB,    SIGNAL(clicked()), this, SLOT(Save()));
    connect(m_ui->cancel_PB,  SIGNAL(clicked()), this, SLOT(Cancel()));
@@ -66,6 +72,10 @@ void Dialog_PrintOptions::initData()
    m_ui->marginBottom->setText(QString::number(m_print.marBottom));
    m_ui->marginRight->setText(QString::number(m_print.marRight));
    m_ui->marginLeft->setText(QString::number(m_print.marLeft));
+
+   m_ui->fontHeader->setText(m_print.fontHeader.toString());
+   m_ui->fontFooter->setText(m_print.fontFooter.toString());
+   m_ui->fontText->setText(m_print.fontText.toString());
 }
 
 void Dialog_PrintOptions::Save()
@@ -95,7 +105,9 @@ struct PrintSettings Dialog_PrintOptions::get_Results()
    m_print.marTop        = m_ui->marginTop->text().toDouble();
    m_print.marBottom     = m_ui->marginBottom->text().toDouble();
    m_print.marRight      = m_ui->marginRight->text().toDouble();
-   m_print.marLeft       = m_ui->marginLeft->text().toDouble();
+   m_print.marLeft       = m_ui->marginLeft->text().toDouble();   
+
+   // unnecessary to save the fonts back to the structure
 
    return m_print;
 }
@@ -187,6 +199,40 @@ void Dialog_PrintOptions::footerRight()
       m_ui->footer_Right->setText(text);
    }
 }
+
+void Dialog_PrintOptions::fontHeader()
+{
+   bool ok;
+   QFont font = QFontDialog::getFont(&ok, m_print.fontHeader, this);
+
+   if (ok) {
+      m_print.fontHeader = font;
+      m_ui->fontHeader->setText(font.toString());
+   }
+}
+
+void Dialog_PrintOptions::fontFooter()
+{
+   bool ok;
+   QFont font = QFontDialog::getFont(&ok, m_print.fontFooter, this);
+
+   if (ok) {
+      m_print.fontFooter = font;
+      m_ui->fontFooter->setText(font.toString());
+   }
+}
+
+void Dialog_PrintOptions::fontText()
+{
+   bool ok;
+   QFont font = QFontDialog::getFont(&ok, m_print.fontText, this);
+
+   if (ok) {
+      m_print.fontText = font;
+      m_ui->fontText->setText(font.toString());
+   }
+}
+
 
 // menu slots
 void Dialog_PrintOptions::fileName()

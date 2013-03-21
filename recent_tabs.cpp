@@ -31,8 +31,8 @@ void MainWindow::openTab_CreateMenus()
 
    QString tName;
 
-   QMenu   *windowMenu = m_ui->menuWindow;   
-   QAction *action     = windowMenu->addSeparator();
+   QMenu *windowMenu = m_ui->menuWindow;
+   windowMenu->addSeparator();
 
    for (int i = 0; i < openTab_MaxCnt; ++i) {
 

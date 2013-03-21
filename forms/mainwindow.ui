@@ -107,6 +107,7 @@
     <addaction name="actionColors"/>
     <addaction name="actionFonts"/>
     <addaction name="actionOptions"/>
+    <addaction name="actionMove_ConfigFile"/>
     <addaction name="actionPrintOptions"/>
    </widget>
    <widget class="QMenu" name="menuHelp">
@@ -500,7 +501,7 @@
   </action>
   <action name="actionAdv_Find">
    <property name="text">
-    <string>Advanced Find... *</string>
+    <string>Advanced Find...</string>
    </property>
   </action>
   <action name="actionGo_Line">
@@ -572,7 +573,7 @@
   </action>
   <action name="actionDeleteEOL_Spaces">
    <property name="text">
-    <string>Remove Trailing Spaces *</string>
+    <string>Remove Trailing Spaces</string>
    </property>
    <property name="toolTip">
     <string>Remove Trailing Spaces at end of line</string>
@@ -756,12 +757,17 @@
   </action>
   <action name="actionSplit_Vertical">
    <property name="text">
-    <string>Split Vertical *</string>
+    <string>Split Vertical</string>
    </property>
   </action>
   <action name="actionSplit_Horizontal">
    <property name="text">
-    <string>Split Horizontal *</string>
+    <string>Split Horizontal</string>
+   </property>
+  </action>
+  <action name="actionMove_ConfigFile">
+   <property name="text">
+    <string>Move Configuration File</string>
    </property>
   </action>
  </widget>

@@ -178,7 +178,7 @@ QString MainWindow::pathName(QString fileName) const
 
 bool MainWindow::querySave()
 {
-   if (m_textEdit->document()->isModified()) {
+   if (m_textEdit->document()->isModified()) {     
 
       QString fileName = m_curFile;
 
@@ -203,6 +203,7 @@ bool MainWindow::querySave()
 
       }
    }
+
    return true;
 }
 
@@ -231,7 +232,10 @@ bool MainWindow::saveFile(const QString &fileName, bool isSaveOne)
       setWindowModified(false);     
       setDiamondTitle(m_curFile);
 
-      //
+      if (m_isSplit) {
+         split_Title();
+      }
+
       setStatusBar(tr("File saved"), 2000);
    }
 
@@ -307,7 +311,7 @@ void MainWindow::setDiamondTitle(const QString title)
 
    // displays as: Diamond Editor --  File Name[*]
    QString temp = QChar(0x02014);
-   setWindowTitle( "Diamond Editor " + temp + " " + title + " [*]" );
+   setWindowTitle("Diamond Editor " + temp + " " + title + " [*]" );
 }
 
 void MainWindow::setStatus_LineCol()

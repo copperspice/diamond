@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>504</width>
-    <height>569</height>
+    <width>509</width>
+    <height>683</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -23,6 +23,193 @@
    <property name="rightMargin">
     <number>11</number>
    </property>
+   <item row="9" column="0">
+    <layout class="QHBoxLayout" name="horizontalLayout_101">
+     <item>
+      <spacer name="horizontalSpacer_100">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>10</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
+      <widget class="QPushButton" name="save_PB">
+       <property name="text">
+        <string>Save</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <spacer name="horizontalSpacer_101">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeType">
+        <enum>QSizePolicy::Fixed</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>8</width>
+         <height>25</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
+      <widget class="QPushButton" name="cancel_PB">
+       <property name="text">
+        <string>Cancel</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <spacer name="horizontalSpacer_103">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>10</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+    </layout>
+   </item>
+   <item row="6" column="0">
+    <widget class="QGroupBox" name="groupBox_4">
+     <property name="font">
+      <font>
+       <pointsize>10</pointsize>
+      </font>
+     </property>
+     <property name="title">
+      <string>Page Fonts</string>
+     </property>
+     <layout class="QGridLayout" name="gridLayout_4">
+      <item row="12" column="2">
+       <widget class="QLineEdit" name="fontText">
+        <property name="minimumSize">
+         <size>
+          <width>350</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="readOnly">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="11" column="2">
+       <widget class="QLineEdit" name="fontFooter">
+        <property name="minimumSize">
+         <size>
+          <width>350</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="readOnly">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="11" column="0">
+       <widget class="QLabel" name="label_41">
+        <property name="text">
+         <string>Footer Font:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="0">
+       <widget class="QLabel" name="label_40">
+        <property name="text">
+         <string>Header Font:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="12" column="0">
+       <widget class="QLabel" name="label_42">
+        <property name="text">
+         <string>Page Font:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="2">
+       <widget class="QLineEdit" name="fontHeader">
+        <property name="minimumSize">
+         <size>
+          <width>350</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="readOnly">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="3">
+       <widget class="QToolButton" name="fontHeader_TB">
+        <property name="text">
+         <string>►</string>
+        </property>
+       </widget>
+      </item>
+      <item row="11" column="3">
+       <widget class="QToolButton" name="fontFooter_TB">
+        <property name="text">
+         <string>►</string>
+        </property>
+       </widget>
+      </item>
+      <item row="12" column="3">
+       <widget class="QToolButton" name="fontText_TB">
+        <property name="text">
+         <string>►</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item row="5" column="0">
+    <spacer name="verticalSpacer_3">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeType">
+      <enum>QSizePolicy::Fixed</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>20</width>
+       <height>5</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+   <item row="3" column="0">
+    <spacer name="verticalSpacer_2">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeType">
+      <enum>QSizePolicy::Fixed</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>20</width>
+       <height>5</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
    <item row="0" column="0">
     <widget class="QGroupBox" name="groupBox1">
      <property name="font">
@@ -231,19 +418,6 @@
       </item>
      </layout>
     </widget>
-   </item>
-   <item row="1" column="0">
-    <spacer name="verticalSpacer_1">
-     <property name="orientation">
-      <enum>Qt::Vertical</enum>
-     </property>
-     <property name="sizeHint" stdset="0">
-      <size>
-       <width>20</width>
-       <height>13</height>
-      </size>
-     </property>
-    </spacer>
    </item>
    <item row="2" column="0">
     <widget class="QGroupBox" name="groupBox2">
@@ -465,15 +639,15 @@
      </layout>
     </widget>
    </item>
-   <item row="3" column="0">
-    <spacer name="verticalSpacer">
+   <item row="8" column="0">
+    <spacer name="verticalSpacer_4">
      <property name="orientation">
       <enum>Qt::Vertical</enum>
      </property>
      <property name="sizeHint" stdset="0">
       <size>
        <width>20</width>
-       <height>13</height>
+       <height>10</height>
       </size>
      </property>
     </spacer>
@@ -669,78 +843,21 @@
      </layout>
     </widget>
    </item>
-   <item row="5" column="0">
-    <spacer name="verticalSpacer_3">
+   <item row="1" column="0">
+    <spacer name="verticalSpacer_1">
      <property name="orientation">
       <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeType">
+      <enum>QSizePolicy::Fixed</enum>
      </property>
      <property name="sizeHint" stdset="0">
       <size>
        <width>20</width>
-       <height>13</height>
+       <height>5</height>
       </size>
      </property>
     </spacer>
-   </item>
-   <item row="6" column="0">
-    <layout class="QHBoxLayout" name="horizontalLayout_101">
-     <item>
-      <spacer name="horizontalSpacer_100">
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
-       <property name="sizeHint" stdset="0">
-        <size>
-         <width>10</width>
-         <height>20</height>
-        </size>
-       </property>
-      </spacer>
-     </item>
-     <item>
-      <widget class="QPushButton" name="save_PB">
-       <property name="text">
-        <string>Save</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <spacer name="horizontalSpacer_101">
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
-       <property name="sizeType">
-        <enum>QSizePolicy::Fixed</enum>
-       </property>
-       <property name="sizeHint" stdset="0">
-        <size>
-         <width>8</width>
-         <height>25</height>
-        </size>
-       </property>
-      </spacer>
-     </item>
-     <item>
-      <widget class="QPushButton" name="cancel_PB">
-       <property name="text">
-        <string>Cancel</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <spacer name="horizontalSpacer_103">
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
-       <property name="sizeHint" stdset="0">
-        <size>
-         <width>10</width>
-         <height>20</height>
-        </size>
-       </property>
-      </spacer>
-     </item>
-    </layout>
    </item>
   </layout>
  </widget>
@@ -762,9 +879,15 @@
   <tabstop>footerRight_TB</tabstop>
   <tabstop>footer_Line2</tabstop>
   <tabstop>marginTop</tabstop>
-  <tabstop>marginBottom</tabstop>
   <tabstop>marginLeft</tabstop>
+  <tabstop>marginBottom</tabstop>
   <tabstop>marginRight</tabstop>
+  <tabstop>fontHeader</tabstop>
+  <tabstop>fontHeader_TB</tabstop>
+  <tabstop>fontFooter</tabstop>
+  <tabstop>fontFooter_TB</tabstop>
+  <tabstop>fontText</tabstop>
+  <tabstop>fontText_TB</tabstop>
   <tabstop>save_PB</tabstop>
   <tabstop>cancel_PB</tabstop>
  </tabstops>

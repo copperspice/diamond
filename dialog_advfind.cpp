@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright (c) 2012 Barbara Geller
+* Copyright (c) 2012-2013 Barbara Geller
 * All rights reserved.
 *
 * This file is part of Diamond Editor.
@@ -24,14 +24,14 @@
 #include <QDir>
 #include <QFileDialog>
 
-Dialog_AdvFind::Dialog_AdvFind(QString findText)
+Dialog_AdvFind::Dialog_AdvFind(QString findText, QString fileType, QString findFolder)
    : m_ui(new Ui::Dialog_AdvFind)
 {
    m_ui->setupUi(this);
 
    m_ui->find->setText(findText);
-   m_ui->findType->setText("*.*");
-   m_ui->findFolder->setText(QDir::currentPath());
+   m_ui->findType->setText(fileType);
+   m_ui->findFolder->setText(findFolder);
 
    connect(m_ui->folder_TB, SIGNAL(clicked()),this, SLOT(pick_Folder()));
 

@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright (c) 2012 Barbara Geller
+* Copyright (c) 2012-2013 Barbara Geller
 * All rights reserved.
 *
 * This file is part of Diamond Editor.
@@ -31,14 +31,38 @@
 #include <QTextBoundaryFinder>
 #include <QFileInfo>
 
+static const QRegExp DEFAULT_COMMENT = QRegExp("(?!E)E");
+
 Syntax::Syntax(QTextDocument *document, QString synFName, const struct Settings &settings, SpellCheck *spell)
    : QSyntaxHighlighter(document)
 {
+   m_syntaxFile   = synFName;
+   m_settings     = settings;
    m_spellCheck   = spell;
-   m_isSpellCheck = settings.isSpellCheck;
 
+   m_isSpellCheck = settings.isSpellCheck;
+}
+
+Syntax::~Syntax()
+{
+}
+
+bool Syntax::processSyntax(const struct Settings &settings)
+{
+   // only called from Dialog_Colors
+   m_settings = settings;
+
+   return processSyntax();
+}
+
+bool Syntax::processSyntax()
+{
    // get existing json data
-   QByteArray data = json_ReadFile(synFName);
+   QByteArray data = json_ReadFile(m_syntaxFile);
+
+   if (data.isEmpty()) {
+      return false;
+   }
 
    QJsonDocument doc = QJsonDocument::fromJson(data);
 
@@ -99,9 +123,9 @@ Syntax::Syntax(QTextDocument *document, QString synFName, const struct Settings 
       }
 
       // key
-      rule.format.setFontWeight(settings.syn_KeyWeight);
-      rule.format.setFontItalic(settings.syn_KeyItalic);
-      rule.format.setForeground(settings.syn_KeyText);
+      rule.format.setFontWeight(m_settings.syn_KeyWeight);
+      rule.format.setFontItalic(m_settings.syn_KeyItalic);
+      rule.format.setForeground(m_settings.syn_KeyText);
       rule.pattern = QRegExp(pattern);
 
       if (ignoreCase) {
@@ -117,9 +141,9 @@ Syntax::Syntax(QTextDocument *document, QString synFName, const struct Settings 
       }
 
       // class
-      rule.format.setFontWeight(settings.syn_ClassWeight);
-      rule.format.setFontItalic(settings.syn_ClassItalic);
-      rule.format.setForeground(settings.syn_ClassText);
+      rule.format.setFontWeight(m_settings.syn_ClassWeight);
+      rule.format.setFontItalic(m_settings.syn_ClassItalic);
+      rule.format.setForeground(m_settings.syn_ClassText);
       rule.pattern = QRegExp(pattern);
 
       if (ignoreCase) {
@@ -135,9 +159,9 @@ Syntax::Syntax(QTextDocument *document, QString synFName, const struct Settings 
       }
 
       // func
-      rule.format.setFontWeight(settings.syn_FuncWeight);
-      rule.format.setFontItalic(settings.syn_FuncItalic);
-      rule.format.setForeground(settings.syn_FuncText);
+      rule.format.setFontWeight(m_settings.syn_FuncWeight);
+      rule.format.setFontItalic(m_settings.syn_FuncItalic);
+      rule.format.setForeground(m_settings.syn_FuncText);
       rule.pattern = QRegExp(pattern);
 
       if (ignoreCase) {
@@ -153,9 +177,9 @@ Syntax::Syntax(QTextDocument *document, QString synFName, const struct Settings 
       }
 
       // types
-      rule.format.setFontWeight(settings.syn_TypeWeight);
-      rule.format.setFontItalic(settings.syn_TypeItalic);
-      rule.format.setForeground(settings.syn_TypeText);
+      rule.format.setFontWeight(m_settings.syn_TypeWeight);
+      rule.format.setFontItalic(m_settings.syn_TypeItalic);
+      rule.format.setForeground(m_settings.syn_TypeText);
       rule.pattern = QRegExp(pattern);
 
       if (ignoreCase) {
@@ -166,25 +190,25 @@ Syntax::Syntax(QTextDocument *document, QString synFName, const struct Settings 
    }
 
    // functions - everyone
-   rule.format.setFontWeight(settings.syn_FuncWeight);
-   rule.format.setFontItalic(settings.syn_FuncItalic);
-   rule.format.setForeground(settings.syn_FuncText);
+   rule.format.setFontWeight(m_settings.syn_FuncWeight);
+   rule.format.setFontItalic(m_settings.syn_FuncItalic);
+   rule.format.setForeground(m_settings.syn_FuncText);
    rule.pattern = QRegExp("\\b[A-Za-z0-9_]+(?=\\()");
    highlightingRules.append(rule);
 
    // quoted text - everyone
-   rule.format.setFontWeight(settings.syn_QuoteWeight);
-   rule.format.setFontItalic(settings.syn_QuoteItalic);
-   rule.format.setForeground(settings.syn_QuoteText);
+   rule.format.setFontWeight(m_settings.syn_QuoteWeight);
+   rule.format.setFontItalic(m_settings.syn_QuoteItalic);
+   rule.format.setForeground(m_settings.syn_QuoteText);
    rule.pattern = QRegExp("\".*\"");
    highlightingRules.append(rule);
 
    // single line comment
    QString commentSingle = object.value("comment-single").toString();
 
-   rule.format.setFontWeight(settings.syn_CommentWeight);
-   rule.format.setFontItalic(settings.syn_CommentItalic);
-   rule.format.setForeground(settings.syn_CommentText);
+   rule.format.setFontWeight(m_settings.syn_CommentWeight);
+   rule.format.setFontItalic(m_settings.syn_CommentItalic);
+   rule.format.setForeground(m_settings.syn_CommentText);
    rule.pattern = QRegExp(commentSingle);
    highlightingRules.append(rule);
 
@@ -192,29 +216,43 @@ Syntax::Syntax(QTextDocument *document, QString synFName, const struct Settings 
    QString commentStart = object.value("comment-multi-start").toString();
    QString commentEnd   = object.value("comment-multi-end").toString();
 
-   m_multiLineCommentFormat.setFontWeight(settings.syn_MLineWeight);
-   m_multiLineCommentFormat.setFontItalic(settings.syn_MLineItalic);
-   m_multiLineCommentFormat.setForeground(settings.syn_MLineText);
+   m_multiLineCommentFormat.setFontWeight(m_settings.syn_MLineWeight);
+   m_multiLineCommentFormat.setFontItalic(m_settings.syn_MLineItalic);
+   m_multiLineCommentFormat.setForeground(m_settings.syn_MLineText);
    m_commentStartExpression = QRegExp(commentStart);
    m_commentEndExpression   = QRegExp(commentEnd);
 
    // spell check   
    m_spellCheckFormat.setUnderlineColor(QColor("red"));
    m_spellCheckFormat.setUnderlineStyle(QTextCharFormat::SpellCheckUnderline);
-}
 
-Syntax::~Syntax()
-{   
+   // new data, redo the current document
+   this->rehighlight();
+
+   return true;
 }
 
 QByteArray Syntax::json_ReadFile(QString fileName)
 {
    QByteArray data;
 
+   if (fileName.isEmpty()) {
+      csError(tr("Read Json Syntax"), tr("Syntax file name was not supplied."));
+      return data;
+   }
+
+   if (! QFile::exists(fileName) ) {
+      csError(tr("Read Json Syntax"), tr("Syntax file was not found: ") + fileName + "\n\n"
+              "To specify the location of the syntax files select 'Settings' from the main Menu. "
+              "Then select 'General Options' and click on the Options tab.\n");
+
+      return data;
+   }
+
    QFile file(fileName);
    if (! file.open(QFile::ReadOnly | QFile::Text)) {
-      const QString msg = tr("Unable to open Json Sntax file: ") +  fileName + " : " + file.errorString();
-      csError(tr("Read Json"), msg);
+      const QString msg = tr("Unable to open Json Syntax file: ") +  fileName + " : " + file.errorString();
+      csError(tr("Read Json Syntax"), msg);
       return data;
    }
 
@@ -231,7 +269,7 @@ void Syntax::set_Spell(bool value)
 }
 
 void Syntax::highlightBlock(const QString &text)
-{  
+{
    foreach (const HighlightingRule &rule, highlightingRules) {
       QRegExp expression(rule.pattern);
       int index = expression.indexIn(text);
@@ -248,6 +286,15 @@ void Syntax::highlightBlock(const QString &text)
 
    int startIndex = 0;
 
+   if (m_commentStartExpression.isEmpty()) {
+      m_commentStartExpression = DEFAULT_COMMENT;
+   }
+
+   if (m_commentEndExpression.isEmpty()) {
+      m_commentEndExpression = DEFAULT_COMMENT;
+   }
+
+   //
    if (previousBlockState() != 1) {
       startIndex = m_commentStartExpression.indexIn(text);
    }

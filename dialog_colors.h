@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright (c) 2012 Barbara Geller
+* Copyright (c) 2012-2013 Barbara Geller
 * All rights reserved.
 *
 * This file is part of Diamond Editor.
@@ -49,6 +49,7 @@ class Dialog_Colors : public QDialog
 
       void initData();
       void colorBox(QLineEdit *field, QColor color);
+      void updateParser(bool newSettings);
       QColor pickColor(QColor oldColor);
 
    private slots:

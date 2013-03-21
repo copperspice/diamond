@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright (c) 2012 Barbara Geller
+* Copyright (c) 2012-2013 Barbara Geller
 * All rights reserved.
 *
 * This file is part of Diamond Editor.
@@ -36,18 +36,23 @@ class Syntax : public QSyntaxHighlighter
    Q_OBJECT
 
    public:
-      Syntax(QTextDocument *parent, QString synFName,
-             const struct Settings &settings,  SpellCheck *spell = 0);
+      Syntax(QTextDocument *document,
+             QString synFName, const struct Settings &settings, SpellCheck *spell = 0);
 
       ~Syntax();
+      bool processSyntax();
+      bool processSyntax(const struct Settings &settings);
       void set_Spell(bool value);
 
    protected:
       void highlightBlock(const QString &text);
 
    private:
-      bool m_isSpellCheck;
+      QString m_syntaxFile;
+      struct Settings m_settings;
+
       SpellCheck *m_spellCheck;
+      bool m_isSpellCheck;
 
       QRegExp m_commentStartExpression;
       QRegExp m_commentEndExpression;

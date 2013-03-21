@@ -19,6 +19,7 @@
 *
 **************************************************************************/
 
+#include "dialog_config.h"
 #include "dialog_macro.h"
 #include "mainwindow.h"
 #include "util.h"
@@ -42,24 +43,19 @@ bool MainWindow::json_Read()
    bool ok = true;
 
    QSettings settings("Diamond Editor", "Settings");
-   m_jsonFname = settings.value("jsonName").toString();
+   m_jsonFname = settings.value("configName").toString();
 
-   if (m_jsonFname.isEmpty()) {
+   if (m_jsonFname.isEmpty() || ! QFile::exists(m_jsonFname)) {
       // get a new file name
       json_getFileName();
 
-      if ( m_jsonFname.isEmpty()) {
+      if (m_jsonFname.isEmpty()) {
          return false;
       }
-      settings.setValue("jsonName", m_jsonFname);
+      settings.setValue("configName", m_jsonFname);
    }
 
    if (ok) {
-
-      if (! QFile::exists(m_jsonFname) ) {
-         // json file is missing
-         json_CreateNew();
-      }
 
       // get existing json data
       QByteArray data = json_ReadFile();
@@ -108,14 +104,14 @@ bool MainWindow::json_Read()
       m_struct.autoLoad          = object.value("autoLoad").toBool();
 
       //
-      m_struct.formatDate  = object.value("formatDate").toString();
-      m_struct.formatTime  = object.value("formatTime").toString();
-      m_struct.pathPrior   = object.value("pathPrior").toString();
-      m_struct.pathSyntax  = object.value("pathSyntax").toString();
+      m_struct.formatDate      = object.value("formatDate").toString();
+      m_struct.formatTime      = object.value("formatTime").toString();
+      m_struct.pathPrior       = object.value("pathPrior").toString();
+      m_struct.pathSyntax      = object.value("pathSyntax").toString();
 
-      m_struct.dictMain    = object.value("dictMain").toString();
-      m_struct.dictUser    = object.value("dictUser").toString();
-      m_struct.aboutUrl    = object.value("aboutUrl").toString();
+      m_struct.dictMain        = object.value("dictMain").toString();
+      m_struct.dictUser        = object.value("dictUser").toString();
+      m_struct.aboutUrl        = object.value("aboutUrl").toString();
 
       // printer options      
       m_printer.printHeader    = object.value("prt-pritnHeader").toBool();
@@ -157,15 +153,21 @@ bool MainWindow::json_Read()
       m_struct.font = json_SetFont(object.value("font").toString());
 
       // colors
-      m_struct.colorText     = json_SetColor(object.value("color-text").toString()    );
-      m_struct.colorBack     = json_SetColor(object.value("color-back").toString()    );
-      m_struct.colorHighText = json_SetColor(object.value("color-highText").toString());
-      m_struct.colorHighBack = json_SetColor(object.value("color-highBack").toString());
+      m_struct.colorText      = json_SetColor(object.value("color-text").toString()    );
+      m_struct.colorBack      = json_SetColor(object.value("color-back").toString()    );
+      m_struct.colorHighText  = json_SetColor(object.value("color-highText").toString());
+      m_struct.colorHighBack  = json_SetColor(object.value("color-highBack").toString());
+
+      // test added to resolve color conflicts
+      if (m_struct.colorBack == m_struct.colorText) {
+         csError("Diamond Configuration", "Background and Text colors are the same.\n\n"
+                 "To change the colors select 'Settings' from the main Menu, then select 'Colors'.\n");
+      }
 
       list = object.value("syntax-key").toArray();
-      m_struct.syn_KeyWeight = list.at(0).toDouble();
-      m_struct.syn_KeyItalic = list.at(1).toBool();
-      m_struct.syn_KeyText   = json_SetColor(list.at(2).toString());
+      m_struct.syn_KeyWeight  = list.at(0).toDouble();
+      m_struct.syn_KeyItalic  = list.at(1).toBool();
+      m_struct.syn_KeyText    = json_SetColor(list.at(2).toString());       
 
       list = object.value("syntax-type").toArray();
       m_struct.syn_TypeWeight = list.at(0).toDouble();
@@ -196,6 +198,11 @@ bool MainWindow::json_Read()
       m_struct.syn_MLineWeight = list.at(0).toDouble();
       m_struct.syn_MLineItalic = list.at(1).toBool();
       m_struct.syn_MLineText   = json_SetColor(list.at(2).toString());
+
+      // adv find
+      m_advFindText      = object.value("advFile-text").toString();
+      m_advFindFileType  = object.value("advFile-filetype").toString();
+      m_advFindFolder    = object.value("advFile-folder").toString();
 
       // find list
       list = object.value("find-list").toArray();
@@ -265,114 +272,10 @@ bool MainWindow::json_Read()
    return ok;
 }
 
-QStringList MainWindow::json_Load_MacroIds()
-{
-   // get existing json data
-   QByteArray data = json_ReadFile();
-
-   QJsonDocument doc = QJsonDocument::fromJson(data);
-   QJsonObject object = doc.object();
-
-   //
-   QStringList keyList = object.keys();
-   QStringList macroList;
-
-   int count = keyList.count();
-
-   for (int k = 0; k < count; k++)  {
-      QString key = keyList.at(k);
-
-      if (key.left(5) == "macro" && key != "macro-names" && key != "macro-next"  ) {
-         macroList.append(key);
-      }
-   }
-
-   return macroList;
-}
-
-bool MainWindow::json_Load_Macro(QString macroName)
-{
-   bool ok = true;
-
-   // get existing json data
-   QByteArray data = json_ReadFile();
-
-   QJsonDocument doc = QJsonDocument::fromJson(data);
-
-   QJsonObject object = doc.object();
-   QJsonArray list;
-
-   // macro data
-   list = object.value(macroName).toArray();
-   int cnt = list.count();
-
-   m_textEdit->macroStart();
-
-   for (int k = 0; k < cnt; k++)  {
-
-      QJsonArray element = list.at(k).toArray();
-
-      // hard coded order
-      int key      = element.at(0).toString().toInt();
-      Qt::KeyboardModifier modifier = Qt::KeyboardModifier( element.at(1).toString().toInt() );
-      QString text = element.at(2).toString();
-
-      QKeyEvent *event = new QKeyEvent(QEvent::KeyPress, key, modifier, text);
-
-      m_textEdit->add_MacroEvent(event);
-   }
-
-   m_textEdit->macroStop();
-
-   return ok;
-}
-
-QList<macroStruct> MainWindow::json_View_Macro(QString macroName)
-{
-   QList<macroStruct> retval;
-
-   // get existing json data
-   QByteArray data = json_ReadFile();
-
-   QJsonDocument doc = QJsonDocument::fromJson(data);
-
-   QJsonObject object = doc.object();
-   QJsonArray list;
-
-   // macro data
-   list = object.value(macroName).toArray();
-   int cnt = list.count();
-
-   for (int k = 0; k < cnt; k++)  {
-
-      QJsonArray element = list.at(k).toArray();
-
-      // hard coded order
-      int key      = element.at(0).toString().toInt();
-      Qt::KeyboardModifier modifier = Qt::KeyboardModifier( element.at(1).toString().toInt() );
-      QString text = element.at(2).toString();
-
-      struct macroStruct temp;
-      temp.key       = key;
-      temp.modifier  = modifier;
-      temp.text      = text;
-
-      retval.append(temp);
-   }
-
-   return retval;
-}
-
-void MainWindow::json_Save_MacroNames(QStringList list)
-{  
-   m_macroNames = list;
-   json_Write(MACRO_NAMES);
-}
-
 bool MainWindow::json_Write(Option route)
 {
    QSettings settings("Diamond Editor", "Settings");
-   m_jsonFname = settings.value("jsonName").toString();
+   m_jsonFname = settings.value("configName").toString();
 
    if (m_jsonFname.isEmpty()) {
       // get a new file name
@@ -381,7 +284,7 @@ bool MainWindow::json_Write(Option route)
       if (m_jsonFname.isEmpty()) {
          return false;
       }
-      settings.setValue("jsonName",  m_jsonFname);
+      settings.setValue("configName", m_jsonFname);
    }
 
    if (true) {
@@ -391,10 +294,16 @@ bool MainWindow::json_Write(Option route)
       QJsonDocument doc  = QJsonDocument::fromJson(data);
       QJsonObject object = doc.object();
 
-      switch (route)  {
+      switch (route)  {        
 
          case ABOUTURL:
             object.insert("aboutUrl", m_struct.aboutUrl);
+            break;
+
+         case ADVFIND:
+            object.insert("advFile-text",       m_advFindText);
+            object.insert("advFile-filetype",   m_advFindFileType);
+            object.insert("advFile-folder",     m_advFindFolder);
             break;
 
          case AUTOLOAD:
@@ -448,9 +357,8 @@ bool MainWindow::json_Write(Option route)
             {
                QString temp = m_struct.font.toString();
                object.insert("font", temp);
+               break;
             }
-
-            break;
 
          case FORMAT_DATE:
             object.insert("formatDate", m_struct.formatDate);
@@ -659,7 +567,7 @@ void MainWindow::json_getFileName()
    QMessageBox quest;
    quest.setWindowTitle(tr("Diamond Editor"));
    quest.setText(tr("Diamond configuration file is missing.\n\n"
-                    "Create a new configuration file or select an existing Diamond configuration file.\n"));
+                    "Create a New configuration file or select an existing Diamond configuration file.\n"));
 
    QPushButton *createNew    = quest.addButton("Create", QMessageBox::AcceptRole );
    QPushButton *selectConfig = quest.addButton("Select", QMessageBox::AcceptRole );
@@ -671,15 +579,33 @@ void MainWindow::json_getFileName()
    if (quest.clickedButton() == createNew) {
 
       QString selectedFilter;
-      m_jsonFname = QFileDialog::getSaveFileName(this, tr("Create new Configuration File"),
-            "config.json", tr("All Files (*.json)"), &selectedFilter, options);
+      m_jsonFname = QFileDialog::getSaveFileName(this, tr("Create New Configuration File"),
+            "config.json", tr("Json Files (*.json)"), &selectedFilter, options);
 
    } else if (quest.clickedButton() == selectConfig) {
 
       QString selectedFilter;
       m_jsonFname = QFileDialog::getOpenFileName(this, tr("Select Diamond Configuration File"),
-            "config.json", tr("All Files (*.json)"), &selectedFilter, options);
+            "", tr("Json Files (*.json)"), &selectedFilter, options);
    }
+}
+
+QByteArray MainWindow::json_ReadFile()
+{        
+   QByteArray data;
+
+   QFile file(m_jsonFname);
+   if (! file.open(QFile::ReadWrite | QFile::Text)) {
+      const QString msg = tr("Unable to open Configurtion File: ") +  m_jsonFname + " : " + file.errorString();
+      csError(tr("Read Json"), msg);
+      return data;
+   }
+
+   file.seek(0);
+   data = file.readAll();
+   file.close();
+
+   return data;
 }
 
 bool MainWindow::json_SaveFile(QByteArray data)
@@ -696,24 +622,6 @@ bool MainWindow::json_SaveFile(QByteArray data)
    file.close();
 
    return true;
-}
-
-QByteArray MainWindow::json_ReadFile()
-{
-   QByteArray data;
-
-   QFile file(m_jsonFname);
-   if (! file.open(QFile::ReadWrite | QFile::Text)) {
-      const QString msg = tr("Unable to open Configurtion File: ") +  m_jsonFname + " : " + file.errorString();
-      csError(tr("Read Json"), msg);
-      return data;
-   }
-
-   file.seek(0);
-   data = file.readAll();
-   file.close();
-
-   return data;
 }
 
 bool MainWindow::json_CreateNew()
@@ -771,7 +679,7 @@ bool MainWindow::json_CreateNew()
    }
 
    value = QJsonValue(QString( dictFile) );
-   object.insert("dictUser", value);   
+   object.insert("dictUser", value);      
 
    // get aboutURL file
    QString indexPath = get_xxFile("Help", "index.html", "HTML Files (index.html)" );
@@ -779,17 +687,28 @@ bool MainWindow::json_CreateNew()
    value = QJsonValue(QString(indexPath));
    object.insert("aboutUrl", value);
 
+   // adv find
+   value = QJsonValue(QString("diamond"));
+   object.insert("advFile-text",       value);
+
+   value = QJsonValue(QString("*.*"));
+   object.insert("advFile-filetype",   value);
+
+   value = QJsonValue(QString(QDir::currentPath()));
+   object.insert("advFile-folder",     value);
+
    // print options
    value = QJsonValue(QString(""));
 
-   object.insert("prt-pritnHeader",  true);
+   object.insert("prt-printHeader",  true);
    object.insert("prt-printFooter",  true);
 
-   object.insert("prt-headerLeft",   value);
+   object.insert("prt-headerLeft",   QJsonValue(QString("$(PathFileName)")));
    object.insert("prt-headerCenter", value);
-   object.insert("prt_headerRight",  value);
+   object.insert("prt_headerRight",  QJsonValue(QString("Page $(PageNo)")));
    object.insert("prt-headerLine2",  value);
-   object.insert("prt-footerLeft",   value);
+
+   object.insert("prt-footerLeft",   QJsonValue(QString("$(Date)")));
    object.insert("prt-footerCenter", value);
    object.insert("prt-footerRight",  QJsonValue(QString("Diamond Editor")));
    object.insert("prt-footerLine2",  value);
@@ -943,6 +862,8 @@ bool MainWindow::json_CreateNew()
    return ok;
 }
 
+
+// **
 QString MainWindow::get_SyntaxPath()
 {
    QString msg  = tr("Select Diamond Syntax Folder");
@@ -975,9 +896,16 @@ QFont MainWindow::json_SetFont(QString value)
 QColor MainWindow::json_SetColor(QString values)
 {
    QStringList list = values.split(",");
-   int red   = list[0].toInt();
-   int green = list[1].toInt();
-   int blue  = list[2].toInt();
+
+   int red   = 255;
+   int green = 255;
+   int blue  = 255;
+
+   if (list.count() > 2 ) {
+      red   = list[0].toInt();
+      green = list[1].toInt();
+      blue  = list[2].toInt();
+   }
 
    QColor color(red,green,blue);
 
@@ -1045,5 +973,207 @@ QJsonObject MainWindow::json_SaveSyntax(QJsonObject object)
    object.insert("syntax-mline", list);
 
    return object;
+}
+
+
+// **
+void MainWindow::move_ConfigFile()
+{
+   QSettings settings("Diamond Editor", "Settings");
+   m_jsonFname = settings.value("configName").toString();
+
+   //
+   Dialog_Config *dw = new Dialog_Config(m_jsonFname);
+   int result = dw->exec();
+
+   switch (result) {
+      case QDialog::Rejected:
+         break;
+
+      case 1:
+         // create
+         {
+            QFileDialog::Options options;
+            QString selectedFilter;
+
+            QString newName = QFileDialog::getSaveFileName(this, tr("Create New Configuration File"),
+                  "config.json", tr("Json Files (*.json)"), &selectedFilter, options);
+
+            if (newName.isEmpty()) {
+               // do nothing
+
+            } else if (QFile::exists(newName) ) {
+               // can this happen?
+               csError("Diamond Configuration", "Configuration file already exists, unable to create new file.");
+
+            } else {
+               m_jsonFname = newName;
+               settings.setValue("configName", m_jsonFname);
+
+               json_CreateNew();
+               json_Read();
+
+               // maybe add reset later
+               csError("Diamond Configuration", "New configuration file selected."
+                        " Restart Diamond to utilize the new configuration file settings.");
+            }
+
+            break;
+         }
+
+      case 2:
+         // select
+         {
+            QFileDialog::Options options;
+            QString selectedFilter;
+
+            QString newName = QFileDialog::getOpenFileName(this, tr("Select Diamond Configuration File"),
+                  "*.json", tr("Json Files (*.json)"), &selectedFilter, options);
+
+            if (newName.isEmpty()) {
+               // do nothing
+
+            } else if (QFile::exists(newName) ) {
+               m_jsonFname = newName;
+               settings.setValue("configName", m_jsonFname);
+
+               json_Read();
+
+               // maybe add reset later
+               csError("Diamond Configuration", "New configuration file selected."
+                        " Restart Diamond to utilize the new configuration file settings.");
+            }
+
+            break;
+         }
+
+      case 3:
+         // rename
+         QString newName = dw->get_newName();
+
+         if (newName.isEmpty()) {
+            csError("Diamond Configuration", "No configuration file specified, unable to rename.");
+
+         } if (QFile::exists(newName) ) {
+            csError("Diamond Configuration", "New configuration file already exists, unable to rename.");
+
+         } else  {
+            if (QFile::rename(m_jsonFname, newName)) {
+               m_jsonFname = newName;
+               settings.setValue("configName", m_jsonFname);
+
+            } else {
+               csError("Diamond Configuration", "Configuration file rename failed.");
+
+            }
+         }
+
+         break;
+   }
+}
+
+// **
+QStringList MainWindow::json_Load_MacroIds()
+{
+   // get existing json data
+   QByteArray data = json_ReadFile();
+
+   QJsonDocument doc = QJsonDocument::fromJson(data);
+   QJsonObject object = doc.object();
+
+   //
+   QStringList keyList = object.keys();
+   QStringList macroList;
+
+   int count = keyList.count();
+
+   for (int k = 0; k < count; k++)  {
+      QString key = keyList.at(k);
+
+      if (key.left(5) == "macro" && key != "macro-names" && key != "macro-next"  ) {
+         macroList.append(key);
+      }
+   }
+
+   return macroList;
+}
+
+bool MainWindow::json_Load_Macro(QString macroName)
+{
+   bool ok = true;
+
+   // get existing json data
+   QByteArray data = json_ReadFile();
+
+   QJsonDocument doc = QJsonDocument::fromJson(data);
+
+   QJsonObject object = doc.object();
+   QJsonArray list;
+
+   // macro data
+   list = object.value(macroName).toArray();
+   int cnt = list.count();
+
+   m_textEdit->macroStart();
+
+   for (int k = 0; k < cnt; k++)  {
+
+      QJsonArray element = list.at(k).toArray();
+
+      // hard coded order
+      int key      = element.at(0).toString().toInt();
+      Qt::KeyboardModifier modifier = Qt::KeyboardModifier( element.at(1).toString().toInt() );
+      QString text = element.at(2).toString();
+
+      QKeyEvent *event = new QKeyEvent(QEvent::KeyPress, key, modifier, text);
+
+      m_textEdit->add_MacroEvent(event);
+   }
+
+   m_textEdit->macroStop();
+
+   return ok;
+}
+
+QList<macroStruct> MainWindow::json_View_Macro(QString macroName)
+{
+   QList<macroStruct> retval;
+
+   // get existing json data
+   QByteArray data = json_ReadFile();
+
+   QJsonDocument doc = QJsonDocument::fromJson(data);
+
+   QJsonObject object = doc.object();
+   QJsonArray list;
+
+   // macro data
+   list = object.value(macroName).toArray();
+   int cnt = list.count();
+
+   for (int k = 0; k < cnt; k++)  {
+
+      QJsonArray element = list.at(k).toArray();
+
+      // hard coded order
+      int key      = element.at(0).toString().toInt();
+      Qt::KeyboardModifier modifier = Qt::KeyboardModifier( element.at(1).toString().toInt() );
+      QString text = element.at(2).toString();
+
+      struct macroStruct temp;
+      temp.key       = key;
+      temp.modifier  = modifier;
+      temp.text      = text;
+
+      retval.append(temp);
+   }
+
+   return retval;
+}
+
+void MainWindow::json_Save_MacroNames(QStringList list)
+{
+   m_macroNames = list;
+   json_Write(MACRO_NAMES);
 }
 

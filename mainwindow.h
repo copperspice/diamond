@@ -31,18 +31,30 @@
 
 #include <QAction>
 #include <QFile>
+#include <QFrame>
 #include <QJsonObject>
 #include <QJsonValue>
 #include <QList>
 #include <QMenu>
 #include <QMainWindow>
+#include <QModelIndex>
+#include <QStandardItemModel>
 #include <QPlainTextEdit>
+#include <QSplitter>
+#include <QStackedWidget>
 #include <QTabWidget>
 
 struct macroStruct
 {
    int key;
    int modifier;
+   QString text;
+};
+
+struct advFindStruct
+{
+   QString fileName;
+   int lineNumber;
    QString text;
 };
 
@@ -73,12 +85,22 @@ class MainWindow : public QMainWindow
       void dropEvent(QDropEvent *event);
 
    private:
-      Ui::MainWindow *m_ui;
+      Ui::MainWindow *m_ui;      
 
       // textEdit
       DiamondTextEdit *m_textEdit;
-      QTabWidget *m_tabWidget;      
+      QTabWidget *m_tabWidget;
       QString m_curFile;
+
+      // split
+      DiamondTextEdit *split_textEdit;
+      QSplitter *m_splitter;
+      QLabel *m_splitTitle;
+      QFrame *m_sideWidget;
+      QFrame *m_bottomWidget;
+
+      bool m_isSplit;
+      bool m_fromSplit;
 
       //
       void autoLoad();
@@ -103,11 +125,16 @@ class MainWindow : public QMainWindow
       QString m_advFindFileType;
       QString m_advFindFolder;
       QTextDocument::FindFlags m_advFlags;
-      bool m_advfCase;
-      bool m_advfWholeWords;
-      bool m_advfSearchSubFolders;
+      bool m_advFCase;
+      bool m_advFWholeWords;
+      bool m_advFSearchSubFolders;
 
-      QStringList advFind_getResults();
+      QStringList m_recursiveList;
+      QFrame *m_findWidget;
+      QStandardItemModel *m_model;
+      QList<advFindStruct> advFind_getResults();
+      void findRecursive(const QString &path);
+      void advFind_ShowFiles(QList<advFindStruct> foundList);
 
       // macros    
       bool m_record;
@@ -163,7 +190,7 @@ class MainWindow : public QMainWindow
       QLabel *m_statusMode;
       QLabel *m_statusName;    
 
-      enum Option { ABOUTURL, AUTOLOAD, CLOSE, COLORS, COLUMN_MODE, DICT_MAIN, DICT_USER, FIND_LIST, FONT,
+      enum Option { ABOUTURL, ADVFIND, AUTOLOAD, CLOSE, COLORS, COLUMN_MODE, DICT_MAIN, DICT_USER, FIND_LIST, FONT,
                     FORMAT_DATE, FORMAT_TIME, KEYS, MACRO, MACRO_NAMES, PATH_SYNTAX, PATH_PRIOR, PRINT_OPTIONS,
                     RECENTFOLDER, RECENTFILE, SHOW_LINEHIGHLIGHT, SHOW_LINENUMBERS, SHOW_SPACES, SHOW_EOL,
                     SPELLCHECK, TAB_SPACING, USESPACES, WORDWRAP};
@@ -281,7 +308,7 @@ class MainWindow : public QMainWindow
       void goBottom();
 
       void lineHighlight();
-      void move_lineHighlight();
+      void moveBar();
       void lineNumbers();
       void wordWrap();
       void showSpaces();           
@@ -321,6 +348,7 @@ class MainWindow : public QMainWindow
 
       void setColors();
       void setFont();
+      void move_ConfigFile();
       void setOptions();
       void setPrintOptions();
 
@@ -335,10 +363,14 @@ class MainWindow : public QMainWindow
       //
       void documentWasModified();     
       void printPreview(QPrinter *printer);      
-      void setStatus_LineCol();           
+      void setStatus_LineCol();
 
       void mw_tabClose();
       void tabChanged(int index);
+
+      // adv find
+      void advFind_View(const QModelIndex &index);
+      void advFind_Close();
 
       // spell check
       void spell_addUserDict();
@@ -359,6 +391,12 @@ class MainWindow : public QMainWindow
 
       // open (tab) files
       void openTab_Select();
+
+      // split
+      void split_Title();
+      void split_MoveBar();
+      void sideClose();
+      void bottomClose();
 
    public slots:
       // indent

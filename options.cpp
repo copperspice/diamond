@@ -75,7 +75,7 @@ void MainWindow::setColors()
       QWidget *temp;
       DiamondTextEdit *textEdit;
 
-      for (int k=0; k < count; ++k)  {
+      for (int k = 0; k < count; ++k)  {
 
          temp     = m_tabWidget->widget(k);
          textEdit = dynamic_cast<DiamondTextEdit *>(temp);
@@ -95,7 +95,7 @@ void MainWindow::setColors()
       m_textEdit = cur_textEdit;
 
       // for this tab only, updated every time we change tabs
-      move_lineHighlight();
+      moveBar();
    }
 
    delete dw;

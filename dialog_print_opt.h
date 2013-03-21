@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright (c) 2012 Barbara Geller
+* Copyright (c) 2012-2013 Barbara Geller
 * All rights reserved.
 *
 * This file is part of Diamond Editor.
@@ -66,7 +66,11 @@ class Dialog_PrintOptions: public QDialog
       void headerRight();
       void footerLeft();
       void footerCenter();
-      void footerRight();
+      void footerRight();      
+
+      void fontHeader();
+      void fontFooter();
+      void fontText();
 };
 
 #endif

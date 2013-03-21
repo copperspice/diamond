@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright (c) 2012 Barbara Geller
+* Copyright (c) 2012-2013 Barbara Geller
 * All rights reserved.
 *
 * This file is part of Diamond Editor.
@@ -71,7 +71,7 @@ SpellCheck::SpellCheck(const QString &dictMain, const QString &dictUser)
       file.close();
 
    } else {
-      csError("Spell Check", "Unable to find user dictionary " + m_userFname);
+      csError("Spell Check", "Unable to find User Dictionary " + m_userFname);
 
    }
 }
@@ -152,7 +152,7 @@ void SpellCheck::addToUserDict(const QString &word)
       file.close();
 
    } else {
-      csError("Spell Check", "Unable to find user dictionary " + m_userFname);
+      csError("Spell Check", "Unable to find User Dictionary " + m_userFname);
 
    }
 }

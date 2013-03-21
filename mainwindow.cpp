@@ -56,11 +56,17 @@ MainWindow::MainWindow()
    setAcceptDrops(true);
 
    // remaining methods must be done after json_Read
-   m_tabWidget = new QTabWidget;      
-
+   m_tabWidget = new QTabWidget;
    m_tabWidget->setTabsClosable(true);
    m_tabWidget->setMovable(true);
-   setCentralWidget(m_tabWidget);
+
+   // pre set up the splitter, only display the main window
+   m_splitter = new QSplitter(Qt::Vertical);
+   m_splitter->addWidget(m_tabWidget);
+   setCentralWidget(m_splitter);
+
+   m_isSplit   = false;
+   m_fromSplit = false;
 
    // screen setup
    createShortCuts(true);
@@ -193,7 +199,7 @@ bool MainWindow::closeAll_Doc()
                m_tabWidget->removeTab(whichTab);
             }
 
-         } else  {
+         } else  {           
             // move over one tab            
             ++whichTab;
 
@@ -274,6 +280,10 @@ bool MainWindow::saveAs(bool isSaveOne)
 
       if (retval) {
          setCurrentTitle(fileName, false);
+
+         if (m_isSplit) {
+            split_Title();
+         }
       }
    }
 
@@ -570,6 +580,7 @@ void MainWindow::indentDecr(QString route)
 
             if (m_struct.useSpaces) {
                cursor.deleteChar();
+
             } else {
                // what about tabs
                cursor.deleteChar();
@@ -735,6 +746,7 @@ void MainWindow::replace()
    int result = dw->exec();
 
    if ( result == QDialog::Accepted) {
+      // BROOM
    }
 
    delete dw;
@@ -759,7 +771,7 @@ void MainWindow::findPrevious()
 
 void MainWindow::advFind()
 {
-   Dialog_AdvFind *dw = new Dialog_AdvFind(m_findText);
+   Dialog_AdvFind *dw = new Dialog_AdvFind(m_advFindText, m_advFindFileType, m_advFindFolder);
    int result = dw->exec();
 
    if (result == QDialog::Accepted) {
@@ -768,20 +780,22 @@ void MainWindow::advFind()
       m_advFindFileType = dw->get_findType();
       m_advFindFolder   = dw->get_findFolder();
 
+      json_Write(ADVFIND);
+
+      // get the flags
       m_advFlags = 0;
 
-      m_advfCase = dw->get_Case();
-      if (m_fCase) {
+      m_advFCase = dw->get_Case();
+      if (m_advFCase) {
          m_advFlags |= QTextDocument::FindCaseSensitively;
       }
 
-      m_advfWholeWords = dw->get_WholeWords();
-      if (m_fWholeWords){
+      m_advFWholeWords = dw->get_WholeWords();
+      if (m_advFWholeWords){
          m_advFlags |= QTextDocument::FindWholeWords;
       }
 
-      // BROOM - ignore for now
-      m_advfSearchSubFolders = dw->get_SearchSubFolders();
+      m_advFSearchSubFolders = dw->get_SearchSubFolders();
 
       if (! m_advFindText.isEmpty())  {
 
@@ -794,13 +808,13 @@ void MainWindow::advFind()
          }
 
          //
-         QStringList foundList = this->advFind_getResults();
+         QList<advFindStruct> foundList = this->advFind_getResults();
 
          if (foundList.isEmpty())  {
-            csError("Advanced Find", "Not found: " + m_findText);
+            csError("Advanced Find", "Not found: " + m_advFindText);
 
          } else   {
-            // this->advFind_ShowFiles();
+            this->advFind_ShowFiles(foundList);
 
          }
       }
@@ -809,13 +823,22 @@ void MainWindow::advFind()
    delete dw;
 }
 
-QStringList MainWindow::advFind_getResults()
+QList<advFindStruct> MainWindow::advFind_getResults()
 {     
    // part 1
-   QDir currentDir = QDir(m_advFindFolder);
-   QStringList searchList = currentDir.entryList(QStringList(m_advFindFileType), QDir::Files | QDir::NoSymLinks);
+   QStringList searchList;
+   QDir currentDir;
 
-/*
+   if (m_advFSearchSubFolders)  {
+      this->findRecursive(m_advFindFolder);
+      searchList = m_recursiveList;
+
+   } else {
+      currentDir = QDir(m_advFindFolder);
+      searchList = currentDir.entryList(QStringList(m_advFindFileType), QDir::Files | QDir::NoSymLinks);
+   }
+
+/* not used
    QProgressDialog progressDialog(this);
    progressDialog.setCancelButtonText(tr("&Cancel"));
    progressDialog.setRange(0, files.size());
@@ -823,13 +846,25 @@ QStringList MainWindow::advFind_getResults()
 */
 
    // part 2
-   QStringList foundList;
-   int matchCount = 0;
+   QList<advFindStruct> foundList;
+   QString name;
+
+   enum Qt::CaseSensitivity caseFlag;
+
+   if (m_advFCase) {
+      caseFlag = Qt::CaseSensitive;
+
+   }  else {
+      // default
+      caseFlag = Qt::CaseInsensitive;
+
+   }
 
    // process each file
    for (int k = 0; k < searchList.size(); ++k) {
 
-/*    progressDialog.setValue(k);
+/*    not used
+      progressDialog.setValue(k);
       progressDialog.setLabelText(tr("Searching file %1 of %2...").arg(k).arg(searchList.size()));
       qApp->processEvents();
 
@@ -837,46 +872,198 @@ QStringList MainWindow::advFind_getResults()
           break;
       }
 */
+      if (m_advFSearchSubFolders)  {
+         name = searchList[k];
 
-      QString name = currentDir.absoluteFilePath(searchList[k]);
+      } else  {
+         name = currentDir.absoluteFilePath(searchList[k]);
+
+      }
 
       QFile file(name);
+      QRegExp regexp = QRegExp("\\b" + m_advFindText + "\\b", caseFlag);
 
       if (file.open(QIODevice::ReadOnly)) {
          QString line;
          QTextStream in(&file);
 
-         int lineCount = 0;
+         int lineNumber = 0;
+         int position   = 0;
 
          while (! in.atEnd()) {
 
-/*          if (progressDialog.wasCanceled())  {
+/*          not used
+            if (progressDialog.wasCanceled())  {
                 break;
             }
 */
             line = in.readLine();
-            lineCount++;
+            lineNumber++;
 
-            if (line.contains(m_advFindText)) {
-               matchCount++;
+            if (m_advFWholeWords)  {
+               position = line.indexOf(regexp, 0);
 
-               QString info = "[" + QString::number(matchCount) + "] " + name +
-                              " (Line:" + QString::number(lineCount) + "): " + line + "\n";
+            } else  {
+               position = line.indexOf(m_advFindText, 0, caseFlag);
 
-               foundList.append(info);
             }
 
+            if (position != -1)  {
+               advFindStruct temp;
+
+               temp.fileName   = name;
+               temp.lineNumber = lineNumber;
+               temp.text       = line.trimmed();
+
+               foundList.append(temp);
+            }
          }
       }
 
       file.close();
    }
 
-   // test code
-   QString temp  = foundList.join("\n");
-   csMsg("Matched files list\n\n" + temp);
-
    return foundList;
+}
+
+void MainWindow::findRecursive(const QString &path)
+{
+   QDir dir(path);
+   dir.setFilter(QDir::AllDirs | QDir::Files | QDir::NoDotAndDotDot | QDir::NoSymLinks);
+
+   QFileInfoList list = dir.entryInfoList(QStringList(m_advFindFileType));
+
+   if (! list.isEmpty()) {
+      for (int k = 0; k != list.count(); ++k) {
+
+          QString filePath = list[k].filePath();
+
+         if ( list[k].isDir() )  {
+            // recursive
+            findRecursive(filePath);
+
+         } else  {
+            m_recursiveList.append(filePath);
+
+         }
+      }
+   }
+}
+
+void MainWindow::advFind_ShowFiles(QList<advFindStruct> foundList)
+{
+   int index = m_splitter->indexOf(m_findWidget);
+
+   if (index > 0) {      
+      m_findWidget->deleteLater();
+   }
+
+   // create the find window
+   m_findWidget = new QFrame(this);
+   m_findWidget->setFrameShape(QFrame::Panel);
+
+   QTableView *view = new QTableView(this);
+
+   m_model = new QStandardItemModel;
+   m_model->setColumnCount(3);
+   m_model->setHeaderData(0, Qt::Horizontal, tr("File Name"));
+   m_model->setHeaderData(1, Qt::Horizontal, tr("Line #"));
+   m_model->setHeaderData(2, Qt::Horizontal, tr("Text"));
+
+   view->setModel(m_model);
+   view->setSelectionMode(QAbstractItemView::SingleSelection);
+   view->setSelectionBehavior(QAbstractItemView::SelectRows);
+   view->setEditTriggers(QAbstractItemView::NoEditTriggers);
+
+   view->setColumnWidth(0, 300);
+   view->setColumnWidth(1, 75);
+   view->horizontalHeader()->setStretchLastSection(true);
+
+   // background color
+   view->setAlternatingRowColors(true);
+   view->setStyleSheet("alternate-background-color: lightyellow");
+
+   int row = 0;
+
+   for (auto index = foundList.begin(); index != foundList.end(); index++) {
+
+      QStandardItem *item0  = new QStandardItem(index->fileName);
+      QStandardItem *item1  = new QStandardItem(QString::number(index->lineNumber));
+      QStandardItem *item2  = new QStandardItem(index->text);
+
+      m_model->insertRow(row);
+      m_model->setItem(row, 0, item0);
+      m_model->setItem(row, 1, item1);
+      m_model->setItem(row, 2, item2);
+
+      row++;
+   }
+
+   view->resizeRowsToContents();
+
+   //
+   QPushButton *closeButton = new QPushButton();
+   closeButton->setText("Close");
+
+   QBoxLayout *buttonLayout = new QHBoxLayout();
+   buttonLayout->addStretch();
+   buttonLayout->addWidget(closeButton);
+   buttonLayout->addStretch();
+
+   QBoxLayout *layout = new QVBoxLayout();
+   layout->addWidget(view);
+   layout->addLayout(buttonLayout);
+
+   m_findWidget->setLayout(layout);
+   m_splitter->addWidget(m_findWidget);
+
+   // signal
+   connect(view, SIGNAL(clicked(const QModelIndex &)),this, SLOT(advFind_View(const QModelIndex &)));
+   connect(closeButton, SIGNAL(clicked()), this, SLOT(advFind_Close()));
+}
+
+void MainWindow::advFind_Close()
+{
+   m_findWidget->deleteLater();
+}
+
+void MainWindow::advFind_View(const QModelIndex &index)
+{
+   int row = index.row();
+
+   if (row < 0) {
+      return;
+   }
+
+   QString fileName = m_model->item(row,0)->data(Qt::DisplayRole).toString();
+   int lineNumber   = m_model->item(row,1)->data(Qt::DisplayRole).toInt();
+
+   // is the file already open?
+   bool open = false;
+   int max   = m_tabWidget->count();
+
+   for (int index = 0; index < max; ++index) {
+      QString tcurFile = this->get_curFileName(index);
+
+      if (tcurFile == fileName) {
+         m_tabWidget->setCurrentIndex(index);
+
+         open = true;
+         break;
+      }
+   }
+
+   //
+   if (! open) {
+      open = loadFile(fileName, true, false);
+   }
+
+   if (open)   {
+      QTextCursor cursor(m_textEdit->textCursor());
+      cursor.movePosition(QTextCursor::Start);
+      cursor.movePosition(QTextCursor::NextBlock, QTextCursor::MoveAnchor, lineNumber-1);
+      m_textEdit->setTextCursor(cursor);
+   }
 }
 
 void MainWindow::goLine()
@@ -929,10 +1116,10 @@ void MainWindow::lineHighlight()
    }
 
    json_Write(SHOW_LINEHIGHLIGHT);
-   move_lineHighlight();
+   moveBar();
 }
 
-void MainWindow::move_lineHighlight()
+void MainWindow::moveBar()
 {
    QList<QTextEdit::ExtraSelection> extraSelections;
    QTextEdit::ExtraSelection selection;
@@ -956,11 +1143,20 @@ void MainWindow::move_lineHighlight()
    selection.format.setProperty(QTextFormat::FullWidthSelection, true);
    selection.format.setProperty(QTextFormat::UserProperty, "highlightbar");
 
-   selection.cursor = m_textEdit->textCursor();
+   if (m_fromSplit) {
+      selection.cursor = split_textEdit->textCursor();
+   } else  {
+      selection.cursor = m_textEdit->textCursor();
+   }
    selection.cursor.clearSelection();
 
    extraSelections.append(selection);
-   m_textEdit->setExtraSelections(extraSelections);
+
+   if (m_fromSplit) {
+      split_textEdit->setExtraSelections(extraSelections);
+   } else {
+      m_textEdit->setExtraSelections(extraSelections);
+   } 
 }
 
 void MainWindow::lineNumbers()
@@ -1070,12 +1266,14 @@ void MainWindow::showEOL()
 }
 
 void MainWindow::displayHTML()
-{
+{  
    try {
-      About *dw = new About(m_curFile);
+      About *dw = new About("Display", m_curFile);
       dw->show();
+
    } catch (std::exception &e) {
-      // do nothing
+      // do nothing for now
+
    }
 }
 
@@ -1280,12 +1478,25 @@ void MainWindow::deleteEOL_Spaces()
    // position to start of document
    cursor.movePosition(QTextCursor::Start);   
 
-   // set for undo
+   // set for undo stack
    cursor.beginEditBlock();  
+
+   QString temp;
 
    while (true) {
       cursor.movePosition(QTextCursor::EndOfBlock);
-      cursor.insertText("ZZ");
+
+      while (true) {
+         cursor.movePosition(QTextCursor::PreviousCharacter, QTextCursor::KeepAnchor, 1);
+         temp = cursor.selectedText();
+
+         if (temp != " ") {
+            cursor.movePosition(QTextCursor::NextCharacter);
+            break;
+         }
+
+         cursor.removeSelectedText();
+      }
 
       if (! cursor.movePosition(QTextCursor::NextBlock))  {
           break;
@@ -1410,7 +1621,6 @@ void MainWindow::spellCheck()
 }
 
 
-
 // **window, tabs
 void MainWindow::tabNew()
 {
@@ -1418,26 +1628,26 @@ void MainWindow::tabNew()
    textEdit = new DiamondTextEdit(this, m_struct, m_spellCheck);
 
    const QString label = "untitled.txt";
+
+   // triggers a call to tabChanged
    int index = m_tabWidget->addTab(textEdit, label);
 
-   // select new tab
    m_tabWidget->setCurrentIndex(index);
+
+   // might want to move to tabChanged()
+   setScreenColors();
+
+   int temp = m_textEdit->fontMetrics().width(" ");
+   m_textEdit->setTabStopWidth(temp * m_struct.tabSpacing);
 
    //
    m_textEdit = textEdit;   
    m_textEdit->setFocus();
 
-   setCurrentTitle("");
-   setScreenColors();
-
-   int temp = m_textEdit->fontMetrics().width(" ");
-   m_textEdit->setTabStopWidth(temp * m_struct.tabSpacing);     // BROOM, must examine and change all tabs
-
-   //
    // connect(m_textEdit, SIGNAL(fileDropped(const QString &)),  this, SLOT(fileDropped(const QString &)));
    connect(m_textEdit->document(), SIGNAL(contentsChanged()), this, SLOT(documentWasModified()));
 
-   connect(m_textEdit, SIGNAL(cursorPositionChanged()), this, SLOT(move_lineHighlight()));
+   connect(m_textEdit, SIGNAL(cursorPositionChanged()), this, SLOT(moveBar()));
    connect(m_textEdit, SIGNAL(cursorPositionChanged()), this, SLOT(setStatus_LineCol()));
 
    connect(m_textEdit, SIGNAL(undoAvailable(bool)), m_ui->actionUndo, SLOT(setEnabled(bool)));
@@ -1496,10 +1706,11 @@ void MainWindow::tabChanged(int index)
    textEdit = dynamic_cast<DiamondTextEdit *>(temp);
 
    if (textEdit) {
+
       m_textEdit = textEdit;
       m_curFile  = this->get_curFileName(index);
 
-      this->setCurrentTitle(m_curFile, true);
+      this->setCurrentTitle(m_curFile);
 
       // ** retrieve slected syntax type
       m_syntaxParser = m_textEdit->get_SyntaxParser();
@@ -1515,37 +1726,22 @@ void MainWindow::tabChanged(int index)
       m_textEdit->set_ColumnMode(m_struct.isColumnMode);
       m_textEdit->set_ShowLineNum(m_struct.showLineNumbers);
 
-      move_lineHighlight();      
+      moveBar();
       showSpaces();
       showEOL();
    }
 }
 
-void MainWindow::split_Horizontal()
-{
-   showNotDone("Horizontal Split");
-}
-
-void MainWindow::split_Vertical()
-{
-   int index = m_tabWidget->currentIndex();
-
-   // QSplitter *splitter = new QSplitter(Qt::Vertical, this);
-   // splitter->addWidget(m_textEdit);
-
-   // splitter->show();
-   // m_tabWidget->currentWidget()
-
-}
 
 // **help
 void MainWindow::diamondHelp()
 {   
    try {
-      About *dw = new About(m_struct.aboutUrl);
+      About *dw = new About("Help" ,m_struct.aboutUrl);
       dw->show();
+
    } catch (std::exception &e) {
-      // do nothing
+      // do nothing for now
    }
 }
 
@@ -1565,7 +1761,7 @@ void MainWindow::about()
    msgB.setWindowIcon(QIcon("://resources/diamond.png"));
 
    msgB.setWindowTitle(tr("About Diamond"));
-   msgB.setText(tr("<p style=margin-right:25><center><h5>Version: 1.0<br>Build # 03.15.2013</h5></center></p>"));
+   msgB.setText(tr("<p style=margin-right:25><center><h5>Version: 1.0<br>Build # 04.1.2013</h5></center></p>"));
    msgB.setInformativeText(textBody);
 
    msgB.setStandardButtons(QMessageBox::Ok);
@@ -1573,7 +1769,6 @@ void MainWindow::about()
 
    msgB.exec();
 }
-
 
 // connections, displays, toolbar
 void MainWindow::setScreenColors()
@@ -1687,6 +1882,7 @@ void MainWindow::createConnections()
    // settings
    connect(m_ui->actionColors,            SIGNAL(triggered()), this, SLOT(setColors()));
    connect(m_ui->actionFonts,             SIGNAL(triggered()), this, SLOT(setFont()));
+   connect(m_ui->actionMove_ConfigFile,   SIGNAL(triggered()), this, SLOT(move_ConfigFile()));
    connect(m_ui->actionOptions,           SIGNAL(triggered()), this, SLOT(setOptions()));
    connect(m_ui->actionPrintOptions,      SIGNAL(triggered()), this, SLOT(setPrintOptions()));
 
