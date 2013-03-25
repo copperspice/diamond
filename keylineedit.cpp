@@ -22,10 +22,9 @@
 #include "keylineedit.h"
 #include "util.h"
 
-#include <QString>
 #include <QKeyEvent>
+#include <QString>
 #include <Qt>
-
 #include <qglobal.h>
 
 KeyLineEdit::KeyLineEdit(QWidget *parent) :

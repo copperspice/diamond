@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright (c) 2012 -2013 Barbara Geller
+* Copyright (c) 2012-2013 Barbara Geller
 * All rights reserved.
 *
 * This file is part of Diamond Editor.
@@ -19,32 +19,28 @@
 *
 **************************************************************************/
 
-#ifndef SPELLCHECK_H
-#define SPELLCHECK_H
+#ifndef SEARCH_H
+#define SEARCH_H
 
-#include <QString>
+#include <QDialog>
 
-class Hunspell;
+class MainWindow;
 
-class SpellCheck
+class ReplaceReply: public QDialog
 {
-   public:
-      SpellCheck(const QString &dictMain, const QString &dictUser);
-      ~SpellCheck();
+   Q_OBJECT
 
-      bool spell(const QString &word);
-      QStringList suggest(const QString &word);
-      void ignoreWord(const QString &word);
-      void addToUserDict(const QString &word);
+   public:
+      ReplaceReply(MainWindow *parent);
+      ~ReplaceReply();
+
+      int getKey();
+
+   protected:
+      void keyPressEvent(QKeyEvent *event);
 
    private:
-      QString m_userFname;
-      QString m_encoding;
-      QTextCodec *m_codec;
-
-      Hunspell *m_hunspell;
-
-      void put_word(const QString &word);
+      int m_replaceReply;
 };
 
 #endif

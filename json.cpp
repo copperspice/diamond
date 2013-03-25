@@ -212,6 +212,14 @@ bool MainWindow::json_Read()
          m_findList.append(list.at(k).toString());
       }
 
+      // find list
+      list = object.value("replace-list").toArray();
+      cnt  = list.count();
+
+      for (int k = 0; k < cnt; k++)  {
+         m_replaceList.append(list.at(k).toString());
+      }
+
       // macro names
       list = object.value("macro-names").toArray();
       cnt = list.count();
@@ -346,12 +354,15 @@ bool MainWindow::json_Write(Option route)
             object.insert("dictUser", m_struct.dictUser);
             break;
 
-         case FIND_LIST:
+         case FIND_REPLACE:
             {
                QJsonArray temp = QJsonArray::fromStringList(m_findList);
                object.insert("find-list", temp);
+
+               temp = QJsonArray::fromStringList(m_replaceList);
+               object.insert("replace-list", temp);
                break;
-            }
+            }                       
 
          case FONT:           
             {
@@ -833,6 +844,9 @@ bool MainWindow::json_CreateNew()
 
    value = QJsonValue(QJsonArray());
    object.insert("find-list", value);
+
+   value = QJsonValue(QJsonArray());
+   object.insert("replace-list", value);
 
    // next macro name
    value = QJsonValue(QString("macro1"));

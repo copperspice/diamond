@@ -44,6 +44,7 @@ spell.cpp
 spellcheck.cpp
 spellcheck.h
 print.cpp
+search.cpp
 support.cpp
 syntax.h
 syntax.cpp
@@ -72,3 +73,5 @@ dialog_colors.h
 dialog_colors.cpp
 dialog_replace.h
 dialog_replace.cpp
+
+search.h

@@ -22,22 +22,33 @@
 #include "dialog_replace.h"
 #include "util.h"
 
-#include <QTextDocument>
+#include <QComboBox>
+#include <QCursor>
+#include <QLineEdit>
+#include <QMenu>
 #include <QTextCursor>
 
-Dialog_Replace::Dialog_Replace(DiamondTextEdit *text, QString findText)
+Dialog_Replace::Dialog_Replace(QString findText, QStringList findList,
+                               QString replaceText, QStringList replaceList)
    : m_ui(new Ui::Dialog_Replace)
 {
-   m_textEdit = text;
+   m_findList    = findList;
+   m_replaceList = replaceList;
 
    m_ui->setupUi(this);
-   m_ui->find->setText(findText);
-   m_ui->down_RB->setChecked(true);
+   this->setUp();
 
-   connect(m_ui->find_PB,        SIGNAL(clicked()),this, SLOT(Find()));
-   connect(m_ui->replace_PB,     SIGNAL(clicked()),this, SLOT(Replace()));
-   connect(m_ui->replaceAll_PB,  SIGNAL(clicked()),this, SLOT(ReplaceAll()));
-   connect(m_ui->cancel_PB,      SIGNAL(clicked()),this, SLOT(Cancel()));
+   // display last edit value
+   m_ui->find_Combo->lineEdit()->setText(findText);
+   m_ui->replace_Combo->lineEdit()->setText(replaceText);
+
+   // any key deletes first, right arrow to continue typing
+   m_ui->find_Combo->lineEdit()->selectAll();
+   m_ui->replace_Combo->lineEdit()->selectAll();
+
+   connect(m_ui->replace_PB,     SIGNAL(clicked()),this, SLOT(replace()));
+   connect(m_ui->replaceAll_PB,  SIGNAL(clicked()),this, SLOT(replaceAll()));
+   connect(m_ui->cancel_PB,      SIGNAL(clicked()),this, SLOT(cancel()));
 }
 
 Dialog_Replace::~Dialog_Replace()
@@ -45,138 +56,127 @@ Dialog_Replace::~Dialog_Replace()
    delete m_ui;
 }
 
-void Dialog_Replace::Find()
+void Dialog_Replace::setUp()
 {
-   QTextDocument::FindFlags flags = 0;
+   m_ui->find_Combo->setEditable(true);
+   m_ui->find_Combo->addItems(m_findList);
 
-   if ( ! m_ui->down_RB->isChecked() ) {
-      flags |= QTextDocument::FindBackward;
-   }
+   m_ui->replace_Combo->setEditable(true);
+   m_ui->replace_Combo->addItems(m_replaceList);
 
-   if ( m_ui->case_CKB->isChecked() ) {
-      flags |= QTextDocument::FindCaseSensitively;
-   }
+   // add a context menu
+   m_ui->find_Combo->setContextMenuPolicy(Qt::CustomContextMenu);
+   connect(m_ui->find_Combo, SIGNAL(customContextMenuRequested(const QPoint &)), this, SLOT(combo_ContextMenu_F(const QPoint &)));
 
-   if ( m_ui->wholeWords_CKB->isChecked()){
-      flags |= QTextDocument::FindWholeWords;
-   }
-
-   QString findText = m_ui->find->text();
-
-   if (! findText.isEmpty())  {
-
-      bool found = m_textEdit->find(findText, flags);
-
-      if (! found)  {
-         csError("Find", findText + " was not found");
-      }
-   }
-}
-
-void Dialog_Replace::Replace()
-{
-   bool found;
-
-   QString oldText = m_ui->find->text();
-   QString newText = m_ui->replace->text();
-
-   if (oldText.isEmpty()) {
-      csError("Find & Replace", "Find text is empty");
-      return;
-   }
-
-   if (newText.isEmpty()) {
-      csError("Find & Replace", "Replace text is empty");
-      return;
-   }
-
-   QTextDocument::FindFlags flags = 0;
-
-   if ( ! m_ui->down_RB->isChecked() ) {
-      flags |= QTextDocument::FindBackward;
-   }
-
-   if ( m_ui->case_CKB->isChecked() ) {
-      flags |= QTextDocument::FindCaseSensitively;
-   }
-
-   if ( m_ui->wholeWords_CKB->isChecked()){
-      flags |= QTextDocument::FindWholeWords;
-   }
-
-   //
-   QTextCursor cursor(m_textEdit->textCursor());
-
-   //
-   found = m_textEdit->find(oldText, flags);
-
-   if (found) {
-      cursor = m_textEdit->textCursor();
-
-      if (cursor.hasSelection()) {
-         cursor.insertText(newText);
-      }
-   }
+   m_ui->replace_Combo->setContextMenuPolicy(Qt::CustomContextMenu);
+   connect(m_ui->replace_Combo, SIGNAL(customContextMenuRequested(const QPoint &)), this, SLOT(combo_ContextMenu_R(const QPoint &)));
 
 }
 
-void Dialog_Replace::ReplaceAll()
+void Dialog_Replace::combo_ContextMenu_F(const QPoint &pt)
 {
-   bool found;
+   QMenu *menu = m_ui->find_Combo->lineEdit()->createStandardContextMenu();
 
-   QString oldText = m_ui->find->text();
-   QString newText = m_ui->replace->text();
+   menu->addSeparator();
+   menu->addAction("Clear Find List",   this, SLOT(menu_clearList_F()) );
+   menu->addAction("Delete Find Entry", this, SLOT(menu_deleteEntry_F()) );
+   menu->popup(QCursor::pos());
 
-   if (oldText.isEmpty()) {
-      csError("Find & Replace", "Find text is empty");
-      return;
-   }
-
-   if (newText.isEmpty()) {
-      csError("Find & Replace", "Replace text is empty");
-      return;
-   }
-
-   QTextDocument::FindFlags flags = 0;
-
-   if ( ! m_ui->down_RB->isChecked() ) {
-      flags |= QTextDocument::FindBackward;
-   }
-
-   if ( m_ui->case_CKB->isChecked() ) {
-      flags |= QTextDocument::FindCaseSensitively;
-   }
-
-   if ( m_ui->wholeWords_CKB->isChecked()){
-      flags |= QTextDocument::FindWholeWords;
-   }
-
-   // begin undo block
-   QTextCursor cursor(m_textEdit->textCursor());
-   cursor.beginEditBlock();
-
-   while (true) {
-      found = m_textEdit->find(oldText, flags);
-
-      if (found) {
-         cursor = m_textEdit->textCursor();
-
-         if (cursor.hasSelection()) {
-            cursor.insertText(newText);
-         }
-
-      } else {
-         break;
-      }
-   }
-
-   // mark end of undo
-   cursor.endEditBlock();
+   // takes care of deleting the menu after displayed, avoids a memory leak
+   connect(menu, SIGNAL(aboutToHide()), menu, SLOT(deleteLater()));
 }
 
-void Dialog_Replace::Cancel()
+void Dialog_Replace::combo_ContextMenu_R(const QPoint &pt)
+{
+   QMenu *menu = m_ui->replace_Combo->lineEdit()->createStandardContextMenu();
+
+   menu->addSeparator();
+   menu->addAction("Clear Replace List",   this, SLOT(menu_clearList_R()) );
+   menu->addAction("Delete Replace Entry", this, SLOT(menu_deleteEntry_R()) );
+   menu->popup(QCursor::pos());
+
+   // takes care of deleting the menu after displayed, avoids a memory leak
+   connect(menu, SIGNAL(aboutToHide()), menu, SLOT(deleteLater()));
+}
+
+void Dialog_Replace::menu_clearList_F()
+{
+   m_findList.clear();
+   m_ui->find_Combo->clear();
+}
+
+void Dialog_Replace::menu_clearList_R()
+{
+   m_replaceList.clear();
+   m_ui->replace_Combo->clear();
+}
+
+void Dialog_Replace::menu_deleteEntry_F()
+{
+   QString text = m_ui->find_Combo->lineEdit()->text();
+   m_findList.removeOne(text);
+
+   int index = m_ui->find_Combo->currentIndex();
+   m_ui->find_Combo->removeItem(index);
+}
+
+void Dialog_Replace::menu_deleteEntry_R()
+{
+   QString text = m_ui->replace_Combo->lineEdit()->text();
+   m_replaceList.removeOne(text);
+
+   int index = m_ui->replace_Combo->currentIndex();
+   m_ui->replace_Combo->removeItem(index);
+}
+
+
+void Dialog_Replace::replace()
+{
+   this->done(1);
+}
+
+void Dialog_Replace::replaceAll()
+{
+   this->done(2);
+}
+
+void Dialog_Replace::cancel()
 {
    this->done(0);
 }
+
+QString Dialog_Replace::get_findText()
+{
+   return m_ui->find_Combo->currentText();
+}
+
+QStringList Dialog_Replace::get_findList()
+{
+   return m_findList;
+}
+
+QString Dialog_Replace::get_replaceText()
+{
+   return m_ui->replace_Combo->currentText();
+}
+
+QStringList Dialog_Replace::get_replaceList()
+{
+   return m_replaceList;
+}
+
+bool Dialog_Replace::get_Case()
+{
+   return m_ui->case_CKB->isChecked();
+}
+
+bool Dialog_Replace::get_WholeWords()
+{
+   return m_ui->wholeWords_CKB->isChecked();
+}
+
+
+
+
 
 

@@ -21,11 +21,9 @@
 
 #include "diamond_edit.h"
 #include "mainwindow.h"
-#include "util.h"
 
 #include <QtGui>
 #include <QLatin1Char>
-#include <QStringList>
 #include <Qt>
 
 const QColor FILL_COLOR = QColor(0xD0D0D0);
@@ -60,7 +58,6 @@ DiamondTextEdit::DiamondTextEdit(MainWindow *from, struct Settings settings, Spe
    connect(this, SIGNAL(updateRequest(QRect,int)), this, SLOT(update_LineNumArea(QRect,int)));  
 
    // column mode
-
 }
 
 DiamondTextEdit::~DiamondTextEdit()
@@ -533,7 +530,6 @@ bool DiamondTextEdit::event(QEvent *event)
 void DiamondTextEdit::keyPressEvent(QKeyEvent *event)
 {
    if (m_record)  {
-
       QKeyEvent *newEvent;
       newEvent = new QKeyEvent(*event);
 

@@ -10,7 +10,7 @@
     <x>0</x>
     <y>0</y>
     <width>463</width>
-    <height>222</height>
+    <height>242</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -20,6 +20,9 @@
    <bool>false</bool>
   </property>
   <layout class="QGridLayout" name="gridLayout_2">
+   <property name="topMargin">
+    <number>10</number>
+   </property>
    <item row="0" column="0" colspan="2">
     <layout class="QGridLayout" name="gridLayout_1">
      <item row="0" column="0">
@@ -134,7 +137,7 @@
        </property>
        <property name="sizeHint" stdset="0">
         <size>
-         <width>80</width>
+         <width>70</width>
          <height>20</height>
         </size>
        </property>
@@ -178,7 +181,8 @@
         </font>
        </property>
        <property name="text">
-        <string>Match Whole Words</string>
+        <string>Match Whole Words
+Regular Expressions </string>
        </property>
       </widget>
      </item>
@@ -195,7 +199,7 @@
      <property name="sizeHint" stdset="0">
       <size>
        <width>20</width>
-       <height>10</height>
+       <height>13</height>
       </size>
      </property>
     </spacer>

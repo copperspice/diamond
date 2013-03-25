@@ -10,13 +10,13 @@ hunspell_path=/z/Hunspell/deploy/
 gcclibs=libgcc_s_sjlj-1  libstdc++-6  libwinpthread-1
 
 # list of CopperSpice libraries
-cslibs=Core Gui Network Script WebKit 
+cslibs=Core Gui Network Script WebKit
 
 # windows only
 hunspell_dll=$(hunspell_path)bin/libhunspell-1.3-0.dll
 hunspell_la=$(hunspell_path)lib/libhunspell-1.3.la
 
-# x11 only 
+# x11 only
 # hunspell_dll=$(hunspell_path)bin/libhunspell.so
 # hunspell_la=$(hunspell_path)lib/libhunspell.a
 
@@ -25,14 +25,14 @@ AM_CXXFLAGS+=-mwindows -I/z/Hunspell/deploy/include/hunspell  -I..  -Wall
 
 # target app name
 deploy_PROGRAMS = Diamond
-    
+
 # copy the required CopperSpice and gcc files for deployment - windows only
 install-data-hook:	
-	mkdir -p $(deploydir)	  
+	mkdir -p $(deploydir)	
 	cp --preserve=timestamps -u $(patsubst %,$(gccpath)/bin/%.dll,$(gcclibs))  $(deploydir)
 	cp --preserve=timestamps -u $(patsubst %,$(CS_HOME)/bin/libCs%1-0.dll,$(cslibs))  $(deploydir)
 #	cp --preserve=timestamps -u $(hunspell_dll)  $(deploydir)
-    
+
 # search path for source
 VPATH = ../
 
@@ -61,6 +61,7 @@ Diamond_SOURCES = \
     print.cpp \
     recent_files.cpp \
 	recent_tabs.cpp \
+	search.cpp \
     spell.cpp \
     spellcheck.cpp \
 	split_window.cpp \
@@ -68,7 +69,7 @@ Diamond_SOURCES = \
     support.cpp \
     util.cpp
 
-#              
+#
 noinst_HEADERS = \
 	about.h \
 	dialog_advfind.h \
@@ -83,11 +84,12 @@ noinst_HEADERS = \
 	diamond_edit.h \
 	keylineedit.h \
 	mainwindow.h  \
+    search.h \
 	settings.h \
 	spellcheck.h \
-	util.h	  
-                
-# 
+	util.h	
+
+#
 MOCS = \
 	about.h \
 	dialog_advfind.h \
@@ -104,10 +106,11 @@ MOCS = \
 	diamond_tab.h \
 	keylineedit.h \
 	mainwindow.h  \
-	syntax.h	   
-    
+    search.h \
+	syntax.h	
+
 Diamond_LDADD=$(patsubst %.h,moc_%.$(OBJEXT),$(MOCS))   $(hunspell_la)
-           
+
 #
 FORMS =	\
 	forms/dialog_advfind.ui \
@@ -120,16 +123,16 @@ FORMS =	\
 	forms/dialog_print_opt.ui \
 	forms/dialog_replace.ui \
 	forms/dialog_symbols.ui \
-	forms/mainwindow.ui   
-         
+	forms/mainwindow.ui
+
 #
 TRANSLATIONS =
-  
+
 #
 RESOURCES  =  diamond.qrc
 
-#    
-Diamond_SOURCES += qrc_diamond.cpp   
-    
+#
+Diamond_SOURCES += qrc_diamond.cpp
+
 # use wilcard to obtain just the dependency list
 qrc_diamond.cpp: diamond.qrc   $(wildcard ../resources/*)

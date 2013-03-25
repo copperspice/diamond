@@ -21,9 +21,9 @@
 
 #include "mainwindow.h"
 
-#include <QPushButton>
 #include <QBoxLayout>
 #include <QLabel>
+#include <QPushButton>
 
 void MainWindow::split_Horizontal()
 {

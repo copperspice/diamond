@@ -38,7 +38,9 @@
 #include <QMenu>
 #include <QMainWindow>
 #include <QModelIndex>
+#include <QRectF>
 #include <QStandardItemModel>
+#include <QStringList>
 #include <QPlainTextEdit>
 #include <QSplitter>
 #include <QStackedWidget>
@@ -124,7 +126,7 @@ class MainWindow : public QMainWindow
       QString m_advFindText;
       QString m_advFindFileType;
       QString m_advFindFolder;
-      QTextDocument::FindFlags m_advFlags;
+
       bool m_advFCase;
       bool m_advFWholeWords;
       bool m_advFSearchSubFolders;
@@ -136,10 +138,17 @@ class MainWindow : public QMainWindow
       void findRecursive(const QString &path);
       void advFind_ShowFiles(QList<advFindStruct> foundList);
 
+      // replace
+      QString m_replaceText;
+      QStringList m_replaceList;
+      int getReply();
+
       // macros    
       bool m_record;
       QList<QKeyEvent *> m_keyList;
-      QStringList m_macroNames;     
+      QStringList m_macroNames;
+      void replaceQuery();
+      void replaceAll();
 
       // settings
       struct Settings m_struct;
@@ -190,7 +199,7 @@ class MainWindow : public QMainWindow
       QLabel *m_statusMode;
       QLabel *m_statusName;    
 
-      enum Option { ABOUTURL, ADVFIND, AUTOLOAD, CLOSE, COLORS, COLUMN_MODE, DICT_MAIN, DICT_USER, FIND_LIST, FONT,
+      enum Option { ABOUTURL, ADVFIND, AUTOLOAD, CLOSE, COLORS, COLUMN_MODE, DICT_MAIN, DICT_USER, FIND_REPLACE, FONT,
                     FORMAT_DATE, FORMAT_TIME, KEYS, MACRO, MACRO_NAMES, PATH_SYNTAX, PATH_PRIOR, PRINT_OPTIONS,
                     RECENTFOLDER, RECENTFILE, SHOW_LINEHIGHLIGHT, SHOW_LINENUMBERS, SHOW_SPACES, SHOW_EOL,
                     SPELLCHECK, TAB_SPACING, USESPACES, WORDWRAP};
@@ -236,7 +245,9 @@ class MainWindow : public QMainWindow
       // printing
       int m_pageNo;
       int m_pageCount;
-      QRect m_printArea;
+
+      QRectF m_printArea;
+      double m_resolution;
 
       int get_HeaderSize(QPainter *painter);
       int get_FooterSize(QPainter *painter);

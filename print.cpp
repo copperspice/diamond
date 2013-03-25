@@ -40,6 +40,8 @@
 
 #include <QAbstractTextDocumentLayout>
 
+static const double SOURCE_DPI = 100.00;
+
 void MainWindow::print()
 {
    QPrinter printer(QPrinter::HighResolution);   
@@ -99,27 +101,38 @@ void MainWindow::printPdf()
 // * *
 void MainWindow::printOut(QPrinter *printer)
 {
-   printer->setPageMargins(m_printer.marLeft, m_printer.marTop,
-                           m_printer.marRight, m_printer.marBottom,QPrinter::Inch);
-
    QTextDocument *td = new QTextDocument;
 
    QString html = Qt::convertFromPlainText( m_textEdit->toPlainText() );
    td->setHtml(html);
 
-   QPainter painter;
+   printer->setPaperSize(QPrinter::Letter);
+   printer->setPageMargins(m_printer.marLeft, m_printer.marTop,
+                           m_printer.marRight, m_printer.marBottom,QPrinter::Inch);
 
-   // between the header and the body, and the body and the footer
-   int spacer = 225;
+   QPainter painter;
 
    if (painter.begin(printer)) {
 
-      td->setDefaultFont(m_printer.fontText);
+      m_resolution = printer->logicalDpiX();            
+
+      painter.setViewport(printer->paperRect());
+
+      int winX = 8.5  * m_resolution;
+      int winY = 11.0 * m_resolution;
+      painter.setWindow(0, 0, winX, winY);
 
       td->documentLayout()->setPaintDevice(painter.device());
-      QRect printArea = printer->pageRect();
+      td->setDefaultFont(m_printer.fontText);
 
-      // save for header and footer
+      // save printarea for header and footer
+      double xx = (8.5 - m_printer.marLeft - m_printer.marRight) * m_resolution;
+      double yy = (11.0 - m_printer.marTop - m_printer.marBottom) * m_resolution;
+      QRectF printArea = QRectF(0, 0, xx, yy);
+
+      // between the header and the body, and the body and the footer
+      int spacer = .25 * m_resolution;
+
       m_printArea = printArea;
 
       int headHeight = get_HeaderSize(&painter);
@@ -128,45 +141,44 @@ void MainWindow::printOut(QPrinter *printer)
       printArea.setTop(printArea.top() + headHeight + spacer);
       printArea.setBottom(printArea.bottom() - (footHeight + spacer) );
 
-      // QRect documentRect  = QRect(QPoint(0,0), td->size().toSize());
-      QRect printableRect = QRect(QPoint(0,0), printArea.size());
-
+      QRectF printableRect = QRectF(QPoint(0,0), printArea.size());
       td->setPageSize(printableRect.size());
 
       m_pageNo    = 1;
       m_pageCount = td->pageCount();
 
-      // print header and footer
+      // print header and footer     
       this->doHeader(&painter);
       this->doFooter(&painter);
 
-      painter.translate(0, headHeight + spacer);
-      painter.save();
+      int headerSpace = + headHeight + spacer;
 
-      // while (printableRect.intersects(documentRect)) {
       for (int k = 1; k <= m_pageCount; ++k) {
 
-         painter.drawRect(printableRect);   // test
+         painter.save();
 
+         // move the painter "down"
+         painter.translate(0, (printableRect.height() * (k-1) * (-1) ) + headerSpace);
+
+         painter.drawRect(printableRect);   // test box, remove on release
+
+         // print one page worth of text
          td->drawContents(&painter, printableRect);
          m_pageNo++;
 
+         // move the document "up"
          printableRect.translate(0, printableRect.height());
-         // painter.restore();
 
-         // painter.save();
-         painter.translate(0, -printableRect.height() );
+         painter.restore();
 
-         // if (printableRect.intersects(documentRect)) {
          if (k < m_pageCount) {
             printer->newPage();
 
             this->doHeader(&painter);
-            this->doFooter(&painter);            
+            this->doFooter(&painter);
          }
       }
 
-      painter.restore();
       painter.end();
    }
 }
@@ -180,7 +192,7 @@ int MainWindow::get_HeaderSize(QPainter *painter)
    painter->save();
    painter->setFont(m_printer.fontHeader);
 
-   QString header = "Test line for average height: 123";
+   QString header = "Test line";
    QRect rect     = painter->boundingRect(painter->window(), Qt::AlignLeft, header);
 
    int size = rect.height();
@@ -203,7 +215,7 @@ int MainWindow::get_FooterSize(QPainter *painter)
    painter->save();
    painter->setFont(m_printer.fontFooter);
 
-   QString footer = "Test line for average height: 123";
+   QString footer = "Test line";
    QRect rect     = painter->boundingRect(painter->window(), Qt::AlignLeft, footer);
 
    int size = rect.height();
@@ -224,52 +236,43 @@ void MainWindow::doHeader(QPainter *painter)
    }
 
    QString header;
-   QRect rect1;
-   QRect rect3 = painter->window();
+   QRectF rect1;
+   QRectF rectBig =  m_printArea;
 
-   //
    painter->save();
-   painter->resetTransform();
-
    painter->setFont(m_printer.fontHeader);
 
    //
    header = macroExpand(m_printer.header_left);
-   rect1  = painter->boundingRect(rect3, Qt::AlignLeft, header);
+   rect1  = painter->boundingRect(rectBig, Qt::AlignLeft, header);
    painter->drawText(rect1, Qt::AlignLeft, header);
 
    //
    header = macroExpand(m_printer.header_center);
-   rect1  = painter->boundingRect(rect3, Qt::AlignHCenter, header);
-
-   rect1.setLeft(rect3.left());
-   rect1.setRight(m_printArea.width());
+   rect1  = painter->boundingRect(rectBig, Qt::AlignHCenter, header);
    painter->drawText(rect1, Qt::AlignHCenter, header);
 
    //
    header = macroExpand(m_printer.header_right);
-   rect1  = painter->boundingRect(rect3, Qt::AlignRight, header);
-
-   rect1.setRight(m_printArea.width());
-   painter->drawText(rect1,  Qt::AlignRight, header);
+   rect1  = painter->boundingRect(rectBig, Qt::AlignRight, header);
+   painter->drawText(rect1, Qt::AlignRight, header);
 
    //
    header = m_printer.header_line2;
 
    if (header.isEmpty()) {
-
-      // line after header
-      painter->drawLine(rect1.left(), rect1.bottom(), m_printArea.width(), rect1.bottom() );
+      // line after header       
+      painter->drawLine(rectBig.left(), rect1.bottom()+8, rectBig.right(), rect1.bottom()+8);
 
    } else {
-      QRect rect2 = rect3;
+      QRectF rect2 = rectBig;
       rect2.translate(0, rect1.height());
 
       rect2 = painter->boundingRect(rect2, Qt::AlignLeft, header);
       painter->drawText(rect2, Qt::AlignLeft, header);
 
       // line after header
-      painter->drawLine(rect2.left(), rect2.bottom(), m_printArea.width(), rect2.bottom() );
+      painter->drawLine(rectBig.left(), rect2.bottom()+8, rectBig.right(), rect2.bottom()+8);
    }
 
    painter->restore();
@@ -284,54 +287,47 @@ void MainWindow::doFooter(QPainter *painter)
    }
 
    QString footer;
-   QRect rect1;   
-   QRect rect3 = painter->window();
+   QRectF rect1;
+   QRectF rectBig = m_printArea;
+
+   painter->save();
+   painter->setFont(m_printer.fontFooter);
 
    //
-   painter->save();
-   painter->resetTransform();
+   QString footer_L2 = footer = m_printer.footer_line2;
+   QRectF rect_L2;
 
-   painter->setFont(m_printer.fontFooter);   
+   if (! footer_L2.isEmpty()) {
+      rect_L2 = painter->boundingRect(rectBig, Qt::AlignLeft, footer_L2);
+
+      rect_L2.translate(0, rectBig.height() - rect_L2.height());
+      painter->drawText(rect_L2, Qt::AlignLeft, footer_L2);
+   }
 
    //
    footer = macroExpand(m_printer.footer_left);
-   rect1  = painter->boundingRect(rect3, Qt::AlignLeft, footer);
+   rect1  = painter->boundingRect(rectBig, Qt::AlignLeft, footer);
 
-   rect1.translate(0, rect3.height() );
+   rect1.translate(0, rectBig.height() - rect1.height() - rect_L2.height() );
    painter->drawText(rect1, Qt::AlignLeft, footer);
 
    //
    footer = macroExpand(m_printer.footer_center);
-   rect1  = painter->boundingRect(rect3, Qt::AlignHCenter, footer);
+   rect1  = painter->boundingRect(rectBig, Qt::AlignHCenter, footer);
 
-   rect1.setLeft(rect3.left());
-   rect1.setRight(m_printArea.width());
-   rect1.translate(0, rect3.height() );
+   rect1.translate(0, rectBig.height() - rect1.height() - rect_L2.height() );
    painter->drawText(rect1, Qt::AlignHCenter, footer);
 
    //
    footer = macroExpand(m_printer.footer_right);
-   rect1  = painter->boundingRect(rect3, Qt::AlignRight, footer);
+   rect1  = painter->boundingRect(rectBig, Qt::AlignRight, footer);
 
-   rect1.setRight(m_printArea.width());
-   rect1.translate(0, rect3.height() );
+   rect1.translate(0, rectBig.height() - rect1.height() - rect_L2.height() );
    painter->drawText(rect1, Qt::AlignRight, footer);
 
-   //
-   footer = m_printer.footer_line2;
+   // line before footer  
+   painter->drawLine( rectBig.left(), rect1.top()-3, rectBig.right(), rect1.top()-3 );
 
-   if (! footer.isEmpty()) {
-      QRect rect2 = rect3;
-      rect2.translate(0, rect2.height() + rect1.height());
-
-      rect2  = painter->boundingRect(rect2, Qt::AlignLeft, footer);
-      painter->drawText(rect2, Qt::AlignLeft, footer);
-   }
-
-   // line before footer
-   rect3.translate(0, rect3.height());
-
-   painter->drawLine(rect3.left(), rect3.top(), m_printArea.width(), rect3.top() );
    painter->restore();
 
    return;

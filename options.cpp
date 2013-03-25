@@ -23,7 +23,6 @@
 #include "dialog_options.h"
 #include "dialog_print_opt.h"
 #include "mainwindow.h"
-#include "util.h"
 
 #include <QFontDialog>
 

@@ -23,11 +23,11 @@
 #include "syntax.h"
 #include "util.h"
 
-#include <QString>
 #include <QJsonArray>
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QJsonValue>
+#include <QString>
 #include <QTextBoundaryFinder>
 #include <QFileInfo>
 

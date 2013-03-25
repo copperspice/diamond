@@ -10,7 +10,7 @@
     <x>0</x>
     <y>0</y>
     <width>407</width>
-    <height>191</height>
+    <height>194</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -21,13 +21,18 @@
   </property>
   <layout class="QGridLayout" name="gridLayout">
    <property name="topMargin">
-    <number>13</number>
+    <number>10</number>
    </property>
    <property name="horizontalSpacing">
     <number>30</number>
    </property>
    <item row="4" column="2" rowspan="3">
     <widget class="QGroupBox" name="groupBox">
+     <property name="font">
+      <font>
+       <pointsize>10</pointsize>
+      </font>
+     </property>
      <property name="title">
       <string>Direction</string>
      </property>
@@ -100,7 +105,7 @@
     </spacer>
    </item>
    <item row="10" column="2">
-    <spacer name="verticalSpacer_3">
+    <spacer name="verticalSpacer_2">
      <property name="orientation">
       <enum>Qt::Vertical</enum>
      </property>

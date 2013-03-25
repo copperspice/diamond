@@ -22,29 +22,48 @@
 #ifndef DIALOG_REPLACE_H
 #define DIALOG_REPLACE_H
 
-#include "diamond_edit.h"
 #include "ui_dialog_replace.h"
 
 #include <QDialog>
+#include <QPoint>
+#include <QString>
+#include <QStringList>
 
 class Dialog_Replace : public QDialog
 {     
    Q_OBJECT
 
-   public:
-      Dialog_Replace(DiamondTextEdit *text, QString findText = "");
+   public:      
+      Dialog_Replace(QString findText, QStringList findList,
+                     QString replaceText, QStringList replaceList);
       ~Dialog_Replace();
+
+      QString get_findText();
+      QStringList get_findList();
+      QString get_replaceText();
+      QStringList get_replaceList();
+
+      bool get_Case();
+      bool get_WholeWords();
 
    private:
       Ui::Dialog_Replace *m_ui;
-      DiamondTextEdit *m_textEdit;
+      QStringList m_findList;
+      QStringList m_replaceList;
+      void setUp();
 
    private slots:
-      void Find();
-      void Replace();
-      void ReplaceAll();
+      void replace();
+      void replaceAll();
+      void cancel();
 
-      void Cancel();
+      void combo_ContextMenu_F(const QPoint &pt);
+      void menu_clearList_F();
+      void menu_deleteEntry_F();
+
+      void combo_ContextMenu_R(const QPoint &pt);
+      void menu_clearList_R();
+      void menu_deleteEntry_R();
 };
 
 #endif

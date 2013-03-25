@@ -21,9 +21,6 @@
 
 #include "mainwindow.h"
 #include "spellcheck.h"
-#include "util.h"
-
-#include <QFile>
 
 void MainWindow::createSpellCheck()
 {

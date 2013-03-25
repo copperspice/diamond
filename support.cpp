@@ -19,15 +19,12 @@
 *
 **************************************************************************/
 
-#include "mainwindow.h"
 #include "dialog_get1.h"
-#include "util.h"
+#include "mainwindow.h"
 
-#include <QFile>
 #include <QFileInfo>
 #include <QFileDialog>
 #include <QDragEnterEvent>
-#include <QStringList>
 #include <QMimeData>
 #include <QUrl>
 
