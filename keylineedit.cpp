@@ -85,11 +85,14 @@ void KeyLineEdit::keyPressEvent(QKeyEvent *event)
       } else if (key == Qt::Key_Insert) {
          keyPress.append("Ins");
 
+      } else if (key == Qt::Key_Tab) {
+         keyPress.append("Tab");
+
       } else if (key == Qt::Key_Home) {
          keyPress.append("Home");
 
       } else if (key == Qt::Key_End) {
-         keyPress.append("End");
+         keyPress.append("End");                  
 
       } else if (key == Qt::Key_PageUp) {
          keyPress.append("PgUp");
@@ -137,6 +140,6 @@ void KeyLineEdit::keyPressEvent(QKeyEvent *event)
           keyPress.append(key);
       }
 
-      this->setText(keyPress);
+      this->setText(keyPress.trimmed());
    }
 }

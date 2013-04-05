@@ -27,10 +27,18 @@
 
 void MainWindow::openTab_CreateMenus()
 {
-   int cnt = m_openedFiles.count();
-
+   // re-populate m_openedFiles
    QString tName;
 
+   int cnt = m_tabWidget->count();
+   m_openedFiles.clear();
+
+   for (int k = 0; k < cnt; ++k) {
+      tName = this->get_curFileName(k);
+      m_openedFiles.append(tName);
+   }
+
+   //
    QMenu *windowMenu = m_ui->menuWindow;
    windowMenu->addSeparator();
 
@@ -69,10 +77,10 @@ void MainWindow::openTab_Select()
          // something is pretty bogus
 
       } else {
-         int max   = m_tabWidget->count();
+         int cnt   = m_tabWidget->count();
          int index = m_tabWidget->currentIndex();
 
-         for (int k = 0; k < max; ++k) {
+         for (int k = 0; k < cnt; ++k) {
             QString tcurFile = this->get_curFileName(k);
 
             if (tcurFile == fileName) {
@@ -99,7 +107,7 @@ void MainWindow::openTab_Select()
 }
 
 void MainWindow::openTab_Add()
-{
+{ 
    if (m_curFile.isEmpty()) {
       return;
    }
@@ -133,8 +141,9 @@ void MainWindow::openTab_UpdateActions()
             isModified = " *";
          } else {
             isModified = "";
-         }
+         }                  
 */
+
          openTab_Actions[i]->setText(m_openedFiles[i] + isModified);
          openTab_Actions[i]->setVisible(true);
 

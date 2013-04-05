@@ -31,7 +31,7 @@
 #include <QFontMetrics>
 #include <QKeySequence>
 
-MainWindow::MainWindow()
+MainWindow::MainWindow(QStringList fileList, QStringList flagList)
    : m_ui(new Ui::MainWindow)
 {
    m_ui->setupUi(this);
@@ -49,7 +49,7 @@ MainWindow::MainWindow()
    // drag & drop
    setAcceptDrops(true);
 
-   // remaining methods must be done after json_Read
+   // remaining methods must be done after json_Read for config
    m_tabWidget = new QTabWidget;
    m_tabWidget->setTabsClosable(true);
    m_tabWidget->setMovable(true);
@@ -87,13 +87,33 @@ MainWindow::MainWindow()
    m_ui->menuFile->setContextMenuPolicy(Qt::CustomContextMenu);
    connect(m_ui->menuFile, SIGNAL(customContextMenuRequested(const QPoint &)), this, SLOT(showContextMenuFile(const QPoint &)));
 
-   //
-   tabNew();
-   if (m_struct.autoLoad) {
-      autoLoad();
+   // save flags after reading config and before autoload
+   m_args.flag_noAutoLoad   = false;
+   m_args.flag_noSaveConfig = false;
+
+   if (flagList.contains("--no_autoload", Qt::CaseInsensitive)) {
+      m_args.flag_noAutoLoad = true;
    }
 
-   // currently open tabs
+   if (flagList.contains("--no_saveconfig", Qt::CaseInsensitive)) {
+      m_args.flag_noSaveConfig = true;
+   }
+
+   if (m_struct.autoLoad && ! m_args.flag_noAutoLoad ) {      
+      autoLoad();
+   }   
+
+   // user requested files on the command line
+   if (fileList.count() > 1 ) {
+      argLoad(fileList);
+   }
+
+   // no files were open, open a blank tab
+   if (m_tabWidget->count() == 0) {
+      tabNew();
+   }
+
+   // currently open tabs, must occure after autoLoad & argLoad
    openTab_CreateMenus();
 
    // find
@@ -816,16 +836,16 @@ void MainWindow::wordWrap()
    json_Write(WORDWRAP);
 }
 
-void MainWindow::showSpaces()
+void MainWindow::show_Spaces()
 {   
    QTextDocument *td = m_textEdit->document();
    QTextOption textOpt = td->defaultTextOption();
 
    if (m_ui->actionShow_Spaces->isChecked()) {
       //on
-      m_struct.showSpaces = true;
+      m_struct.show_Spaces = true;
 
-      if (m_struct.showEOL) {
+      if (m_struct.show_Breaks) {
        textOpt.setFlags(QTextOption::ShowTabsAndSpaces | QTextOption::ShowLineAndParagraphSeparators);
 
       } else {
@@ -837,9 +857,9 @@ void MainWindow::showSpaces()
 
    } else {
       // off
-       m_struct.showSpaces = false;
+       m_struct.show_Spaces = false;
 
-       if (m_struct.showEOL) {
+       if (m_struct.show_Breaks) {
          textOpt.setFlags(QTextOption::ShowLineAndParagraphSeparators);
 
        } else {
@@ -853,16 +873,16 @@ void MainWindow::showSpaces()
    json_Write(SHOW_SPACES);
 }
 
-void MainWindow::showEOL()
+void MainWindow::show_Breaks()
 {
    QTextDocument *td = m_textEdit->document();
    QTextOption textOpt = td->defaultTextOption();
 
-   if (m_ui->actionShow_EOL->isChecked()) {
+   if (m_ui->actionShow_Breaks->isChecked()) {
       //on
-      m_struct.showEOL = true;
+      m_struct.show_Breaks = true;
 
-      if (m_struct.showSpaces) {
+      if (m_struct.show_Spaces) {
          textOpt.setFlags(QTextOption::ShowTabsAndSpaces | QTextOption::ShowLineAndParagraphSeparators);
 
       } else {
@@ -874,9 +894,9 @@ void MainWindow::showEOL()
 
    } else {
       // off
-      m_struct.showEOL = false;
+      m_struct.show_Breaks = false;
 
-      if (m_struct.showSpaces) {
+      if (m_struct.show_Spaces) {
         textOpt.setFlags(QTextOption::ShowTabsAndSpaces);
 
       } else {
@@ -887,7 +907,7 @@ void MainWindow::showEOL()
       td->setDefaultTextOption(textOpt);
    }
 
-   json_Write(SHOW_EOL);
+   json_Write(SHOW_BREAKS);
 }
 
 void MainWindow::displayHTML()
@@ -1248,25 +1268,18 @@ void MainWindow::spellCheck()
 
 // **window, tabs
 void MainWindow::tabNew()
-{
-   DiamondTextEdit *textEdit;
-   textEdit = new DiamondTextEdit(this, m_struct, m_spellCheck);
-
-   const QString label = "untitled.txt";
+{   
+   m_textEdit = new DiamondTextEdit(this, m_struct, m_spellCheck);
 
    // triggers a call to tabChanged
-   int index = m_tabWidget->addTab(textEdit, label);
-
+   int index = m_tabWidget->addTab(m_textEdit, "untitled.txt");
    m_tabWidget->setCurrentIndex(index);
 
-   // might want to move to tabChanged()
    setScreenColors();
-
    int temp = m_textEdit->fontMetrics().width(" ");
    m_textEdit->setTabStopWidth(temp * m_struct.tabSpacing);
 
    //
-   m_textEdit = textEdit;   
    m_textEdit->setFocus();
 
    // connect(m_textEdit, SIGNAL(fileDropped(const QString &)),  this, SLOT(fileDropped(const QString &)));
@@ -1331,7 +1344,6 @@ void MainWindow::tabChanged(int index)
    textEdit = dynamic_cast<DiamondTextEdit *>(temp);
 
    if (textEdit) {
-
       m_textEdit = textEdit;
       m_curFile  = this->get_curFileName(index);
 
@@ -1352,8 +1364,8 @@ void MainWindow::tabChanged(int index)
       m_textEdit->set_ShowLineNum(m_struct.showLineNumbers);
 
       moveBar();
-      showSpaces();
-      showEOL();
+      show_Spaces();
+      show_Breaks();
    }
 }
 
@@ -1397,8 +1409,8 @@ void MainWindow::about()
 
 // connections, displays, toolbar
 void MainWindow::setScreenColors()
-{
-   m_textEdit->setFont(m_struct.font);
+{     
+   changeFont();
 
    QPalette temp = m_textEdit->palette();
    temp.setColor(QPalette::Text, m_struct.colorText);
@@ -1464,10 +1476,8 @@ void MainWindow::createConnections()
    connect(m_ui->actionLine_Highlight,    SIGNAL(triggered()), this, SLOT(lineHighlight()));
    connect(m_ui->actionLine_Numbers,      SIGNAL(triggered()), this, SLOT(lineNumbers()));
    connect(m_ui->actionWord_Wrap,         SIGNAL(triggered()), this, SLOT(wordWrap()));
-
-   connect(m_ui->actionShow_Spaces,       SIGNAL(triggered()), this, SLOT(showSpaces()));
-   connect(m_ui->actionShow_EOL,          SIGNAL(triggered()), this, SLOT(showEOL()));
-
+   connect(m_ui->actionShow_Spaces,       SIGNAL(triggered()), this, SLOT(show_Spaces()));
+   connect(m_ui->actionShow_Breaks,       SIGNAL(triggered()), this, SLOT(show_Breaks()));
    connect(m_ui->actionDisplay_HTML,      SIGNAL(triggered()), this, SLOT(displayHTML()));
 
    // document
@@ -1551,10 +1561,10 @@ void MainWindow::createToggles()
    m_ui->actionWord_Wrap->setChecked(m_struct.isWordWrap);
 
    m_ui->actionShow_Spaces->setCheckable(true);
-   m_ui->actionShow_Spaces->setChecked(m_struct.showSpaces);
+   m_ui->actionShow_Spaces->setChecked(m_struct.show_Spaces);
 
-   m_ui->actionShow_EOL->setCheckable(true);
-   m_ui->actionShow_EOL->setChecked(m_struct.showEOL);
+   m_ui->actionShow_Breaks->setCheckable(true);
+   m_ui->actionShow_Breaks->setChecked(m_struct.show_Breaks);
 
    m_ui->actionColumn_Mode->setCheckable(true);
    m_ui->actionColumn_Mode->setChecked(m_struct.isColumnMode);  
@@ -1575,43 +1585,27 @@ void MainWindow::createToggles()
 
 void MainWindow::createShortCuts(bool setupAll)
 {
-   if (setupAll) {
-      // file
-      m_ui->actionOpen->setShortcuts(QKeySequence::Open);
-      m_ui->actionClose->setShortcuts(QKeySequence::Close);
-      m_ui->actionSave->setShortcuts(QKeySequence::Save);
-      m_ui->actionSave_As->setShortcuts(QKeySequence::SaveAs);
-      m_ui->actionPrint->setShortcuts(QKeySequence::Print);
-      m_ui->actionExit->setShortcuts(QKeySequence::Quit);
-
-      // edit
-      m_ui->actionUndo->setShortcuts(QKeySequence::Undo);
-      m_ui->actionRedo->setShortcuts(QKeySequence::Redo);
-      m_ui->actionCut->setShortcuts(QKeySequence::Cut);
-      m_ui->actionCopy->setShortcuts(QKeySequence::Copy);
-      m_ui->actionPaste->setShortcuts(QKeySequence::Paste);
-
-      m_ui->actionSelect_All->setShortcuts(QKeySequence::SelectAll);
-      m_ui->actionGo_Top->setShortcuts(QKeySequence::MoveToStartOfDocument);
-      m_ui->actionGo_Bottom->setShortcuts(QKeySequence::MoveToEndOfDocument);
-
-      //search
-      m_ui->actionFind->setShortcuts(QKeySequence::Find);
-      m_ui->actionReplace->setShortcuts(QKeySequence::Replace);
-      m_ui->actionFind_Next->setShortcuts(QKeySequence::FindNext);
-      m_ui->actionFind_Prev->setShortcuts(QKeySequence::FindPrevious);
-
-      // tab
-      m_ui->actionTab_New->setShortcuts(QKeySequence::AddTab);
-
-      // help
-      m_ui->actionDiamond_Help->setShortcuts(QKeySequence::HelpContents);
-   }
-
-   // ** user definded
-
    // assign to temp value
    struct Options struct_temp;
+
+   struct_temp.key_open         = m_struct.key_open;
+   struct_temp.key_close        = m_struct.key_close;
+   struct_temp.key_save         = m_struct.key_save;
+   struct_temp.key_saveAs       = m_struct.key_saveAs;
+   struct_temp.key_print        = m_struct.key_print;
+   struct_temp.key_undo         = m_struct.key_undo;
+   struct_temp.key_redo         = m_struct.key_redo;
+   struct_temp.key_cut	        = m_struct.key_cut;
+   struct_temp.key_copy	        = m_struct.key_copy;
+   struct_temp.key_paste        = m_struct.key_paste;
+   struct_temp.key_selectAll    = m_struct.key_selectAll;
+   struct_temp.key_find	        = m_struct.key_find;
+   struct_temp.key_replace      = m_struct.key_replace;
+   struct_temp.key_findNext     = m_struct.key_findNext;
+   struct_temp.key_findPrev     = m_struct.key_findPrev;
+   struct_temp.key_goTop        = m_struct.key_goTop;
+   struct_temp.key_goBottom     = m_struct.key_goBottom;
+   struct_temp.key_newTab       = m_struct.key_newTab;
 
    struct_temp.key_selectLine   = m_struct.key_selectLine;
    struct_temp.key_selectWord   = m_struct.key_selectWord ;
@@ -1624,10 +1618,31 @@ void MainWindow::createShortCuts(bool setupAll)
    struct_temp.key_deleteEOL    = m_struct.key_deleteEOL;
    struct_temp.key_columnMode   = m_struct.key_columnMode ;
    struct_temp.key_goLine       = m_struct.key_goLine;
+   struct_temp.key_show_Spaces  = m_struct.key_show_Spaces;
+   struct_temp.key_show_Breaks  = m_struct.key_show_Breaks;
    struct_temp.key_macroPlay    = m_struct.key_macroPlay;
    struct_temp.key_spellCheck   = m_struct.key_spellCheck;
 
 #ifdef Q_OS_MAC
+   struct_temp.key_open         = this->adjustKey(struct_temp.key_open);
+   struct_temp.key_close        = this->adjustKey(struct_temp.key_close);
+   struct_temp.key_save         = this->adjustKey(struct_temp.key_save);
+   struct_temp.key_saveAs       = this->adjustKey(struct_temp.key_saveAs);
+   struct_temp.key_print        = this->adjustKey(struct_temp.key_print);   
+   struct_temp.key_undo         = this->adjustKey(struct_temp.key_undo);
+   struct_temp.key_redo         = this->adjustKey(struct_temp.key_redo);
+   struct_temp.key_cut	        = this->adjustKey(struct_temp.key_cut);
+   struct_temp.key_copy	        = this->adjustKey(struct_temp.key_copy);
+   struct_temp.key_paste        = this->adjustKey(struct_temp.key_paste);
+   struct_temp.key_selectAll    = this->adjustKey(struct_temp.key_selectAll);
+   struct_temp.key_find	        = this->adjustKey(struct_temp.key_find);
+   struct_temp.key_replace      = this->adjustKey(struct_temp.key_replace);
+   struct_temp.key_findNext     = this->adjustKey(struct_temp.key_findNext);
+   struct_temp.key_findPrev     = this->adjustKey(struct_temp.key_findPrev);
+   struct_temp.key_goTop        = this->adjustKey(struct_temp.key_goTop);
+   struct_temp.key_goBottom     = this->adjustKey(struct_temp.key_goBottom);
+   struct_temp.key_newTab       = this->adjustKey(struct_temp.key_newTab);
+
    struct_temp.key_selectLine   = this->adjustKey(struct_temp.key_selectLine);
    struct_temp.key_selectWord   = this->adjustKey(struct_temp.key_selectWord);
    struct_temp.key_selectBlock  = this->adjustKey(struct_temp.key_selectBlock);
@@ -1639,10 +1654,48 @@ void MainWindow::createShortCuts(bool setupAll)
    struct_temp.key_deleteEOL    = this->adjustKey(struct_temp.key_deleteEOL);
    struct_temp.key_columnMode   = this->adjustKey(struct_temp.key_columnMode);
    struct_temp.key_goLine       = this->adjustKey(struct_temp.key_goLine);
+   struct_temp.key_showTabs     = this->adjustKey(struct_temp.key_showTabs);
+   struct_temp.key_showBreaks   = this->adjustKey(struct_temp.key_showBreaks);
    struct_temp.key_macroPlay    = this->adjustKey(struct_temp.key_macroPlay);
    struct_temp.key_spellCheck   = this->adjustKey(struct_temp.key_spellCheck);
-
 #endif
+
+   // ** standard definded shortcuts
+
+   if (setupAll) {
+      // file
+      m_ui->actionOpen->setShortcut(QKeySequence(struct_temp.key_open));
+      m_ui->actionClose->setShortcut(QKeySequence(struct_temp.key_close));
+      m_ui->actionSave->setShortcut(QKeySequence(struct_temp.key_save));
+      m_ui->actionSave_As->setShortcut(QKeySequence(struct_temp.key_saveAs));
+      m_ui->actionPrint->setShortcut(QKeySequence(struct_temp.key_print));
+      m_ui->actionExit->setShortcuts(QKeySequence::Quit);
+
+      // edit
+      m_ui->actionUndo->setShortcut(QKeySequence(struct_temp.key_undo));
+      m_ui->actionRedo->setShortcut(QKeySequence(struct_temp.key_redo));
+      m_ui->actionCut->setShortcut(QKeySequence(struct_temp.key_cut));
+      m_ui->actionCopy->setShortcut(QKeySequence(struct_temp.key_copy));
+      m_ui->actionPaste->setShortcut(QKeySequence(struct_temp.key_paste));
+
+      m_ui->actionSelect_All->setShortcut(QKeySequence(struct_temp.key_selectAll));
+      m_ui->actionGo_Top->setShortcut(QKeySequence(struct_temp.key_goTop));
+      m_ui->actionGo_Bottom->setShortcut(QKeySequence(struct_temp.key_goBottom));
+
+      //search
+      m_ui->actionFind->setShortcut(QKeySequence(struct_temp.key_find));
+      m_ui->actionReplace->setShortcut(QKeySequence(struct_temp.key_replace));
+      m_ui->actionFind_Next->setShortcut(QKeySequence(struct_temp.key_findNext));;
+      m_ui->actionFind_Prev->setShortcut(QKeySequence(struct_temp.key_findPrev));
+
+      // tab
+      m_ui->actionTab_New->setShortcut(QKeySequence(struct_temp.key_newTab));
+
+      // help
+      m_ui->actionDiamond_Help->setShortcuts(QKeySequence::HelpContents);
+   }
+
+   // ** user definded
 
    // edit
    m_ui->actionSelect_Line->setShortcut(QKeySequence(struct_temp.key_selectLine)   );
@@ -1654,11 +1707,15 @@ void MainWindow::createShortCuts(bool setupAll)
    m_ui->actionIndent_Incr->setShortcut(QKeySequence(struct_temp.key_indentIncr) );
    m_ui->actionIndent_Decr->setShortcut(QKeySequence(struct_temp.key_indentDecr) );
    m_ui->actionDelete_Line->setShortcut(QKeySequence(struct_temp.key_deleteLine) );
-   m_ui->actionDelete_EOL->setShortcut(QKeySequence(struct_temp.key_deleteEOL)   );
+   m_ui->actionDelete_EOL->setShortcut(QKeySequence(struct_temp.key_deleteEOL));
    m_ui->actionColumn_Mode->setShortcut(QKeySequence(struct_temp.key_columnMode) );
 
    // search
    m_ui->actionGo_Line->setShortcut(QKeySequence(struct_temp.key_goLine) );
+
+   // view
+   m_ui->actionShow_Spaces->setShortcut(QKeySequence(struct_temp.key_show_Spaces) );
+   m_ui->actionShow_Breaks->setShortcut(QKeySequence(struct_temp.key_show_Breaks) );
 
    // tools
    m_ui->actionMacro_Play->setShortcut(QKeySequence(struct_temp.key_macroPlay) );
@@ -1702,7 +1759,7 @@ void MainWindow::createToolBars()
    m_ui->actionReplace->setIcon(QIcon(":/resources/find_replace.png"));
 
    m_ui->actionShow_Spaces->setIcon(QIcon(":/resources/show_spaces.png"));
-   m_ui->actionShow_EOL->setIcon(QIcon(":/resources/show_eol.png"));
+   m_ui->actionShow_Breaks->setIcon(QIcon(":/resources/show_eol.png"));
 
    m_ui->actionMacro_Start->setIcon(QIcon(":/resources/macro_rec.png"));
    m_ui->actionMacro_Stop->setIcon(QIcon(":/resources/macro_stop.png"));
@@ -1752,7 +1809,7 @@ void MainWindow::createToolBars()
 
    viewToolBar = addToolBar(tr("View"));
    viewToolBar->addAction(m_ui->actionShow_Spaces);
-   viewToolBar->addAction(m_ui->actionShow_EOL);
+   viewToolBar->addAction(m_ui->actionShow_Breaks);
 
 #ifdef Q_OS_MAC
    viewToolBar->addSeparator();

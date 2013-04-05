@@ -131,7 +131,7 @@ void MainWindow::printOut(QPrinter *printer)
       QRectF printArea = QRectF(0, 0, xx, yy);
 
       // between the header and the body, and the body and the footer
-      int spacer = .25 * m_resolution;
+      int spacer = m_printer.hdrGap * m_resolution;
 
       m_printArea = printArea;
 

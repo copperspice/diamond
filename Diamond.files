@@ -19,6 +19,7 @@ forms/dialog_advfind.ui
 forms/dialog_colors.ui
 forms/dialog_config.ui
 forms/dialog_find.ui
+forms/dialog_fonts.ui
 forms/dialog_get1.ui
 forms/dialog_macro.ui
 forms/dialog_options.ui
@@ -45,6 +46,7 @@ spellcheck.cpp
 spellcheck.h
 print.cpp
 search.cpp
+search.h
 support.cpp
 syntax.h
 syntax.cpp
@@ -53,25 +55,29 @@ util.cpp
 recent_tabs.cpp
 split_window.cpp
 
-dialog_get1.h
-dialog_get1.cpp
+dialog_advfind.h
+dialog_advfind.cpp
+dialog_colors.h
+dialog_colors.cpp
 dialog_config.cpp
 dialog_config.h
+dialog_find.h
+dialog_find.cpp
+dialog_fonts.cpp
+dialog_fonts.h
+dialog_get1.h
+dialog_get1.cpp
 dialog_macro.h
 dialog_macro.cpp
 dialog_options.h
 dialog_options.cpp
 dialog_print_opt.h
 dialog_print_opt.cpp
-dialog_symbols.h
-dialog_symbols.cpp
-dialog_find.h
-dialog_find.cpp
-dialog_advfind.h
-dialog_advfind.cpp
-dialog_colors.h
-dialog_colors.cpp
 dialog_replace.h
 dialog_replace.cpp
+dialog_symbols.h
+dialog_symbols.cpp
 
-search.h
+
+
+

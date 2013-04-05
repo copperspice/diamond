@@ -48,7 +48,10 @@ class DiamondTextEdit : public QPlainTextEdit
       int lineNum_Width();
 
       void set_ShowLineNum(bool data);
+
+      // column mode
       void set_ColumnMode(bool data);
+      bool get_ColumnMode();
 
       // spell
       void set_Spell(bool value);
@@ -93,9 +96,10 @@ class DiamondTextEdit : public QPlainTextEdit
       bool m_record;
       QList<QKeyEvent *> m_macroKeyList;
 
-      // column
-      bool m_showlineNum;
+      // column mode
       bool m_isColumnMode;
+
+      bool m_showlineNum;      
       bool colHighlight;
 
       int startRow;

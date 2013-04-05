@@ -65,7 +65,7 @@ class MainWindow : public QMainWindow
    Q_OBJECT
 
    public:      
-      MainWindow();      
+      MainWindow(QStringList fileList, QStringList flagList);
       struct Settings get_StructData();           
 
       // support
@@ -101,11 +101,13 @@ class MainWindow : public QMainWindow
       QFrame *m_sideWidget;
       QFrame *m_bottomWidget;
 
+      QString m_splitName;
       bool m_isSplit;
       bool m_fromSplit;
 
-      //
+      //      
       void autoLoad();
+      void argLoad(QList<QString> argList);
       QStringList m_openedFiles;
 
       // syntax
@@ -151,6 +153,7 @@ class MainWindow : public QMainWindow
       void replaceAll();
 
       // settings
+      struct Arugments m_args;
       struct Settings m_struct;
       struct PrintSettings m_printer;
 
@@ -201,13 +204,16 @@ class MainWindow : public QMainWindow
 
       enum Option { ABOUTURL, ADVFIND, AUTOLOAD, CLOSE, COLORS, COLUMN_MODE, DICT_MAIN, DICT_USER, FIND_REPLACE, FONT,
                     FORMAT_DATE, FORMAT_TIME, KEYS, MACRO, MACRO_NAMES, PATH_SYNTAX, PATH_PRIOR, PRINT_OPTIONS,
-                    RECENTFOLDER, RECENTFILE, SHOW_LINEHIGHLIGHT, SHOW_LINENUMBERS, SHOW_SPACES, SHOW_EOL,
+                    RECENTFOLDER, RECENTFILE, SHOW_LINEHIGHLIGHT, SHOW_LINENUMBERS, SHOW_SPACES, SHOW_BREAKS,
                     SPELLCHECK, TAB_SPACING, USESPACES, WORDWRAP};
 
       void setScreenColors();
       void setSyntax();
       void setSynType(SyntaxTypes data);
       void forceSyntax(SyntaxTypes data);
+
+      // fonts
+      void changeFont();
 
       // create shortcuts, menus, status bar
       void createShortCuts(bool setupAll);
@@ -322,8 +328,8 @@ class MainWindow : public QMainWindow
       void moveBar();
       void lineNumbers();
       void wordWrap();
-      void showSpaces();           
-      void showEOL();
+      void show_Spaces();
+      void show_Breaks();
       void displayHTML();
 
       void setSyn_C();

@@ -23,6 +23,7 @@
 #include "util.h"
 
 #include <QFileDialog>
+#include <QKeySequence>
 #include <QLineEdit>
 #include <QString>
 #include <QStringList>
@@ -42,6 +43,7 @@ Dialog_Options::Dialog_Options(MainWindow *from, struct Options data)
    connect(m_ui->syntax_TB,   SIGNAL(clicked()), this, SLOT(pick_Syntax()));
    connect(m_ui->about_TB,    SIGNAL(clicked()), this, SLOT(pick_About()));
 
+   connect(m_ui->reset_PB,    SIGNAL(clicked()), this, SLOT(reset_StandardKey()));
    connect(m_ui->save_PB,     SIGNAL(clicked()), this, SLOT(Save()));
    connect(m_ui->cancel_PB,   SIGNAL(clicked()), this, SLOT(Cancel()));
 }
@@ -95,12 +97,32 @@ void Dialog_Options::initData()
       m_ui->autoLoad_CKB->setChecked(true);
    }
 
-   // ** tab two
    m_ui->dictMain->setText(m_options.dictMain);
    m_ui->dictUser->setText(m_options.dictUser);
    m_ui->syntax->setText(m_options.pathSyntax);
    m_ui->about->setText(m_options.aboutUrl);
 
+   // ** tab two
+   m_ui->key_open->setText(m_options.key_open);
+   m_ui->key_close->setText(m_options.key_close);  
+   m_ui->key_save->setText(m_options.key_save);
+   m_ui->key_saveAs->setText(m_options.key_saveAs);
+   m_ui->key_print->setText(m_options.key_print);
+   m_ui->key_undo->setText(m_options.key_undo);
+   m_ui->key_redo->setText(m_options.key_redo);
+   m_ui->key_cut->setText(m_options.key_cut);
+   m_ui->key_copy->setText(m_options.key_copy);
+   m_ui->key_paste->setText(m_options.key_paste);
+   m_ui->key_selectAll->setText(m_options.key_selectAll);
+   m_ui->key_find->setText(m_options.key_find);
+   m_ui->key_replace->setText(m_options.key_replace);
+   m_ui->key_findNext->setText(m_options.key_findNext);
+   m_ui->key_findPrev->setText(m_options.key_findPrev);
+   m_ui->key_goTop->setText(m_options.key_goTop);
+   m_ui->key_goBottom->setText(m_options.key_goBottom);
+   m_ui->key_newTab->setText(m_options.key_newTab);
+
+   // ** tab three
    m_ui->key_selectLine->setText(m_options.key_selectLine);
    m_ui->key_selectWord->setText(m_options.key_selectWord);
    m_ui->key_selectBlock->setText(m_options.key_selectBlock);
@@ -112,6 +134,8 @@ void Dialog_Options::initData()
    m_ui->key_deleteEOL->setText(m_options.key_deleteEOL);
    m_ui->key_columnMode->setText(m_options.key_columnMode);
    m_ui->key_goLine->setText(m_options.key_goLine);
+   m_ui->key_show_Spaces->setText(m_options.key_show_Spaces);
+   m_ui->key_show_Breaks->setText(m_options.key_show_Breaks);
    m_ui->key_macroPlay->setText(m_options.key_macroPlay);
    m_ui->key_spellCheck->setText(m_options.key_spellCheck);
 }
@@ -194,6 +218,26 @@ struct Options Dialog_Options::get_Results()
    m_options.autoLoad   = m_ui->autoLoad_CKB->isChecked();
 
    // ** tab 2
+   m_options.key_open         = m_ui->key_open->text();
+   m_options.key_close        = m_ui->key_close->text();
+   m_options.key_save         = m_ui->key_save->text();
+   m_options.key_saveAs       = m_ui->key_saveAs->text();
+   m_options.key_print        = m_ui->key_print->text();
+   m_options.key_undo         = m_ui->key_undo->text();
+   m_options.key_redo         = m_ui->key_redo->text();
+   m_options.key_cut          = m_ui->key_cut->text();
+   m_options.key_copy         = m_ui->key_copy->text();
+   m_options.key_paste        = m_ui->key_paste->text();
+   m_options.key_selectAll    = m_ui->key_selectAll->text();
+   m_options.key_find         = m_ui->key_find->text();
+   m_options.key_replace      = m_ui->key_replace->text();
+   m_options.key_findNext     = m_ui->key_findNext->text();
+   m_options.key_findPrev     = m_ui->key_findPrev->text();
+   m_options.key_goTop        = m_ui->key_goTop->text();
+   m_options.key_goBottom     = m_ui->key_goBottom->text();  
+   m_options.key_newTab       = m_ui->key_newTab->text();
+
+   // ** tab 3
    m_options.key_selectLine   = m_ui->key_selectLine->text();
    m_options.key_selectWord   = m_ui->key_selectWord->text();
    m_options.key_selectBlock  = m_ui->key_selectBlock->text();
@@ -205,11 +249,52 @@ struct Options Dialog_Options::get_Results()
    m_options.key_deleteEOL    = m_ui->key_deleteEOL->text();
    m_options.key_columnMode   = m_ui->key_columnMode->text();
    m_options.key_goLine       = m_ui->key_goLine->text();
+   m_options.key_show_Spaces  = m_ui->key_show_Spaces->text();
+   m_options.key_show_Breaks  = m_ui->key_show_Breaks->text();
    m_options.key_macroPlay    = m_ui->key_macroPlay->text();
    m_options.key_spellCheck   = m_ui->key_spellCheck->text();
 
    return m_options;
 }
 
+void Dialog_Options::reset_StandardKey()
+{
+   m_options.key_open      = QKeySequence(QKeySequence::Open).toString(QKeySequence::PortableText);
+   m_options.key_close     = QKeySequence(QKeySequence::Close).toString(QKeySequence::PortableText);
+   m_options.key_save      = QKeySequence(QKeySequence::Save).toString(QKeySequence::PortableText);
+   m_options.key_saveAs    = QKeySequence(QKeySequence::SaveAs).toString(QKeySequence::PortableText);
+   m_options.key_print     = QKeySequence(QKeySequence::Print).toString(QKeySequence::PortableText);
+   m_options.key_undo      = QKeySequence(QKeySequence::Undo).toString(QKeySequence::PortableText);
+   m_options.key_redo      = QKeySequence(QKeySequence::Redo).toString(QKeySequence::PortableText);
+   m_options.key_cut       = QKeySequence(QKeySequence::Cut).toString(QKeySequence::PortableText);
+   m_options.key_copy      = QKeySequence(QKeySequence::Copy).toString(QKeySequence::PortableText);
+   m_options.key_paste     = QKeySequence(QKeySequence::Paste).toString(QKeySequence::PortableText);
+   m_options.key_selectAll = QKeySequence(QKeySequence::SelectAll).toString(QKeySequence::PortableText);
+   m_options.key_find      = QKeySequence(QKeySequence::Find).toString(QKeySequence::PortableText);
+   m_options.key_replace   = QKeySequence(QKeySequence::Replace).toString(QKeySequence::PortableText);
+   m_options.key_findNext  = QKeySequence(QKeySequence::FindNext).toString(QKeySequence::PortableText);
+   m_options.key_findPrev  = QKeySequence(QKeySequence::FindPrevious).toString(QKeySequence::PortableText);
+   m_options.key_goTop     = QKeySequence(QKeySequence::MoveToStartOfDocument).toString(QKeySequence::PortableText);
+   m_options.key_goBottom  = QKeySequence(QKeySequence::MoveToEndOfDocument).toString(QKeySequence::PortableText);
+   m_options.key_newTab    = QKeySequence(QKeySequence::AddTab).toString(QKeySequence::PortableText);
 
+   m_ui->key_open->setText(m_options.key_open);
+   m_ui->key_close->setText(m_options.key_close);
+   m_ui->key_save->setText(m_options.key_save);
+   m_ui->key_saveAs->setText(m_options.key_saveAs);
+   m_ui->key_print->setText(m_options.key_print);
+   m_ui->key_undo->setText(m_options.key_undo);
+   m_ui->key_redo->setText(m_options.key_redo);
+   m_ui->key_cut->setText(m_options.key_cut);
+   m_ui->key_copy->setText(m_options.key_copy);
+   m_ui->key_paste->setText(m_options.key_paste);
+   m_ui->key_selectAll->setText(m_options.key_selectAll);
+   m_ui->key_find->setText(m_options.key_find);
+   m_ui->key_replace->setText(m_options.key_replace);
+   m_ui->key_findNext->setText(m_options.key_findNext);
+   m_ui->key_findPrev->setText(m_options.key_findPrev);
+   m_ui->key_goTop->setText(m_options.key_goTop);
+   m_ui->key_goBottom->setText(m_options.key_goBottom);
+   m_ui->key_newTab->setText(m_options.key_newTab);
+}
 

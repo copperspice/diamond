@@ -43,9 +43,10 @@ Diamond_LDFLAGS=$(AM_LDFLAGS)   $(patsubst %,-lCs%1,$(cslibs))
 Diamond_SOURCES = \
 	about.cpp \
 	dialog_advfind.cpp \
-    dialog_colors.cpp \
+ dialog_colors.cpp \
 	dialog_config.cpp \
 	dialog_find.cpp \
+	dialog_fonts.cpp\
 	dialog_get1.cpp \
 	dialog_options.cpp \
     dialog_macro.cpp \
@@ -73,9 +74,10 @@ Diamond_SOURCES = \
 noinst_HEADERS = \
 	about.h \
 	dialog_advfind.h \
-	dialog_config.h\
 	dialog_colors.h \
+	dialog_config.h\
 	dialog_find.h \
+	dialog_fonts.h\
 	dialog_get1.h  \
 	dialog_options.h \
     dialog_macro.h \
@@ -96,6 +98,7 @@ MOCS = \
 	dialog_config.h \
 	dialog_colors.h\
 	dialog_find.h \
+    dialog_fonts.h\
 	dialog_get1.h  \
 	dialog_options.h \
     dialog_macro.h \
@@ -103,11 +106,10 @@ MOCS = \
 	dialog_replace.h  \
 	dialog_symbols.h \
 	diamond_edit.h  \
-	diamond_tab.h \
 	keylineedit.h \
 	mainwindow.h  \
-    search.h \
-	syntax.h	
+	search.h \
+	syntax.h
 
 Diamond_LDADD=$(patsubst %.h,moc_%.$(OBJEXT),$(MOCS))   $(hunspell_la)
 
@@ -117,9 +119,10 @@ FORMS =	\
 	forms/dialog_colors.ui \
 	forms/dialog_config.ui \
 	forms/dialog_find.ui \
+	forms/dialog_fonts.ui\
 	forms/dialog_get1.ui \
 	forms/dialog_options.ui \
-    forms/dialog_macro.ui \
+	forms/dialog_macro.ui \
 	forms/dialog_print_opt.ui \
 	forms/dialog_replace.ui \
 	forms/dialog_symbols.ui \

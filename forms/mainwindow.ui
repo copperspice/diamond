@@ -143,7 +143,7 @@
     <addaction name="actionWord_Wrap"/>
     <addaction name="separator"/>
     <addaction name="actionShow_Spaces"/>
-    <addaction name="actionShow_EOL"/>
+    <addaction name="actionShow_Breaks"/>
     <addaction name="separator"/>
     <addaction name="actionDisplay_HTML"/>
    </widget>
@@ -543,7 +543,7 @@
     <string>Show Tabs *</string>
    </property>
   </action>
-  <action name="actionShow_EOL">
+  <action name="actionShow_Breaks">
    <property name="text">
     <string>Show Line Breaks</string>
    </property>

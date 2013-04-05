@@ -31,6 +31,7 @@
 #include <QFileDialog>
 #include <QJsonArray>
 #include <QJsonDocument>
+#include <QKeySequence>
 #include <QPoint>
 #include <QPushButton>
 #include <QSettings>
@@ -97,8 +98,8 @@ bool MainWindow::json_Read()
       m_struct.showLineHighlight = object.value("showLineHighlight").toBool();
       m_struct.showLineNumbers   = object.value("showLineNumbers").toBool();
       m_struct.isWordWrap        = object.value("word-wrap").toBool();      
-      m_struct.showSpaces        = object.value("showSpaces").toBool();      
-      m_struct.showEOL           = object.value("showEOL").toBool();
+      m_struct.show_Spaces       = object.value("showSpaces").toBool();
+      m_struct.show_Breaks       = object.value("showBreaks").toBool();
       m_struct.isColumnMode      = object.value("column-mode").toBool();      
       m_struct.isSpellCheck      = object.value("spellcheck").toBool();
       m_struct.autoLoad          = object.value("autoLoad").toBool();
@@ -129,12 +130,36 @@ bool MainWindow::json_Read()
       m_printer.marBottom      = object.value("prt-marginBottom").toDouble();
       m_printer.marLeft        = object.value("prt-marginLeft").toDouble();
       m_printer.marRight       = object.value("prt-marginRight").toDouble();
+      m_printer.hdrGap         = object.value("prt-hdrGap").toDouble();
 
       m_printer.fontHeader     = json_SetFont(object.value("prt-fontHeader").toString());
       m_printer.fontFooter     = json_SetFont(object.value("prt-fontFooter").toString());
       m_printer.fontText       = json_SetFont(object.value("prt-fontText").toString());
 
-      // keys                       
+      // standard keys
+      m_struct.key_open        = object.value("key-open").toString();
+      m_struct.key_close       = object.value("key-close").toString();
+      m_struct.key_save        = object.value("key-save").toString();
+      m_struct.key_saveAs      = object.value("key-saveAs").toString();
+      m_struct.key_print       = object.value("key-print").toString();
+//    m_struct.key_exit        = object.value("key-exit").toString();
+
+      m_struct.key_undo        = object.value("key-undo").toString();
+      m_struct.key_redo        = object.value("key-redo").toString();
+      m_struct.key_cut         = object.value("key-cut").toString();
+      m_struct.key_copy        = object.value("key-copy").toString();
+      m_struct.key_paste       = object.value("key-paste").toString();
+      m_struct.key_selectAll   = object.value("key-selectAll").toString();
+      m_struct.key_find        = object.value("key-find").toString();
+      m_struct.key_replace     = object.value("key-replace").toString();
+      m_struct.key_findNext    = object.value("key-findNext").toString();
+      m_struct.key_findPrev    = object.value("key-findPrev").toString();
+      m_struct.key_goTop       = object.value("key-goTop").toString();
+      m_struct.key_goBottom    = object.value("key-goBottom").toString();
+      m_struct.key_newTab      = object.value("key-newTab").toString();
+//    m_struct.key_help        = object.value("key-help").toString();
+
+      // user keys
       m_struct.key_selectLine  = object.value("key-selectLine").toString();
       m_struct.key_selectWord  = object.value("key-selectWord").toString();
       m_struct.key_selectBlock = object.value("key-selectBlock").toString();
@@ -145,12 +170,15 @@ bool MainWindow::json_Read()
       m_struct.key_deleteLine  = object.value("key-deleteLine").toString();
       m_struct.key_deleteEOL   = object.value("key-deleteEOL").toString();
       m_struct.key_columnMode  = object.value("key-columnMode").toString();
-      m_struct.key_goLine      = object.value("key-goLine").toString();
+      m_struct.key_goLine      = object.value("key-goLine").toString();      
+      m_struct.key_show_Spaces = object.value("key-showShow").toString();
+      m_struct.key_show_Breaks = object.value("key-showBreaks").toString();
       m_struct.key_macroPlay   = object.value("key-macroPlay").toString();
       m_struct.key_spellCheck  = object.value("key-spellCheck").toString();
 
-      // font
-      m_struct.font = json_SetFont(object.value("font").toString());
+      // screen fonts
+      m_struct.fontNormal     = json_SetFont(object.value("font-normal").toString());
+      m_struct.fontColumn     = json_SetFont(object.value("font-column").toString());
 
       // colors
       m_struct.colorText      = json_SetColor(object.value("color-text").toString()    );
@@ -281,7 +309,11 @@ bool MainWindow::json_Read()
 }
 
 bool MainWindow::json_Write(Option route)
-{
+{   
+   if (m_args.flag_noSaveConfig) {
+      return true;
+   }
+
    QSettings settings("Diamond Editor", "Settings");
    m_jsonFname = settings.value("configName").toString();
 
@@ -319,6 +351,7 @@ bool MainWindow::json_Write(Option route)
             break;
 
          case CLOSE:
+
             object.insert("pos-x",       pos().x()  );
             object.insert("pos-y",       pos().y()  );
             object.insert("size-width",  size().width()  );
@@ -366,8 +399,11 @@ bool MainWindow::json_Write(Option route)
 
          case FONT:           
             {
-               QString temp = m_struct.font.toString();
-               object.insert("font", temp);
+               QString temp = m_struct.fontNormal.toString();
+               object.insert("font-normal", temp);
+
+               temp = m_struct.fontColumn.toString();
+               object.insert("font-column", temp);
                break;
             }
 
@@ -380,7 +416,30 @@ bool MainWindow::json_Write(Option route)
             break;                        
 
          case KEYS:
-            // keys
+            // standard keys
+            object.insert("key-open",        m_struct.key_open);
+            object.insert("key-close",       m_struct.key_close);
+            object.insert("key-save",        m_struct.key_save);
+            object.insert("key-saveAs",      m_struct.key_saveAs);
+            object.insert("key-print",       m_struct.key_print);
+//          object.insert("key-exit",        m_struct.key_exit);
+
+            object.insert("key-undo",        m_struct.key_undo);
+            object.insert("key-redo",        m_struct.key_redo);
+            object.insert("key-cut",         m_struct.key_cut);
+            object.insert("key-copy",        m_struct.key_copy);
+            object.insert("key-paste",       m_struct.key_paste);
+            object.insert("key-selectAll",   m_struct.key_selectAll);
+            object.insert("key-find",        m_struct.key_find);
+            object.insert("key-replace",     m_struct.key_replace);
+            object.insert("key-findNext",    m_struct.key_findNext);
+            object.insert("key-findPrev",    m_struct.key_findPrev);
+            object.insert("key-goTop",       m_struct.key_goTop);
+            object.insert("key-goBottom",    m_struct.key_goBottom);
+            object.insert("key-newTab",      m_struct.key_newTab);
+//          object.insert("key-help",        m_struct.key_help);
+
+            // user keys
             object.insert("key-selectLine",  m_struct.key_selectLine);
             object.insert("key-selectWord",  m_struct.key_selectWord);
             object.insert("key-selectBlock", m_struct.key_selectBlock);
@@ -392,6 +451,8 @@ bool MainWindow::json_Write(Option route)
             object.insert("key-deleteEOL",   m_struct.key_deleteEOL);
             object.insert("key-columnMode",  m_struct.key_columnMode);
             object.insert("key-goLine",      m_struct.key_goLine);
+            object.insert("key-showSpaces",  m_struct.key_show_Spaces);
+            object.insert("key-showBreaks",  m_struct.key_show_Breaks);
             object.insert("key-macroPlay",   m_struct.key_macroPlay);
             object.insert("key-spellCheck",  m_struct.key_spellCheck);
             break;
@@ -420,6 +481,7 @@ bool MainWindow::json_Write(Option route)
             object.insert("prt-marginBottom", m_printer.marBottom);
             object.insert("prt-marginLeft",   m_printer.marLeft);
             object.insert("prt-marginRight",  m_printer.marRight);
+            object.insert("prt-hdrGap",       m_printer.hdrGap);
 
             {
                QString temp;
@@ -537,11 +599,11 @@ bool MainWindow::json_Write(Option route)
             break;
 
          case SHOW_SPACES:
-            object.insert("showSpaces", m_struct.showSpaces);
+            object.insert("showSpaces", m_struct.show_Spaces);
             break;
 
-         case SHOW_EOL:
-            object.insert("showEOL", m_struct.showEOL);
+         case SHOW_BREAKS:
+            object.insert("showBreaks", m_struct.show_Breaks);
             break;
 
          case SPELLCHECK:
@@ -641,19 +703,19 @@ bool MainWindow::json_CreateNew()
    QJsonValue value;
    QJsonArray list;
 
-   object.insert("pos-x", 400);
-   object.insert("pos-y", 200);
+   object.insert("pos-x",       400);
+   object.insert("pos-y",       200);
    object.insert("size-width",  800);
    object.insert("size-height", 600);
 
-   object.insert("useSpaces",  true);
-   object.insert("tabSpacing", 4);
+   object.insert("useSpaces",   true);
+   object.insert("tabSpacing",  4);
 
    object.insert("showLineNumbers",   true);
    object.insert("showLineHighlight", true);
    object.insert("word-wrap",   false);
    object.insert("showSpaces",  false);
-   object.insert("showEOL",     false);
+   object.insert("showBreaks",  false);
    object.insert("column-mode", false);
    object.insert("spellcheck",  false);
    object.insert("autoLoad",    true);
@@ -728,6 +790,7 @@ bool MainWindow::json_CreateNew()
    object.insert("prt-marginBottom", 0.75);
    object.insert("prt-marginLeft",   0.50);
    object.insert("prt-marginRight",  0.50);
+   object.insert("prt-hdrGap",       0.25);
 
    value = QJsonValue(QString("Courier New,10,-1,5,50,0,0,0,0,0"));
    object.insert("prt-fontHeader",   value);
@@ -747,6 +810,82 @@ bool MainWindow::json_CreateNew()
    modifier = "Ctrl+";
 #endif
 
+   // standard keys
+   QString keys;
+
+   keys  = QKeySequence(QKeySequence::Open).toString(QKeySequence::PortableText);
+   value = QJsonValue(keys);
+   object.insert("key-open",   value );
+
+   keys  = QKeySequence(QKeySequence::Close).toString(QKeySequence::PortableText);
+   value = QJsonValue(keys);
+   object.insert("key-close",  value );
+
+   keys  = QKeySequence(QKeySequence::Save).toString(QKeySequence::PortableText);
+   value = QJsonValue(keys);
+   object.insert("key-save",   value );
+
+   keys  = QKeySequence(QKeySequence::SaveAs).toString(QKeySequence::PortableText);
+   value = QJsonValue(keys);
+   object.insert("key-saveAs",  value );
+
+   keys  = QKeySequence(QKeySequence::Print).toString(QKeySequence::PortableText);
+   value = QJsonValue(keys);
+   object.insert("key-print",  value );
+
+   keys  = QKeySequence(QKeySequence::Undo).toString(QKeySequence::PortableText);
+   value = QJsonValue(keys);
+   object.insert("key-undo",   value );
+
+   keys  = QKeySequence(QKeySequence::Redo).toString(QKeySequence::PortableText);
+   value = QJsonValue(keys);
+   object.insert("key-redo",   value );
+
+   keys  = QKeySequence(QKeySequence::Cut).toString(QKeySequence::PortableText);
+   value = QJsonValue(keys);
+   object.insert("key-cut",   value );
+
+   keys  = QKeySequence(QKeySequence::Copy).toString(QKeySequence::PortableText);
+   value = QJsonValue(keys);
+   object.insert("key-copy",   value );
+
+   keys  = QKeySequence(QKeySequence::Paste).toString(QKeySequence::PortableText);
+   value = QJsonValue(keys);
+   object.insert("key-paste",         value );
+
+   keys  = QKeySequence(QKeySequence::SelectAll).toString(QKeySequence::PortableText);
+   value = QJsonValue(keys);
+   object.insert("key-selectAll",   value );
+
+   keys  = QKeySequence(QKeySequence::Find).toString(QKeySequence::PortableText);
+   value = QJsonValue(keys);
+   object.insert("key-find",        value );
+
+   keys  = QKeySequence(QKeySequence::Replace).toString(QKeySequence::PortableText);
+   value = QJsonValue(keys);
+   object.insert("key-replace",     value );
+
+   keys  = QKeySequence(QKeySequence::FindNext).toString(QKeySequence::PortableText);
+   value = QJsonValue(keys);
+   object.insert("key-findNext",    value );
+
+   keys  = QKeySequence(QKeySequence::FindPrevious).toString(QKeySequence::PortableText);
+   value = QJsonValue(keys);
+   object.insert("key-findPrev",    value );
+
+   keys  = QKeySequence(QKeySequence::MoveToStartOfDocument).toString(QKeySequence::PortableText);
+   value = QJsonValue(keys);
+   object.insert("key-goTop",       value );
+
+   keys  = QKeySequence(QKeySequence::MoveToEndOfDocument).toString(QKeySequence::PortableText);
+   value = QJsonValue(keys);
+   object.insert("key-goBottom",    value );
+
+   keys  = QKeySequence(QKeySequence::AddTab).toString(QKeySequence::PortableText);
+   value = QJsonValue(keys);
+   object.insert("key-newTab",      value );
+
+   // user keys
    value = QJsonValue(QString(modifier + "E"));
    object.insert("key-selectLine",  value );
 
@@ -780,6 +919,12 @@ bool MainWindow::json_CreateNew()
    value = QJsonValue(QString("Alt+G"));
    object.insert("key-goLine",      value);
 
+   value = QJsonValue(QString(""));
+   object.insert("key-showSpaces",   value);
+
+   value = QJsonValue(QString(""));
+   object.insert("key-showBreaks", value);
+
    value = QJsonValue(QString("Alt+Return"));
    object.insert("key-macroPlay",  value);
 
@@ -788,7 +933,10 @@ bool MainWindow::json_CreateNew()
 
    //
    value = QJsonValue(QString("Courier,12,-1,5,50,0,0,0,0,0"));
-   object.insert("font", value);
+   object.insert("font-normal", value);
+
+   value = QJsonValue(QString("Courier,12,-1,5,50,0,0,0,0,0"));
+   object.insert("font-column", value);
 
    value = QJsonValue(QString("0,0,0"));         // black
    object.insert("color-text", value);

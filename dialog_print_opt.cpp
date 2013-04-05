@@ -72,6 +72,7 @@ void Dialog_PrintOptions::initData()
    m_ui->marginBottom->setText(QString::number(m_print.marBottom));
    m_ui->marginRight->setText(QString::number(m_print.marRight));
    m_ui->marginLeft->setText(QString::number(m_print.marLeft));
+   m_ui->hdrGap->setText(QString::number(m_print.hdrGap));
 
    m_ui->fontHeader->setText(m_print.fontHeader.toString());
    m_ui->fontFooter->setText(m_print.fontFooter.toString());
@@ -106,6 +107,7 @@ struct PrintSettings Dialog_PrintOptions::get_Results()
    m_print.marBottom     = m_ui->marginBottom->text().toDouble();
    m_print.marRight      = m_ui->marginRight->text().toDouble();
    m_print.marLeft       = m_ui->marginLeft->text().toDouble();   
+   m_print.hdrGap        = m_ui->hdrGap->text().toDouble();
 
    // unnecessary to save the fonts back to the structure
 

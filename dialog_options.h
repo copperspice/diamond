@@ -44,7 +44,6 @@ class Dialog_Options : public QDialog
       MainWindow *m_parent;
 
       struct Options m_options;
-
       void initData();
 
    private slots:
@@ -52,6 +51,7 @@ class Dialog_Options : public QDialog
       void pick_User();
       void pick_Syntax();
       void pick_About();
+      void reset_StandardKey();
       void Save();
       void Cancel();
 };

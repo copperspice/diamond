@@ -19,42 +19,36 @@
 *
 **************************************************************************/
 
-#ifndef DIALOG_FIND_H
-#define DIALOG_FIND_H
+#ifndef DIALOG_FONTS_H
+#define DIALOG_FONTS_H
 
-#include "ui_dialog_find.h"
+#include "ui_dialog_fonts.h"
 
 #include <QDialog>
-#include <QPoint>
-#include <QString>
-#include <QStringList>
+#include <QFont>
 
-class Dialog_Find : public QDialog
-{
+class Dialog_Fonts : public QDialog
+{     
    Q_OBJECT
 
    public:
-      Dialog_Find(QString text, QStringList findList);
-      ~Dialog_Find();
+      Dialog_Fonts(QFont normal, QFont column);
+      ~Dialog_Fonts();
 
-      QString get_findText();
-      QStringList get_findList();
-      bool get_Direction();
-      bool get_Case();
-      bool get_WholeWords();
+      QFont get_fontNormal();
+      QFont get_fontColumn();
 
    private:
-      Ui::Dialog_Find *m_ui;
-      QStringList m_findList;
-      void setUp();
+      Ui::Dialog_Fonts *m_ui;
+      QFont m_fontNormal;
+      QFont m_fontColumn;
 
    private slots:
-      void Find();
-      void Cancel();
+      void save();
+      void cancel();
 
-      void combo_ContextMenu(const QPoint &pt);
-      void menu_clearList();
-      void menu_deleteEntry();
+      void fontNormal();
+      void fontColumn();     
 };
 
 #endif

@@ -28,18 +28,44 @@
 #include <QMimeData>
 #include <QUrl>
 
+void MainWindow::argLoad(QList<QString> argList)
+{
+   int argCnt = argList.count();
+
+   for (int k = 1; k < argCnt; k++) {
+      QString tempFile = argList.at(k);
+
+      // change to forward slash
+      tempFile = QDir::fromNativeSeparators(tempFile);
+
+      // expand for full path
+      QFileInfo xx(tempFile);
+      tempFile = xx.canonicalFilePath();
+
+      if (tempFile.isEmpty()) {
+         // do nothing
+
+      } else if (m_openedFiles.contains(tempFile, Qt::CaseInsensitive) ) {
+         // file is already open
+
+      } else if ( QFile::exists(tempFile) ) {
+         loadFile(tempFile, true, true);
+      }
+   }
+}
+
 void MainWindow::autoLoad()
 {
    QString fileName;
    int count = m_openedFiles.size();
 
-   for (int k = 0; k < count; k++)  {
-      fileName = m_openedFiles.at(k);
+   if (count == 0) {
+      tabNew();
 
-      if (k == 0) {
-         // no files to load
-         loadFile(fileName, false, true);
-      } else {
+   } else {
+      for (int k = 0; k < count; k++)  {
+         fileName = m_openedFiles.at(k);
+
          // load existing files
          loadFile(fileName, true, true);
       }
@@ -57,6 +83,15 @@ void MainWindow::closeEvent(QCloseEvent *event)
    } else {
       event->ignore();
 
+   }
+}
+
+void MainWindow::changeFont()
+{
+   if (m_textEdit->get_ColumnMode()) {
+      m_textEdit->setFont(m_struct.fontColumn);
+   } else {
+      m_textEdit->setFont(m_struct.fontNormal);
    }
 }
 
@@ -140,7 +175,7 @@ bool MainWindow::loadFile(const QString &fileName, bool addNewTab, bool isAuto)
    QApplication::setOverrideCursor(Qt::WaitCursor);
 
    file.seek(0);
-   QByteArray temp = file.readAll();
+   QByteArray temp = file.readAll();  
 
    if (addNewTab) {
       tabNew();
@@ -149,9 +184,8 @@ bool MainWindow::loadFile(const QString &fileName, bool addNewTab, bool isAuto)
       json_Write(PATH_PRIOR);
    }
 
-   QString fileData = QString::fromUtf8(temp);
-   m_textEdit->setPlainText(fileData);
-
+   QString fileData = QString::fromUtf8(temp);      
+   m_textEdit->setPlainText(fileData);   
    QApplication::restoreOverrideCursor();
 
    setCurrentTitle(fileName);
@@ -284,6 +318,7 @@ void MainWindow::setCurrentTitle(const QString &fileName, bool tabChange)
       setStatus_FName(m_curFile);
 
       if (! tabChange)  {
+
          // change the name on the tab to m_curFile
          int index = m_tabWidget->currentIndex();
 

@@ -33,12 +33,17 @@ void MainWindow::split_Horizontal()
    }
 
    split_textEdit = new DiamondTextEdit(this, m_struct, m_spellCheck);
+   m_splitName    = m_curFile;
 
    // sync documents
    split_textEdit->setDocument(m_textEdit->document());
 
-   // (1) this->setScreenColors(), based on tabwidget must do by hand
-   split_textEdit->setFont(m_struct.font);
+   // (1) this->setScreenColors(), based on tabwidget must do by hand   
+   if (split_textEdit->get_ColumnMode()) {
+      split_textEdit->setFont(m_struct.fontColumn);
+   } else {
+      split_textEdit->setFont(m_struct.fontNormal);
+   }
 
    QPalette temp = split_textEdit->palette();
    temp.setColor(QPalette::Text, m_struct.colorText);
@@ -95,12 +100,17 @@ void MainWindow::split_Vertical()
    }
 
    split_textEdit = new DiamondTextEdit(this, m_struct, m_spellCheck);
+   m_splitName    = m_curFile;
 
    // sync documents
    split_textEdit->setDocument(m_textEdit->document());
 
    // (1) this->setScreenColors(), based on tabwidget must do by hand
-   split_textEdit->setFont(m_struct.font);
+   if (split_textEdit->get_ColumnMode()) {
+      split_textEdit->setFont(m_struct.fontColumn);
+   } else {
+      split_textEdit->setFont(m_struct.fontNormal);
+   }
 
    QPalette temp = split_textEdit->palette();
    temp.setColor(QPalette::Text, m_struct.colorText);
@@ -150,7 +160,8 @@ void MainWindow::split_Vertical()
 
 void MainWindow::sideClose()
 {
-   // NOT USED
+   // this method is not used
+
    disconnect(split_textEdit->document(), SIGNAL(contentsChanged()),       this, SLOT(split_Title()));
    disconnect(split_textEdit,             SIGNAL(cursorPositionChanged()), this, SLOT(split_MoveBar()));
 
@@ -162,29 +173,21 @@ void MainWindow::bottomClose()
 {
    disconnect(split_textEdit->document(), SIGNAL(contentsChanged()),       this, SLOT(split_Title()));
    disconnect(split_textEdit,             SIGNAL(cursorPositionChanged()), this, SLOT(split_MoveBar()));
-   // disconnect(closeButton,                SIGNAL(clicked()),               this, SLOT(bottomClose()));
+   // disconnect(closeButton,             SIGNAL(clicked()),               this, SLOT(bottomClose()));
 
    m_bottomWidget->deleteLater();
    m_isSplit = false;
 }
 
 void MainWindow::split_Title()
-{
-   QString showName;
-
-   if (m_curFile.isEmpty())  {
-      showName = "untitled.txt";
-   } else {
-      showName = m_curFile;
-   }
-
+{       
    QString modified = "";
    if (split_textEdit->document()->isModified()) {
       modified = " *";
    }
 
    QString temp  = QChar(0x02014);
-   QString title = "Diamond Editor " + temp + " " + showName + modified;
+   QString title = "Diamond Editor " + temp + " " + m_splitName + modified;
 
    m_splitTitle->setText(title);
 }

@@ -34,8 +34,8 @@ struct Settings {
    bool    isColumnMode;
    bool    isSpellCheck;
    bool    isWordWrap;  
-   bool    showSpaces;
-   bool    showEOL;
+   bool    show_Spaces;
+   bool    show_Breaks;
    bool    autoLoad;
    QString pathSyntax;
    QString pathPrior;
@@ -45,11 +45,31 @@ struct Settings {
    QString dictUser;
    QString aboutUrl;
 
-   QFont   font;
+   QFont   fontNormal;
+   QFont   fontColumn;
    QColor  colorText;
    QColor  colorBack;
    QColor  colorHighText;
    QColor  colorHighBack;
+
+   QString key_open;
+   QString key_close;   
+   QString key_save;
+   QString key_saveAs;
+   QString key_print;
+   QString key_undo;
+   QString key_redo;
+   QString key_cut;
+   QString key_copy;
+   QString key_paste;
+   QString key_selectAll;
+   QString key_find;
+   QString key_replace;
+   QString key_findNext;
+   QString key_findPrev;
+   QString key_goTop;
+   QString key_goBottom;  
+   QString key_newTab;
 
    QString key_selectLine;
    QString key_selectWord;
@@ -62,6 +82,8 @@ struct Settings {
    QString key_deleteEOL;
    QString key_columnMode;
    QString key_goLine;
+   QString key_show_Spaces;
+   QString key_show_Breaks;
    QString key_macroPlay;
    QString key_spellCheck;
 
@@ -99,6 +121,25 @@ struct Options {
    QString pathSyntax;
    QString aboutUrl;   
 
+   QString key_open;
+   QString key_close;   
+   QString key_save;
+   QString key_saveAs;
+   QString key_print;
+   QString key_undo;
+   QString key_redo;
+   QString key_cut;
+   QString key_copy;
+   QString key_paste;
+   QString key_selectAll;
+   QString key_find;
+   QString key_replace;
+   QString key_findNext;
+   QString key_findPrev;
+   QString key_goTop;
+   QString key_goBottom;
+   QString key_newTab;
+
    QString key_selectLine;
    QString key_selectWord;
    QString key_selectBlock;
@@ -110,6 +151,8 @@ struct Options {
    QString key_deleteEOL;
    QString key_columnMode;
    QString key_goLine;
+   QString key_show_Spaces;
+   QString key_show_Breaks;
    QString key_macroPlay;
    QString key_spellCheck;
 };
@@ -130,11 +173,18 @@ struct PrintSettings {
    double marTop;
    double marRight;
    double marBottom;
+   double hdrGap;
 
    QFont fontHeader;
    QFont fontFooter;
    QFont fontText;
 };
+
+struct Arugments{
+   bool flag_noAutoLoad;
+   bool flag_noSaveConfig;
+};
+
 
 enum SyntaxTypes {SYN_C, SYN_CLIPPER, SYN_CSS, SYN_DOX, SYN_HTML, SYN_JAVA, SYN_JS,
                   SYN_JSON, SYN_MAKE, SYN_NSIS, SYN_TEXT, SYN_SHELL_S, SYN_PERL,

@@ -257,6 +257,11 @@ void DiamondTextEdit::set_ColumnMode(bool data)
    colHighlight = false;
 }
 
+bool DiamondTextEdit::get_ColumnMode()
+{
+   return m_isColumnMode;
+}
+
 void DiamondTextEdit::set_ShowLineNum(bool data)
 {
    m_showlineNum = data;

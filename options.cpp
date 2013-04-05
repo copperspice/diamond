@@ -20,6 +20,7 @@
 **************************************************************************/
 
 #include "dialog_colors.h"
+#include "dialog_fonts.h"
 #include "dialog_options.h"
 #include "dialog_print_opt.h"
 #include "mainwindow.h"
@@ -102,13 +103,19 @@ void MainWindow::setColors()
 
 void MainWindow::setFont()
 {
-   bool ok;
-   m_struct.font = QFontDialog::getFont(&ok, m_textEdit->font(), this);
+   Dialog_Fonts *dw = new Dialog_Fonts(m_struct.fontNormal, m_struct.fontColumn);
+   int result = dw->exec();
 
-   if (ok) {
-      m_textEdit->setFont(m_struct.font);
+   if ( result == QDialog::Accepted) {
+
+      m_struct.fontNormal = dw->get_fontNormal();
+      m_struct.fontColumn = dw->get_fontColumn();
+
       json_Write(FONT);
+      changeFont();
    }
+
+   delete dw;
 }
 
 void MainWindow::setOptions()
@@ -124,6 +131,27 @@ void MainWindow::setOptions()
    options.aboutUrl     = m_struct.aboutUrl;
    options.autoLoad     = m_struct.autoLoad;
 
+   // tab 2
+   options.key_open        = m_struct.key_open;
+   options.key_close       = m_struct.key_close;
+   options.key_save        = m_struct.key_save;
+   options.key_saveAs      = m_struct.key_saveAs;
+   options.key_print       = m_struct.key_print;
+   options.key_undo        = m_struct.key_undo;
+   options.key_redo        = m_struct.key_redo;
+   options.key_cut         = m_struct.key_cut;
+   options.key_copy        = m_struct.key_copy;
+   options.key_paste       = m_struct.key_paste;
+   options.key_selectAll   = m_struct.key_selectAll;
+   options.key_find        = m_struct.key_find;
+   options.key_replace     = m_struct.key_replace;
+   options.key_findNext    = m_struct.key_findNext;
+   options.key_findPrev    = m_struct.key_findPrev;
+   options.key_goTop       = m_struct.key_goTop;
+   options.key_goBottom    = m_struct.key_goBottom;
+   options.key_newTab      = m_struct.key_newTab;
+
+   // tab 3
    options.key_selectLine  = m_struct.key_selectLine;
    options.key_selectWord  = m_struct.key_selectWord;
    options.key_selectBlock = m_struct.key_selectBlock;
@@ -135,6 +163,8 @@ void MainWindow::setOptions()
    options.key_deleteEOL   = m_struct.key_deleteEOL;
    options.key_columnMode  = m_struct.key_columnMode;
    options.key_goLine      = m_struct.key_goLine;
+   options.key_show_Spaces = m_struct.key_show_Spaces;
+   options.key_show_Breaks = m_struct.key_show_Breaks;
    options.key_macroPlay   = m_struct.key_macroPlay;
    options.key_spellCheck  = m_struct.key_spellCheck;
 
@@ -197,7 +227,27 @@ void MainWindow::setOptions()
          json_Write(AUTOLOAD);
       }
 
-      // keys
+      // keys 2
+      m_struct.key_open        = options.key_open;
+      m_struct.key_close       = options.key_close;
+      m_struct.key_save        = options.key_save;
+      m_struct.key_saveAs      = options.key_saveAs;
+      m_struct.key_print       = options.key_print;
+      m_struct.key_undo        = options.key_undo;
+      m_struct.key_redo        = options.key_redo;
+      m_struct.key_cut	       = options.key_cut;
+      m_struct.key_copy	       = options.key_copy;
+      m_struct.key_paste       = options.key_paste;
+      m_struct.key_selectAll   = options.key_selectAll;
+      m_struct.key_find	       = options.key_find;
+      m_struct.key_replace     = options.key_replace;
+      m_struct.key_findNext    = options.key_findNext;
+      m_struct.key_findPrev    = options.key_findPrev;
+      m_struct.key_goTop       = options.key_goTop;
+      m_struct.key_goBottom    = options.key_goBottom;
+      m_struct.key_newTab      = options.key_newTab;
+
+      // keys 3
       m_struct.key_selectLine  = options.key_selectLine;
       m_struct.key_selectWord  = options.key_selectWord;
       m_struct.key_selectBlock = options.key_selectBlock;
@@ -209,12 +259,15 @@ void MainWindow::setOptions()
       m_struct.key_deleteEOL   = options.key_deleteEOL;
       m_struct.key_columnMode  = options.key_columnMode;
       m_struct.key_goLine      = options.key_goLine;
+      m_struct.key_show_Spaces = options.key_show_Spaces;
+      m_struct.key_show_Breaks = options.key_show_Breaks;
       m_struct.key_macroPlay   = options.key_macroPlay;
       m_struct.key_spellCheck  = options.key_spellCheck;
+
       json_Write(KEYS);
 
-      // redisplay the user defined shortcuts only
-      this->createShortCuts(false);
+      // false will redisplay only user defined shortcuts
+      this->createShortCuts(true);
    }
 
    delete dw;
@@ -239,6 +292,7 @@ void MainWindow::setPrintOptions()
    options.marBottom     = m_printer.marBottom;
    options.marLeft       = m_printer.marLeft;
    options.marRight      = m_printer.marRight;
+   options.hdrGap        = m_printer.hdrGap;
 
    options.fontHeader    = m_printer.fontHeader;
    options.fontFooter    = m_printer.fontFooter;
@@ -247,7 +301,7 @@ void MainWindow::setPrintOptions()
    Dialog_PrintOptions *dw = new Dialog_PrintOptions(this, options);
    int result = dw->exec();
 
-   if ( result == QDialog::Accepted) {
+   if (result == QDialog::Accepted) {
       options = dw->get_Results();
 
       m_printer.printHeader    = options.printHeader ;
@@ -266,6 +320,7 @@ void MainWindow::setPrintOptions()
       m_printer.marBottom      = options.marBottom;
       m_printer.marLeft        = options.marLeft;
       m_printer.marRight       = options.marRight;
+      m_printer.hdrGap         = options.hdrGap;
 
       m_printer.fontHeader     = options.fontHeader;
       m_printer.fontFooter     = options.fontFooter;
