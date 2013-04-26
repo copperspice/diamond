@@ -28,6 +28,8 @@
 #include <QString>
 #include <QStringList>
 
+#include <qglobal.h>
+
 Dialog_Options::Dialog_Options(MainWindow *from, struct Options data)
    : m_ui(new Ui::Dialog_Options)
 {
@@ -152,11 +154,14 @@ void Dialog_Options::Cancel()
 
 void Dialog_Options::pick_Main()
 {
-   QFileDialog::Options options;   
    QString selectedFilter;
+   QFileDialog::Options options;   
 
-   QString fileName = QFileDialog::getOpenFileName(this, tr("Select Dictionary"),
-         m_ui->dictMain->text(), tr("Dictionary Files (*.dic)"), &selectedFilter, options);
+   // force windows 7 and 8 to honor initial path
+   options = QFileDialog::ForceInitialDir_Win7;
+
+   QString fileName = QFileDialog::getOpenFileName(this, tr("Select Main Dictionary"),
+         m_ui->dictMain->text(), tr("Dictionary File (*.dic)"), &selectedFilter, options);
 
    if (! fileName.isEmpty()) {
       m_ui->dictMain->setText(fileName);
@@ -165,11 +170,14 @@ void Dialog_Options::pick_Main()
 
 void Dialog_Options::pick_User()
 {
-   QFileDialog::Options options;
    QString selectedFilter;
+   QFileDialog::Options options;
+
+   // force windows 7 and 8 to honor initial path
+   options = QFileDialog::ForceInitialDir_Win7;
 
    QString fileName = QFileDialog::getOpenFileName(this, tr("Select User Dictionary"),
-         m_ui->dictUser->text(), tr("User Dictionary Files (*.txt)"), &selectedFilter, options);
+         m_ui->dictUser->text(), tr("User Dictionary File (*.txt)"), &selectedFilter, options);
 
    if (! fileName.isEmpty()) {
       m_ui->dictUser->setText(fileName);
@@ -190,10 +198,13 @@ void Dialog_Options::pick_Syntax()
 
 void Dialog_Options::pick_About()
 {
-   QFileDialog::Options options;
    QString selectedFilter;
+   QFileDialog::Options options;
 
-   QString fileName = QFileDialog::getOpenFileName(this, tr("Select Diamond Help (Html)"),
+   // force windows 7 and 8 to honor initial path
+   options = QFileDialog::ForceInitialDir_Win7;
+
+   QString fileName = QFileDialog::getOpenFileName(this, tr("Select Diamond Help"),
          m_ui->about->text(), tr("All Files (index.html)"), &selectedFilter, options);
 
    if (! fileName.isEmpty()) {
@@ -259,24 +270,24 @@ struct Options Dialog_Options::get_Results()
 
 void Dialog_Options::reset_StandardKey()
 {
-   m_options.key_open      = QKeySequence(QKeySequence::Open).toString(QKeySequence::PortableText);
-   m_options.key_close     = QKeySequence(QKeySequence::Close).toString(QKeySequence::PortableText);
-   m_options.key_save      = QKeySequence(QKeySequence::Save).toString(QKeySequence::PortableText);
-   m_options.key_saveAs    = QKeySequence(QKeySequence::SaveAs).toString(QKeySequence::PortableText);
-   m_options.key_print     = QKeySequence(QKeySequence::Print).toString(QKeySequence::PortableText);
-   m_options.key_undo      = QKeySequence(QKeySequence::Undo).toString(QKeySequence::PortableText);
-   m_options.key_redo      = QKeySequence(QKeySequence::Redo).toString(QKeySequence::PortableText);
-   m_options.key_cut       = QKeySequence(QKeySequence::Cut).toString(QKeySequence::PortableText);
-   m_options.key_copy      = QKeySequence(QKeySequence::Copy).toString(QKeySequence::PortableText);
-   m_options.key_paste     = QKeySequence(QKeySequence::Paste).toString(QKeySequence::PortableText);
-   m_options.key_selectAll = QKeySequence(QKeySequence::SelectAll).toString(QKeySequence::PortableText);
-   m_options.key_find      = QKeySequence(QKeySequence::Find).toString(QKeySequence::PortableText);
-   m_options.key_replace   = QKeySequence(QKeySequence::Replace).toString(QKeySequence::PortableText);
-   m_options.key_findNext  = QKeySequence(QKeySequence::FindNext).toString(QKeySequence::PortableText);
-   m_options.key_findPrev  = QKeySequence(QKeySequence::FindPrevious).toString(QKeySequence::PortableText);
-   m_options.key_goTop     = QKeySequence(QKeySequence::MoveToStartOfDocument).toString(QKeySequence::PortableText);
-   m_options.key_goBottom  = QKeySequence(QKeySequence::MoveToEndOfDocument).toString(QKeySequence::PortableText);
-   m_options.key_newTab    = QKeySequence(QKeySequence::AddTab).toString(QKeySequence::PortableText);
+   m_options.key_open      = QKeySequence(QKeySequence::Open).toString(QKeySequence::NativeText);
+   m_options.key_close     = QKeySequence(QKeySequence::Close).toString(QKeySequence::NativeText);
+   m_options.key_save      = QKeySequence(QKeySequence::Save).toString(QKeySequence::NativeText);
+   m_options.key_saveAs    = QKeySequence(QKeySequence::SaveAs).toString(QKeySequence::NativeText);
+   m_options.key_print     = QKeySequence(QKeySequence::Print).toString(QKeySequence::NativeText);
+   m_options.key_undo      = QKeySequence(QKeySequence::Undo).toString(QKeySequence::NativeText);
+   m_options.key_redo      = QKeySequence(QKeySequence::Redo).toString(QKeySequence::NativeText);
+   m_options.key_cut       = QKeySequence(QKeySequence::Cut).toString(QKeySequence::NativeText);
+   m_options.key_copy      = QKeySequence(QKeySequence::Copy).toString(QKeySequence::NativeText);
+   m_options.key_paste     = QKeySequence(QKeySequence::Paste).toString(QKeySequence::NativeText);
+   m_options.key_selectAll = QKeySequence(QKeySequence::SelectAll).toString(QKeySequence::NativeText);
+   m_options.key_find      = QKeySequence(QKeySequence::Find).toString(QKeySequence::NativeText);
+   m_options.key_replace   = QKeySequence(QKeySequence::Replace).toString(QKeySequence::NativeText);
+   m_options.key_findNext  = QKeySequence(QKeySequence::FindNext).toString(QKeySequence::NativeText);
+   m_options.key_findPrev  = QKeySequence(QKeySequence::FindPrevious).toString(QKeySequence::NativeText);
+   m_options.key_goTop     = QKeySequence(QKeySequence::MoveToStartOfDocument).toString(QKeySequence::NativeText);
+   m_options.key_goBottom  = QKeySequence(QKeySequence::MoveToEndOfDocument).toString(QKeySequence::NativeText);
+   m_options.key_newTab    = QKeySequence(QKeySequence::AddTab).toString(QKeySequence::NativeText);
 
    m_ui->key_open->setText(m_options.key_open);
    m_ui->key_close->setText(m_options.key_close);

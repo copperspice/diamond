@@ -111,6 +111,7 @@ class MainWindow : public QMainWindow
       QStringList m_openedFiles;
 
       // syntax
+      QString m_appPath;
       QString m_jsonFname;
       SyntaxTypes m_syntaxEnum;
       Syntax *m_syntaxParser;

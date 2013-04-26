@@ -149,8 +149,11 @@ void MainWindow::mw_open()
 
 void MainWindow::open(QString path)
 {       
-   QFileDialog::Options options;
    QString selectedFilter;
+   QFileDialog::Options options;
+
+   // force windows 7 and 8 to honor initial path
+   options = QFileDialog::ForceInitialDir_Win7;
 
    QStringList fileList = QFileDialog::getOpenFileNames(this, tr("Select File"),
          path, tr("All Files (*)"), &selectedFilter, options);
@@ -284,9 +287,12 @@ bool MainWindow::saveAs(bool isSaveOne)
 {
    bool retval = false;
 
+   QString selectedFilter;
    QFileDialog::Options options;
 
-   QString selectedFilter;
+   // force windows 7 and 8 to honor initial path
+   options = QFileDialog::ForceInitialDir_Win7;
+
    QString path = this->pathName(m_curFile);
 
    QString fileName = QFileDialog::getSaveFileName(this, tr("Create or Select File"),
@@ -1654,8 +1660,8 @@ void MainWindow::createShortCuts(bool setupAll)
    struct_temp.key_deleteEOL    = this->adjustKey(struct_temp.key_deleteEOL);
    struct_temp.key_columnMode   = this->adjustKey(struct_temp.key_columnMode);
    struct_temp.key_goLine       = this->adjustKey(struct_temp.key_goLine);
-   struct_temp.key_showTabs     = this->adjustKey(struct_temp.key_showTabs);
-   struct_temp.key_showBreaks   = this->adjustKey(struct_temp.key_showBreaks);
+   struct_temp.key_show_Spaces  = this->adjustKey(struct_temp.key_show_Spaces);
+   struct_temp.key_show_Breaks  = this->adjustKey(struct_temp.key_show_Breaks);
    struct_temp.key_macroPlay    = this->adjustKey(struct_temp.key_macroPlay);
    struct_temp.key_spellCheck   = this->adjustKey(struct_temp.key_spellCheck);
 #endif

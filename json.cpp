@@ -43,6 +43,8 @@ bool MainWindow::json_Read()
 {
    bool ok = true;
 
+   m_appPath = QCoreApplication::applicationDirPath();
+
    QSettings settings("Diamond Editor", "Settings");
    m_jsonFname = settings.value("configName").toString();
 
@@ -54,6 +56,10 @@ bool MainWindow::json_Read()
          return false;
       }
       settings.setValue("configName", m_jsonFname);
+
+      if (! QFile::exists(m_jsonFname))  {
+         json_CreateNew();
+      }
    }
 
    if (ok) {
@@ -635,6 +641,7 @@ bool MainWindow::json_Write(Option route)
 
 void MainWindow::json_getFileName()
 {
+   QString selectedFilter;
    QFileDialog::Options options;
 
    QMessageBox quest;
@@ -651,13 +658,16 @@ void MainWindow::json_getFileName()
 
    if (quest.clickedButton() == createNew) {
 
-      QString selectedFilter;
+      QString fname = m_appPath + "/config.json";
+
+      // force windows 7 and 8 to honor initial path
+      options = QFileDialog::ForceInitialDir_Win7;
+
       m_jsonFname = QFileDialog::getSaveFileName(this, tr("Create New Configuration File"),
-            "config.json", tr("Json Files (*.json)"), &selectedFilter, options);
+            fname, tr("Json Files (*.json)"), &selectedFilter, options);
 
    } else if (quest.clickedButton() == selectConfig) {
 
-      QString selectedFilter;
       m_jsonFname = QFileDialog::getOpenFileName(this, tr("Select Diamond Configuration File"),
             "", tr("Json Files (*.json)"), &selectedFilter, options);
    }
@@ -726,7 +736,7 @@ bool MainWindow::json_CreateNew()
    value = QJsonValue(QString("h:mm ap"));
    object.insert("formatTime", value);
 
-   value = QJsonValue(QString(QDir::currentPath()));
+   value = QJsonValue(m_appPath);
    object.insert("pathPrior", value);
 
    // get syntax folder
@@ -735,8 +745,8 @@ bool MainWindow::json_CreateNew()
    value = QJsonValue(QString(syntaxPath));
    object.insert("pathSyntax", value);
 
-   // get dictionary file
-   QString dictFile = get_xxFile("Dictionary", "en_US.dic", "Dictionary Files (*.dic)" );
+   // get dictionary file location
+   QString dictFile = get_xxFile("Dictionary File (*.dic)", "en_US.dic", "Dictionary Files (*.dic)" );
 
    value = QJsonValue(QString(dictFile));
    object.insert("dictMain", value);
@@ -754,8 +764,8 @@ bool MainWindow::json_CreateNew()
    value = QJsonValue(QString( dictFile) );
    object.insert("dictUser", value);      
 
-   // get aboutURL file
-   QString indexPath = get_xxFile("Help", "index.html", "HTML Files (index.html)" );
+   // get aboutURL file location
+   QString indexPath = get_xxFile("Help File (index.html)", "index.html", "HTML Files (index.html)" );
 
    value = QJsonValue(QString(indexPath));
    object.insert("aboutUrl", value);
@@ -767,7 +777,7 @@ bool MainWindow::json_CreateNew()
    value = QJsonValue(QString("*.*"));
    object.insert("advFile-filetype",   value);
 
-   value = QJsonValue(QString(QDir::currentPath()));
+   value = QJsonValue(m_appPath);
    object.insert("advFile-folder",     value);
 
    // print options
@@ -813,75 +823,75 @@ bool MainWindow::json_CreateNew()
    // standard keys
    QString keys;
 
-   keys  = QKeySequence(QKeySequence::Open).toString(QKeySequence::PortableText);
+   keys  = QKeySequence(QKeySequence::Open).toString(QKeySequence::NativeText);
    value = QJsonValue(keys);
    object.insert("key-open",   value );
 
-   keys  = QKeySequence(QKeySequence::Close).toString(QKeySequence::PortableText);
+   keys  = QKeySequence(QKeySequence::Close).toString(QKeySequence::NativeText);
    value = QJsonValue(keys);
    object.insert("key-close",  value );
 
-   keys  = QKeySequence(QKeySequence::Save).toString(QKeySequence::PortableText);
+   keys  = QKeySequence(QKeySequence::Save).toString(QKeySequence::NativeText);
    value = QJsonValue(keys);
    object.insert("key-save",   value );
 
-   keys  = QKeySequence(QKeySequence::SaveAs).toString(QKeySequence::PortableText);
+   keys  = QKeySequence(QKeySequence::SaveAs).toString(QKeySequence::NativeText);
    value = QJsonValue(keys);
    object.insert("key-saveAs",  value );
 
-   keys  = QKeySequence(QKeySequence::Print).toString(QKeySequence::PortableText);
+   keys  = QKeySequence(QKeySequence::Print).toString(QKeySequence::NativeText);
    value = QJsonValue(keys);
    object.insert("key-print",  value );
 
-   keys  = QKeySequence(QKeySequence::Undo).toString(QKeySequence::PortableText);
+   keys  = QKeySequence(QKeySequence::Undo).toString(QKeySequence::NativeText);
    value = QJsonValue(keys);
    object.insert("key-undo",   value );
 
-   keys  = QKeySequence(QKeySequence::Redo).toString(QKeySequence::PortableText);
+   keys  = QKeySequence(QKeySequence::Redo).toString(QKeySequence::NativeText);
    value = QJsonValue(keys);
    object.insert("key-redo",   value );
 
-   keys  = QKeySequence(QKeySequence::Cut).toString(QKeySequence::PortableText);
+   keys  = QKeySequence(QKeySequence::Cut).toString(QKeySequence::NativeText);
    value = QJsonValue(keys);
    object.insert("key-cut",   value );
 
-   keys  = QKeySequence(QKeySequence::Copy).toString(QKeySequence::PortableText);
+   keys  = QKeySequence(QKeySequence::Copy).toString(QKeySequence::NativeText);
    value = QJsonValue(keys);
    object.insert("key-copy",   value );
 
-   keys  = QKeySequence(QKeySequence::Paste).toString(QKeySequence::PortableText);
+   keys  = QKeySequence(QKeySequence::Paste).toString(QKeySequence::NativeText);
    value = QJsonValue(keys);
    object.insert("key-paste",         value );
 
-   keys  = QKeySequence(QKeySequence::SelectAll).toString(QKeySequence::PortableText);
+   keys  = QKeySequence(QKeySequence::SelectAll).toString(QKeySequence::NativeText);
    value = QJsonValue(keys);
    object.insert("key-selectAll",   value );
 
-   keys  = QKeySequence(QKeySequence::Find).toString(QKeySequence::PortableText);
+   keys  = QKeySequence(QKeySequence::Find).toString(QKeySequence::NativeText);
    value = QJsonValue(keys);
    object.insert("key-find",        value );
 
-   keys  = QKeySequence(QKeySequence::Replace).toString(QKeySequence::PortableText);
+   keys  = QKeySequence(QKeySequence::Replace).toString(QKeySequence::NativeText);
    value = QJsonValue(keys);
    object.insert("key-replace",     value );
 
-   keys  = QKeySequence(QKeySequence::FindNext).toString(QKeySequence::PortableText);
+   keys  = QKeySequence(QKeySequence::FindNext).toString(QKeySequence::NativeText);
    value = QJsonValue(keys);
    object.insert("key-findNext",    value );
 
-   keys  = QKeySequence(QKeySequence::FindPrevious).toString(QKeySequence::PortableText);
+   keys  = QKeySequence(QKeySequence::FindPrevious).toString(QKeySequence::NativeText);
    value = QJsonValue(keys);
    object.insert("key-findPrev",    value );
 
-   keys  = QKeySequence(QKeySequence::MoveToStartOfDocument).toString(QKeySequence::PortableText);
+   keys  = QKeySequence(QKeySequence::MoveToStartOfDocument).toString(QKeySequence::NativeText);
    value = QJsonValue(keys);
    object.insert("key-goTop",       value );
 
-   keys  = QKeySequence(QKeySequence::MoveToEndOfDocument).toString(QKeySequence::PortableText);
+   keys  = QKeySequence(QKeySequence::MoveToEndOfDocument).toString(QKeySequence::NativeText);
    value = QJsonValue(keys);
    object.insert("key-goBottom",    value );
 
-   keys  = QKeySequence(QKeySequence::AddTab).toString(QKeySequence::PortableText);
+   keys  = QKeySequence(QKeySequence::AddTab).toString(QKeySequence::NativeText);
    value = QJsonValue(keys);
    object.insert("key-newTab",      value );
 
@@ -1029,19 +1039,22 @@ bool MainWindow::json_CreateNew()
 QString MainWindow::get_SyntaxPath()
 {
    QString msg  = tr("Select Diamond Syntax Folder");
-   QString path = QDir::currentPath();
-
-   path = this->get_DirPath(msg, path);
+   QString path = this->get_DirPath(msg, m_appPath);
 
    return path;
 }
 
 QString MainWindow::get_xxFile(QString title, QString fname, QString filter)
 {
-   QFileDialog::Options options;
    QString selectedFilter;
+   QFileDialog::Options options;
 
-   QString file = QFileDialog::getOpenFileName(this, "Select Diamond " + title,
+   // force windows 7 and 8 to honor initial path
+   options = QFileDialog::ForceInitialDir_Win7;
+
+   fname = m_appPath + "/" + fname;
+
+   QString file = QFileDialog::getOpenFileName(this, "Select " + title,
          fname, filter, &selectedFilter, options);
 
    return file;
@@ -1155,11 +1168,14 @@ void MainWindow::move_ConfigFile()
       case 1:
          // create
          {
-            QFileDialog::Options options;
             QString selectedFilter;
+            QFileDialog::Options options;
+
+            // force windows 7 and 8 to honor initial path
+            options = QFileDialog::ForceInitialDir_Win7;
 
             QString newName = QFileDialog::getSaveFileName(this, tr("Create New Configuration File"),
-                  "config.json", tr("Json Files (*.json)"), &selectedFilter, options);
+                  m_appPath + "/config.json", tr("Json Files (*.json)"), &selectedFilter, options);
 
             if (newName.isEmpty()) {
                // do nothing
@@ -1186,8 +1202,8 @@ void MainWindow::move_ConfigFile()
       case 2:
          // select
          {
-            QFileDialog::Options options;
             QString selectedFilter;
+            QFileDialog::Options options;
 
             QString newName = QFileDialog::getOpenFileName(this, tr("Select Diamond Configuration File"),
                   "*.json", tr("Json Files (*.json)"), &selectedFilter, options);

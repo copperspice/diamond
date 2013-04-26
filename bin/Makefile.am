@@ -43,7 +43,7 @@ Diamond_LDFLAGS=$(AM_LDFLAGS)   $(patsubst %,-lCs%1,$(cslibs))
 Diamond_SOURCES = \
 	about.cpp \
 	dialog_advfind.cpp \
- dialog_colors.cpp \
+ 	dialog_colors.cpp \
 	dialog_config.cpp \
 	dialog_find.cpp \
 	dialog_fonts.cpp\
@@ -68,7 +68,7 @@ Diamond_SOURCES = \
 	split_window.cpp \
     syntax.cpp  \
     support.cpp \
-    util.cpp
+    util.cpp		
 
 #
 noinst_HEADERS = \
@@ -120,9 +120,9 @@ FORMS =	\
 	forms/dialog_config.ui \
 	forms/dialog_find.ui \
 	forms/dialog_fonts.ui\
-	forms/dialog_get1.ui \
-	forms/dialog_options.ui \
+	forms/dialog_get1.ui \	
 	forms/dialog_macro.ui \
+    forms/dialog_options.ui \
 	forms/dialog_print_opt.ui \
 	forms/dialog_replace.ui \
 	forms/dialog_symbols.ui \

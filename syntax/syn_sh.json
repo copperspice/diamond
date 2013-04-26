@@ -3,7 +3,7 @@
 	],
 	"comment-multi-start": "(?!E)E",
     "comment-multi-end": "(?!E)E",
-    "comment-single": "//[^\n]*",
+    "comment-single": "#[^\n]*",
 	"functions": [
    	],
 	"ignore-case" : true,
