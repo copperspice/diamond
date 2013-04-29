@@ -1,5 +1,8 @@
 include copperspice.am
 
+# dist
+distdir_custom=install/dist
+
 # path to gcc
 gccpath=/c/MingW
 
@@ -120,7 +123,7 @@ FORMS =	\
 	forms/dialog_config.ui \
 	forms/dialog_find.ui \
 	forms/dialog_fonts.ui\
-	forms/dialog_get1.ui \	
+	forms/dialog_get1.ui \
 	forms/dialog_macro.ui \
     forms/dialog_options.ui \
 	forms/dialog_print_opt.ui \
@@ -132,10 +135,35 @@ FORMS =	\
 TRANSLATIONS =
 
 #
-RESOURCES  =  diamond.qrc
-
-#
-Diamond_SOURCES += qrc_diamond.cpp
+RESOURCES = diamond.qrc
 
 # use wilcard to obtain just the dependency list
 qrc_diamond.cpp: diamond.qrc   $(wildcard ../resources/*)
+
+# source distribution
+nodist_Diamond_SOURCES = qrc_diamond.cpp
+
+distdir: $(DISTFILES)	
+	cd .. ; \
+	test -d "$(distdir_custom)" || mkdir -p "$(distdir_custom)" ; \
+	for f in $(DIST_SOURCES)  ; do install -D $$f $(distdir_custom)/$$f ; done ;\
+	for f in $(HEADERS)   ; do install -D $$f $(distdir_custom)/$$f ; done ;\
+	for f in $(FORMS)     ; do install -D $$f $(distdir_custom)/$$f ; done ;\
+	mkdir -p $(distdir_custom)/bin ; \
+	mkdir -p $(distdir_custom)/dictionary ; \
+	mkdir -p $(distdir_custom)/resources  ; \
+	mkdir -p $(distdir_custom)/syntax     ; \
+	cp diamond.qrc    $(distdir_custom)/     ; \
+	cp bin/*.am       $(distdir_custom)/bin/ ; \
+	cp resources/*.*  $(distdir_custom)/resources/ ; \
+	cp syntax/*.json  $(distdir_custom)/syntax/    ; \
+	cp install/dictionary/*.*  $(distdir_custom)/dictionary/
+	$(MAKE) $(AM_MAKEFLAGS) dist-hook
+	
+dist-hook:	
+	cd .. ; \
+	cp -r bin/$(distdir)/../*   $(distdir_custom) ; \
+	rm -r bin/$(distdir)/../  ; \
+	cd $(distdir_custom) ; \
+	zip -r ../Diamond-$(VERSION).zip .
+

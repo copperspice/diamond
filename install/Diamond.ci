@@ -1,4 +1,4 @@
-﻿<project version = 9 civer = 5.18.0 winver = "2.6/5.1.2600" >
+<project version = 9 civer = 5.18.0 winver = "2.6/5.1.2600" >
    <autorun >0</>
    <autoclose >0</>
    <compname ></>
@@ -10,7 +10,7 @@
    <headlogo >default - 1</>
    <dlgfontsize >s10</>
    <output >Z:\Diamond\install</>
-   <exename >setup.exe</>
+   <exename >setup-diamond.exe</>
    <beffile ></>
    <aftfile ></>
    <uninclude >1</>
@@ -268,6 +268,34 @@
                         <runas >norm</>
                         <runasadmin >0</>
                      </>
+                     <_ id = shcut >
+                        <desc >Diamond</>
+                        <shpath >prog</>
+                        <shfile >Diamond</>
+                        <path >inst</>
+                        <file >Diamond.exe</>
+                        <icon >diamond.ico</>
+                        <cmdline ></>
+                        <comment ></>
+                        <work >inst</>
+                        <defwork ></>
+                        <runas >norm</>
+                        <runasadmin >0</>
+                     </>
+                     <_ id = shcut >
+                        <desc >Uninstall</>
+                        <shpath >prog</>
+                        <shfile >Uninstall</>
+                        <path >inst</>
+                        <file >uninstall.exe</>
+                        <icon ></>
+                        <cmdline ></>
+                        <comment ></>
+                        <work >inst</>
+                        <defwork ></>
+                        <runas >norm</>
+                        <runasadmin >0</>
+                     </>
                      <_ tag = 0 id = shlist >
                         <desc ></>
                         <shlist >
@@ -310,7 +338,7 @@
                   </>
                   <head ></>
                   <headtext ></>
-                  <dlgtext >Thank you for installing the Diamond Editor. If you have any questions or comments please vist our forum at http://sourceforge.net/p/copperspice/discussion/diamond/</>
+                  <dlgtext >Thank you for installing the Diamond Editor. If you have any questions or comments please visit our forum at http://sourceforge.net/p/copperspice/discussion/diamond/</>
                </>
             </>
             <icofile >default</>
@@ -318,7 +346,7 @@
             <leftimg >install - 1</>
             <caption ></>
             <verinfo >1</>
-            <noadmin >0</>
+            <noadmin >1</>
             <selfdelete >0</>
          </>
       </>
@@ -394,7 +422,7 @@
                   </>
                   <head >Diamond Uninstall</>
                   <headtext ></>
-                  <dlgtext >Thank you for reviewing our Diamond Editor. If you have comments or feedback regarding our product, please take a few minutes to vist our discussion forum on SourceForge.</>
+                  <dlgtext >Thank you for reviewing our Diamond Editor. If you have comments or feedback regarding our product, please take a few minutes to visit our discussion forum on SourceForge.</>
                   <feedback >http://sourceforge.net/p/copperspice/discussion/diamond/</>
                   <if ></>
                </>
