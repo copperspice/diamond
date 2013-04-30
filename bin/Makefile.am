@@ -151,13 +151,15 @@ distdir: $(DISTFILES)
 	for f in $(FORMS)     ; do install -D $$f $(distdir_custom)/$$f ; done ;\
 	mkdir -p $(distdir_custom)/bin ; \
 	mkdir -p $(distdir_custom)/dictionary ; \
+	mkdir -p $(distdir_custom)/help       ; \
 	mkdir -p $(distdir_custom)/resources  ; \
 	mkdir -p $(distdir_custom)/syntax     ; \
 	cp diamond.qrc    $(distdir_custom)/     ; \
 	cp bin/*.am       $(distdir_custom)/bin/ ; \
-	cp resources/*.*  $(distdir_custom)/resources/ ; \
+	cp resources/*    $(distdir_custom)/resources/ ; \
 	cp syntax/*.json  $(distdir_custom)/syntax/    ; \
-	cp install/dictionary/*.*  $(distdir_custom)/dictionary/
+	cp install/dictionary/*  $(distdir_custom)/dictionary/ ; \
+	cp -r install/help/*     $(distdir_custom)/help/
 	$(MAKE) $(AM_MAKEFLAGS) dist-hook
 	
 dist-hook:	
@@ -165,5 +167,6 @@ dist-hook:
 	cp -r bin/$(distdir)/../*   $(distdir_custom) ; \
 	rm -r bin/$(distdir)/../  ; \
 	cd $(distdir_custom) ; \
+	rm -f ../Diamond-$(VERSION).zip  ; \
 	zip -r ../Diamond-$(VERSION).zip .
 
