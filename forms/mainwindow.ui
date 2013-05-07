@@ -563,12 +563,12 @@
   </action>
   <action name="actionFix_Tab_Spaces">
    <property name="text">
-    <string>Convert Tabs to Spaces *</string>
+    <string>Convert Tabs to Spaces</string>
    </property>
   </action>
   <action name="actionFix_Spaces_Tab">
    <property name="text">
-    <string>Convert Spaces to Tabs *</string>
+    <string>Convert Spaces to Tabs</string>
    </property>
   </action>
   <action name="actionDeleteEOL_Spaces">

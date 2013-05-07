@@ -49,6 +49,9 @@ MainWindow::MainWindow(QStringList fileList, QStringList flagList)
    // drag & drop
    setAcceptDrops(true);
 
+   // tab stops
+   this->setUpTabStops();
+
    // remaining methods must be done after json_Read for config
    m_tabWidget = new QTabWidget;
    m_tabWidget->setTabsClosable(true);
@@ -59,8 +62,9 @@ MainWindow::MainWindow(QStringList fileList, QStringList flagList)
    m_splitter->addWidget(m_tabWidget);
    setCentralWidget(m_splitter);
 
-   m_isSplit   = false;
-   m_fromSplit = false;
+   connect(qApp, SIGNAL(focusChanged(QWidget *, QWidget *)), this, SLOT(focusChanged(QWidget *, QWidget *)));
+
+   m_isSplit = false;
 
    // screen setup
    createShortCuts(true);
@@ -113,7 +117,7 @@ MainWindow::MainWindow(QStringList fileList, QStringList flagList)
       tabNew();
    }
 
-   // currently open tabs, must occure after autoLoad & argLoad
+   // currently open tabs, must occur after autoLoad & argLoad
    openTab_CreateMenus();
 
    // find
@@ -499,9 +503,9 @@ void MainWindow::mw_indentIncr()
 
 void MainWindow::indentIncr(QString route)
 {
-   const QString tabLen = QString(m_struct.tabSpacing, ' ');
-
+   const QString tabLen = QString(m_struct.tabSpacing, ' ');      
    QTextCursor cursor(m_textEdit->textCursor());
+
    cursor.beginEditBlock();
 
    if (cursor.hasSelection()) {
@@ -766,7 +770,7 @@ void MainWindow::lineHighlight()
       m_struct.showLineHighlight = false;
    }
 
-   json_Write(SHOW_LINEHIGHLIGHT);
+   json_Write(SHOW_LINEHIGHLIGHT);   
    moveBar();
 }
 
@@ -794,20 +798,12 @@ void MainWindow::moveBar()
    selection.format.setProperty(QTextFormat::FullWidthSelection, true);
    selection.format.setProperty(QTextFormat::UserProperty, "highlightbar");
 
-   if (m_fromSplit) {
-      selection.cursor = split_textEdit->textCursor();
-   } else  {
-      selection.cursor = m_textEdit->textCursor();
-   }
+   selection.cursor = m_textEdit->textCursor();
    selection.cursor.clearSelection();
 
-   extraSelections.append(selection);
+   extraSelections.append(selection);   
+   m_textEdit->setExtraSelections(extraSelections);
 
-   if (m_fromSplit) {
-      split_textEdit->setExtraSelections(extraSelections);
-   } else {
-      m_textEdit->setExtraSelections(extraSelections);
-   } 
 }
 
 void MainWindow::lineNumbers()
@@ -822,7 +818,11 @@ void MainWindow::lineNumbers()
    }
 
    json_Write(SHOW_LINENUMBERS);
-   m_textEdit->set_ShowLineNum(m_struct.showLineNumbers);
+   m_noSplit_textEdit->set_ShowLineNum(m_struct.showLineNumbers);
+
+   if (m_isSplit) {
+      m_split_textEdit->set_ShowLineNum(m_struct.showLineNumbers);
+   }
 }
 
 void MainWindow::wordWrap()
@@ -1113,13 +1113,123 @@ void MainWindow::formatMac()
 }
 
 void MainWindow::fixTab_Spaces()
-{
-   showNotDone("Document, convert tab to spaces");
+{   
+   QTextCursor cursor(m_textEdit->textCursor());
+
+   // save starting position
+   QTextCursor cursorStart;
+   cursorStart = cursor;
+
+   // position to start of document
+   cursor.movePosition(QTextCursor::Start);
+   m_textEdit->setTextCursor(cursor);
+
+   // set for undo stack
+   cursor.beginEditBlock();
+
+   int tabLen = m_struct.tabSpacing;
+   const QString findText = QString(QChar(9));
+
+   while (true) {
+      bool found = m_textEdit->find(findText);
+
+      if (found)  {
+         cursor = m_textEdit->textCursor();
+
+         // how many chars from the start of line
+         int span = cursor.positionInBlock();
+
+         int x1 = (span/tabLen) * tabLen;
+         int x2 = tabLen - (span - x1) + 1;
+
+         const QString newText = QString(x2, ' ');
+         cursor.insertText(newText);
+
+      } else {
+         break;
+      }
+   }
+
+   cursor.endEditBlock();
+
+   // go back to starting point
+   m_textEdit->setTextCursor(cursorStart);
 }
 
 void MainWindow::fixSpaces_Tab()
-{
-   showNotDone("Document, convert spaces to tabs");
+{        
+   QTextCursor cursor(m_textEdit->textCursor());
+
+   // save starting position
+   QTextCursor cursorStart;
+   cursorStart = cursor;
+
+   // position to start of document
+   cursor.movePosition(QTextCursor::Start);
+   m_textEdit->setTextCursor(cursor);
+
+   // set for undo stack
+   cursor.beginEditBlock();
+
+   int pos;
+   int tabLen = m_struct.tabSpacing;
+
+   QString temp;
+
+   const QString findText = QString(2, ' ');
+   const QString newText  = QString(QChar(9));
+
+   while (true) {      
+      bool found = m_textEdit->find(findText);
+
+      // reset
+      int pass = 1;
+
+      if (found)  {         
+         cursor = m_textEdit->textCursor();                 
+
+         while (true) {
+            temp = cursor.selectedText().trimmed();
+            pos  = cursor.positionInBlock();
+
+            if ( m_tabStops.contains(pos)  ) {
+               // this a tap stop
+
+               if (temp.isEmpty()) {
+                  // replace spaces with tab
+                  cursor.insertText(newText);
+
+               } else {
+                  // char at the tabstop is not a space, back up one
+                  cursor.movePosition(QTextCursor::PreviousCharacter, QTextCursor::KeepAnchor, 1);
+
+                  // replace spaces with tab
+                  cursor.insertText(newText);
+               }
+
+               break;
+            }
+
+            if (! temp.isEmpty() || pass == tabLen)  {
+               break;
+            }
+
+            // get one more char
+            cursor.movePosition(QTextCursor::NextCharacter, QTextCursor::KeepAnchor, 1);
+            ++pass;
+         }
+
+      } else {
+         // all done
+         break;
+
+      }      
+   }
+
+   cursor.endEditBlock();
+
+   // go back to starting point
+   m_textEdit->setTextCursor(cursorStart);
 }
 
 void MainWindow::deleteEOL_Spaces()
@@ -1277,6 +1387,9 @@ void MainWindow::tabNew()
 {   
    m_textEdit = new DiamondTextEdit(this, m_struct, m_spellCheck);
 
+   // hold for reference
+   m_noSplit_textEdit = m_textEdit;
+
    // triggers a call to tabChanged
    int index = m_tabWidget->addTab(m_textEdit, "untitled.txt");
    m_tabWidget->setCurrentIndex(index);
@@ -1351,8 +1464,11 @@ void MainWindow::tabChanged(int index)
 
    if (textEdit) {
       m_textEdit = textEdit;
-      m_curFile  = this->get_curFileName(index);
 
+      // hold for reference
+      m_noSplit_textEdit = m_textEdit;
+
+      m_curFile = this->get_curFileName(index);
       this->setCurrentTitle(m_curFile);
 
       // ** retrieve slected syntax type
@@ -1372,6 +1488,20 @@ void MainWindow::tabChanged(int index)
       moveBar();
       show_Spaces();
       show_Breaks();
+   }
+}
+
+void MainWindow::focusChanged(QWidget *old, QWidget *current)
+{
+   if (! current) {
+      return;
+   }
+
+   DiamondTextEdit *textEdit;
+   textEdit = dynamic_cast<DiamondTextEdit *>(current);
+
+   if (textEdit)  {
+      m_textEdit = textEdit;
    }
 }
 
@@ -1404,7 +1534,7 @@ void MainWindow::about()
    msgB.setWindowIcon(QIcon("://resources/diamond.png"));
 
    msgB.setWindowTitle(tr("About Diamond"));
-   msgB.setText(tr("<p style=margin-right:25><center><h5>Version: 1.0<br>Build # 04.1.2013</h5></center></p>"));
+   msgB.setText(tr("<p style=margin-right:25><center><h5>Version: 1.0<br>Build # 05.1.2013</h5></center></p>"));
    msgB.setInformativeText(textBody);
 
    msgB.setStandardButtons(QMessageBox::Ok);

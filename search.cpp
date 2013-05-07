@@ -338,6 +338,8 @@ void MainWindow::advFind_ShowFiles(QList<advFindStruct> foundList)
    layout->addLayout(buttonLayout);
 
    m_findWidget->setLayout(layout);
+
+   m_splitter->setOrientation(Qt::Vertical);
    m_splitter->addWidget(m_findWidget);
 
    // signal

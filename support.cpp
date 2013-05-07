@@ -213,6 +213,10 @@ bool MainWindow::querySave()
 
       QString fileName = m_curFile;
 
+      if (m_curFile.isEmpty())  {
+         fileName = "(Unknown Filename)";
+      }
+
       QMessageBox quest;
       quest.setWindowTitle(tr("Diamond Editor"));
       quest.setText( fileName + tr(" has been modified. Save changes?"));
@@ -289,9 +293,10 @@ void MainWindow::setCurrentTitle(const QString &fileName, bool tabChange)
 {
    QString showName;
 
+   // adjusts the * in the title bar
+   setWindowModified(m_textEdit->document()->isModified());
+
    if (fileName.isEmpty()) {
-      m_textEdit->document()->setModified(false);
-      setWindowModified(false);
 
       m_curFile = "";
       showName  = "untitled.txt";
@@ -308,9 +313,6 @@ void MainWindow::setCurrentTitle(const QString &fileName, bool tabChange)
 
    } else {
       // loading an existing file
-
-      // adjusts the * in the title bar
-      setWindowModified(m_textEdit->document()->isModified());
 
       m_curFile = fileName;
       showName  = m_curFile;
@@ -348,9 +350,13 @@ void MainWindow::setDiamondTitle(const QString title)
 
 void MainWindow::setStatus_LineCol()
 {
-   QTextCursor cursor(m_textEdit->textCursor());   
+   QTextCursor cursor(m_textEdit->textCursor());
+
+   // BROOM - resolve for tabs
+   int adjColNum = cursor.columnNumber()+1;
+
    m_statusLine->setText(" Line: "  + QString::number(cursor.blockNumber()+1) +
-                         "  Col: "  + QString::number(cursor.columnNumber()+1) + "  ");
+                         "  Col: "  + QString::number(adjColNum) + "  ");
 }
 
 void MainWindow::setStatus_ColMode()
@@ -374,6 +380,16 @@ void MainWindow::setStatus_FName2(QString text)
 {
    // test only !
    m_statusName->setText(" " + text + " ");
+}
+
+void MainWindow::setUpTabStops()
+{
+   int tabStop;
+
+   for (int k = 1; k < 25; ++k)  {
+      tabStop = (m_struct.tabSpacing * k) + 1;
+      m_tabStops.append(tabStop);
+   }
 }
 
 
@@ -404,18 +420,17 @@ void MainWindow::dropEvent(QDropEvent *event)
          loadFile(fileName, true, false);
       }
 
-   } else if (mimeData->hasText()) {
-       m_textEdit->setPlainText(mimeData->text());
+   } else if (mimeData->hasText()) {     
+      QTextCursor cursor(m_textEdit->textCursor());
 
+      // set for undo stack
+      cursor.beginEditBlock();
+
+      cursor.insertText(mimeData->text());
+
+      // set for undo stack
+      cursor.endEditBlock();
    }
 
 }
-
-
-
-
-
-
-
-
 

@@ -1,4 +1,4 @@
-<project version = 9 civer = 5.18.0 winver = "2.6/5.1.2600" >
+﻿<project version = 9 civer = 5.18.0 winver = "2.6/5.1.2600" >
    <autorun >0</>
    <autoclose >0</>
    <compname ></>
@@ -15,7 +15,7 @@
    <aftfile ></>
    <uninclude >1</>
    <lang >english</>
-   <addlang >french, german, spanish</>
+   <addlang >french, german, italian, portuguese_br, spanish</>
    <selfextr >1</>
    <instpath >C:\Program Files\Diamond</>
    <voltype >nolimit</>
@@ -67,8 +67,9 @@
                <_ tag = 0 id = dlglang >
                   <desc ></>
                   <head >Diamond Installation</>
-                  <headtext ></>
-                  <dlgtext ></>
+                  <headtext >Select your preferred language.</>
+                  <dlgtext >Dictionaries corresponding to your selected language will be installed. English dictionaries are always installed. 
+Click Next to continue the installation.</>
                   <headlogo ></>
                   <buttons >auto</>
                   <if ></>
@@ -176,7 +177,7 @@
                         </>
                      </>
                      <_ tag = 0 id = unpack >
-                        <desc >Dictionary Files</>
+                        <desc >Dictionary English</>
                         <comptype >default</>
                         <ratio >r5</>
                         <solid >1</>
@@ -188,13 +189,168 @@
                            <rows >
                               <_ >
                                  <filename >Z:\Diamond\dictionary\en_US.dic</>
-                                 <recurse >1</>
+                                 <recurse >0</>
                                  <justfile >0</>
                                  <emptydir >0</>
                                  <exclude ></>
                               </>
                               <_ >
                                  <filename >Z:\Diamond\dictionary\en_US.aff</>
+                                 <recurse >0</>
+                                 <justfile >0</>
+                                 <emptydir >0</>
+                                 <exclude ></>
+                              </>
+                           </>
+                        </>
+                        <varlist >
+                           <rows ></>
+                        </>
+                     </>
+                     <_ tag = 0 id = unpack >
+                        <desc >Dictionary French</>
+                        <comptype >default</>
+                        <ratio >r5</>
+                        <solid >1</>
+                        <path >inst</>
+                        <custpath >dictionary</>
+                        <ifexist >overnewer</>
+                        <if >Slanginst == "French"</>
+                        <srclist >
+                           <rows >
+                              <_ >
+                                 <filename >Z:\Diamond\install\dictionary\fr.dic</>
+                                 <recurse >0</>
+                                 <justfile >0</>
+                                 <emptydir >0</>
+                                 <exclude ></>
+                              </>
+                              <_ >
+                                 <filename >Z:\Diamond\install\dictionary\fr.aff</>
+                                 <recurse >0</>
+                                 <justfile >0</>
+                                 <emptydir >0</>
+                                 <exclude ></>
+                              </>
+                           </>
+                        </>
+                        <varlist >
+                           <rows ></>
+                        </>
+                     </>
+                     <_ tag = 0 id = unpack >
+                        <desc >Dictionary German</>
+                        <comptype >default</>
+                        <ratio >r5</>
+                        <solid >1</>
+                        <path >inst</>
+                        <custpath >dictionary</>
+                        <ifexist >overnewer</>
+                        <if >Slanginst == "German"</>
+                        <srclist >
+                           <rows >
+                              <_ >
+                                 <filename >Z:\Diamond\install\dictionary\de_DE.dic</>
+                                 <recurse >0</>
+                                 <justfile >0</>
+                                 <emptydir >0</>
+                                 <exclude ></>
+                              </>
+                              <_ >
+                                 <filename >Z:\Diamond\install\dictionary\de_DE.aff</>
+                                 <recurse >0</>
+                                 <justfile >0</>
+                                 <emptydir >0</>
+                                 <exclude ></>
+                              </>
+                           </>
+                        </>
+                        <varlist >
+                           <rows ></>
+                        </>
+                     </>
+                     <_ tag = 0 id = unpack >
+                        <desc >Dictionary Italian</>
+                        <comptype >default</>
+                        <ratio >r5</>
+                        <solid >1</>
+                        <path >inst</>
+                        <custpath >dictionary</>
+                        <ifexist >overnewer</>
+                        <if >Slanginst == "Italian"</>
+                        <srclist >
+                           <rows >
+                              <_ >
+                                 <filename >Z:\Diamond\install\dictionary\it_IT.dic</>
+                                 <recurse >0</>
+                                 <justfile >0</>
+                                 <emptydir >0</>
+                                 <exclude ></>
+                              </>
+                              <_ >
+                                 <filename >Z:\Diamond\install\dictionary\it_IT.aff</>
+                                 <recurse >0</>
+                                 <justfile >0</>
+                                 <emptydir >0</>
+                                 <exclude ></>
+                              </>
+                           </>
+                        </>
+                        <varlist >
+                           <rows ></>
+                        </>
+                     </>
+                     <_ tag = 0 id = unpack >
+                        <desc >Dictionary Portuguese BR</>
+                        <comptype >default</>
+                        <ratio >r5</>
+                        <solid >1</>
+                        <path >inst</>
+                        <custpath >dictionary</>
+                        <ifexist >overnewer</>
+                        <if >Slanginst == "Portuguese_br"</>
+                        <srclist >
+                           <rows >
+                              <_ >
+                                 <filename >Z:\Diamond\install\dictionary\pt_BR.dic</>
+                                 <recurse >0</>
+                                 <justfile >0</>
+                                 <emptydir >0</>
+                                 <exclude ></>
+                              </>
+                              <_ >
+                                 <filename >Z:\Diamond\install\dictionary\pt_BR.aff</>
+                                 <recurse >0</>
+                                 <justfile >0</>
+                                 <emptydir >0</>
+                                 <exclude ></>
+                              </>
+                           </>
+                        </>
+                        <varlist >
+                           <rows ></>
+                        </>
+                     </>
+                     <_ tag = 0 id = unpack >
+                        <desc >Dictionary Spanish</>
+                        <comptype >default</>
+                        <ratio >r5</>
+                        <solid >1</>
+                        <path >inst</>
+                        <custpath >dictionary</>
+                        <ifexist >overnewer</>
+                        <if >Slanginst == "Spanish"</>
+                        <srclist >
+                           <rows >
+                              <_ >
+                                 <filename >Z:\Diamond\install\dictionary\es.dic</>
+                                 <recurse >0</>
+                                 <justfile >0</>
+                                 <emptydir >0</>
+                                 <exclude ></>
+                              </>
+                              <_ >
+                                 <filename >Z:\Diamond\install\dictionary\es.aff</>
                                  <recurse >0</>
                                  <justfile >0</>
                                  <emptydir >0</>
@@ -320,7 +476,7 @@
                   <varlist >
                      <rows ></>
                   </>
-                  <head ></>
+                  <head >Diamond Installation</>
                   <headtext ></>
                   <dlgtext ></>
                   <if ></>

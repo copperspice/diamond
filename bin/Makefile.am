@@ -6,8 +6,8 @@ distdir_custom=install/dist
 # path to gcc
 gccpath=/c/MingW
 
-#path to hunspell
-hunspell_path=/z/Hunspell/deploy/
+# path to hunspell
+hunspell_path=../hunspell
 
 # list of gcc libraries
 gcclibs=libgcc_s_sjlj-1  libstdc++-6  libwinpthread-1
@@ -16,15 +16,15 @@ gcclibs=libgcc_s_sjlj-1  libstdc++-6  libwinpthread-1
 cslibs=Core Gui Network Script WebKit
 
 # windows only
-hunspell_dll=$(hunspell_path)bin/libhunspell-1.3-0.dll
-hunspell_la=$(hunspell_path)lib/libhunspell-1.3.la
+hunspell_dll=$(hunspell_path)/bin/libhunspell-1.3-0.dll
+hunspell_la=$(hunspell_path)/lib/libhunspell-1.3.dll.a
 
 # x11 only
-# hunspell_dll=$(hunspell_path)bin/libhunspell.so
-# hunspell_la=$(hunspell_path)lib/libhunspell.a
+# hunspell_dll=$(hunspell_path)/bin/libhunspell.so
+# hunspell_la=$(hunspell_path)/lib/libhunspell.a
 
 # disable console on window, location of includes, defines
-AM_CXXFLAGS+=-mwindows -I/z/Hunspell/deploy/include/hunspell  -I..  -Wall
+AM_CXXFLAGS+=-mwindows -I$(hunspell_path)/include  -I..  -Wall
 
 # target app name
 deploy_PROGRAMS = Diamond
@@ -34,7 +34,7 @@ install-data-hook:
 	mkdir -p $(deploydir)	
 	cp --preserve=timestamps -u $(patsubst %,$(gccpath)/bin/%.dll,$(gcclibs))  $(deploydir)
 	cp --preserve=timestamps -u $(patsubst %,$(CS_HOME)/bin/libCs%1-0.dll,$(cslibs))  $(deploydir)
-#	cp --preserve=timestamps -u $(hunspell_dll)  $(deploydir)
+	cp --preserve=timestamps -u $(hunspell_dll)  $(deploydir)
 
 # search path for source
 VPATH = ../
@@ -114,7 +114,7 @@ MOCS = \
 	search.h \
 	syntax.h
 
-Diamond_LDADD=$(patsubst %.h,moc_%.$(OBJEXT),$(MOCS))   $(hunspell_la)
+Diamond_LDADD=$(patsubst %.h,moc_%.$(OBJEXT),$(MOCS))  $(hunspell_la)
 
 #
 FORMS =	\
@@ -152,21 +152,23 @@ distdir: $(DISTFILES)
 	mkdir -p $(distdir_custom)/bin ; \
 	mkdir -p $(distdir_custom)/dictionary ; \
 	mkdir -p $(distdir_custom)/help       ; \
+	mkdir -p $(distdir_custom)/hunspell   ; \
 	mkdir -p $(distdir_custom)/resources  ; \
 	mkdir -p $(distdir_custom)/syntax     ; \
 	cp diamond.qrc    $(distdir_custom)/     ; \
 	cp bin/*.am       $(distdir_custom)/bin/ ; \
 	cp resources/*    $(distdir_custom)/resources/ ; \
 	cp syntax/*.json  $(distdir_custom)/syntax/    ; \
-	cp install/dictionary/*  $(distdir_custom)/dictionary/ ; \
-	cp -r install/help/*     $(distdir_custom)/help/
+	cp install/dictionary/* 	$(distdir_custom)/dictionary/ ; \
+	cp -r install/help/*   		$(distdir_custom)/help/ 		; \
+	cp -r $(hunspell_path)/*	$(distdir_custom)/hunspell/		
 	$(MAKE) $(AM_MAKEFLAGS) dist-hook
 	
 dist-hook:	
 	cd .. ; \
 	cp -r bin/$(distdir)/../*   $(distdir_custom) ; \
-	rm -r bin/$(distdir)/../  ; \
-	cd $(distdir_custom) ; \
+	rm -r bin/$(distdir)/../	; \
+	cd $(distdir_custom) 		; \
 	rm -f ../Diamond-$(VERSION).zip  ; \
 	zip -r ../Diamond-$(VERSION).zip .
 

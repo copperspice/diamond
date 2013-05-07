@@ -32,25 +32,28 @@ void MainWindow::split_Horizontal()
       bottomClose();
    }
 
-   split_textEdit = new DiamondTextEdit(this, m_struct, m_spellCheck);
-   m_splitName    = m_curFile;
+   m_split_textEdit = new DiamondTextEdit(this, m_struct, m_spellCheck);
+   m_splitName      = m_curFile;
 
    // sync documents
-   split_textEdit->setDocument(m_textEdit->document());
+   m_split_textEdit->setDocument(m_textEdit->document());
 
    // (1) this->setScreenColors(), based on tabwidget must do by hand   
-   if (split_textEdit->get_ColumnMode()) {
-      split_textEdit->setFont(m_struct.fontColumn);
+   if (m_split_textEdit->get_ColumnMode()) {
+      m_split_textEdit->setFont(m_struct.fontColumn);
    } else {
-      split_textEdit->setFont(m_struct.fontNormal);
+      m_split_textEdit->setFont(m_struct.fontNormal);
    }
 
-   QPalette temp = split_textEdit->palette();
+   QPalette temp = m_split_textEdit->palette();
    temp.setColor(QPalette::Text, m_struct.colorText);
    temp.setColor(QPalette::Base, m_struct.colorBack);
-   split_textEdit->setPalette(temp);
+   m_split_textEdit->setPalette(temp);
 
    m_isSplit = true;
+
+   // hold for reference
+   m_textEdit = m_split_textEdit;
 
    //
    m_bottomWidget = new QFrame(this);
@@ -72,7 +75,7 @@ void MainWindow::split_Horizontal()
 
    QBoxLayout *layout = new QVBoxLayout();
    layout->addWidget(m_splitTitle);
-   layout->addWidget(split_textEdit);
+   layout->addWidget(m_split_textEdit);
    layout->addLayout(buttonLayout);
 
    m_bottomWidget->setLayout(layout);
@@ -80,16 +83,15 @@ void MainWindow::split_Horizontal()
    m_splitter->setOrientation(Qt::Horizontal);        // Difference Here
    m_splitter->addWidget(m_bottomWidget);
 
-   // (2)
+   // BROOM
    split_Title();
 
-   // (3) this->moveBar(), based on tabwidget must do by hand
-   split_MoveBar();
+   moveBar();
 
    //
-   connect(split_textEdit->document(), SIGNAL(contentsChanged()),       this, SLOT(split_Title()));
-   connect(split_textEdit,             SIGNAL(cursorPositionChanged()), this, SLOT(split_MoveBar()));
-   connect(closeButton,                SIGNAL(clicked()),               this, SLOT(bottomClose()));
+   connect(m_split_textEdit->document(), SIGNAL(contentsChanged()),       this, SLOT(split_Title()));
+   connect(m_split_textEdit,             SIGNAL(cursorPositionChanged()), this, SLOT(moveBar()));
+   connect(closeButton,                  SIGNAL(clicked()),               this, SLOT(bottomClose()));
 }
 
 void MainWindow::split_Vertical()
@@ -99,25 +101,28 @@ void MainWindow::split_Vertical()
       bottomClose();
    }
 
-   split_textEdit = new DiamondTextEdit(this, m_struct, m_spellCheck);
-   m_splitName    = m_curFile;
+   m_split_textEdit = new DiamondTextEdit(this, m_struct, m_spellCheck);
+   m_splitName      = m_curFile;
 
    // sync documents
-   split_textEdit->setDocument(m_textEdit->document());
+   m_split_textEdit->setDocument(m_textEdit->document());
 
    // (1) this->setScreenColors(), based on tabwidget must do by hand
-   if (split_textEdit->get_ColumnMode()) {
-      split_textEdit->setFont(m_struct.fontColumn);
+   if (m_split_textEdit->get_ColumnMode()) {
+      m_split_textEdit->setFont(m_struct.fontColumn);
    } else {
-      split_textEdit->setFont(m_struct.fontNormal);
+      m_split_textEdit->setFont(m_struct.fontNormal);
    }
 
-   QPalette temp = split_textEdit->palette();
+   QPalette temp = m_split_textEdit->palette();
    temp.setColor(QPalette::Text, m_struct.colorText);
    temp.setColor(QPalette::Base, m_struct.colorBack);
-   split_textEdit->setPalette(temp);
+   m_split_textEdit->setPalette(temp);
 
    m_isSplit = true;
+
+   // hold for reference
+   m_textEdit = m_split_textEdit;
 
    //
    m_bottomWidget = new QFrame(this);
@@ -139,7 +144,7 @@ void MainWindow::split_Vertical()
 
    QBoxLayout *layout = new QVBoxLayout();
    layout->addWidget(m_splitTitle);
-   layout->addWidget(split_textEdit);
+   layout->addWidget(m_split_textEdit);
    layout->addLayout(buttonLayout);
 
    m_bottomWidget->setLayout(layout);
@@ -147,23 +152,22 @@ void MainWindow::split_Vertical()
    m_splitter->setOrientation(Qt::Vertical);          // Difference Here
    m_splitter->addWidget(m_bottomWidget);
 
-   // (2)
+   // BROOM
    split_Title();
 
-   // (3) this->moveBar(), based on tabwidget must do by hand
-   split_MoveBar();
+   moveBar();
 
-   connect(split_textEdit->document(), SIGNAL(contentsChanged()),       this, SLOT(split_Title()));
-   connect(split_textEdit,             SIGNAL(cursorPositionChanged()), this, SLOT(split_MoveBar()));
-   connect(closeButton,                SIGNAL(clicked()),               this, SLOT(bottomClose()));
+   connect(m_split_textEdit->document(), SIGNAL(contentsChanged()),       this, SLOT(split_Title()));
+   connect(m_split_textEdit,             SIGNAL(cursorPositionChanged()), this, SLOT(moveBar()));
+   connect(closeButton,                  SIGNAL(clicked()),               this, SLOT(bottomClose()));
 }
 
 void MainWindow::sideClose()
 {
    // this method is not used
 
-   disconnect(split_textEdit->document(), SIGNAL(contentsChanged()),       this, SLOT(split_Title()));
-   disconnect(split_textEdit,             SIGNAL(cursorPositionChanged()), this, SLOT(split_MoveBar()));
+   disconnect(m_split_textEdit->document(), SIGNAL(contentsChanged()),       this, SLOT(split_Title()));
+   disconnect(m_split_textEdit,             SIGNAL(cursorPositionChanged()), this, SLOT(moveBar()));
 
    m_sideWidget->deleteLater();
    m_isSplit = false;
@@ -171,9 +175,9 @@ void MainWindow::sideClose()
 
 void MainWindow::bottomClose()
 {
-   disconnect(split_textEdit->document(), SIGNAL(contentsChanged()),       this, SLOT(split_Title()));
-   disconnect(split_textEdit,             SIGNAL(cursorPositionChanged()), this, SLOT(split_MoveBar()));
-   // disconnect(closeButton,             SIGNAL(clicked()),               this, SLOT(bottomClose()));
+   disconnect(m_split_textEdit->document(), SIGNAL(contentsChanged()),       this, SLOT(split_Title()));
+   disconnect(m_split_textEdit,             SIGNAL(cursorPositionChanged()), this, SLOT(moveBar()));
+   // disconnect(closeButton,               SIGNAL(clicked()),               this, SLOT(bottomClose()));
 
    m_bottomWidget->deleteLater();
    m_isSplit = false;
@@ -182,7 +186,7 @@ void MainWindow::bottomClose()
 void MainWindow::split_Title()
 {       
    QString modified = "";
-   if (split_textEdit->document()->isModified()) {
+   if (m_split_textEdit->document()->isModified()) {
       modified = " *";
    }
 
@@ -190,11 +194,4 @@ void MainWindow::split_Title()
    QString title = "Diamond Editor " + temp + " " + m_splitName + modified;
 
    m_splitTitle->setText(title);
-}
-
-void MainWindow::split_MoveBar()
-{
-   m_fromSplit = true;
-   moveBar();
-   m_fromSplit = false;
 }

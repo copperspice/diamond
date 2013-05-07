@@ -90,12 +90,14 @@ class MainWindow : public QMainWindow
       Ui::MainWindow *m_ui;      
 
       // textEdit
-      DiamondTextEdit *m_textEdit;
+      DiamondTextEdit *m_textEdit;      
       QTabWidget *m_tabWidget;
       QString m_curFile;
 
       // split
-      DiamondTextEdit *split_textEdit;
+      DiamondTextEdit *m_split_textEdit;
+      DiamondTextEdit *m_noSplit_textEdit;
+
       QSplitter *m_splitter;
       QLabel *m_splitTitle;
       QFrame *m_sideWidget;
@@ -103,9 +105,8 @@ class MainWindow : public QMainWindow
 
       QString m_splitName;
       bool m_isSplit;
-      bool m_fromSplit;
 
-      //      
+      // arg
       void autoLoad();
       void argLoad(QList<QString> argList);
       QStringList m_openedFiles;
@@ -116,6 +117,10 @@ class MainWindow : public QMainWindow
       SyntaxTypes m_syntaxEnum;
       Syntax *m_syntaxParser;
       void runSyntax(QString synFName);
+
+      // tab stops
+      QList<int> m_tabStops;
+      void setUpTabStops();
 
       // find
       QString m_findText;
@@ -279,6 +284,8 @@ class MainWindow : public QMainWindow
       QString suffixName() const;   
 
    private slots:
+      void focusChanged(QWidget *, QWidget *);
+
       void newFile();
       void mw_open();
       void close_Doc();
@@ -411,10 +418,9 @@ class MainWindow : public QMainWindow
       void openTab_Select();
 
       // split
-      void split_Title();
-      void split_MoveBar();
+      void split_Title();     
       void sideClose();
-      void bottomClose();
+      void bottomClose();         
 
    public slots:
       // indent

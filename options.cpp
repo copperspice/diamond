@@ -178,6 +178,9 @@ void MainWindow::setOptions()
       if ( m_struct.tabSpacing != options.tabSpacing)  {
          m_struct.tabSpacing = options.tabSpacing;
          json_Write(TAB_SPACING);
+
+         // update tab stops
+         this->setUpTabStops();
       }
 
       if ( m_struct.useSpaces != options.useSpaces)  {
