@@ -1,0 +1,51 @@
+{
+	"classes": [
+        "\\$\\{[^\\}]*\\}"
+	],
+	"comment-multi-start": "(?!E)E",
+    "comment-multi-end": "(?!E)E",
+    "comment-single": "//[^\n]*",
+	"functions": [
+        "\\bBrandingText\\b",
+        "\\bCaption\\b",
+        "\\bCopyFiles\\b",
+        "\\bCreateDirectory\\b",
+        "\\bCreateShortCut\\b",
+        "\\bDelete\\b",
+        "\\bEnableWindow\\b",
+        "\\bExec\\b",
+        "\\bFile\\b",
+        "\\bGetDlgItem\\b",
+        "\\bIcon\\b",
+        "\\bIfFileExists\\b",
+        "\\bInstallDir\\b",
+        "\\bIntOp\\b",
+        "\\bMessageBox\\b",
+        "\\bName\\b",
+        "\\bOutFile\\b",
+        "\\bPage\\b",
+        "\\bPop\\b",
+        "\\bPush\\b",
+        "\\bRegDLL\\b",
+        "\\bRequestExecutionLevel\\b",
+        "\\bSectionGetSize\\b",
+        "\\bSetFileAttributes\\b",
+        "\\bSetFont\\b",
+        "\\bSetOverwrite\\b",
+        "\\bStrCpy\\b",
+        "\\bStrLen\\b",
+        "\\bVar\\b"
+   	],
+	"ignore-case" : true,
+    "keywords": [
+        "!define\\b",
+        "!include\\b",
+        "!insertmacro\\b",
+        "\\bFunction\\b",
+        "\\bFunctionEnd\\b",
+        "\\bSection\\b",
+        "\\bSectionEnd\\b"
+    ],
+   	"types": [
+   	] 
+}

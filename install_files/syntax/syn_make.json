@@ -1,0 +1,64 @@
+{
+	"classes": [
+        "\\bAM_CXXFLAGS\\b",
+        "\\bdeploy_PROGRAMS\\b",
+        "\\binstall-exec-hook\\b",
+        "\\bnoinst_HEADERS\\b",
+        "\\bVPATH\\b"
+	],
+	"comment-multi-start": "(?!E)E",
+    "comment-multi-end": "(?!E)E",
+    "comment-single": "#[^\n]*",
+	"functions": [
+      	"\\bcall\\b",
+        "\\bsubst\\b",
+        "\\bpatsubst\\b",
+        "\\bstrip\\b",
+        "\\bfindstring\\b",
+        "\\bfilter\\b",
+        "\\bfilter-out\\b",
+        "\\bsort\\b",
+        "\\bword\\b",
+        "\\bwordlist\\b",
+        "\\bwords\\b",
+        "\\bfirstword\\b",
+        "\\blastword\\b",
+        "\\bdir\\b",
+        "\\bnotdir\\b",
+        "\\bsuffix\\b",
+        "\\bbasename\\b",
+        "\\baddsuffix\\b",
+        "\\baddprefix\\b",
+        "\\bjoin\\b",
+        "\\bwildcard\\b",
+        "\\brealpath\\b",
+        "\\babspath\\b",
+        "\\bif\\b",
+        "\\bor\\b",
+        "\\band\\b",
+        "\\bforeach\\b",
+        "\\bvalue\\b",
+        "\\beval\\b",
+        "\\borigin\\b",
+        "\\bflavor\\b",
+        "\\bshell\\b",
+        "\\berror\\b",
+        "\\bwarning\\b",
+        "\\binfo\\b"	
+   	],
+	"ignore-case" : true,
+	"keywords": [     
+	    "^\\s*-?include\\b",
+        "\\bdefine\\b",
+        "\\belse\\b",
+        "\\bendif\\b",
+        "\\bifdef\\b",
+        "\\bifeq\\b",
+        "\\bifndef\\b",
+        "\\bifneq\\b"
+   	],
+   	"types": [
+        "\\$\\([^ )]+\\)"
+   	] 
+}
+
