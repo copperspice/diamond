@@ -68,7 +68,7 @@ void MainWindow::setSyntax()
       delete m_syntaxParser;
 
       m_syntaxParser = 0;
-      m_textEdit->set_SyntaxParser(m_syntaxParser);
+      m_textEdit->set_SyntaxParser(0);
    }
 
    QString fname  = "";
@@ -278,6 +278,6 @@ void MainWindow::runSyntax(QString synFName)
 
    if ( m_syntaxParser->processSyntax() ) {
       m_textEdit->set_SyntaxParser(m_syntaxParser);
-   }
+   } 
 }
 

@@ -312,26 +312,25 @@ void MainWindow::setCurrentTitle(const QString &fileName, bool tabChange)
       forceSyntax(SYN_TEXT);
 
    } else {
-      // loading an existing file
+      // loading existing file
 
       m_curFile = fileName;
       showName  = m_curFile;
 
       setStatus_FName(m_curFile);
 
+      // change the name on the tab to m_curFile
+      int index = m_tabWidget->currentIndex();
+
+      m_tabWidget->setTabText(index, strippedName(m_curFile));
+      m_tabWidget->setTabWhatsThis(index, m_curFile);
+
+      if (! m_rf_List.contains(m_curFile) ) {
+         rf_Update();
+      }
+
       if (! tabChange)  {
-
-         // change the name on the tab to m_curFile
-         int index = m_tabWidget->currentIndex();
-
-         m_tabWidget->setTabText(index, strippedName(m_curFile) );
-         m_tabWidget->setTabWhatsThis(index, m_curFile);
-
          setSyntax();
-
-         if (! m_rf_List.contains(m_curFile) ) {
-            rf_Update();
-         }
       }
    }
 

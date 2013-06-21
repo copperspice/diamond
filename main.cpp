@@ -68,8 +68,16 @@ int main(int argc, char *argv[])
 
          retval = app.exec();
 
-      } catch (std::exception &e) {
+      } catch (std::exception &e) {        
+         QString errMsg = QString("Exception:  %1").arg(e.what());
 
+         //
+         QMessageBox msgB;
+         msgB.setIcon(QMessageBox::NoIcon);
+
+         msgB.setWindowTitle("Diamond Editor - Issue");
+         msgB.setText(errMsg);
+         msgB.exec();
       }
    }
 

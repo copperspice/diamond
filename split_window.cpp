@@ -52,7 +52,7 @@ void MainWindow::split_Horizontal()
 
    m_isSplit = true;
 
-   // hold for reference
+   // copy to real edit
    m_textEdit = m_split_textEdit;
 
    //
@@ -164,13 +164,7 @@ void MainWindow::split_Vertical()
 
 void MainWindow::sideClose()
 {
-   // this method is not used
-
-   disconnect(m_split_textEdit->document(), SIGNAL(contentsChanged()),       this, SLOT(split_Title()));
-   disconnect(m_split_textEdit,             SIGNAL(cursorPositionChanged()), this, SLOT(moveBar()));
-
-   m_sideWidget->deleteLater();
-   m_isSplit = false;
+   // this method is not used, always using bottomClose()
 }
 
 void MainWindow::bottomClose()
@@ -180,7 +174,13 @@ void MainWindow::bottomClose()
    // disconnect(closeButton,               SIGNAL(clicked()),               this, SLOT(bottomClose()));
 
    m_bottomWidget->deleteLater();
+
+   m_split_textEdit = 0;
    m_isSplit = false;
+
+   // set focus to the current tab
+   QWidget *temp = m_tabWidget->currentWidget();
+   temp->setFocus();
 }
 
 void MainWindow::split_Title()

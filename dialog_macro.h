@@ -35,12 +35,12 @@ class Dialog_Macro : public QDialog
    Q_OBJECT
 
    public:
-      enum MacroEnum { MACRO_LOAD, MACRO_SELECT, MACRO_EDITNAMES };
+      enum MacroEnum { MACRO_LOAD, MACRO_SAVE, MACRO_EDITNAMES };
 
       Dialog_Macro(MainWindow *from, MacroEnum enumValue, QStringList macroIds, QStringList macroNames);
       ~Dialog_Macro();
       QString get_Macro();
-      static const int MACRO_MAX_COUNT = 2;
+      static const int MACRO_MAX_COUNT = 4;
 
    private:
       Ui::Dialog_Macro *m_ui;

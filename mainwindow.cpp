@@ -63,8 +63,11 @@ MainWindow::MainWindow(QStringList fileList, QStringList flagList)
    setCentralWidget(m_splitter);
 
    connect(qApp, SIGNAL(focusChanged(QWidget *, QWidget *)), this, SLOT(focusChanged(QWidget *, QWidget *)));
+   m_split_textEdit = 0;
+   m_isSplit        = false;
 
-   m_isSplit = false;
+   // macros
+   m_record = false;
 
    // screen setup
    createShortCuts(true);
@@ -179,7 +182,7 @@ void MainWindow::close_Doc()
 
    if (okClose) {
       // update open tab list
-      openTab_Delete();
+      openTab_Delete();    
 
       m_textEdit->clear();
       setCurrentTitle("");
@@ -218,7 +221,6 @@ bool MainWindow::closeAll_Doc()
             if (m_tabWidget->count() == 1) {
                // do not remove !
                m_textEdit->clear();
-
                setCurrentTitle("");
 
             } else {
@@ -309,7 +311,7 @@ bool MainWindow::saveAs(bool isSaveOne)
       retval = saveFile(fileName, isSaveOne);
 
       if (retval) {
-         setCurrentTitle(fileName, false);
+         setCurrentTitle(fileName);
 
          if (m_isSplit) {
             split_Title();
@@ -1271,7 +1273,7 @@ void MainWindow::deleteEOL_Spaces()
 // ** tools
 void MainWindow::mw_macroStart()
 {
-   if ( ! m_record ) {
+   if (! m_record) {
       m_record = true;
       m_textEdit->macroStart();
 
@@ -1281,14 +1283,18 @@ void MainWindow::mw_macroStart()
 
 void MainWindow::mw_macroStop()
 {
-   if ( m_record ) {
+   if (m_record) {
       m_record = false;
       m_textEdit->macroStop();
 
       // save macro
       json_Write(MACRO);
 
-      setStatusBar(tr("Macro recorded"), 1000);
+      setStatusBar(tr("Macro recorded"), 1200);
+
+   } else {
+      setStatusBar(tr("No recording in progress"), 1200);
+
    }
 }
 
@@ -1420,14 +1426,15 @@ void MainWindow::mw_tabClose()
 }
 
 void MainWindow::tabClose(int index)
-{   
-   QWidget *temp = m_tabWidget->widget(index);
+{
+   m_tabWidget->setCurrentIndex(index);
+   QWidget *temp = m_tabWidget->widget(index);   
 
-   DiamondTextEdit *textEdit;
-   textEdit = dynamic_cast<DiamondTextEdit *>(temp);
+   DiamondTextEdit *t_textEdit;
+   t_textEdit = dynamic_cast<DiamondTextEdit *>(temp);
 
-   if (textEdit) {
-      m_textEdit = textEdit;     
+   if (t_textEdit) {
+      m_textEdit = t_textEdit;
       m_curFile  = this->get_curFileName(index);
 
       bool okClose = querySave();
@@ -1466,10 +1473,10 @@ void MainWindow::tabChanged(int index)
       m_textEdit = textEdit;
 
       // hold for reference
-      m_noSplit_textEdit = m_textEdit;
+      m_noSplit_textEdit = m_textEdit;           
 
       m_curFile = this->get_curFileName(index);
-      this->setCurrentTitle(m_curFile);
+      this->setCurrentTitle(m_curFile, true);
 
       // ** retrieve slected syntax type
       m_syntaxParser = m_textEdit->get_SyntaxParser();
@@ -1497,11 +1504,11 @@ void MainWindow::focusChanged(QWidget *old, QWidget *current)
       return;
    }
 
-   DiamondTextEdit *textEdit;
-   textEdit = dynamic_cast<DiamondTextEdit *>(current);
+   DiamondTextEdit *t_textEdit;
+   t_textEdit = dynamic_cast<DiamondTextEdit *>(current);
 
-   if (textEdit)  {
-      m_textEdit = textEdit;
+   if (t_textEdit)  {
+      m_textEdit = t_textEdit;
    }
 }
 

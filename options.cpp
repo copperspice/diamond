@@ -25,7 +25,9 @@
 #include "dialog_print_opt.h"
 #include "mainwindow.h"
 
+#include <QBoxLayout>
 #include <QFontDialog>
+#include <QLabel>
 
 // **settings
 void MainWindow::setColors()
@@ -39,6 +41,28 @@ void MainWindow::setColors()
    int result = dw->exec();
 
    if (result == QDialog::Accepted) {
+
+      QDialog tDialog(this);
+      tDialog.setWindowTitle("Diamond Settings");
+      tDialog.setModal(false);
+      tDialog.resize(335,100);
+
+      QLabel *label = new QLabel;
+      label->setAlignment(Qt::AlignCenter);
+      label->setFrameStyle(QFrame::Box | QFrame::Raised);
+      label->setLineWidth(0);
+      label->setMidLineWidth(1);
+      label->setText("Updating colors for each Tab. Please Wait...");
+
+      QFont font = label->font();
+      font.setPointSize(11);
+      label->setFont(font);
+
+      QBoxLayout *layout = new QVBoxLayout();      
+      layout->addWidget(label);
+      tDialog.setLayout(layout);
+
+      showDialog(tDialog);
 
       if (m_struct.showLineHighlight)  {
          // clear the old highlight first
@@ -68,7 +92,7 @@ void MainWindow::setColors()
       // get saved value
       QString synFName = m_textEdit->get_SyntaxFile();
 
-      // run for every tab
+      // change colors for  every tab
       DiamondTextEdit *cur_textEdit  = m_textEdit;
       int count = m_tabWidget->count();
 
@@ -76,11 +100,10 @@ void MainWindow::setColors()
       DiamondTextEdit *textEdit;
 
       for (int k = 0; k < count; ++k)  {
-
          temp     = m_tabWidget->widget(k);
          textEdit = dynamic_cast<DiamondTextEdit *>(temp);
 
-         if (textEdit) {
+         if (textEdit) {        
             m_textEdit = textEdit;
 
             // get saved value
@@ -94,8 +117,11 @@ void MainWindow::setColors()
       // reassign current tab
       m_textEdit = cur_textEdit;
 
-      // for this tab only, updated every time we change tabs
-      moveBar();
+      // for this tab only, it is updated every tab change
+      moveBar();   
+
+      // all done
+      tDialog.close();
    }
 
    delete dw;

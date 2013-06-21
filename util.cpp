@@ -21,6 +21,9 @@
 
 #include "util.h"
 
+#include <QApplication>
+#include <QDialog>
+
 void csMsg(const QString &msg)
 {
    QMessageBox msgB;
@@ -65,9 +68,15 @@ void csError(QString title, QString msg)
    msgB.exec();
 }
 
+void showDialog(QDialog &t_Dialog)
+{
+   t_Dialog.show();
+   t_Dialog.raise();
+   t_Dialog.activateWindow();
+
+   QApplication::processEvents();
+}
 
 
 //   printf("%s\n",  qPrintable(string) );
-
-
 

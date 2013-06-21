@@ -256,7 +256,7 @@ bool MainWindow::json_Read()
 
       // macro names
       list = object.value("macro-names").toArray();
-      cnt = list.count();
+      cnt  = list.count();
 
       for (int k = 0; k < cnt; k++)  {
          m_macroNames.append(list.at(k).toString());
@@ -538,12 +538,12 @@ bool MainWindow::json_Write(Option route)
                   // increment next macro name
                   int id = macroName.right(1).toInt() + 1;
 
-                  if (id > Dialog_Macro::MACRO_MAX_COUNT )  {
+                  if (id > Dialog_Macro::MACRO_MAX_COUNT)  {
 
                      QStringList macroIds = json_Load_MacroIds();
 
                      // select macro id to overwrite
-                     Dialog_Macro *dw = new Dialog_Macro(this, Dialog_Macro::MACRO_SELECT, macroIds, m_macroNames);
+                     Dialog_Macro *dw = new Dialog_Macro(this, Dialog_Macro::MACRO_SAVE, macroIds, m_macroNames);
                      int result = dw->exec();
 
                      if (result == QDialog::Accepted) {

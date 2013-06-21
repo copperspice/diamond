@@ -9,13 +9,13 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>375</width>
-    <height>349</height>
+    <width>400</width>
+    <height>374</height>
    </rect>
   </property>
   <property name="minimumSize">
    <size>
-    <width>375</width>
+    <width>400</width>
     <height>0</height>
    </size>
   </property>
@@ -35,7 +35,7 @@
    <property name="rightMargin">
     <number>13</number>
    </property>
-   <item row="4" column="1" colspan="3">
+   <item row="6" column="1" colspan="3">
     <layout class="QHBoxLayout" name="horizontalLayout_101">
      <item>
       <spacer name="horizontalSpacer_100">
@@ -118,6 +118,22 @@
      </item>
     </layout>
    </item>
+   <item row="5" column="1">
+    <spacer name="verticalSpacer_3">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeType">
+      <enum>QSizePolicy::Fixed</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>20</width>
+       <height>15</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
    <item row="1" column="1">
     <spacer name="verticalSpacer">
      <property name="orientation">
@@ -134,36 +150,64 @@
      </property>
     </spacer>
    </item>
-   <item row="3" column="1">
-    <spacer name="verticalSpacer_3">
-     <property name="orientation">
-      <enum>Qt::Vertical</enum>
-     </property>
-     <property name="sizeType">
-      <enum>QSizePolicy::Fixed</enum>
-     </property>
-     <property name="sizeHint" stdset="0">
+   <item row="0" column="1" colspan="3">
+    <widget class="QTableView" name="tableView"/>
+   </item>
+   <item row="3" column="1" colspan="3">
+    <widget class="QFrame" name="frame">
+     <property name="minimumSize">
       <size>
-       <width>20</width>
-       <height>15</height>
+       <width>0</width>
+       <height>5</height>
       </size>
      </property>
-    </spacer>
+     <property name="frameShape">
+      <enum>QFrame::HLine</enum>
+     </property>
+     <property name="frameShadow">
+      <enum>QFrame::Plain</enum>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="1" colspan="3">
+    <widget class="QLabel" name="msg2">
+     <property name="minimumSize">
+      <size>
+       <width>0</width>
+       <height>0</height>
+      </size>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>11</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>Additional Information supplied at run time...</string>
+     </property>
+     <property name="wordWrap">
+      <bool>true</bool>
+     </property>
+    </widget>
    </item>
    <item row="2" column="1" colspan="3">
     <widget class="QLabel" name="msg1">
+     <property name="minimumSize">
+      <size>
+       <width>0</width>
+       <height>0</height>
+      </size>
+     </property>
      <property name="font">
       <font>
-       <pointsize>10</pointsize>
+       <pointsize>11</pointsize>
       </font>
      </property>
      <property name="lineWidth">
       <number>1</number>
      </property>
      <property name="text">
-      <string>All macros contain information. Highlight (not real text)
-
-Clicking Cancel will not save the macro.</string>
+      <string>Edit the text in the 'Macro Name' column to change the macro name. Supplied at runtime...</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
@@ -172,9 +216,6 @@ Clicking Cancel will not save the macro.</string>
       <bool>true</bool>
      </property>
     </widget>
-   </item>
-   <item row="0" column="1" colspan="3">
-    <widget class="QTableView" name="tableView"/>
    </item>
   </layout>
  </widget>

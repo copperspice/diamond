@@ -64,18 +64,23 @@ Dialog_Macro::~Dialog_Macro()
 
 void Dialog_Macro::initData()
 {   
-   QString msg = "Click on the text in the 'Macro Name' column to change the name.\n\n"
-                 "Click 'View Macro' to view the contents of the highlighted macro.\n\n";
+   QString msg1 = "Edit the text in the 'Macro Name' column to change the macro name.\n\n"
+                  "'View Macro' will display the contents of the highlighted macro.";
+
+   QString msg2 = "";
 
    if (m_enum == MACRO_LOAD) {
       setWindowTitle("Load Macro");
-      msg += "Highlight and click 'Select' to load the Macro for playback.";
+      msg2 += "Highlight a macro name, then press 'Select' to load the Macro for playback.";
 
-   } else if (m_enum == MACRO_SELECT)  {
-      setWindowTitle("Select Macro");
-      msg += "All macros contain information. Highlight and click 'Select' to overwrite an existing macro.\n\n"
-             "If 'Cancel' is clicked, the macro will not be saved. The macro can be run, however it will not be "
-             "possible to load or edit this macro later on.";
+   } else if (m_enum == MACRO_SAVE)  {
+      m_ui->select_PB->setText("Save");
+      setWindowTitle("Save Macro");
+
+      msg2 += "All macros are being used.\n"
+              "Highlight a macro name, then press 'Save' to overwrite the existing macro.\n\n"
+              "Pressing 'Cancel' will not save the macro for future loading.\n"
+              "This macro can be run until a new macro is recoreded or loaded.";
 
    } else if (m_enum == MACRO_EDITNAMES) {
       m_ui->select_PB->setDisabled(true);
@@ -83,7 +88,8 @@ void Dialog_Macro::initData()
 
    }
 
-   m_ui->msg1->setText(msg);
+   m_ui->msg1->setText(msg1);
+   m_ui->msg2->setText(msg2);
 }
 
 void Dialog_Macro::setUpView()
