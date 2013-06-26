@@ -45,12 +45,16 @@ class Dialog_Replace : public QDialog
 
       bool get_Case();
       bool get_WholeWords();
+      bool get_Upd_Find();
+      bool get_Upd_Replace();
 
    private:
       Ui::Dialog_Replace *m_ui;
       QStringList m_findList;
       QStringList m_replaceList;
       void setUp();
+      bool m_upd_Find;
+      bool m_upd_Replace;
 
    private slots:
       void replace();

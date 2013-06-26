@@ -246,7 +246,7 @@ bool MainWindow::json_Read()
          m_findList.append(list.at(k).toString());
       }
 
-      // find list
+      // replace list
       list = object.value("replace-list").toArray();
       cnt  = list.count();
 
@@ -357,7 +357,6 @@ bool MainWindow::json_Write(Option route)
             break;
 
          case CLOSE:
-
             object.insert("pos-x",       pos().x()  );
             object.insert("pos-y",       pos().y()  );
             object.insert("size-width",  size().width()  );
@@ -393,6 +392,13 @@ bool MainWindow::json_Write(Option route)
             object.insert("dictUser", m_struct.dictUser);
             break;
 
+         case FIND_LIST:
+            {
+               QJsonArray temp = QJsonArray::fromStringList(m_findList);
+               object.insert("find-list", temp);              
+               break;
+            }                       
+
          case FIND_REPLACE:
             {
                QJsonArray temp = QJsonArray::fromStringList(m_findList);
@@ -401,7 +407,7 @@ bool MainWindow::json_Write(Option route)
                temp = QJsonArray::fromStringList(m_replaceList);
                object.insert("replace-list", temp);
                break;
-            }                       
+            }
 
          case FONT:           
             {
@@ -505,7 +511,6 @@ bool MainWindow::json_Write(Option route)
             break;
 
          case MACRO:
-
             {
                QList<QKeyEvent *> eventList;
                eventList = m_textEdit->get_MacroKeyList();
@@ -1248,6 +1253,11 @@ void MainWindow::move_ConfigFile()
 
          break;
    }
+}
+
+void MainWindow::save_ConfigFile()
+{
+   json_Write(CLOSE);
 }
 
 // **

@@ -34,6 +34,8 @@ Dialog_Replace::Dialog_Replace(QString findText, QStringList findList,
 {
    m_findList    = findList;
    m_replaceList = replaceList;
+   m_upd_Find    = false;
+   m_upd_Replace = false;
 
    m_ui->setupUi(this);
    this->setUp();
@@ -103,12 +105,16 @@ void Dialog_Replace::menu_clearList_F()
 {
    m_findList.clear();
    m_ui->find_Combo->clear();
+
+   m_upd_Find = true;
 }
 
 void Dialog_Replace::menu_clearList_R()
 {
    m_replaceList.clear();
    m_ui->replace_Combo->clear();
+
+   m_upd_Replace = true;
 }
 
 void Dialog_Replace::menu_deleteEntry_F()
@@ -175,7 +181,15 @@ bool Dialog_Replace::get_WholeWords()
    return m_ui->wholeWords_CKB->isChecked();
 }
 
+bool Dialog_Replace::get_Upd_Find()
+{
+   return m_upd_Find;
+}
 
+bool Dialog_Replace::get_Upd_Replace()
+{
+   return m_upd_Replace;
+}
 
 
 

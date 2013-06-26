@@ -49,7 +49,7 @@ void MainWindow::find()
       } else {
          m_findList.move(index,0);
       }
-      json_Write(FIND_REPLACE);
+      json_Write(FIND_LIST);
 
       // get the flags
       m_flags = 0;
@@ -76,6 +76,16 @@ void MainWindow::find()
             csError("Find", "Not found: " + m_findText);
          }
       }
+
+   } else {
+
+      bool upd_Find = dw->get_Upd_Find();
+
+      if (upd_Find)   {
+         m_findList = dw->get_findList();
+         json_Write(FIND_LIST);
+      }
+
    }
 
    delete dw;
@@ -447,6 +457,23 @@ void MainWindow::replace()
 
          }
       }
+
+   } else {
+
+      bool upd_Find    = dw->get_Upd_Find();
+      bool upd_Replace = dw->get_Upd_Replace();
+
+      if (upd_Find && ! upd_Replace)   {
+         m_findList = dw->get_findList();
+         json_Write(FIND_LIST);
+
+      } else if (upd_Replace)   {
+         m_findList    = dw->get_findList();
+         m_replaceList = dw->get_replaceList();
+
+         json_Write(FIND_REPLACE);
+      }
+
    }
 
    delete dw;

@@ -32,6 +32,7 @@ Dialog_Find::Dialog_Find(QString findText, QStringList findList)
    : m_ui(new Ui::Dialog_Find)
 {   
    m_findList = findList;
+   m_upd_Find = false;
 
    m_ui->setupUi(this);
    this->setUp();
@@ -81,6 +82,8 @@ void Dialog_Find::menu_clearList()
 {   
    m_findList.clear();
    m_ui->find_Combo->clear();
+
+   m_upd_Find = true;
 }
 
 void Dialog_Find::menu_deleteEntry()
@@ -90,6 +93,8 @@ void Dialog_Find::menu_deleteEntry()
 
    int index = m_ui->find_Combo->currentIndex();
    m_ui->find_Combo->removeItem(index);
+
+   m_upd_Find = true;
 }
 
 void Dialog_Find::Find()
@@ -98,7 +103,7 @@ void Dialog_Find::Find()
 }
 
 void Dialog_Find::Cancel()
-{
+{  
    this->done(0);
 }
 
@@ -129,4 +134,9 @@ bool Dialog_Find::get_Case()
 bool Dialog_Find::get_WholeWords()
 {
    return m_ui->wholeWords_CKB->isChecked();
+}
+
+bool Dialog_Find::get_Upd_Find()
+{
+   return m_upd_Find;
 }

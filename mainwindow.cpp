@@ -181,11 +181,17 @@ void MainWindow::close_Doc()
    bool okClose = querySave();
 
    if (okClose) {
+
+      if (m_isSplit && (m_splitName == m_curFile)) {
+         // close the split tab
+         this->bottomClose();
+      }
+
       // update open tab list
       openTab_Delete();    
 
       m_textEdit->clear();
-      setCurrentTitle("");
+      setCurrentTitle("");      
    }
 }
 
@@ -1440,6 +1446,12 @@ void MainWindow::tabClose(int index)
       bool okClose = querySave();
 
       if (okClose)  {
+
+         if (m_isSplit && (m_splitName == m_curFile)) {
+            // close the split tab
+            this->bottomClose();
+         }
+
          // update open tab list
          openTab_Delete();
 
@@ -1541,7 +1553,7 @@ void MainWindow::about()
    msgB.setWindowIcon(QIcon("://resources/diamond.png"));
 
    msgB.setWindowTitle(tr("About Diamond"));
-   msgB.setText(tr("<p style=margin-right:25><center><h5>Version: 1.0<br>Build # 05.1.2013</h5></center></p>"));
+   msgB.setText(tr("<p style=margin-right:25><center><h5>Version: 1.0<br>Build # 08.1.2013</h5></center></p>"));
    msgB.setInformativeText(textBody);
 
    msgB.setStandardButtons(QMessageBox::Ok);
@@ -1564,20 +1576,20 @@ void MainWindow::setScreenColors()
 void MainWindow::createConnections()
 {
    // file
-   connect(m_ui->actionNew,            SIGNAL(triggered()), this, SLOT(newFile()));
-   connect(m_ui->actionOpen,           SIGNAL(triggered()), this, SLOT(mw_open()));
-   connect(m_ui->actionClose,          SIGNAL(triggered()), this, SLOT(close_Doc()));
-   connect(m_ui->actionClose_All,      SIGNAL(triggered()), this, SLOT(closeAll_Doc()));
-   connect(m_ui->actionReload,         SIGNAL(triggered()), this, SLOT(reload()));
+   connect(m_ui->actionNew,               SIGNAL(triggered()), this, SLOT(newFile()));
+   connect(m_ui->actionOpen,              SIGNAL(triggered()), this, SLOT(mw_open()));
+   connect(m_ui->actionClose,             SIGNAL(triggered()), this, SLOT(close_Doc()));
+   connect(m_ui->actionClose_All,         SIGNAL(triggered()), this, SLOT(closeAll_Doc()));
+   connect(m_ui->actionReload,            SIGNAL(triggered()), this, SLOT(reload()));
 
-   connect(m_ui->actionSave,           SIGNAL(triggered()), this, SLOT(save()));
-   connect(m_ui->actionSave_As,        SIGNAL(triggered()), this, SLOT(saveAs()));
-   connect(m_ui->actionSave_All,       SIGNAL(triggered()), this, SLOT(saveAll()));
+   connect(m_ui->actionSave,              SIGNAL(triggered()), this, SLOT(save()));
+   connect(m_ui->actionSave_As,           SIGNAL(triggered()), this, SLOT(saveAs()));
+   connect(m_ui->actionSave_All,          SIGNAL(triggered()), this, SLOT(saveAll()));
 
-   connect(m_ui->actionPrint,          SIGNAL(triggered()), this, SLOT(print()));
-   connect(m_ui->actionPrint_Preview,  SIGNAL(triggered()), this, SLOT(printPreview()));
-   connect(m_ui->actionPrint_Pdf,      SIGNAL(triggered()), this, SLOT(printPdf()));
-   connect(m_ui->actionExit,           SIGNAL(triggered()), this, SLOT(close()));
+   connect(m_ui->actionPrint,             SIGNAL(triggered()), this, SLOT(print()));
+   connect(m_ui->actionPrint_Preview,     SIGNAL(triggered()), this, SLOT(printPreview()));
+   connect(m_ui->actionPrint_Pdf,         SIGNAL(triggered()), this, SLOT(printPdf()));
+   connect(m_ui->actionExit,              SIGNAL(triggered()), this, SLOT(close()));
 
    // edit
    connect(m_ui->actionUndo,              SIGNAL(triggered()), this, SLOT(mw_undo()));
@@ -1659,10 +1671,11 @@ void MainWindow::createConnections()
 
    // settings
    connect(m_ui->actionColors,            SIGNAL(triggered()), this, SLOT(setColors()));
-   connect(m_ui->actionFonts,             SIGNAL(triggered()), this, SLOT(setFont()));
-   connect(m_ui->actionMove_ConfigFile,   SIGNAL(triggered()), this, SLOT(move_ConfigFile()));
+   connect(m_ui->actionFonts,             SIGNAL(triggered()), this, SLOT(setFont()));  
    connect(m_ui->actionOptions,           SIGNAL(triggered()), this, SLOT(setOptions()));
    connect(m_ui->actionPrintOptions,      SIGNAL(triggered()), this, SLOT(setPrintOptions()));
+   connect(m_ui->actionMove_ConfigFile,   SIGNAL(triggered()), this, SLOT(move_ConfigFile()));
+   connect(m_ui->actionSave_ConfigFile,   SIGNAL(triggered()), this, SLOT(save_ConfigFile()));
 
    // window
    connect(m_ui->actionTab_New,           SIGNAL(triggered()), this, SLOT(tabNew()));
@@ -1850,7 +1863,7 @@ void MainWindow::createShortCuts(bool setupAll)
    m_ui->actionIndent_Incr->setShortcut(QKeySequence(struct_temp.key_indentIncr) );
    m_ui->actionIndent_Decr->setShortcut(QKeySequence(struct_temp.key_indentDecr) );
    m_ui->actionDelete_Line->setShortcut(QKeySequence(struct_temp.key_deleteLine) );
-   m_ui->actionDelete_EOL->setShortcut(QKeySequence(struct_temp.key_deleteEOL));
+   m_ui->actionDelete_EOL->setShortcut(QKeySequence(struct_temp.key_deleteEOL)   );
    m_ui->actionColumn_Mode->setShortcut(QKeySequence(struct_temp.key_columnMode) );
 
    // search
@@ -1861,8 +1874,14 @@ void MainWindow::createShortCuts(bool setupAll)
    m_ui->actionShow_Breaks->setShortcut(QKeySequence(struct_temp.key_show_Breaks) );
 
    // tools
-   m_ui->actionMacro_Play->setShortcut(QKeySequence(struct_temp.key_macroPlay) );
+   m_ui->actionMacro_Play->setShortcut(QKeySequence(struct_temp.key_macroPlay)   );
    m_ui->actionSpell_Check->setShortcut(QKeySequence(struct_temp.key_spellCheck) );
+
+/*
+   for ()  {
+   }
+*/
+
 }
 
 QString MainWindow::adjustKey(QString sequence)

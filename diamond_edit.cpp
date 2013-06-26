@@ -24,6 +24,7 @@
 
 #include <QtGui>
 #include <QLatin1Char>
+#include <QShortcutEvent>
 #include <Qt>
 
 const QColor FILL_COLOR = QColor(0xD0D0D0);
@@ -175,13 +176,35 @@ void DiamondTextEdit::contextMenuEvent(QContextMenuEvent *event)
       }
    }
 
-   menu->addAction("Undo",   this, SLOT(undo())  );
-   menu->addAction("Redo",   this, SLOT(redo())  );
+   QAction *test;
 
+   test = menu->addAction("Undo",   this, SLOT(undo())  );
+   if (! this->document()->isUndoAvailable() ) {
+      test->setDisabled(true);
+   }
+
+   test = menu->addAction("Redo",   this, SLOT(redo())  );
+   if (! this->document()->isRedoAvailable() ) {
+      test->setDisabled(true);
+   }
+
+   //
    menu->addSeparator();
-   menu->addAction("Cut",    this, SLOT(cut())   );
-   menu->addAction("Copy",   this, SLOT(copy())  );
-   menu->addAction("Paste",  this, SLOT(paste()) );
+
+   test = menu->addAction("Cut",    this, SLOT(cut())  );
+   if (! isSelected) {
+      test->setDisabled(true);
+   }
+
+   test = menu->addAction("Copy",   this, SLOT(copy())  );
+   if (! isSelected) {
+      test->setDisabled(true);
+   }
+
+   test = menu->addAction("Paste",  this, SLOT(paste()) );
+   //if (! this->document()->isPasteAvailable() ) {
+   //   test->setDisabled(true);
+   //}
 
    menu->addSeparator();
    menu->addAction("Delete Line",    m_mainWindow, SLOT(deleteLine()) );
@@ -252,6 +275,7 @@ void DiamondTextEdit::set_Spell(bool value)
 void DiamondTextEdit::set_ColumnMode(bool data)
 {
    m_isColumnMode = data;
+   m_mainWindow->changeFont();
 
    // reset
    colHighlight = false;
@@ -287,16 +311,7 @@ void DiamondTextEdit::mouseMoveEvent(QMouseEvent *event)
 void DiamondTextEdit::cut()
 {
    if (m_isColumnMode) {
-
-/*    QTextCursor cursor(this->textCursor());
-      cursor.beginEditBlock();
-
-      cursor.removeSelectedText();
-      this->setTextCursor(cursor);
-
-      cursor.endEditBlock();
-*/
-
+      // fix fter copy working
       QPlainTextEdit::cut();
 
    } else {
@@ -307,58 +322,36 @@ void DiamondTextEdit::cut()
 
 void DiamondTextEdit::copy()
 {
-   if (m_isColumnMode) {
-      // QTextCursor cursor( this->textCursor());
-      // QString text = cursor().selectedText();
+   if (m_isColumnMode) {     
 
+      QString text;
+      QList<QTextEdit::ExtraSelection> oldSelections = this->extraSelections();
+
+      for (int k = 0; k < oldSelections.size(); ++k) {
+
+         if (oldSelections[k].format.property(QTextFormat::UserProperty) != "highlightbar") {
+            text += oldSelections[k].cursor.selectedText() + "\n";
+         }
+      }
+
+      QApplication::clipboard()->setText(text);
+
+   } else {
       QPlainTextEdit::copy();
 
-   } else {     
-      QPlainTextEdit::copy();
    }
 }
 
 void DiamondTextEdit::paste()
 {
    if (m_isColumnMode) {
+      // adjust the columns
       QPlainTextEdit::paste();
 
    } else {
       QPlainTextEdit::paste();
 
    }
-}
-
-
-/*
-
-::copy()
-{
-   if ( !m_cursor.hasSelection() ) {
-      return;
-   }
-
-   QApplication::clipboard()->setText(m_cursor.selectedText());
-}
-
-::paste()
-{
-   const QMimeData *d = QApplication::clipboard()->mimeData();
-   if ( d ) {
-      insertFromMimeData(d);
-   }
-}
-
-   QClipboard *clip = QApplication::clipboard();
-   QString text = textCursor().selection().toPlainText();
-   data->setText(result);
-   clip->setMimeData(data);
-*/
-
-
-void DiamondTextEdit::showNotDone(QString item)
-{
-   csMsg( item + " - this feature has not been implemented.");
 }
 
 
@@ -390,143 +383,140 @@ void DiamondTextEdit::add_MacroEvent(QKeyEvent *event)
 // ** process key press
 bool DiamondTextEdit::event(QEvent *event)
 {
-   if (event->type() == QEvent::KeyPress) {
+   if (event->type() == QEvent::ShortcutOverride) {
 
       QKeyEvent *keyPressEvent = dynamic_cast<QKeyEvent *>(event);
 
       int key = keyPressEvent->key();
       int modifiers = keyPressEvent->modifiers();
 
-      if (key == Qt::Key_Tab && (modifiers == Qt::NoModifier) ) {
-
-         // reset
-         colHighlight = false;
-
-         if (m_record)  {
-            QKeyEvent *newEvent;
-            newEvent = new QKeyEvent(*keyPressEvent);
-
-            m_macroKeyList.append(newEvent);
-         }
-
-         m_mainWindow->indentIncr("tab");
-         return true;
-
-      } else if (key == Qt::Key_Backtab ||
-            (key == Qt::Key_Tab  && (modifiers == Qt::ShiftModifier)) ) {
-
-         // reset
-         colHighlight = false;
-
-         if (m_record)  {
-            QKeyEvent *newEvent;
-            newEvent = new QKeyEvent(*keyPressEvent);
-
-            m_macroKeyList.append(newEvent);
-         }
-
-         m_mainWindow->indentDecr("tab");
-         return true;
-/*
-
-      } else if (m_isColumnMode && (modifiers == Qt::ShiftModifier) &&
-            ( (key == Qt::Key_Up)   || (key == Qt::Key_Down) ||
-              (key == Qt::Key_Left) || (key == Qt::Key_Right)) ) {
-
-         QTextCursor cursor(this->textCursor());
-
-         if (! colHighlight) {
-            startRow = cursor.blockNumber()+1;
-            startCol = cursor.columnNumber();
-
-            endRow = startRow;
-            endCol = startCol;
-
-            colHighlight = true;
-         }
-
-         QColor textColor = QColor(Qt::white);
-         QColor backColor = QColor(Qt::red);
-
-         QList<QTextEdit::ExtraSelection> extraSelections;
-         QTextEdit::ExtraSelection selection;
-
-         QList<QTextEdit::ExtraSelection> oldSelections = this->extraSelections();
-
-         for (int k=0; k < oldSelections.size(); ++k) {
-
-            if (oldSelections[k].format.property(QTextFormat::UserProperty) == "highlightbar") {
-               extraSelections.append(oldSelections[k]);
-               break;
-            }
-         }
-
-         //
-         selection.format.setForeground(textColor);
-         selection.format.setBackground(backColor);
-
-         selection.cursor = cursor;
-
-         // **
-         if (key == Qt::Key_Up) {
-
-            --endRow;
-            selection.cursor.movePosition(QTextCursor::Start);
-            selection.cursor.movePosition(QTextCursor::Down, QTextCursor::MoveAnchor, startRow-1);
-
-            for(int k=startRow; k <= endRow; ++k)   {
-               selection.cursor.movePosition(QTextCursor::StartOfLine);
-               selection.cursor.movePosition(QTextCursor::Right, QTextCursor::KeepAnchor, endCol-startCol);
-
-               if (k < endRow) {
-                  extraSelections.append(selection);
-                  selection.cursor.movePosition(QTextCursor::Down,  QTextCursor::MoveAnchor, 1);
-               }
-            }
-
-         } else if (key == Qt::Key_Down)   {
-
-            ++endRow;
-
-            selection.cursor.movePosition(QTextCursor::Start);
-            selection.cursor.movePosition(QTextCursor::Down, QTextCursor::MoveAnchor, startRow-1);
-
-            for(int k=startRow; k <= endRow; ++k)   {
-               selection.cursor.movePosition(QTextCursor::StartOfLine);
-               selection.cursor.movePosition(QTextCursor::Right, QTextCursor::KeepAnchor, endCol-startCol);
-
-               if (k < endRow) {
-                  extraSelections.append(selection);
-                  selection.cursor.movePosition(QTextCursor::Down,  QTextCursor::MoveAnchor, 1);
-               }
-            }
-
-         } else if (key == Qt::Key_Right)   {
-
-            ++endCol;
-            selection.cursor.movePosition(QTextCursor::Right, QTextCursor::KeepAnchor, endCol-startCol);
-
-         } else if (key == Qt::Key_Left)   {
-
-            --endCol;
-            selection.cursor.movePosition(QTextCursor::Right, QTextCursor::KeepAnchor, endCol-startCol);
-
-         }
-
-         extraSelections.append(selection);
-         this->setExtraSelections(extraSelections);
-
-         // TEST
-         m_mainWindow->setStatus_FName2( QString::number(endRow) + "  " + QString::number(endCol));
-
-         return true;
-*/
-
+      if (modifiers == Qt::ControlModifier && (key == Qt::Key_A || key == Qt::Key_C)) {
+         // required to disable default selectAll() and copy()
+         return false;
       }
 
-   } else {
-      // reset
-      colHighlight = false;
+   } else if (event->type() == QEvent::KeyPress) {
+
+      QKeyEvent *keyPressEvent = dynamic_cast<QKeyEvent *>(event);
+
+      int key = keyPressEvent->key();
+      int modifiers = keyPressEvent->modifiers();
+
+      if (modifiers == Qt::ControlModifier && (key == Qt::Key_A || key == Qt::Key_C)) {
+         // required to disable default selectAll() and copy()
+         return false;
+      }
+
+      if (m_isColumnMode) {
+
+         if (modifiers == Qt::ShiftModifier &&
+              ((key == Qt::Key_Up) || (key == Qt::Key_Down) || (key == Qt::Key_Left) || (key == Qt::Key_Right)) ) {
+
+            QTextCursor cursor(this->textCursor());
+
+            if (! colHighlight) {
+               startRow = cursor.blockNumber()+1;
+               startCol = cursor.columnNumber();
+
+               endRow = startRow;
+               endCol = startCol;
+
+               colHighlight = true;
+            }
+
+            QColor textColor = QColor(Qt::white);
+            QColor backColor = QColor(Qt::red);
+
+            QList<QTextEdit::ExtraSelection> extraSelections;
+            QTextEdit::ExtraSelection selection;
+
+            QList<QTextEdit::ExtraSelection> oldSelections = this->extraSelections();
+
+            for (int k=0; k < oldSelections.size(); ++k) {
+               if (oldSelections[k].format.property(QTextFormat::UserProperty) == "highlightbar") {
+                  extraSelections.append(oldSelections[k]);
+                  break;
+               }
+            }
+
+            //
+            selection.format.setForeground(textColor);
+            selection.format.setBackground(backColor);
+            selection.cursor = cursor;
+
+            // **
+            if (key == Qt::Key_Up) {
+               --endRow;
+
+               // from the start of the document go to startRow
+               selection.cursor.movePosition(QTextCursor::Start);
+               selection.cursor.movePosition(QTextCursor::Down, QTextCursor::MoveAnchor, startRow-1);
+
+            } else if (key == Qt::Key_Down)   {
+               ++endRow;
+
+               // from the start of the document go to startRow
+               selection.cursor.movePosition(QTextCursor::Start);
+               selection.cursor.movePosition(QTextCursor::Down, QTextCursor::MoveAnchor, startRow-1);
+
+
+            } else if (key == Qt::Key_Right)   {
+               ++endCol;
+
+               if (endCol-startCol > 0) {
+                  selection.cursor.movePosition(QTextCursor::Right, QTextCursor::KeepAnchor, endCol-startCol);
+
+                  int x1 = selection.cursor.selectionEnd();
+                  int x2 = cursor.block().position() + cursor.block().length();
+
+                  if (x1 == x2) {
+                     // back it up
+                     --endCol;
+                     selection.cursor.movePosition(QTextCursor::Left, QTextCursor::KeepAnchor, 1);
+                  }
+
+               } else {
+                  selection.cursor.movePosition(QTextCursor::Left, QTextCursor::KeepAnchor, startCol-endCol);
+               }
+
+            } else if (key == Qt::Key_Left)  {
+
+               if (endCol > 0) {
+                  --endCol;
+               }
+
+               if (startCol-endCol > 0) {
+                  selection.cursor.movePosition(QTextCursor::Left, QTextCursor::KeepAnchor, startCol-endCol);
+               } else {
+                  selection.cursor.movePosition(QTextCursor::Right, QTextCursor::KeepAnchor, endCol-startCol);
+               }
+
+            }
+
+            // select until endRow, endCol
+            for (int k = startRow; k <= endRow; ++k)   {
+
+               selection.cursor.setPosition(selection.cursor.block().position() + startCol);
+               selection.cursor.movePosition(QTextCursor::Right, QTextCursor::KeepAnchor, endCol-startCol);
+
+               // need to save every line
+               extraSelections.append(selection);
+               selection.cursor.movePosition(QTextCursor::Down, QTextCursor::MoveAnchor, 1);
+            }
+
+
+            //  Note: If the selection obtained from an editor spans a line break, the text will contain a Unicode
+            //  U+2029 paragraph separator character instead of a newline \n character. Use QString::replace() to
+            //  replace these characters with newlines
+
+
+            extraSelections.append(selection);
+            this->setExtraSelections(extraSelections);
+
+            return true;
+         }
+      }
+
    }
 
    return QPlainTextEdit::event(event);
@@ -534,15 +524,42 @@ bool DiamondTextEdit::event(QEvent *event)
 
 void DiamondTextEdit::keyPressEvent(QKeyEvent *event)
 {
+   int key = event->key();
+   int modifiers = event->modifiers();
+
    if (m_record)  {
       QKeyEvent *newEvent;
       newEvent = new QKeyEvent(*event);
 
-      m_macroKeyList.append(newEvent);   
+      m_macroKeyList.append(newEvent);
+   }
+
+   // process keys
+   if (key == Qt::Key_Tab && (modifiers == Qt::NoModifier) ) {
+      m_mainWindow->indentIncr("tab");
+      return;
+
+   } else if (key == Qt::Key_Backtab || (key == Qt::Key_Tab  && (modifiers == Qt::ShiftModifier)) ) {
+      m_mainWindow->indentDecr("tab");
+      return;
+
    }
 
    // now call the parent
    QPlainTextEdit::keyPressEvent(event);
 }
 
+void DiamondTextEdit::keyReleaseEvent(QKeyEvent *event)
+{
+   // int key = event->key();
+   int modifiers = event->modifiers();
+
+   if (m_isColumnMode && ((modifiers & Qt::ShiftModifier) == 0) ) {
+      // shift key is not pressed, then reset
+      colHighlight = false;
+   }
+
+   // now call the parent
+   QPlainTextEdit::keyReleaseEvent(event);
+}
 

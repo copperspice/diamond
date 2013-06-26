@@ -81,6 +81,9 @@ class MainWindow : public QMainWindow
 
       void setStatus_FName2(QString name);
 
+      // fonts
+      void changeFont();
+
    protected:
       void closeEvent(QCloseEvent *event);
       void dragEnterEvent(QDragEnterEvent *event);
@@ -208,8 +211,8 @@ class MainWindow : public QMainWindow
       QLabel *m_statusMode;
       QLabel *m_statusName;    
 
-      enum Option { ABOUTURL, ADVFIND, AUTOLOAD, CLOSE, COLORS, COLUMN_MODE, DICT_MAIN, DICT_USER, FIND_REPLACE, FONT,
-                    FORMAT_DATE, FORMAT_TIME, KEYS, MACRO, MACRO_NAMES, PATH_SYNTAX, PATH_PRIOR, PRINT_OPTIONS,
+      enum Option { ABOUTURL, ADVFIND, AUTOLOAD, CLOSE, COLORS, COLUMN_MODE, DICT_MAIN, DICT_USER, FIND_LIST, FIND_REPLACE,
+                    FONT, FORMAT_DATE, FORMAT_TIME, KEYS, MACRO, MACRO_NAMES, PATH_SYNTAX, PATH_PRIOR, PRINT_OPTIONS,
                     RECENTFOLDER, RECENTFILE, SHOW_LINEHIGHLIGHT, SHOW_LINENUMBERS, SHOW_SPACES, SHOW_BREAKS,
                     SPELLCHECK, TAB_SPACING, USESPACES, WORDWRAP};
 
@@ -217,9 +220,6 @@ class MainWindow : public QMainWindow
       void setSyntax();
       void setSynType(SyntaxTypes data);
       void forceSyntax(SyntaxTypes data);
-
-      // fonts
-      void changeFont();
 
       // create shortcuts, menus, status bar
       void createShortCuts(bool setupAll);
@@ -372,10 +372,11 @@ class MainWindow : public QMainWindow
       void spellCheck();
 
       void setColors();
-      void setFont();
-      void move_ConfigFile();
+      void setFont();     
       void setOptions();
       void setPrintOptions();
+      void move_ConfigFile();
+      void save_ConfigFile();
 
       void tabNew();
       void tabClose(int index);
