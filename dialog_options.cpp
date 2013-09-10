@@ -100,9 +100,16 @@ void Dialog_Options::initData()
    }
 
    m_ui->dictMain->setText(m_options.dictMain);
+   m_ui->dictMain->setCursorPosition(0);
+
    m_ui->dictUser->setText(m_options.dictUser);
+   m_ui->dictUser->setCursorPosition(0);
+
    m_ui->syntax->setText(m_options.pathSyntax);
+   m_ui->syntax->setCursorPosition(0);
+
    m_ui->about->setText(m_options.aboutUrl);
+   m_ui->about->setCursorPosition(0);
 
    // ** tab two
    m_ui->key_open->setText(m_options.key_open);

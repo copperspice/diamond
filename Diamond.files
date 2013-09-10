@@ -77,7 +77,6 @@ dialog_replace.h
 dialog_replace.cpp
 dialog_symbols.h
 dialog_symbols.cpp
-
-
-
-
+dialog_xp_getdir.h
+dialog_xp_getdir.cpp
+forms/dialog_xp_getdir.ui

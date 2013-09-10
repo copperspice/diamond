@@ -302,10 +302,19 @@ bool MainWindow::saveAs(bool isSaveOne)
    QString selectedFilter;
    QFileDialog::Options options;
 
+   //
+   QString path;
+
+   if (m_curFile.isEmpty())  {
+      path = QDir::homePath();
+
+   } else  {
+      path = m_curFile;
+
+   }
+
    // force windows 7 and 8 to honor initial path
    options = QFileDialog::ForceInitialDir_Win7;
-
-   QString path = this->pathName(m_curFile);
 
    QString fileName = QFileDialog::getSaveFileName(this, tr("Create or Select File"),
         path, tr("All Files (*)"), &selectedFilter, options);

@@ -20,12 +20,14 @@
 **************************************************************************/
 
 #include "dialog_get1.h"
+#include "dialog_xp_getdir.h"
 #include "mainwindow.h"
 
 #include <QFileInfo>
 #include <QFileDialog>
 #include <QDragEnterEvent>
 #include <QMimeData>
+#include <QSysInfo>
 #include <QUrl>
 
 void MainWindow::argLoad(QList<QString> argList)
@@ -116,14 +118,36 @@ QString MainWindow::get_DirPath(QString message, QString path)
    QFileDialog::Options options;
    options |= QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks;
 
+   QString retval;
+
+#ifdef Q_OS_WIN
+
+   if (QSysInfo::WindowsVersion < QSysInfo::WV_VISTA) {
+      Dialog_XP_GetDir *dw = new Dialog_XP_GetDir(this, message, path, options);
+      int result = dw->exec();
+
+      if (result == QDialog::Accepted) {
+         path = dw->getDirectory();
+      }
+
+   } else {
+      path = QFileDialog::getExistingDirectory(this, message, path, options);
+
+   }
+
+#else
    // on X11 the title bar may not be displayed
    path = QFileDialog::getExistingDirectory(this, message, path, options);
 
-   // silly adjust for platform slash issue
-   QDir temp(path + "/");
-   path = temp.canonicalPath() + "/";
+#endif
 
-   return path;
+   if (! path.isEmpty()) {
+      // silly adjust for platform slash issue
+      QDir temp(path + "/");
+      retval = temp.canonicalPath() + "/";
+   }
+
+   return retval;
 }
 
 struct Settings MainWindow::get_StructData()
@@ -432,4 +456,3 @@ void MainWindow::dropEvent(QDropEvent *event)
    }
 
 }
-

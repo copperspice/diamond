@@ -132,7 +132,7 @@ void MainWindow::setFont()
    Dialog_Fonts *dw = new Dialog_Fonts(m_struct.fontNormal, m_struct.fontColumn);
    int result = dw->exec();
 
-   if ( result == QDialog::Accepted) {
+   if (result == QDialog::Accepted) {
 
       m_struct.fontNormal = dw->get_fontNormal();
       m_struct.fontColumn = dw->get_fontColumn();

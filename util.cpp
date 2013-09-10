@@ -22,7 +22,7 @@
 #include "util.h"
 
 #include <QApplication>
-#include <QDialog>
+#include <QMessageBox>
 
 void csMsg(const QString &msg)
 {

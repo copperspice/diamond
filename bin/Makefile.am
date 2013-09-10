@@ -52,6 +52,7 @@ Diamond_SOURCES = \
     dialog_print_opt.cpp \
     dialog_replace.cpp \
     dialog_symbols.cpp \
+    dialog_xp_getdir.cpp \
     diamond_edit.cpp \
     json.cpp \
     keylineedit.cpp \
@@ -82,6 +83,7 @@ noinst_HEADERS = \
     dialog_macro.h \
     dialog_replace.h  \
     dialog_symbols.h \
+    dialog_xp_getdir.h \
     diamond_edit.h \
     keylineedit.h \
     mainwindow.h  \
@@ -104,6 +106,7 @@ MOCS = \
     dialog_print_opt.h \
     dialog_replace.h  \
     dialog_symbols.h \
+    dialog_xp_getdir.h \
     diamond_edit.h  \
     keylineedit.h \
     mainwindow.h  \
@@ -125,6 +128,7 @@ FORMS = \
     forms/dialog_print_opt.ui \
     forms/dialog_replace.ui \
     forms/dialog_symbols.ui \
+    forms/dialog_xp_getdir.ui \
     forms/mainwindow.ui
 
 #

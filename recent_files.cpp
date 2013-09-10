@@ -98,7 +98,6 @@ void MainWindow::showContextMenuFile(const QPoint &pt)
          rfAction->setData(fName);
 
          menu->exec(m_ui->menuFile->mapToGlobal(pt));
-
          delete menu;    
       }
    }
