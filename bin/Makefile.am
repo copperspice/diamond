@@ -42,6 +42,7 @@ Diamond_LDFLAGS=$(AM_LDFLAGS)   $(patsubst %,-lCs%1,$(cslibs))
 Diamond_SOURCES = \
     about.cpp \
     dialog_advfind.cpp \
+    dialog_buffer.cpp \
     dialog_colors.cpp \
     dialog_config.cpp \
     dialog_find.cpp \
@@ -74,6 +75,7 @@ Diamond_SOURCES = \
 noinst_HEADERS = \
     about.h \
     dialog_advfind.h \
+    dialog_buffer.h \
     dialog_colors.h \
     dialog_config.h\
     dialog_find.h \
@@ -96,6 +98,7 @@ noinst_HEADERS = \
 MOCS = \
     about.h \
     dialog_advfind.h \
+    dialog_buffer.h \
     dialog_config.h \
     dialog_colors.h\
     dialog_find.h \
@@ -118,6 +121,7 @@ Diamond_LDADD=$(patsubst %.h,moc_%.$(OBJEXT),$(MOCS))  $(hunspell_la)
 #
 FORMS = \
     forms/dialog_advfind.ui \
+    forms/dialog_buffer.ui \
     forms/dialog_colors.ui \
     forms/dialog_config.ui \
     forms/dialog_find.ui \

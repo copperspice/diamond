@@ -71,6 +71,7 @@ struct Settings {
    QString key_goBottom;  
    QString key_newTab;
 
+   QString key_printPreview;
    QString key_selectLine;
    QString key_selectWord;
    QString key_selectBlock;
@@ -86,6 +87,7 @@ struct Settings {
    QString key_show_Breaks;
    QString key_macroPlay;
    QString key_spellCheck;
+   QString key_copyBuffer;
 
    int    syn_KeyWeight;
    bool   syn_KeyItalic;
@@ -140,6 +142,7 @@ struct Options {
    QString key_goBottom;
    QString key_newTab;
 
+   QString key_printPreview;
    QString key_selectLine;
    QString key_selectWord;
    QString key_selectBlock;
@@ -155,9 +158,11 @@ struct Options {
    QString key_show_Breaks;
    QString key_macroPlay;
    QString key_spellCheck;
+   QString key_copyBuffer;
 };
 
 struct PrintSettings {   
+   bool    lineNumbers;
    bool    printHeader;
    bool    printFooter;
    QString header_left;
@@ -173,7 +178,7 @@ struct PrintSettings {
    double marTop;
    double marRight;
    double marBottom;
-   double hdrGap;
+   double hdrGap;    
 
    QFont fontHeader;
    QFont fontFooter;

@@ -178,21 +178,22 @@ void MainWindow::setOptions()
    options.key_newTab      = m_struct.key_newTab;
 
    // tab 3
-   options.key_selectLine  = m_struct.key_selectLine;
-   options.key_selectWord  = m_struct.key_selectWord;
-   options.key_selectBlock = m_struct.key_selectBlock;
-   options.key_upper       = m_struct.key_upper;
-   options.key_lower       = m_struct.key_lower;
-   options.key_indentIncr  = m_struct.key_indentIncr;
-   options.key_indentDecr  = m_struct.key_indentDecr;
-   options.key_deleteLine  = m_struct.key_deleteLine;
-   options.key_deleteEOL   = m_struct.key_deleteEOL;
-   options.key_columnMode  = m_struct.key_columnMode;
-   options.key_goLine      = m_struct.key_goLine;
-   options.key_show_Spaces = m_struct.key_show_Spaces;
-   options.key_show_Breaks = m_struct.key_show_Breaks;
-   options.key_macroPlay   = m_struct.key_macroPlay;
-   options.key_spellCheck  = m_struct.key_spellCheck;
+   options.key_printPreview = m_struct.key_printPreview;
+   options.key_selectLine   = m_struct.key_selectLine;
+   options.key_selectWord   = m_struct.key_selectWord;
+   options.key_selectBlock  = m_struct.key_selectBlock;
+   options.key_upper        = m_struct.key_upper;
+   options.key_lower        = m_struct.key_lower;
+   options.key_indentIncr   = m_struct.key_indentIncr;
+   options.key_indentDecr   = m_struct.key_indentDecr;
+   options.key_deleteLine   = m_struct.key_deleteLine;
+   options.key_deleteEOL    = m_struct.key_deleteEOL;
+   options.key_columnMode   = m_struct.key_columnMode;
+   options.key_goLine       = m_struct.key_goLine;
+   options.key_show_Spaces  = m_struct.key_show_Spaces;
+   options.key_show_Breaks  = m_struct.key_show_Breaks;
+   options.key_macroPlay    = m_struct.key_macroPlay;
+   options.key_spellCheck   = m_struct.key_spellCheck;
 
    Dialog_Options *dw = new Dialog_Options(this, options);
    int result = dw->exec();
@@ -277,21 +278,22 @@ void MainWindow::setOptions()
       m_struct.key_newTab      = options.key_newTab;
 
       // keys 3
-      m_struct.key_selectLine  = options.key_selectLine;
-      m_struct.key_selectWord  = options.key_selectWord;
-      m_struct.key_selectBlock = options.key_selectBlock;
-      m_struct.key_upper       = options.key_upper;
-      m_struct.key_lower       = options.key_lower;
-      m_struct.key_indentIncr  = options.key_indentIncr;
-      m_struct.key_indentDecr  = options.key_indentDecr;
-      m_struct.key_deleteLine  = options.key_deleteLine;
-      m_struct.key_deleteEOL   = options.key_deleteEOL;
-      m_struct.key_columnMode  = options.key_columnMode;
-      m_struct.key_goLine      = options.key_goLine;
-      m_struct.key_show_Spaces = options.key_show_Spaces;
-      m_struct.key_show_Breaks = options.key_show_Breaks;
-      m_struct.key_macroPlay   = options.key_macroPlay;
-      m_struct.key_spellCheck  = options.key_spellCheck;
+      m_struct.key_printPreview = options.key_printPreview;
+      m_struct.key_selectLine   = options.key_selectLine;
+      m_struct.key_selectWord   = options.key_selectWord;
+      m_struct.key_selectBlock  = options.key_selectBlock;
+      m_struct.key_upper        = options.key_upper;
+      m_struct.key_lower        = options.key_lower;
+      m_struct.key_indentIncr   = options.key_indentIncr;
+      m_struct.key_indentDecr   = options.key_indentDecr;
+      m_struct.key_deleteLine   = options.key_deleteLine;
+      m_struct.key_deleteEOL    = options.key_deleteEOL;
+      m_struct.key_columnMode   = options.key_columnMode;
+      m_struct.key_goLine       = options.key_goLine;
+      m_struct.key_show_Spaces  = options.key_show_Spaces;
+      m_struct.key_show_Breaks  = options.key_show_Breaks;
+      m_struct.key_macroPlay    = options.key_macroPlay;
+      m_struct.key_spellCheck   = options.key_spellCheck;
 
       json_Write(KEYS);
 
@@ -305,6 +307,7 @@ void MainWindow::setOptions()
 void MainWindow::setPrintOptions()
 {
    struct PrintSettings options;   
+   options.lineNumbers   = m_printer.lineNumbers;
    options.printHeader   = m_printer.printHeader;
    options.printFooter   = m_printer.printFooter;
 
@@ -333,7 +336,8 @@ void MainWindow::setPrintOptions()
    if (result == QDialog::Accepted) {
       options = dw->get_Results();
 
-      m_printer.printHeader    = options.printHeader ;
+      m_printer.lineNumbers    = options.lineNumbers;
+      m_printer.printHeader    = options.printHeader;
       m_printer.printFooter    = options.printFooter;
 
       m_printer.header_left    = options.header_left;

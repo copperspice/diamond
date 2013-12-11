@@ -19,6 +19,7 @@
 *
 **************************************************************************/
 
+#include "dialog_buffer.h"
 #include "dialog_get1.h"
 #include "dialog_xp_getdir.h"
 #include "mainwindow.h"
@@ -413,6 +414,25 @@ void MainWindow::setUpTabStops()
       tabStop = (m_struct.tabSpacing * k) + 1;
       m_tabStops.append(tabStop);
    }
+}
+
+
+// copy buffer
+void MainWindow::showCopyBuffer()
+{
+   QList<QString> copyBuffer = m_textEdit->copyBuffer();
+
+   Dialog_Buffer *dw = new Dialog_Buffer(copyBuffer);
+   int result = dw->exec();
+
+   if (result == QDialog::Accepted) {
+      int index = dw->get_Index();
+
+      QString text = copyBuffer.at(index);
+      m_textEdit->textCursor().insertText(text);
+   }
+
+   delete dw;
 }
 
 

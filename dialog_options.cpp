@@ -132,6 +132,7 @@ void Dialog_Options::initData()
    m_ui->key_newTab->setText(m_options.key_newTab);
 
    // ** tab three
+   m_ui->key_printPreview->setText(m_options.key_printPreview);
    m_ui->key_selectLine->setText(m_options.key_selectLine);
    m_ui->key_selectWord->setText(m_options.key_selectWord);
    m_ui->key_selectBlock->setText(m_options.key_selectBlock);
@@ -256,6 +257,7 @@ struct Options Dialog_Options::get_Results()
    m_options.key_newTab       = m_ui->key_newTab->text();
 
    // ** tab 3
+   m_options.key_printPreview = m_ui->key_printPreview->text();
    m_options.key_selectLine   = m_ui->key_selectLine->text();
    m_options.key_selectWord   = m_ui->key_selectWord->text();
    m_options.key_selectBlock  = m_ui->key_selectBlock->text();

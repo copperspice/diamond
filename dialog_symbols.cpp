@@ -44,8 +44,10 @@ Dialog_Symbols::Dialog_Symbols(MainWindow *from)
    m_ui->sampleList->setModel(model);  
    m_ui->sampleList->setCurrentIndex(model->index(0));
 
+   m_ui->sampleList->setFocus();
+
    connect(m_ui->insert_PB, SIGNAL(clicked()),this, SLOT(Insert()));
-   connect(m_ui->cancel_PB, SIGNAL(clicked()),this, SLOT(Cancel()));
+   connect(m_ui->cancel_PB, SIGNAL(clicked()),this, SLOT(Cancel()));  
 }
 
 Dialog_Symbols::~Dialog_Symbols()

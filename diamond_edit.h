@@ -26,6 +26,7 @@
 #include "syntax.h"
 
 #include <QObject>
+#include <QList>
 #include <QPlainTextEdit>
 #include <QPaintEvent>
 #include <QResizeEvent>
@@ -47,11 +48,20 @@ class DiamondTextEdit : public QPlainTextEdit
       void lineNum_PaintEvent(QPaintEvent *event);
       int lineNum_Width();
 
-      void set_ShowLineNum(bool data);
+      void set_ShowLineNum(bool data);           
 
       // column mode
       void set_ColumnMode(bool data);
       bool get_ColumnMode();
+
+      // copy buffer
+      QList<QString> copyBuffer() const;
+
+      // macro
+      void macroStart();
+      void macroStop();
+      QList<QKeyEvent *> get_MacroKeyList();
+      void add_MacroEvent(QKeyEvent *event);
 
       // spell
       void set_Spell(bool value);
@@ -65,12 +75,6 @@ class DiamondTextEdit : public QPlainTextEdit
       SyntaxTypes get_SyntaxEnum();
       void set_SyntaxEnum(SyntaxTypes data);
 
-      // macro
-      void macroStart();
-      void macroStop();
-      QList<QKeyEvent *> get_MacroKeyList();
-      void add_MacroEvent(QKeyEvent *event);
-
    protected:
       void contextMenuEvent(QContextMenuEvent *event);
       bool event(QEvent *event);
@@ -83,6 +87,25 @@ class DiamondTextEdit : public QPlainTextEdit
       MainWindow *m_mainWindow;
       QWidget *m_lineNumArea;
 
+      // column mode
+      bool m_isColumnMode;
+
+      bool m_showlineNum;
+      bool colHighlight;
+
+      int startRow;
+      int startCol;
+      int endRow;
+      int endCol;
+
+      // copy buffer
+      QList<QString> m_copyBuffer;
+      void addToCopyBuffer(const QString &text);      
+
+      // macro
+      bool m_record;
+      QList<QKeyEvent *> m_macroKeyList;
+
       // spell check
       QTextCursor m_cursor;
       bool m_isSpellCheck;
@@ -91,22 +114,7 @@ class DiamondTextEdit : public QPlainTextEdit
       // syntax
       Syntax *m_syntaxParser;
       QString m_synFName;
-      SyntaxTypes m_syntaxEnum;
-
-      // macro
-      bool m_record;
-      QList<QKeyEvent *> m_macroKeyList;
-
-      // column mode
-      bool m_isColumnMode;
-
-      bool m_showlineNum;      
-      bool colHighlight;
-
-      int startRow;
-      int startCol;
-      int endRow;
-      int endCol;
+      SyntaxTypes m_syntaxEnum;     
 
    private slots:
       void update_LineNumWidth(int newBlockCount);

@@ -69,6 +69,12 @@ MainWindow::MainWindow(QStringList fileList, QStringList flagList)
    // macros
    m_record = false;
 
+   // copy buffer
+   m_struct.key_copyBuffer = "F11";   //  BROOM
+
+   m_actionCopyBuffer = new QShortcut(this);
+   connect(m_actionCopyBuffer, SIGNAL(activated()), this, SLOT(showCopyBuffer()));
+
    // screen setup
    createShortCuts(true);
    createToolBars();
@@ -1772,6 +1778,7 @@ void MainWindow::createShortCuts(bool setupAll)
    struct_temp.key_goBottom     = m_struct.key_goBottom;
    struct_temp.key_newTab       = m_struct.key_newTab;
 
+   struct_temp.key_printPreview = m_struct.key_printPreview;
    struct_temp.key_selectLine   = m_struct.key_selectLine;
    struct_temp.key_selectWord   = m_struct.key_selectWord ;
    struct_temp.key_selectBlock  = m_struct.key_selectBlock;
@@ -1787,6 +1794,7 @@ void MainWindow::createShortCuts(bool setupAll)
    struct_temp.key_show_Breaks  = m_struct.key_show_Breaks;
    struct_temp.key_macroPlay    = m_struct.key_macroPlay;
    struct_temp.key_spellCheck   = m_struct.key_spellCheck;
+   struct_temp.key_copyBuffer   = m_struct.key_copyBuffer;
 
 #ifdef Q_OS_MAC
    struct_temp.key_open         = this->adjustKey(struct_temp.key_open);
@@ -1808,6 +1816,7 @@ void MainWindow::createShortCuts(bool setupAll)
    struct_temp.key_goBottom     = this->adjustKey(struct_temp.key_goBottom);
    struct_temp.key_newTab       = this->adjustKey(struct_temp.key_newTab);
 
+   struct_temp.key_printPreview = this->adjustKey(struct_temp.key_printPreview);
    struct_temp.key_selectLine   = this->adjustKey(struct_temp.key_selectLine);
    struct_temp.key_selectWord   = this->adjustKey(struct_temp.key_selectWord);
    struct_temp.key_selectBlock  = this->adjustKey(struct_temp.key_selectBlock);
@@ -1823,6 +1832,7 @@ void MainWindow::createShortCuts(bool setupAll)
    struct_temp.key_show_Breaks  = this->adjustKey(struct_temp.key_show_Breaks);
    struct_temp.key_macroPlay    = this->adjustKey(struct_temp.key_macroPlay);
    struct_temp.key_spellCheck   = this->adjustKey(struct_temp.key_spellCheck);
+   struct_temp.key_copyBuffer   = this->adjustKey(struct_temp.key_copyBuffer);
 #endif
 
    // ** standard definded shortcuts
@@ -1863,6 +1873,7 @@ void MainWindow::createShortCuts(bool setupAll)
    // ** user definded
 
    // edit
+   m_ui->actionPrint_Preview->setShortcut(QKeySequence(struct_temp.key_printPreview) );
    m_ui->actionSelect_Line->setShortcut(QKeySequence(struct_temp.key_selectLine)   );
    m_ui->actionSelect_Word->setShortcut(QKeySequence(struct_temp.key_selectWord)   );
    m_ui->actionSelect_Block->setShortcut(QKeySequence(struct_temp.key_selectBlock) );
@@ -1886,11 +1897,9 @@ void MainWindow::createShortCuts(bool setupAll)
    m_ui->actionMacro_Play->setShortcut(QKeySequence(struct_temp.key_macroPlay)   );
    m_ui->actionSpell_Check->setShortcut(QKeySequence(struct_temp.key_spellCheck) );
 
-/*
-   for ()  {
-   }
-*/
-
+   // **
+   // copy buffer
+   m_actionCopyBuffer->setKey(QKeySequence(struct_temp.key_copyBuffer) );
 }
 
 QString MainWindow::adjustKey(QString sequence)

@@ -39,7 +39,7 @@ DiamondTextEdit::DiamondTextEdit(MainWindow *from, struct Settings settings, Spe
    m_showlineNum  = settings.showLineNumbers;
    m_isColumnMode = settings.isColumnMode;
 
-   // syntax (assinged from loadfile(), runSyntax()
+   // syntax - assinged from loadfile(), runSyntax()
    m_synFName     = "";
    m_syntaxParser = 0;
 
@@ -47,25 +47,25 @@ DiamondTextEdit::DiamondTextEdit(MainWindow *from, struct Settings settings, Spe
    m_spellCheck   = spell;
    m_isSpellCheck = settings.isSpellCheck;
 
-   //
-   m_lineNumArea = new LineNumArea(this);
-   update_LineNumWidth(0);
+   // copy buffer
 
    // drag & drop
    setAcceptDrops(false);
 
+   // line numbers
+   m_lineNumArea = new LineNumArea(this);
+   update_LineNumWidth(0);
+
    // line highlight
    connect(this, SIGNAL(blockCountChanged(int)),   this, SLOT(update_LineNumWidth(int)));
-   connect(this, SIGNAL(updateRequest(QRect,int)), this, SLOT(update_LineNumArea(QRect,int)));  
-
-   // column mode
+   connect(this, SIGNAL(updateRequest(QRect,int)), this, SLOT(update_LineNumArea(QRect,int)));
 }
 
 DiamondTextEdit::~DiamondTextEdit()
 {
 }
 
-// ** line highlight
+// ** line numbers
 void DiamondTextEdit::lineNum_PaintEvent(QPaintEvent *event)
 {   
    if (m_showlineNum)  {
@@ -336,10 +336,16 @@ void DiamondTextEdit::copy()
 
       QApplication::clipboard()->setText(text);
 
+      // save to copy buffer
+      addToCopyBuffer(text);
+
    } else {
       QPlainTextEdit::copy();
 
-   }
+      // save to copy buffer
+      addToCopyBuffer( QApplication::clipboard()->text());
+   }    
+
 }
 
 void DiamondTextEdit::paste()
@@ -352,6 +358,20 @@ void DiamondTextEdit::paste()
       QPlainTextEdit::paste();
 
    }
+}
+
+void DiamondTextEdit::addToCopyBuffer(const QString &text)
+{
+   m_copyBuffer.prepend(text);
+
+   if (m_copyBuffer.size() > 10) {
+      m_copyBuffer.removeLast();
+   }
+}
+
+QList<QString> DiamondTextEdit::copyBuffer() const
+{
+   return m_copyBuffer;
 }
 
 
@@ -399,12 +419,14 @@ bool DiamondTextEdit::event(QEvent *event)
 
       QKeyEvent *keyPressEvent = dynamic_cast<QKeyEvent *>(event);
 
+      // BROOM - add test
+
       int key = keyPressEvent->key();
       int modifiers = keyPressEvent->modifiers();
 
       if (modifiers == Qt::ControlModifier && (key == Qt::Key_A || key == Qt::Key_C)) {
          // required to disable default selectAll() and copy()
-         return false;
+         return false;   
       }
 
       if (m_isColumnMode) {

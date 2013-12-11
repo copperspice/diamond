@@ -56,6 +56,8 @@ Dialog_PrintOptions::~Dialog_PrintOptions()
 
 void Dialog_PrintOptions::initData()
 {
+   m_ui->lineNumbers_CKB->setChecked(m_print.lineNumbers);
+
    m_ui->print_header_CKB->setChecked(m_print.printHeader);
    m_ui->header_Left->setText(m_print.header_left);
    m_ui->header_Center->setText(m_print.header_center);
@@ -91,6 +93,8 @@ void Dialog_PrintOptions::Cancel()
 
 struct PrintSettings Dialog_PrintOptions::get_Results()
 {
+   m_print.lineNumbers   = m_ui->lineNumbers_CKB->isChecked();
+
    m_print.printHeader   = m_ui->print_header_CKB->isChecked();
    m_print.header_left   = m_ui->header_Left->text();
    m_print.header_center = m_ui->header_Center->text();

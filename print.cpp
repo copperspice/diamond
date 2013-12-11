@@ -103,14 +103,49 @@ void MainWindow::printOut(QPrinter *printer)
 {
    QTextDocument *td = new QTextDocument;
 
-   QString html = Qt::convertFromPlainText( m_textEdit->toPlainText() );
+/*
+   // consider this later one
+   if (m_ui->actionWord_Wrap->isChecked()) {
+      td->setWordWrapMode(QTextOption::WordWrap);
+   }
+*/
+
+   QString html = "";
+
+   if (m_printer.lineNumbers)  {
+
+      QTextBlock block = m_textEdit->document()->firstBlock();
+      int blockNumber  = block.blockNumber();
+
+      html += "<html><head></head>";
+      html += "<body><table border='none' cellspacing='0' cellpadding='0'>";
+
+      while ( block.isValid() ) {
+
+         html += "<tr>";
+         html += "<td  align='right' valign='middle'><b><font size='2'>" + QString::number(blockNumber + 1) + "</b></font></td>";
+         html += "<td> &nbsp;&nbsp; </td>";
+         html += "<td> " + this->convertBlockToHTML(block.text()) + "</td>";
+         html += "</tr>";
+
+         block = block.next();
+         ++blockNumber;
+      }
+
+      html += "</table></body></html>";
+
+   }  else  {
+      html = Qt::convertFromPlainText(m_textEdit->toPlainText());
+
+   }
+
    td->setHtml(html);
 
    printer->setPaperSize(QPrinter::Letter);
    printer->setPageMargins(m_printer.marLeft, m_printer.marTop,
                            m_printer.marRight, m_printer.marBottom,QPrinter::Inch);
 
-   QPainter painter;
+   QPainter painter;      
 
    if (painter.begin(printer)) {
 
@@ -159,8 +194,6 @@ void MainWindow::printOut(QPrinter *printer)
 
          // move the painter "down"
          painter.translate(0, (printableRect.height() * (k-1) * (-1) ) + headerSpace);
-
-         painter.drawRect(printableRect);   // test box, remove on release
 
          // print one page worth of text
          td->drawContents(&painter, printableRect);
@@ -386,6 +419,47 @@ QString MainWindow::macroExpand(QString data)
 
    return data;
 }
+
+QString MainWindow::convertBlockToHTML(const QString &plain) const
+{
+   int col = 0;
+
+   QString retval;
+
+   for (int i = 0; i < plain.length(); ++i) {
+
+      if (plain[i] == QLatin1Char('\t'))  {
+         retval += QChar(0x00a0U);
+         ++col;
+
+         while (col % m_struct.tabSpacing) {
+            retval += QChar(0x00a0U);
+            ++col;
+         }
+
+      } else if (plain[i].isSpace()) {
+         retval += QChar(0x00a0U);
+
+      } else if (plain[i] == QLatin1Char('<')) {
+         retval += QLatin1String("&lt;");
+
+      } else if (plain[i] == QLatin1Char('>'))  {
+         retval += QLatin1String("&gt;");
+
+      } else if (plain[i] == QLatin1Char('&'))  {
+         retval += QLatin1String("&amp;");
+
+      } else  {
+         retval += plain[i];
+
+      }
+
+      ++col;
+   }
+
+   return retval;
+}
+
 
 
 

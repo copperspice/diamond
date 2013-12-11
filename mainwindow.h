@@ -38,10 +38,11 @@
 #include <QMenu>
 #include <QMainWindow>
 #include <QModelIndex>
+#include <QPlainTextEdit>
 #include <QRectF>
+#include <QShortcut>
 #include <QStandardItemModel>
 #include <QStringList>
-#include <QPlainTextEdit>
 #include <QSplitter>
 #include <QStackedWidget>
 #include <QTabWidget>
@@ -72,6 +73,9 @@ class MainWindow : public QMainWindow
       QString get_DirPath(QString message, QString path);
       bool loadFile(const QString &fileName, bool newTab, bool isAuto);
 
+      // fonts
+      void changeFont();
+
       // macros
       void json_Save_MacroNames(QStringList m_macroNames);
       QList<macroStruct> json_View_Macro(QString macroName);
@@ -80,9 +84,6 @@ class MainWindow : public QMainWindow
       QStringList spell_getMaybe(QString word);
 
       void setStatus_FName2(QString name);
-
-      // fonts
-      void changeFont();
 
    protected:
       void closeEvent(QCloseEvent *event);
@@ -113,6 +114,9 @@ class MainWindow : public QMainWindow
       void autoLoad();
       void argLoad(QList<QString> argList);
       QStringList m_openedFiles;
+
+      // copy buffer
+      QShortcut *m_actionCopyBuffer;
 
       // syntax
       QString m_appPath;
@@ -268,6 +272,7 @@ class MainWindow : public QMainWindow
       void doHeader(QPainter *painter);
       void doFooter(QPainter *painter);
       QString macroExpand(QString macro);
+      QString convertBlockToHTML(const QString &plain) const;
 
       // support           
       int get_Value1(const QString route);
@@ -397,6 +402,9 @@ class MainWindow : public QMainWindow
       // adv find
       void advFind_View(const QModelIndex &index);
       void advFind_Close();
+
+      // copy buffer
+      void showCopyBuffer();
 
       // spell check
       void spell_addUserDict();

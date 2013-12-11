@@ -121,6 +121,7 @@ bool MainWindow::json_Read()
       m_struct.aboutUrl        = object.value("aboutUrl").toString();
 
       // printer options      
+      m_printer.lineNumbers    = object.value("prt-lineNumbers").toBool();
       m_printer.printHeader    = object.value("prt-pritnHeader").toBool();
       m_printer.printFooter    = object.value("prt-printFooter").toBool();
       m_printer.header_left    = object.value("prt-headerLeft").toString();
@@ -166,21 +167,22 @@ bool MainWindow::json_Read()
 //    m_struct.key_help        = object.value("key-help").toString();
 
       // user keys
-      m_struct.key_selectLine  = object.value("key-selectLine").toString();
-      m_struct.key_selectWord  = object.value("key-selectWord").toString();
-      m_struct.key_selectBlock = object.value("key-selectBlock").toString();
-      m_struct.key_upper       = object.value("key-upper").toString();
-      m_struct.key_lower       = object.value("key-lower").toString();      
-      m_struct.key_indentIncr  = object.value("key-indentIncr").toString();
-      m_struct.key_indentDecr  = object.value("key-indentDecr").toString();
-      m_struct.key_deleteLine  = object.value("key-deleteLine").toString();
-      m_struct.key_deleteEOL   = object.value("key-deleteEOL").toString();
-      m_struct.key_columnMode  = object.value("key-columnMode").toString();
-      m_struct.key_goLine      = object.value("key-goLine").toString();      
-      m_struct.key_show_Spaces = object.value("key-showShow").toString();
-      m_struct.key_show_Breaks = object.value("key-showBreaks").toString();
-      m_struct.key_macroPlay   = object.value("key-macroPlay").toString();
-      m_struct.key_spellCheck  = object.value("key-spellCheck").toString();
+      m_struct.key_printPreview = object.value("key-printPreview").toString();
+      m_struct.key_selectLine   = object.value("key-selectLine").toString();
+      m_struct.key_selectWord   = object.value("key-selectWord").toString();
+      m_struct.key_selectBlock  = object.value("key-selectBlock").toString();
+      m_struct.key_upper        = object.value("key-upper").toString();
+      m_struct.key_lower        = object.value("key-lower").toString();
+      m_struct.key_indentIncr   = object.value("key-indentIncr").toString();
+      m_struct.key_indentDecr   = object.value("key-indentDecr").toString();
+      m_struct.key_deleteLine   = object.value("key-deleteLine").toString();
+      m_struct.key_deleteEOL    = object.value("key-deleteEOL").toString();
+      m_struct.key_columnMode   = object.value("key-columnMode").toString();
+      m_struct.key_goLine       = object.value("key-goLine").toString();
+      m_struct.key_show_Spaces  = object.value("key-showShow").toString();
+      m_struct.key_show_Breaks  = object.value("key-showBreaks").toString();
+      m_struct.key_macroPlay    = object.value("key-macroPlay").toString();
+      m_struct.key_spellCheck   = object.value("key-spellCheck").toString();
 
       // screen fonts
       m_struct.fontNormal     = json_SetFont(object.value("font-normal").toString());
@@ -452,21 +454,22 @@ bool MainWindow::json_Write(Option route)
 //          object.insert("key-help",        m_struct.key_help);
 
             // user keys
-            object.insert("key-selectLine",  m_struct.key_selectLine);
-            object.insert("key-selectWord",  m_struct.key_selectWord);
-            object.insert("key-selectBlock", m_struct.key_selectBlock);
-            object.insert("key-upper",       m_struct.key_upper);
-            object.insert("key-lower",       m_struct.key_lower);
-            object.insert("key-indentIncr",  m_struct.key_indentIncr);
-            object.insert("key-indentDecr",  m_struct.key_indentDecr);            
-            object.insert("key-deleteLine",  m_struct.key_deleteLine);
-            object.insert("key-deleteEOL",   m_struct.key_deleteEOL);
-            object.insert("key-columnMode",  m_struct.key_columnMode);
-            object.insert("key-goLine",      m_struct.key_goLine);
-            object.insert("key-showSpaces",  m_struct.key_show_Spaces);
-            object.insert("key-showBreaks",  m_struct.key_show_Breaks);
-            object.insert("key-macroPlay",   m_struct.key_macroPlay);
-            object.insert("key-spellCheck",  m_struct.key_spellCheck);
+            object.insert("key-printPreview", m_struct.key_printPreview);
+            object.insert("key-selectLine",   m_struct.key_selectLine);
+            object.insert("key-selectWord",   m_struct.key_selectWord);
+            object.insert("key-selectBlock",  m_struct.key_selectBlock);
+            object.insert("key-upper",        m_struct.key_upper);
+            object.insert("key-lower",        m_struct.key_lower);
+            object.insert("key-indentIncr",   m_struct.key_indentIncr);
+            object.insert("key-indentDecr",   m_struct.key_indentDecr);
+            object.insert("key-deleteLine",   m_struct.key_deleteLine);
+            object.insert("key-deleteEOL",    m_struct.key_deleteEOL);
+            object.insert("key-columnMode",   m_struct.key_columnMode);
+            object.insert("key-goLine",       m_struct.key_goLine);
+            object.insert("key-showSpaces",   m_struct.key_show_Spaces);
+            object.insert("key-showBreaks",   m_struct.key_show_Breaks);
+            object.insert("key-macroPlay",    m_struct.key_macroPlay);
+            object.insert("key-spellCheck",   m_struct.key_spellCheck);
             break;
 
          case PATH_PRIOR:
@@ -478,6 +481,7 @@ bool MainWindow::json_Write(Option route)
             break;
 
          case PRINT_OPTIONS:
+            object.insert("prt-lineNumbers",  m_printer.lineNumbers);
             object.insert("prt-pritnHeader",  m_printer.printHeader);
             object.insert("prt-printFooter",  m_printer.printFooter);
             object.insert("prt-headerLeft",   m_printer.header_left);
@@ -788,6 +792,7 @@ bool MainWindow::json_CreateNew()
    // print options
    value = QJsonValue(QString(""));
 
+   object.insert("prt-lineNumbers",  true);
    object.insert("prt-printHeader",  true);
    object.insert("prt-printFooter",  true);
 

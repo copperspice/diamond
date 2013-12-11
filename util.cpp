@@ -20,9 +20,7 @@
 **************************************************************************/
 
 #include "util.h"
-
 #include <QApplication>
-#include <QMessageBox>
 
 void csMsg(const QString &msg)
 {
@@ -37,7 +35,6 @@ void csMsg(QString msg, int value)
 {
    msg = msg + "   " + QString::number(value);
 
-   //
    QMessageBox msgB;
 
    msgB.setWindowTitle("Debug Information");
