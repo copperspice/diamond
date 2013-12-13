@@ -141,7 +141,25 @@ MainWindow::MainWindow(QStringList fileList, QStringList flagList)
 
    setStatus_ColMode();
    setStatusBar(tr("Ready"), 0);   
-   setUnifiedTitleAndToolBarOnMac(true);            
+   setUnifiedTitleAndToolBarOnMac(true);
+
+
+/*
+
+   //
+   QColor test = QColor("blue");
+   QString foo = test.name();
+   csMsg("Passed qstring,    Returned: " + foo);
+
+
+   test = QColor(Qt::blue);
+   foo = test.name();
+   csMsg("Passed enum,   Returned: " + foo);
+   //
+
+*/
+
+
 }
 
 // ** file
@@ -1568,7 +1586,7 @@ void MainWindow::about()
    msgB.setWindowIcon(QIcon("://resources/diamond.png"));
 
    msgB.setWindowTitle(tr("About Diamond"));
-   msgB.setText(tr("<p style=margin-right:25><center><h5>Version: 1.0<br>Build # 08.1.2013</h5></center></p>"));
+   msgB.setText(tr("<p style=margin-right:25><center><h5>Version: 1.0<br>Build # 12.11.2013</h5></center></p>"));
    msgB.setInformativeText(textBody);
 
    msgB.setStandardButtons(QMessageBox::Ok);

@@ -26,7 +26,9 @@
 #include <QDir>
 #include <QFileInfoList>
 
+#ifdef Q_OS_WIN
 #include <windows.h>
+#endif
 
 Dialog_XP_GetDir::Dialog_XP_GetDir(MainWindow *from, const QString title, const QString path, QFileDialog::Options options)
    : m_ui(new Ui::Dialog_XP_GetDir)
@@ -148,7 +150,14 @@ void Dialog_XP_GetDir::showDirectories(QTreeWidgetItem *current, QTreeWidgetItem
 QString Dialog_XP_GetDir::getDriveType(QString drive)
 {
    drive = drive + "\\";
+
+#ifdef Q_OS_WIN
    int driveType = GetDriveType(drive.toLatin1().constData());
+
+#else
+   int driveType = 0;
+
+#endif
 
    switch (driveType)    {
 

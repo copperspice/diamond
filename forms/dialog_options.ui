@@ -1630,10 +1630,41 @@
   <tabstop>syntax_TB</tabstop>
   <tabstop>about</tabstop>
   <tabstop>about_TB</tabstop>
+  <tabstop>key_open</tabstop>
+  <tabstop>key_close</tabstop>
+  <tabstop>key_save</tabstop>
+  <tabstop>key_saveAs</tabstop>
+  <tabstop>key_print</tabstop>
+  <tabstop>key_undo</tabstop>
+  <tabstop>key_redo</tabstop>
+  <tabstop>key_cut</tabstop>
+  <tabstop>key_copy</tabstop>
+  <tabstop>key_paste</tabstop>
+  <tabstop>key_selectAll</tabstop>
   <tabstop>key_find</tabstop>
   <tabstop>key_replace</tabstop>
   <tabstop>key_findNext</tabstop>
+  <tabstop>key_findPrev</tabstop>
+  <tabstop>key_goTop</tabstop>
+  <tabstop>key_goBottom</tabstop>
+  <tabstop>key_newTab</tabstop>
+  <tabstop>reset_PB</tabstop>
+  <tabstop>key_printPreview</tabstop>
+  <tabstop>key_selectLine</tabstop>
+  <tabstop>key_selectWord</tabstop>
+  <tabstop>key_selectBlock</tabstop>
+  <tabstop>key_upper</tabstop>
+  <tabstop>key_lower</tabstop>
+  <tabstop>key_indentIncr</tabstop>
+  <tabstop>key_indentDecr</tabstop>
+  <tabstop>key_deleteLine</tabstop>
+  <tabstop>key_deleteEOL</tabstop>
   <tabstop>key_columnMode</tabstop>
+  <tabstop>key_goLine</tabstop>
+  <tabstop>key_show_Spaces</tabstop>
+  <tabstop>key_show_Breaks</tabstop>
+  <tabstop>key_macroPlay</tabstop>
+  <tabstop>key_spellCheck</tabstop>
   <tabstop>save_PB</tabstop>
   <tabstop>cancel_PB</tabstop>
   <tabstop>tabWidget</tabstop>

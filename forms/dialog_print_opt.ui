@@ -84,7 +84,7 @@
     </layout>
    </item>
    <item row="2" column="0">
-    <spacer name="verticalSpacer_4">
+    <spacer name="verticalSpacer_8">
      <property name="orientation">
       <enum>Qt::Vertical</enum>
      </property>
@@ -107,7 +107,7 @@
       </font>
      </property>
      <property name="currentIndex">
-      <number>1</number>
+      <number>0</number>
      </property>
      <widget class="QWidget" name="tab">
       <attribute name="title">
@@ -234,7 +234,7 @@
         </widget>
        </item>
        <item>
-        <spacer name="verticalSpacer_1">
+        <spacer name="verticalSpacer_2">
          <property name="orientation">
           <enum>Qt::Vertical</enum>
          </property>
@@ -273,11 +273,39 @@
            <number>11</number>
           </property>
           <property name="horizontalSpacing">
-           <number>11</number>
+           <number>1</number>
           </property>
           <property name="verticalSpacing">
            <number>7</number>
           </property>
+          <item row="0" column="0">
+           <spacer name="horizontalSpacer_1">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeType">
+             <enum>QSizePolicy::Expanding</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>20</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item row="0" column="1">
+           <widget class="QLabel" name="labe_30">
+            <property name="font">
+             <font>
+              <pointsize>10</pointsize>
+             </font>
+            </property>
+            <property name="text">
+             <string>Top:</string>
+            </property>
+           </widget>
+          </item>
           <item row="0" column="2">
            <widget class="QLineEdit" name="marginTop">
             <property name="maximumSize">
@@ -299,6 +327,34 @@
             </property>
            </widget>
           </item>
+          <item row="0" column="3">
+           <spacer name="horizontalSpacer_2">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeType">
+             <enum>QSizePolicy::Fixed</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>30</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item row="0" column="4">
+           <widget class="QLabel" name="label_32">
+            <property name="font">
+             <font>
+              <pointsize>10</pointsize>
+             </font>
+            </property>
+            <property name="text">
+             <string>Left:</string>
+            </property>
+           </widget>
+          </item>
           <item row="0" column="5">
            <widget class="QLineEdit" name="marginLeft">
             <property name="maximumSize">
@@ -314,6 +370,31 @@
             </property>
             <property name="inputMask">
              <string>9.99;0</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="6">
+           <spacer name="horizontalSpacer_3">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item row="1" column="1">
+           <widget class="QLabel" name="label_31">
+            <property name="font">
+             <font>
+              <pointsize>10</pointsize>
+             </font>
+            </property>
+            <property name="text">
+             <string>Bottom:</string>
             </property>
            </widget>
           </item>
@@ -335,15 +416,15 @@
             </property>
            </widget>
           </item>
-          <item row="0" column="4">
-           <widget class="QLabel" name="label_32">
+          <item row="1" column="4">
+           <widget class="QLabel" name="label_33">
             <property name="font">
              <font>
               <pointsize>10</pointsize>
              </font>
             </property>
             <property name="text">
-             <string>Left:</string>
+             <string>Right:</string>
             </property>
            </widget>
           </item>
@@ -365,87 +446,6 @@
             </property>
            </widget>
           </item>
-          <item row="1" column="1">
-           <widget class="QLabel" name="label_31">
-            <property name="font">
-             <font>
-              <pointsize>10</pointsize>
-             </font>
-            </property>
-            <property name="text">
-             <string>Bottom:</string>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="1">
-           <widget class="QLabel" name="labe_30">
-            <property name="font">
-             <font>
-              <pointsize>10</pointsize>
-             </font>
-            </property>
-            <property name="text">
-             <string>Top:</string>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="0">
-           <spacer name="horizontalSpacer_2">
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
-            </property>
-            <property name="sizeType">
-             <enum>QSizePolicy::Expanding</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>20</width>
-              <height>20</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-          <item row="0" column="3">
-           <spacer name="horizontalSpacer">
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
-            </property>
-            <property name="sizeType">
-             <enum>QSizePolicy::Fixed</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>30</width>
-              <height>20</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-          <item row="1" column="4">
-           <widget class="QLabel" name="label_33">
-            <property name="font">
-             <font>
-              <pointsize>10</pointsize>
-             </font>
-            </property>
-            <property name="text">
-             <string>Right:</string>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="6">
-           <spacer name="horizontalSpacer_4">
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>40</width>
-              <height>20</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
          </layout>
          <zorder>label_32</zorder>
          <zorder>marginRight</zorder>
@@ -454,8 +454,7 @@
          <zorder>marginTop</zorder>
          <zorder>label_31</zorder>
          <zorder>marginBottom</zorder>
-         <zorder>marginLeft</zorder>
-         <zorder>horizontalSpacer_4</zorder>
+         <zorder>marginLeft</zorder>         
         </widget>
        </item>
        <item>
@@ -547,7 +546,7 @@
            </widget>
           </item>
           <item row="0" column="0">
-           <spacer name="horizontalSpacer_6">
+           <spacer name="horizontalSpacer_5">
             <property name="orientation">
              <enum>Qt::Horizontal</enum>
             </property>
@@ -563,7 +562,7 @@
            </spacer>
           </item>
           <item row="0" column="4">
-           <spacer name="horizontalSpacer_3">
+           <spacer name="horizontalSpacer_4">
             <property name="orientation">
              <enum>Qt::Horizontal</enum>
             </property>
@@ -579,7 +578,7 @@
         </widget>
        </item>
        <item>
-        <spacer name="verticalSpacer">
+        <spacer name="verticalSpacer_1">
          <property name="orientation">
           <enum>Qt::Vertical</enum>
          </property>
@@ -593,11 +592,8 @@
        </item>
       </layout>
       <zorder>groupBox2</zorder>
-      <zorder>groupBox1</zorder>
-      <zorder>verticalSpacer_1</zorder>
-      <zorder>verticalSpacer_3</zorder>
-      <zorder>groupBox3</zorder>
-      <zorder>verticalSpacer</zorder>
+      <zorder>groupBox1</zorder>     
+      <zorder>groupBox3</zorder>      
      </widget>
      <widget class="QWidget" name="tab_2">
       <attribute name="title">
@@ -823,7 +819,7 @@
         </widget>
        </item>
        <item>
-        <spacer name="verticalSpacer_2">
+        <spacer name="verticalSpacer_6">
          <property name="orientation">
           <enum>Qt::Vertical</enum>
          </property>
@@ -1059,7 +1055,7 @@
         </widget>
        </item>
        <item>
-        <spacer name="verticalSpacer_5">
+        <spacer name="verticalSpacer_7">
          <property name="orientation">
           <enum>Qt::Vertical</enum>
          </property>
@@ -1081,6 +1077,18 @@
   </layout>
  </widget>
  <tabstops>
+  <tabstop>fontHeader</tabstop>
+  <tabstop>fontHeader_TB</tabstop>
+  <tabstop>fontFooter</tabstop>
+  <tabstop>fontFooter_TB</tabstop>
+  <tabstop>fontText</tabstop>
+  <tabstop>fontText_TB</tabstop>
+  <tabstop>marginTop</tabstop>
+  <tabstop>marginBottom</tabstop>
+  <tabstop>marginLeft</tabstop>
+  <tabstop>marginRight</tabstop>
+  <tabstop>lineNumbers_CKB</tabstop>
+  <tabstop>hdrGap</tabstop>
   <tabstop>print_header_CKB</tabstop>
   <tabstop>header_Left</tabstop>
   <tabstop>headerLeft_TB</tabstop>
@@ -1097,18 +1105,9 @@
   <tabstop>footer_Right</tabstop>
   <tabstop>footerRight_TB</tabstop>
   <tabstop>footer_Line2</tabstop>
-  <tabstop>marginTop</tabstop>
-  <tabstop>marginLeft</tabstop>
-  <tabstop>marginBottom</tabstop>
-  <tabstop>marginRight</tabstop>
-  <tabstop>fontHeader</tabstop>
-  <tabstop>fontHeader_TB</tabstop>
-  <tabstop>fontFooter</tabstop>
-  <tabstop>fontFooter_TB</tabstop>
-  <tabstop>fontText</tabstop>
-  <tabstop>fontText_TB</tabstop>
   <tabstop>save_PB</tabstop>
   <tabstop>cancel_PB</tabstop>
+  <tabstop>tabWidget</tabstop>
  </tabstops>
  <resources/>
  <connections/>

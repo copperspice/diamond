@@ -223,7 +223,7 @@ bool Syntax::processSyntax()
    m_commentEndExpression   = QRegExp(commentEnd);
 
    // spell check   
-   m_spellCheckFormat.setUnderlineColor(QColor("red"));
+   m_spellCheckFormat.setUnderlineColor(QColor(Qt::red));
    m_spellCheckFormat.setUnderlineStyle(QTextCharFormat::SpellCheckUnderline);
 
    // new data, redo the current document
