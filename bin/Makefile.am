@@ -159,19 +159,25 @@ distdir: $(DISTFILES)
 	mkdir -p $(distdir_custom)/hunspell      ; \
 	mkdir -p $(distdir_custom)/resources     ; \
 	mkdir -p $(distdir_custom)/syntax        ; \
-	cp diamond.qrc    $(distdir_custom)/     ; \
-	cp bin/*.am       $(distdir_custom)/bin/ ; \
-	cp resources/*    $(distdir_custom)/resources/ ; \
-	cp install_files/dictionary/*    $(distdir_custom)/dictionary/ ; \
-	cp -r install_files/help/*	      $(distdir_custom)/help/       ; \
-	cp -r $(hunspell_path)/*         $(distdir_custom)/hunspell/   ; \
-	cp install_files/syntax/*.json   $(distdir_custom)/syntax/
+	cp diamond.qrc                   $(distdir_custom)/              ; \
+	cp bin/*.am                      $(distdir_custom)/bin/          ; \
+	cp resources/*                   $(distdir_custom)/resources/    ; \
+	cp install_files/dictionary/*    $(distdir_custom)/dictionary/   ; \
+	cp install_files/syntax/*.json   $(distdir_custom)/syntax/       ; \
+	cp -r install_files/help/*	      $(distdir_custom)/help/         ; \
+	cp -r $(hunspell_path)/*         $(distdir_custom)/hunspell/     ; \
+	find $(distdir_custom)/hunspell/ -name \*.exe -exec rm \{\} \;      ; \
+	find $(distdir_custom)/hunspell/ -name \*.o   -exec rm \{\} \;      ; \
+	find $(distdir_custom)/hunspell/ -name \*.lo  -exec rm \{\} \;      ; \
+	find $(distdir_custom)/hunspell/ -name .libs  -exec rm -r \{\} \;   ; \
+	find $(distdir_custom)/hunspell/ -name .deps  -exec rm -r \{\} \;   ; \
+	rm -r $(distdir_custom)/hunspell/deploy/share
 	$(MAKE) $(AM_MAKEFLAGS) dist-hook
 
 dist-hook:
 	cd .. ; \
 	cp -r bin/$(distdir)/../*   $(distdir_custom) ; \
-	rm -r bin/$(distdir)/../	; \
+	rm -r bin/$(distdir)/../   ; \
 	cd $(distdir_custom)       ; \
 	rm -f  ../Diamond-$(VERSION).zip  ; \
 	zip -r ../Diamond-$(VERSION).zip .

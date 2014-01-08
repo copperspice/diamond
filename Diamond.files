@@ -42,6 +42,7 @@ mainwindow.h
 mainwindow.cpp
 options.cpp
 recent_files.cpp
+settings.cpp
 settings.h
 spell.cpp
 spellcheck.cpp

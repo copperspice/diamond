@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright (c) 2012-2013 Barbara Geller
+* Copyright (c) 2012-2014 Barbara Geller
 * All rights reserved.
 *
 * This file is part of Diamond Editor.
@@ -236,9 +236,10 @@ bool MainWindow::json_Read()
       m_struct.syn_MLineText   = json_SetColor(list.at(2).toString());
 
       // adv find
-      m_advFindText      = object.value("advFile-text").toString();
-      m_advFindFileType  = object.value("advFile-filetype").toString();
-      m_advFindFolder    = object.value("advFile-folder").toString();
+      m_advFindText       = object.value("advFile-text").toString();
+      m_advFindFileType   = object.value("advFile-filetype").toString();
+      m_advFindFolder     = object.value("advFile-folder").toString();
+      m_advFSearchFolders = object.value("advFile-searchFolders").toBool();
 
       // find list
       list = object.value("find-list").toArray();
@@ -349,9 +350,10 @@ bool MainWindow::json_Write(Option route)
             break;
 
          case ADVFIND:
-            object.insert("advFile-text",       m_advFindText);
-            object.insert("advFile-filetype",   m_advFindFileType);
-            object.insert("advFile-folder",     m_advFindFolder);
+            object.insert("advFile-text",          m_advFindText);
+            object.insert("advFile-filetype",      m_advFindFileType);
+            object.insert("advFile-folder",        m_advFindFolder);
+            object.insert("advFile-searchFolders", m_advFSearchFolders);
             break;
 
          case AUTOLOAD:

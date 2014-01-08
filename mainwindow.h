@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright (c) 2012-2013 Barbara Geller
+* Copyright (c) 2012-2014 Barbara Geller
 * All rights reserved.
 *
 * This file is part of Diamond Editor.
@@ -140,11 +140,11 @@ class MainWindow : public QMainWindow
       // advanced find
       QString m_advFindText;
       QString m_advFindFileType;
-      QString m_advFindFolder;
+      QString m_advFindFolder;     
 
       bool m_advFCase;
       bool m_advFWholeWords;
-      bool m_advFSearchSubFolders;
+      bool m_advFSearchFolders;
 
       QStringList m_recursiveList;
       QFrame *m_findWidget;

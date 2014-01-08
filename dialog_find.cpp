@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright (c) 2012-2013 Barbara Geller
+* Copyright (c) 2012-2014 Barbara Geller
 * All rights reserved.
 *
 * This file is part of Diamond Editor.
@@ -36,6 +36,7 @@ Dialog_Find::Dialog_Find(QString findText, QStringList findList)
 
    m_ui->setupUi(this);
    this->setUp();
+   this->setWindowIcon(QIcon("://resources/diamond.png"));
 
    // display last edit value
    m_ui->find_Combo->lineEdit()->setText(findText);

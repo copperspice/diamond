@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright (c) 2012-2013 Barbara Geller
+* Copyright (c) 2012-2014 Barbara Geller
 * All rights reserved.
 *
 * This file is part of Diamond Editor.
@@ -24,7 +24,7 @@
 #include <QDir>
 #include <QFileDialog>
 
-Dialog_AdvFind::Dialog_AdvFind(QString findText, QString fileType, QString findFolder)
+Dialog_AdvFind::Dialog_AdvFind(QString findText, QString fileType, QString findFolder, bool searchFolders)
    : m_ui(new Ui::Dialog_AdvFind)
 {
    m_ui->setupUi(this);
@@ -33,8 +33,11 @@ Dialog_AdvFind::Dialog_AdvFind(QString findText, QString fileType, QString findF
    m_ui->findType->setText(fileType);
    m_ui->findFolder->setText(findFolder);
 
-   connect(m_ui->folder_TB, SIGNAL(clicked()),this, SLOT(pick_Folder()));
+   if (searchFolders) {
+      m_ui->searchSubFolders_CKB->setChecked(true);
+   }
 
+   connect(m_ui->folder_TB, SIGNAL(clicked()),this, SLOT(pick_Folder()));
    connect(m_ui->find_PB,   SIGNAL(clicked()),this, SLOT(Find()));
    connect(m_ui->cancel_PB, SIGNAL(clicked()),this, SLOT(Cancel()));
 }

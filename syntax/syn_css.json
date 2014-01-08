@@ -1,6 +1,6 @@
 {
-	"classes": [
-	  "\\bhover\\b",
+   "classes": [
+      "\\bhover\\b",
       "\\blink\\b",
       "\\bvisited\\b",
       "\\bactive\\b",
@@ -28,11 +28,11 @@
       "\\bnth-of-type\\b",
       "\\bnth-last-of-type\\b",
       "\\bnot\\b"
-	],
-	"comment-multi-start": "/\\*",
-    "comment-multi-end": "\\*/",
-    "comment-single": "//[^\n]*",
-	"functions": [
+   ],
+      "comment-multi-start": "/\\*",
+      "comment-multi-end": "\\*/",
+      "comment-single": "//[^\n]*",
+   "functions": [
       "\\baqua\\b",
       "\\bblack\\b",
       "\\bblue\\b",
@@ -78,9 +78,9 @@
       "\\bWindow\\b",
       "\\bWindowFrame\\b",
       "\\bWindowText\\b"
-	],
-	"ignore-case" : false,
-    "keywords": [
+   ],
+   "ignore-case" : false,
+   "keywords": [
       "\\bazimuth\\b",
       "\\bbackground\\b",
       "\\bbackground-attachment\\b",
@@ -251,7 +251,7 @@
       "\\bcenterline\\b",
       "\\bmathline\\b",
       "\\btopline\\b",
-   	  "\\burl\\b",
+        "\\burl\\b",
       "\\battr\\b",
       "\\brect\\b",
       "\\brgb\\b",
