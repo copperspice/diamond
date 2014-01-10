@@ -1603,6 +1603,16 @@
          </property>
         </widget>
        </item>
+       <item row="10" column="4">
+        <widget class="QLabel" name="label_42">
+         <property name="text">
+          <string>Copy Buffer:</string>
+         </property>
+        </widget>
+       </item>
+       <item row="10" column="5">
+        <widget class="KeyLineEdit" name="key_copyBuffer"/>
+       </item>
       </layout>
      </widget>
     </widget>
@@ -1665,6 +1675,7 @@
   <tabstop>key_show_Breaks</tabstop>
   <tabstop>key_macroPlay</tabstop>
   <tabstop>key_spellCheck</tabstop>
+  <tabstop>key_copyBuffer</tabstop>
   <tabstop>save_PB</tabstop>
   <tabstop>cancel_PB</tabstop>
   <tabstop>tabWidget</tabstop>

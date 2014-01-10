@@ -37,6 +37,8 @@
     <addaction name="actionOpen"/>
     <addaction name="actionOpen_RecentFolder"/>
     <addaction name="separator"/>
+    <addaction name="actionOpen_RelatedFile"/>
+    <addaction name="separator"/>
     <addaction name="actionClose"/>
     <addaction name="actionClose_All"/>
     <addaction name="separator"/>
@@ -775,6 +777,11 @@
   <action name="actionSave_ConfigFile">
    <property name="text">
     <string>Save Configuration File</string>
+   </property>
+  </action>
+  <action name="actionOpen_RelatedFile">
+   <property name="text">
+    <string>Open Related File</string>
    </property>
   </action>
  </widget>

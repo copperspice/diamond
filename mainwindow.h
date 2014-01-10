@@ -181,7 +181,7 @@ class MainWindow : public QMainWindow
       void open(QString path);
 
       // recent files
-      static const int rf_MaxCnt = 10;
+      static const int rf_MaxCnt = 15;
       QAction *rf_Actions[rf_MaxCnt];
       QStringList m_rf_List;
 
@@ -293,6 +293,7 @@ class MainWindow : public QMainWindow
 
       void newFile();
       void mw_open();
+      void open_RelatedFile();
       void close_Doc();
       bool closeAll_Doc();
       void reload();

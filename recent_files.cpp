@@ -311,8 +311,6 @@ void MainWindow::rfolder_Add()
       m_rfolder_List.append(fileName);
    }
 
-   m_rfolder_List.sort();
-
    // save new list of files
    json_Write(RECENTFOLDER);
 
@@ -336,5 +334,4 @@ void MainWindow::rfolder_UpdateActions()
 
    }
 }
-
 

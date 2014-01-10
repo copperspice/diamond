@@ -194,6 +194,7 @@ void MainWindow::setOptions()
    options.key_show_Breaks  = m_struct.key_show_Breaks;
    options.key_macroPlay    = m_struct.key_macroPlay;
    options.key_spellCheck   = m_struct.key_spellCheck;
+   options.key_copyBuffer   = m_struct.key_copyBuffer;
 
    Dialog_Options *dw = new Dialog_Options(this, options);
    int result = dw->exec();
@@ -294,6 +295,7 @@ void MainWindow::setOptions()
       m_struct.key_show_Breaks  = options.key_show_Breaks;
       m_struct.key_macroPlay    = options.key_macroPlay;
       m_struct.key_spellCheck   = options.key_spellCheck;
+      m_struct.key_copyBuffer   = options.key_copyBuffer;
 
       json_Write(KEYS);
 

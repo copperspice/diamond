@@ -183,6 +183,7 @@ bool MainWindow::json_Read()
       m_struct.key_show_Breaks  = object.value("key-showBreaks").toString();
       m_struct.key_macroPlay    = object.value("key-macroPlay").toString();
       m_struct.key_spellCheck   = object.value("key-spellCheck").toString();
+      m_struct.key_copyBuffer   = object.value("key-copyBuffer").toString();
 
       // screen fonts
       m_struct.fontNormal     = json_SetFont(object.value("font-normal").toString());
@@ -472,6 +473,7 @@ bool MainWindow::json_Write(Option route)
             object.insert("key-showBreaks",   m_struct.key_show_Breaks);
             object.insert("key-macroPlay",    m_struct.key_macroPlay);
             object.insert("key-spellCheck",   m_struct.key_spellCheck);
+            object.insert("key-copyBuffer",   m_struct.key_copyBuffer);
             break;
 
          case PATH_PRIOR:
@@ -952,6 +954,9 @@ bool MainWindow::json_CreateNew()
 
    value = QJsonValue(QString("F7"));
    object.insert("key-spellCheck",  value);
+
+   value = QJsonValue(QString("F11"));
+   object.insert("key-copyBuffer",  value);
 
    //
    value = QJsonValue(QString("Courier,12,-1,5,50,0,0,0,0,0"));

@@ -28,6 +28,7 @@
 
 #include <QtGui>
 #include <QChar>
+#include <QFileInfo>
 #include <QFontMetrics>
 #include <QKeySequence>
 
@@ -69,9 +70,7 @@ MainWindow::MainWindow(QStringList fileList, QStringList flagList)
    // macros
    m_record = false;
 
-   // copy buffer
-   m_struct.key_copyBuffer = "F11";   //  BROOM
-
+   // copy buffer   
    m_actionCopyBuffer = new QShortcut(this);
    connect(m_actionCopyBuffer, SIGNAL(activated()), this, SLOT(showCopyBuffer()));
 
@@ -176,6 +175,29 @@ void MainWindow::newFile()
 void MainWindow::mw_open()
 {
    this->open(m_struct.pathPrior);
+}
+
+void MainWindow::open_RelatedFile()
+{
+   QFileInfo temp(m_curFile);
+   QString newFile;
+
+   if (temp.suffix() == "cpp") {
+      newFile = temp.canonicalPath() + "/" +  temp.completeBaseName() + ".h";
+
+   } else if (temp.suffix() == "h")  {
+      newFile = temp.canonicalPath() + "/" +  temp.completeBaseName() + ".cpp";
+
+   }
+
+   //
+   if ( QFile::exists(newFile) ) {
+      this->loadFile(newFile, true, false);
+
+   } else {
+      csMsg("Related file was not found " + newFile);
+
+   }
 }
 
 void MainWindow::open(QString path)
@@ -1611,6 +1633,7 @@ void MainWindow::createConnections()
    // file
    connect(m_ui->actionNew,               SIGNAL(triggered()), this, SLOT(newFile()));
    connect(m_ui->actionOpen,              SIGNAL(triggered()), this, SLOT(mw_open()));
+   connect(m_ui->actionOpen_RelatedFile,  SIGNAL(triggered()), this, SLOT(open_RelatedFile()));
    connect(m_ui->actionClose,             SIGNAL(triggered()), this, SLOT(close_Doc()));
    connect(m_ui->actionClose_All,         SIGNAL(triggered()), this, SLOT(closeAll_Doc()));
    connect(m_ui->actionReload,            SIGNAL(triggered()), this, SLOT(reload()));
@@ -1915,7 +1938,6 @@ void MainWindow::createShortCuts(bool setupAll)
    m_ui->actionMacro_Play->setShortcut(QKeySequence(struct_temp.key_macroPlay)   );
    m_ui->actionSpell_Check->setShortcut(QKeySequence(struct_temp.key_spellCheck) );
 
-   // **
    // copy buffer
    m_actionCopyBuffer->setKey(QKeySequence(struct_temp.key_copyBuffer) );
 }

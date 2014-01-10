@@ -148,6 +148,7 @@ void Dialog_Options::initData()
    m_ui->key_show_Breaks->setText(m_options.key_show_Breaks);
    m_ui->key_macroPlay->setText(m_options.key_macroPlay);
    m_ui->key_spellCheck->setText(m_options.key_spellCheck);
+   m_ui->key_copyBuffer->setText(m_options.key_copyBuffer);
 }
 
 void Dialog_Options::Save()
@@ -273,6 +274,7 @@ struct Options Dialog_Options::get_Results()
    m_options.key_show_Breaks  = m_ui->key_show_Breaks->text();
    m_options.key_macroPlay    = m_ui->key_macroPlay->text();
    m_options.key_spellCheck   = m_ui->key_spellCheck->text();
+   m_options.key_copyBuffer   = m_ui->key_copyBuffer->text();
 
    return m_options;
 }

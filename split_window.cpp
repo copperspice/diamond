@@ -85,13 +85,17 @@ void MainWindow::split_Horizontal()
 
    // BROOM
    split_Title();
-
    moveBar();
 
-   //
    connect(m_split_textEdit->document(), SIGNAL(contentsChanged()),       this, SLOT(split_Title()));
    connect(m_split_textEdit,             SIGNAL(cursorPositionChanged()), this, SLOT(moveBar()));
-   connect(closeButton,                  SIGNAL(clicked()),               this, SLOT(bottomClose()));
+
+   connect(m_split_textEdit, SIGNAL(undoAvailable(bool)), m_ui->actionUndo, SLOT(setEnabled(bool)));
+   connect(m_split_textEdit, SIGNAL(redoAvailable(bool)), m_ui->actionRedo, SLOT(setEnabled(bool)));
+   connect(m_split_textEdit, SIGNAL(copyAvailable(bool)), m_ui->actionCut,  SLOT(setEnabled(bool)));
+   connect(m_split_textEdit, SIGNAL(copyAvailable(bool)), m_ui->actionCopy, SLOT(setEnabled(bool)));
+
+   connect(closeButton, SIGNAL(clicked()), this, SLOT(bottomClose()));
 }
 
 void MainWindow::split_Vertical()
@@ -154,12 +158,17 @@ void MainWindow::split_Vertical()
 
    // BROOM
    split_Title();
-
    moveBar();
 
    connect(m_split_textEdit->document(), SIGNAL(contentsChanged()),       this, SLOT(split_Title()));
    connect(m_split_textEdit,             SIGNAL(cursorPositionChanged()), this, SLOT(moveBar()));
-   connect(closeButton,                  SIGNAL(clicked()),               this, SLOT(bottomClose()));
+
+   connect(m_split_textEdit, SIGNAL(undoAvailable(bool)), m_ui->actionUndo, SLOT(setEnabled(bool)));
+   connect(m_split_textEdit, SIGNAL(redoAvailable(bool)), m_ui->actionRedo, SLOT(setEnabled(bool)));
+   connect(m_split_textEdit, SIGNAL(copyAvailable(bool)), m_ui->actionCut,  SLOT(setEnabled(bool)));
+   connect(m_split_textEdit, SIGNAL(copyAvailable(bool)), m_ui->actionCopy, SLOT(setEnabled(bool)));
+
+   connect(closeButton, SIGNAL(clicked()), this, SLOT(bottomClose()));
 }
 
 void MainWindow::sideClose()
@@ -171,7 +180,11 @@ void MainWindow::bottomClose()
 {
    disconnect(m_split_textEdit->document(), SIGNAL(contentsChanged()),       this, SLOT(split_Title()));
    disconnect(m_split_textEdit,             SIGNAL(cursorPositionChanged()), this, SLOT(moveBar()));
-   // disconnect(closeButton,               SIGNAL(clicked()),               this, SLOT(bottomClose()));
+
+   disconnect(m_split_textEdit, SIGNAL(undoAvailable(bool)), m_ui->actionUndo, SLOT(setEnabled(bool)));
+   disconnect(m_split_textEdit, SIGNAL(redoAvailable(bool)), m_ui->actionRedo, SLOT(setEnabled(bool)));
+   disconnect(m_split_textEdit, SIGNAL(copyAvailable(bool)), m_ui->actionCut,  SLOT(setEnabled(bool)));
+   disconnect(m_split_textEdit, SIGNAL(copyAvailable(bool)), m_ui->actionCopy, SLOT(setEnabled(bool)));
 
    m_bottomWidget->deleteLater();
 

@@ -311,7 +311,7 @@ void DiamondTextEdit::mouseMoveEvent(QMouseEvent *event)
 void DiamondTextEdit::cut()
 {
    if (m_isColumnMode) {
-      // fix fter copy working
+      // broom - not working yet
       QPlainTextEdit::cut();
 
    } else {
