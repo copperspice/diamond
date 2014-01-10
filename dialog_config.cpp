@@ -26,6 +26,7 @@ Dialog_Config::Dialog_Config(QString fileName)
    : m_ui(new Ui::Dialog_Config)
 {
    m_ui->setupUi(this);
+   this->setWindowIcon(QIcon("://resources/diamond.png"));
 
    m_ui->currentName->setText(fileName);
    m_ui->newName->setText(fileName);

@@ -47,7 +47,8 @@ Diamond_SOURCES = \
     dialog_config.cpp \
     dialog_find.cpp \
     dialog_fonts.cpp\
-    dialog_get1.cpp \
+    dialog_getline.cpp \
+    dialog_open.cpp \
     dialog_options.cpp \
     dialog_macro.cpp \
     dialog_print_opt.cpp \
@@ -80,8 +81,9 @@ noinst_HEADERS = \
     dialog_config.h\
     dialog_find.h \
     dialog_fonts.h\
-    dialog_get1.h  \
+    dialog_getline.h  \
     dialog_options.h \
+    dialog_open.h \
     dialog_macro.h \
     dialog_replace.h  \
     dialog_symbols.h \
@@ -103,7 +105,8 @@ MOCS = \
     dialog_colors.h\
     dialog_find.h \
     dialog_fonts.h\
-    dialog_get1.h  \
+    dialog_getline.h  \
+    dialog_open.h \
     dialog_options.h \
     dialog_macro.h \
     dialog_print_opt.h \
@@ -126,8 +129,9 @@ FORMS = \
     forms/dialog_config.ui \
     forms/dialog_find.ui \
     forms/dialog_fonts.ui\
-    forms/dialog_get1.ui \
+    forms/dialog_getline.ui \
     forms/dialog_macro.ui \
+    forms/dialog_open.ui \
     forms/dialog_options.ui \
     forms/dialog_print_opt.ui \
     forms/dialog_replace.ui \

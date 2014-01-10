@@ -21,8 +21,9 @@ forms/dialog_colors.ui
 forms/dialog_config.ui
 forms/dialog_find.ui
 forms/dialog_fonts.ui
-forms/dialog_get1.ui
+forms/dialog_getline.ui
 forms/dialog_macro.ui
+forms/dialog_open.ui
 forms/dialog_options.ui
 forms/dialog_print_opt.ui
 forms/dialog_symbols.ui
@@ -70,10 +71,12 @@ dialog_find.h
 dialog_find.cpp
 dialog_fonts.cpp
 dialog_fonts.h
-dialog_get1.h
-dialog_get1.cpp
+dialog_getline.h
+dialog_getline.cpp
 dialog_macro.h
 dialog_macro.cpp
+dialog_open.h
+dialog_open.cpp
 dialog_options.h
 dialog_options.cpp
 dialog_print_opt.h

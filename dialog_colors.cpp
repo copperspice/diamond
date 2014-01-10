@@ -33,7 +33,9 @@ Dialog_Colors::Dialog_Colors(MainWindow *from)
    : m_ui(new Ui::Dialog_Colors)
 {
    m_mainWindow   = from;   
+
    m_ui->setupUi(this);
+   this->setWindowIcon(QIcon("://resources/diamond.png"));
 
    m_struSettings = m_mainWindow->get_StructData();
    m_syntaxFname  = m_struSettings.pathSyntax + "syn_cpp.json";  

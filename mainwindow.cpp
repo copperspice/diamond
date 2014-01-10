@@ -21,6 +21,7 @@
 
 #include "about.h"
 #include "dialog_macro.h"
+#include "dialog_open.h"
 #include "dialog_symbols.h"
 #include "mainwindow.h"
 
@@ -99,6 +100,11 @@ MainWindow::MainWindow(QStringList fileList, QStringList flagList)
    m_ui->menuFile->setContextMenuPolicy(Qt::CustomContextMenu);
    connect(m_ui->menuFile, SIGNAL(customContextMenuRequested(const QPoint &)), this, SLOT(showContextMenuFile(const QPoint &)));
 
+   // window tab, context menu
+   m_ui->menuWindow->setContextMenuPolicy(Qt::CustomContextMenu);
+   connect(m_ui->menuWindow, SIGNAL(customContextMenuRequested(const QPoint &)), this, SLOT(showContextTabFile(const QPoint &)));
+
+
    // save flags after reading config and before autoload
    m_args.flag_noAutoLoad   = false;
    m_args.flag_noSaveConfig = false;
@@ -141,24 +147,6 @@ MainWindow::MainWindow(QStringList fileList, QStringList flagList)
    setStatus_ColMode();
    setStatusBar(tr("Ready"), 0);   
    setUnifiedTitleAndToolBarOnMac(true);
-
-
-/*
-
-   //
-   QColor test = QColor("blue");
-   QString foo = test.name();
-   csMsg("Passed qstring,    Returned: " + foo);
-
-
-   test = QColor(Qt::blue);
-   foo = test.name();
-   csMsg("Passed enum,   Returned: " + foo);
-   //
-
-*/
-
-
 }
 
 // ** file
@@ -179,23 +167,86 @@ void MainWindow::mw_open()
 
 void MainWindow::open_RelatedFile()
 {
-   QFileInfo temp(m_curFile);
-   QString newFile;
+   QFileInfo temp(m_curFile);      
+   QString ext = temp.suffix();
 
-   if (temp.suffix() == "cpp") {
-      newFile = temp.canonicalPath() + "/" +  temp.completeBaseName() + ".h";
+   if (ext == "cpp" || ext == "h") {
+      QStringList list;
 
-   } else if (temp.suffix() == "h")  {
-      newFile = temp.canonicalPath() + "/" +  temp.completeBaseName() + ".cpp";
+      QString tFile;
+      QString baseName = temp.canonicalPath() + "/" +  temp.completeBaseName();
 
-   }
+      if (ext == "cpp") {
+         tFile = baseName + ".h";
 
-   //
-   if ( QFile::exists(newFile) ) {
-      this->loadFile(newFile, true, false);
+         if ( QFile::exists(tFile) ) {
+            list.append(tFile);
+         }
+
+         tFile = baseName + "_p.h";
+
+         if ( QFile::exists(tFile) ) {
+            list.append(tFile);
+         }
+
+      } else if (baseName.endsWith("_p")  &&  ext == "h")  {
+
+         baseName.chop(2);
+
+         tFile = baseName + ".cpp";
+
+         if ( QFile::exists(tFile) ) {
+            list.append(tFile);
+         }
+
+         tFile = baseName + ".h";
+
+         if ( QFile::exists(tFile) ) {
+            list.append(tFile);
+         }
+
+
+      } else if (ext == "h")  {
+
+         tFile = baseName + ".cpp";
+
+         if ( QFile::exists(tFile) ) {
+            list.append(tFile);
+         }
+
+         tFile = baseName + "_p.h";
+
+         if ( QFile::exists(tFile) ) {
+            list.append(tFile);
+         }
+      }
+
+      //
+      int cnt = list.count();
+
+      if (cnt == 0) {
+         csError("Open Related Files", "No related files were found");
+
+      } else if (cnt == 1)  {
+         // open the one related file
+         this->loadFile(list.at(0), true, false);
+
+      }  else {
+         // display the full list of files
+
+         Dialog_Open *dw = new Dialog_Open(list);
+         int result = dw->exec();
+
+         if (result == QDialog::Accepted) {
+            QString tempF = dw->get_FileName();
+            this->loadFile(tempF, true, false);
+         }
+
+         delete dw;
+      }
 
    } else {
-      csMsg("Related file was not found " + newFile);
+      csError("Open Related Files", "Related files only configured for .cpp and .h files");
 
    }
 }
@@ -385,7 +436,7 @@ bool MainWindow::saveAs(bool isSaveOne)
 
 void MainWindow::saveAll()
 {
-   QString file;
+   QString fileName;
 
    QWidget *temp;
    DiamondTextEdit *textEdit;
@@ -402,15 +453,15 @@ void MainWindow::saveAll()
 
       if (textEdit) {
          m_textEdit = textEdit;
-         file = m_tabWidget->tabWhatsThis(k);
+         fileName = m_tabWidget->tabWhatsThis(k);
 
-         if (file == "untitled.txt") {
+         if (fileName == "untitled.txt") {
             if (saveAs(false)) {
                m_textEdit->document()->setModified(false);
             }
 
          } else {
-            if ( saveFile(file, false) ) {
+            if ( saveFile(fileName, false) ) {
                m_textEdit->document()->setModified(false);
             }
 

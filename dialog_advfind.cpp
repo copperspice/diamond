@@ -28,6 +28,7 @@ Dialog_AdvFind::Dialog_AdvFind(QString findText, QString fileType, QString findF
    : m_ui(new Ui::Dialog_AdvFind)
 {
    m_ui->setupUi(this);
+   this->setWindowIcon(QIcon("://resources/diamond.png"));
 
    m_ui->find->setText(findText);
    m_ui->findType->setText(fileType);

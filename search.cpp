@@ -110,7 +110,7 @@ void MainWindow::findNext()
 
       int result = msgFindNext.exec();
 
-      if (result == QMessageBox::Yes ) {
+      if (result == QMessageBox::Yes) {
 
          // reset to the beginning of the document
          QTextCursor cursor(m_textEdit->textCursor());
@@ -458,7 +458,7 @@ void MainWindow::replace()
    Dialog_Replace *dw = new Dialog_Replace(m_findText, m_findList, m_replaceText, m_replaceList);
    int result = dw->exec();
 
-   if ( result >= QDialog::Accepted) {
+   if (result >= QDialog::Accepted) {
       m_findText = dw->get_findText();
       m_findList = dw->get_findList();
 
@@ -475,14 +475,17 @@ void MainWindow::replace()
       m_replaceList = dw->get_replaceList();
 
       // add to list if not found
-      index = m_findList.indexOf(m_replaceText);
+      index = m_replaceList.indexOf(m_replaceText);
 
       if (index == -1) {
          m_replaceList.prepend(m_replaceText);
+
+         json_Write(FIND_REPLACE);
+
       } else {
          m_replaceList.move(index,0);
+
       }
-      json_Write(FIND_REPLACE);
 
       // get the flags
       m_flags = 0;
@@ -515,6 +518,7 @@ void MainWindow::replace()
 
       if (upd_Find && ! upd_Replace)   {
          m_findList = dw->get_findList();
+
          json_Write(FIND_LIST);
 
       } else if (upd_Replace)   {
@@ -523,7 +527,6 @@ void MainWindow::replace()
 
          json_Write(FIND_REPLACE);
       }
-
    }
 
    delete dw;

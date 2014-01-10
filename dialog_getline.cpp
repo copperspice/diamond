@@ -19,32 +19,47 @@
 *
 **************************************************************************/
 
-#ifndef DIALOG_BUFFER_H
-#define DIALOG_BUFFER_H
+#include "dialog_getline.h"
 
-#include "ui_dialog_buffer.h"
-#include "mainwindow.h"
-
-#include <QDialog>
-
-class Dialog_Buffer : public QDialog
+Dialog_GetLine::Dialog_GetLine()
+   : m_ui(new Ui::Dialog_GetLine)
 {
-   Q_OBJECT
+   m_ui->setupUi(this);
+   this->setWindowIcon(QIcon("://resources/diamond.png"));
 
-   public:
-      Dialog_Buffer(QList<QString> copyBuffer);
-      ~Dialog_Buffer();
-      int get_Index();
+   m_ui->value->setText("1");
 
-   private:
-      Ui::Dialog_Buffer *m_ui;
+   // any key deletes first, right arrow to continue typing
+   m_ui->value->selectAll();
 
-   protected:
-      bool eventFilter(QObject *object, QEvent *event);
+   connect(m_ui->ok_PB,     SIGNAL(clicked()),this, SLOT(Ok()));
+   connect(m_ui->cancel_PB, SIGNAL(clicked()),this, SLOT(Cancel()));
+}
 
-   private slots:     
-      void Select();
-      void Cancel();     
-};
+Dialog_GetLine::~Dialog_GetLine()
+{
+   delete m_ui;
+}
 
-#endif
+void Dialog_GetLine::Ok()
+{
+   this->done(1);
+}
+
+void Dialog_GetLine::Cancel()
+{
+   this->done(0);
+}
+
+QString Dialog_GetLine::get_Value()
+{
+   return m_ui->value->text();
+}
+
+void Dialog_GetLine::set_ColNo()
+{
+   setWindowTitle("Go to Column");
+   m_ui->label->setText("Column Number:");
+}
+
+

@@ -181,7 +181,7 @@ class MainWindow : public QMainWindow
       void open(QString path);
 
       // recent files
-      static const int rf_MaxCnt = 15;
+      static const int rf_MaxCnt = 10;
       QAction *rf_Actions[rf_MaxCnt];
       QStringList m_rf_List;
 
@@ -193,7 +193,7 @@ class MainWindow : public QMainWindow
       static const int openTab_MaxCnt = 20;
       QAction *openTab_Actions[openTab_MaxCnt];
 
-      void openTab_CreateMenus();
+      void openTab_CreateMenus();      
       void openTab_Add();
       void openTab_Delete();
       void openTab_UpdateActions();
@@ -425,7 +425,9 @@ class MainWindow : public QMainWindow
       void rf_RemoveFName();
 
       // open (tab) files
+      void showContextTabFile(const QPoint &pt);
       void openTab_Select();
+      void openTab_redo();
 
       // split
       void split_Title();     

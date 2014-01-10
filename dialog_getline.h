@@ -19,46 +19,29 @@
 *
 **************************************************************************/
 
-#include "dialog_get1.h"
+#ifndef DIALOG_GETLINE_H
+#define DIALOG_GETLINE_H
 
-Dialog_Get1::Dialog_Get1()
-   : m_ui(new Ui::Dialog_Get1)
-{
-   m_ui->setupUi(this);
+#include "ui_dialog_getline.h"
 
-   m_ui->value->setText("1");
+#include <QDialog>
 
-   // any key deletes first, right arrow to continue typing
-   m_ui->value->selectAll();
+class Dialog_GetLine : public QDialog
+{     
+   Q_OBJECT
 
-   connect(m_ui->ok_PB,     SIGNAL(clicked()),this, SLOT(Ok()));
-   connect(m_ui->cancel_PB, SIGNAL(clicked()),this, SLOT(Cancel()));
-}
+   public:
+      Dialog_GetLine();
+      ~Dialog_GetLine();
+      QString get_Value();
+      void set_ColNo();
 
-Dialog_Get1::~Dialog_Get1()
-{
-   delete m_ui;
-}
+   private:
+      Ui::Dialog_GetLine *m_ui;
 
-void Dialog_Get1::Ok()
-{
-   this->done(1);
-}
+   private slots:
+      void Ok();
+      void Cancel();
+};
 
-void Dialog_Get1::Cancel()
-{
-   this->done(0);
-}
-
-QString Dialog_Get1::get_Value()
-{
-   return m_ui->value->text();
-}
-
-void Dialog_Get1::set_ColNo()
-{
-   setWindowTitle("Go to Column");
-   m_ui->label->setText("Column Number:");
-}
-
-
+#endif

@@ -30,7 +30,9 @@ Dialog_Symbols::Dialog_Symbols(MainWindow *from)
    : m_ui(new Ui::Dialog_Symbols)
 {
    m_parent = from;
+
    m_ui->setupUi(this);   
+   this->setWindowIcon(QIcon("://resources/diamond.png"));
 
    // alter the hightlight color
    QPalette temp = m_ui->sampleList->palette();

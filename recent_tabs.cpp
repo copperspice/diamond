@@ -102,7 +102,59 @@ void MainWindow::openTab_Select()
             openTab_UpdateActions();
          }
 
-      } // fileName.isEmpty()
+      }
+   }
+}
+
+void MainWindow::showContextTabFile(const QPoint &pt)
+{
+   QAction *action = m_ui->menuWindow->actionAt(pt);
+
+   if (action)  {
+      QString data = action->data().toString();
+
+      if (data == "select-tab")  {
+         QMenu *menu = new QMenu(this);
+         menu->addAction("Reorder Tab file list", this, SLOT(openTab_redo() ));
+
+         menu->exec(m_ui->menuWindow->mapToGlobal(pt));
+         delete menu;
+      }
+   }
+}
+
+void MainWindow::openTab_redo()
+{
+   QAction *action;
+   action = (QAction *)sender();
+
+   if (action) {
+      // re-populate m_openedFiles
+      QString tName;
+
+      int cnt = m_tabWidget->count();
+      m_openedFiles.clear();
+
+      for (int k = 0; k < cnt; ++k) {
+         tName = this->get_curFileName(k);
+         m_openedFiles.append(tName);
+      }
+
+      for (int i = 0; i < openTab_MaxCnt; ++i) {
+
+         if (i < cnt)  {
+            tName = m_openedFiles[i];
+         } else {
+            tName = "file"+QString::number(i);
+         }
+
+         openTab_Actions[i]->setText(tName);
+
+         if (i >= cnt)  {
+            openTab_Actions[i]->setVisible(false);
+         }
+
+      }
    }
 }
 

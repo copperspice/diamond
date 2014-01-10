@@ -38,6 +38,8 @@ Dialog_Replace::Dialog_Replace(QString findText, QStringList findList,
    m_upd_Replace = false;
 
    m_ui->setupUi(this);
+   this->setWindowIcon(QIcon("://resources/diamond.png"));
+
    this->setUp();
 
    // display last edit value

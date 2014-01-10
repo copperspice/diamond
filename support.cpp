@@ -20,7 +20,7 @@
 **************************************************************************/
 
 #include "dialog_buffer.h"
-#include "dialog_get1.h"
+#include "dialog_getline.h"
 #include "dialog_xp_getdir.h"
 #include "mainwindow.h"
 
@@ -158,7 +158,7 @@ struct Settings MainWindow::get_StructData()
 
 int MainWindow::get_Value1(const QString route)
 {
-   Dialog_Get1 *dw = new Dialog_Get1();
+   Dialog_GetLine *dw = new Dialog_GetLine();
 
    if (route == "col") {
       dw->set_ColNo();
@@ -178,6 +178,35 @@ int MainWindow::get_Value1(const QString route)
 
 bool MainWindow::loadFile(const QString &fileName, bool addNewTab, bool isAuto)
 {
+   // part 1
+   int pos = m_openedFiles.indexOf(fileName);
+
+   if (pos >= 0) {
+      int count = m_tabWidget->count();
+
+      QWidget *temp;
+      DiamondTextEdit *textEdit;
+
+      for (int k = 0; k < count; ++k) {
+
+         temp = m_tabWidget->widget(k);
+         textEdit = dynamic_cast<DiamondTextEdit *>(temp);
+
+         if (textEdit) {
+            QString t_Fname = m_tabWidget->tabWhatsThis(k);
+
+            if (t_Fname == fileName) {
+               // file is alredy open, select the tab
+
+               m_textEdit = textEdit;
+               m_tabWidget->setCurrentIndex(k);
+               return true;
+            }
+         }
+      }
+   }
+
+   // part 2
    QFile file(fileName);
 
    if (! file.open(QFile::ReadOnly | QFile::Text)) {
@@ -351,7 +380,7 @@ void MainWindow::setCurrentTitle(const QString &fileName, bool tabChange)
       m_tabWidget->setTabWhatsThis(index, m_curFile);
 
       if (! m_rf_List.contains(m_curFile) ) {
-         rf_Update();
+         rf_Update();         
       }
 
       if (! tabChange)  {

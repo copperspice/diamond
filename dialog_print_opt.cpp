@@ -31,6 +31,7 @@ Dialog_PrintOptions::Dialog_PrintOptions(MainWindow *from, struct PrintSettings 
    m_print  = data;
 
    m_ui->setupUi(this);
+   this->setWindowIcon(QIcon("://resources/diamond.png"));
 
    initData();
 

@@ -28,9 +28,9 @@
 
 Dialog_Buffer::Dialog_Buffer(QList<QString> copyBuffer)
    : m_ui(new Ui::Dialog_Buffer)
-{
-   // m_parent = from;
-   m_ui->setupUi(this);   
+{  
+   m_ui->setupUi(this);
+   this->setWindowIcon(QIcon("://resources/diamond.png"));
 
    // alter the hightlight color
    QPalette temp = m_ui->bufferTable->palette();

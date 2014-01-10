@@ -37,6 +37,7 @@ Dialog_Options::Dialog_Options(MainWindow *from, struct Options data)
    m_options  = data;
 
    m_ui->setupUi(this);
+   this->setWindowIcon(QIcon("://resources/diamond.png"));
 
    initData();
 

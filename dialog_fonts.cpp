@@ -31,6 +31,7 @@ Dialog_Fonts::Dialog_Fonts(QFont normal, QFont column)
    m_fontColumn = column;
 
    m_ui->setupUi(this);
+   this->setWindowIcon(QIcon("://resources/diamond.png"));
 
    m_ui->fontNormal->setText(m_fontNormal.toString());
    m_ui->fontColumn->setText(m_fontColumn.toString());

@@ -35,8 +35,9 @@ Dialog_Find::Dialog_Find(QString findText, QStringList findList)
    m_upd_Find = false;
 
    m_ui->setupUi(this);
-   this->setUp();
    this->setWindowIcon(QIcon("://resources/diamond.png"));
+
+   this->setUp();
 
    // display last edit value
    m_ui->find_Combo->lineEdit()->setText(findText);

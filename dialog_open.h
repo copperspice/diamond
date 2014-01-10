@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright (c) 2012-2013 Barbara Geller
+* Copyright (c) 2012-2014 Barbara Geller
 * All rights reserved.
 *
 * This file is part of Diamond Editor.
@@ -19,29 +19,30 @@
 *
 **************************************************************************/
 
-#ifndef DIALOG_GET1_H
-#define DIALOG_GET1_H
+#ifndef DIALOG_OPEN_H
+#define DIALOG_OPEN_H
 
-#include "ui_dialog_get1.h"
+#include "ui_dialog_open.h"
+#include "mainwindow.h"
 
 #include <QDialog>
 
-class Dialog_Get1 : public QDialog
-{     
+class Dialog_Open : public QDialog
+{
    Q_OBJECT
 
    public:
-      Dialog_Get1();
-      ~Dialog_Get1();
-      QString get_Value();
-      void set_ColNo();
+      Dialog_Open(QStringList list);
+      ~Dialog_Open();
+      QString get_FileName();
 
    private:
-      Ui::Dialog_Get1 *m_ui;
+      Ui::Dialog_Open *m_ui;    
+      QStringList m_list;
 
    private slots:
-      void Ok();
-      void Cancel();
+      void Open();
+      void Cancel();     
 };
 
 #endif

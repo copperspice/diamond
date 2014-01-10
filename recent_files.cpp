@@ -26,6 +26,7 @@
 #include <QStringList>
 #include <QVariant>
 
+// ****  recent files
 void MainWindow::rf_CreateMenus()
 {
    int cnt = m_rf_List.count();
@@ -92,9 +93,9 @@ void MainWindow::showContextMenuFile(const QPoint &pt)
          QString fName = action->text();
 
          QMenu *menu = new QMenu(this);
-         menu->addAction("Clear Recent File List", this, SLOT(rf_ClearList()) );
+         menu->addAction("Clear Recent file list", this, SLOT(rf_ClearList()) );
 
-         QAction *rfAction = menu->addAction("Remove " + fName, this, SLOT(rf_RemoveFName() ));
+         QAction *rfAction = menu->addAction("Remove file:  " + fName, this, SLOT(rf_RemoveFName() ));
          rfAction->setData(fName);
 
          menu->exec(m_ui->menuFile->mapToGlobal(pt));
@@ -242,14 +243,12 @@ void MainWindow::showContextMenuFolder(const QPoint &pt)
          QString fName = action->text();
 
          QMenu *menu = new QMenu(this);
-         menu->addAction("Clear Recent Folder List",  this, SLOT(rfolder_ClearList()) );
+         menu->addAction("Clear Recent folder list",  this, SLOT(rfolder_ClearList()) );
 
-         QAction *rfAction = menu->addAction("Remove Folder " + fName, this,  SLOT(rfolder_RemoveFName() ));
+         QAction *rfAction = menu->addAction("Remove folder:  " + fName, this,  SLOT(rfolder_RemoveFName() ));
          rfAction->setData(fName);
 
-//       menu->exec(m_ui->menuFile->mapToGlobal(pt));
          menu->exec(QCursor::pos());
-
          delete menu;
       }
    }
@@ -263,7 +262,7 @@ void MainWindow::rfolder_ClearList()
    if (action) {
       m_rfolder_List.clear();
 
-      // save new list of files
+      // save new list
       json_Write(RECENTFOLDER);
 
       // update actions
@@ -284,7 +283,7 @@ void MainWindow::rfolder_RemoveFName()
       if (index >= 0) {
          m_rfolder_List.removeAt(index);
 
-         // save new list of files
+         // save new list
          json_Write(RECENTFOLDER);
 
          // update actions
@@ -311,7 +310,7 @@ void MainWindow::rfolder_Add()
       m_rfolder_List.append(fileName);
    }
 
-   // save new list of files
+   // save new list
    json_Write(RECENTFOLDER);
 
    // update actions

@@ -36,6 +36,7 @@ Dialog_XP_GetDir::Dialog_XP_GetDir(MainWindow *from, const QString title, const 
    m_parent = from;
 
    m_ui->setupUi(this);
+   this->setWindowIcon(QIcon("://resources/diamond.png"));
    setWindowTitle(title);
 
    QSize size = QSize(750, 650);

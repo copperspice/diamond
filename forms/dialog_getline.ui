@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>Dialog_Get1</class>
- <widget class="QDialog" name="Dialog_Get1">
+ <class>Dialog_GetLine</class>
+ <widget class="QDialog" name="Dialog_GetLine">
   <property name="windowModality">
    <enum>Qt::NonModal</enum>
   </property>
