@@ -179,28 +179,31 @@ int MainWindow::get_Value1(const QString route)
 bool MainWindow::loadFile(const QString &fileName, bool addNewTab, bool isAuto)
 {
    // part 1
-   int pos = m_openedFiles.indexOf(fileName);
+   if (addNewTab)  {
+      // test if file is open in another tab
+      int pos = m_openedFiles.indexOf(fileName);
 
-   if (pos >= 0) {
-      int count = m_tabWidget->count();
+      if (pos >= 0) {
+         int count = m_tabWidget->count();
 
-      QWidget *temp;
-      DiamondTextEdit *textEdit;
+         QWidget *temp;
+         DiamondTextEdit *textEdit;
 
-      for (int k = 0; k < count; ++k) {
+         for (int k = 0; k < count; ++k) {
 
-         temp = m_tabWidget->widget(k);
-         textEdit = dynamic_cast<DiamondTextEdit *>(temp);
+            temp = m_tabWidget->widget(k);
+            textEdit = dynamic_cast<DiamondTextEdit *>(temp);
 
-         if (textEdit) {
-            QString t_Fname = m_tabWidget->tabWhatsThis(k);
+            if (textEdit) {
+               QString t_Fname = m_tabWidget->tabWhatsThis(k);
 
-            if (t_Fname == fileName) {
-               // file is alredy open, select the tab
+               if (t_Fname == fileName) {
+                  // file is alredy open, select the tab
 
-               m_textEdit = textEdit;
-               m_tabWidget->setCurrentIndex(k);
-               return true;
+                  m_textEdit = textEdit;
+                  m_tabWidget->setCurrentIndex(k);
+                  return true;
+               }
             }
          }
       }
@@ -245,10 +248,12 @@ bool MainWindow::loadFile(const QString &fileName, bool addNewTab, bool isAuto)
    setCurrentTitle(fileName);
    setStatusBar(tr("File loaded"), 1500);
 
-   // recent folders
-   rfolder_Add();
+   if (! addNewTab)  {
+      // recent folders
+      rfolder_Add();
+   }
 
-   if (! isAuto) {
+   if ( addNewTab && (! isAuto) )  {
       // update open tab list
       openTab_Add();
    }
@@ -298,6 +303,25 @@ bool MainWindow::querySave()
 
 bool MainWindow::saveFile(const QString &fileName, bool isSaveOne)
 {
+
+   // BROOM
+   int whichTab = m_tabWidget->currentIndex();
+   QString t1 = m_tabWidget->tabWhatsThis(whichTab);
+   QString t2 = m_tabWidget->tabText(whichTab);
+
+   if (t2 != "untitled.txt") {
+
+      if (fileName != t1 || ! fileName.endsWith(t2))  {
+
+         csError("Save File", "FileName: " + fileName + "\n  T1: " + t1 + "\n T2: " + t2);
+
+         return false;
+      }
+   }
+
+   // BROOM
+
+
    QFile file(fileName);
 
    if (! file.open(QFile::WriteOnly | QFile::Text)) {

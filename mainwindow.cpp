@@ -104,7 +104,6 @@ MainWindow::MainWindow(QStringList fileList, QStringList flagList)
    m_ui->menuWindow->setContextMenuPolicy(Qt::CustomContextMenu);
    connect(m_ui->menuWindow, SIGNAL(customContextMenuRequested(const QPoint &)), this, SLOT(showContextTabFile(const QPoint &)));
 
-
    // save flags after reading config and before autoload
    m_args.flag_noAutoLoad   = false;
    m_args.flag_noSaveConfig = false;
