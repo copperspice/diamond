@@ -82,8 +82,20 @@ MainWindow::MainWindow(QStringList fileList, QStringList flagList)
    createToggles();
    createConnections();
 
+
+   // BROOM - hard coded
+   m_prefolder_List.append("z:\\cs4\\src");
+   m_prefolder_List.append("z:\\w_doxygen\\cs_build");
+   m_prefolder_List.append("z:\\");
+   m_prefolder_List.append("c:\\Documents and Settings\\Barbara\\bin");
+
+
+
    // recent folders
    rfolder_CreateMenus();
+
+   // reset  folders
+   prefolder_CreateMenus();
 
    // recent files
    rf_CreateMenus(); 
@@ -92,17 +104,17 @@ MainWindow::MainWindow(QStringList fileList, QStringList flagList)
    createSpellCheck();
 
    // recent folders, context menu
-   QMenu *menuFolder = m_ui->actionOpen_RecentFolder->menu();
-   menuFolder->setContextMenuPolicy(Qt::CustomContextMenu);
-   connect(menuFolder, SIGNAL(customContextMenuRequested(const QPoint &)), this, SLOT(showContextMenuFolder(const QPoint &)));
+   QMenu *menuFolder_R = m_ui->actionOpen_RecentFolder->menu();
+   menuFolder_R->setContextMenuPolicy(Qt::CustomContextMenu);
+   connect(menuFolder_R, SIGNAL(customContextMenuRequested(const QPoint &)), this, SLOT(showContext_RecentFolder(const QPoint &)));
 
    // recent files, context menu
    m_ui->menuFile->setContextMenuPolicy(Qt::CustomContextMenu);
-   connect(m_ui->menuFile, SIGNAL(customContextMenuRequested(const QPoint &)), this, SLOT(showContextMenuFile(const QPoint &)));
+   connect(m_ui->menuFile, SIGNAL(customContextMenuRequested(const QPoint &)),   this, SLOT(showContext_Files(const QPoint &)));
 
    // window tab, context menu
    m_ui->menuWindow->setContextMenuPolicy(Qt::CustomContextMenu);
-   connect(m_ui->menuWindow, SIGNAL(customContextMenuRequested(const QPoint &)), this, SLOT(showContextTabFile(const QPoint &)));
+   connect(m_ui->menuWindow, SIGNAL(customContextMenuRequested(const QPoint &)), this, SLOT(showContext_Tabs(const QPoint &)));
 
    // save flags after reading config and before autoload
    m_args.flag_noAutoLoad   = false;

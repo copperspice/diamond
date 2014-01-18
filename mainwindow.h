@@ -180,6 +180,15 @@ class MainWindow : public QMainWindow
       void rfolder_UpdateActions();
       void open(QString path);
 
+      // preset folders
+      static const int prefolder_MaxCnt = 10;
+      QAction *prefolder_Actions[prefolder_MaxCnt];
+      QStringList m_prefolder_List;
+
+      void prefolder_CreateMenus();
+      //void prefolder_Add();
+      //void prefolder_UpdateActions();
+
       // recent files
       static const int rf_MaxCnt = 10;
       QAction *rf_Actions[rf_MaxCnt];
@@ -412,20 +421,23 @@ class MainWindow : public QMainWindow
       void spell_replaceWord();
 
       // recent folders
-      void showContextMenuFolder(const QPoint &pt);
+      void showContext_RecentFolder(const QPoint &pt);
       void rfolder_Open();
       void rfolder_ClearList();
       void rfolder_RemoveFName();
 
+      // preset folders      
+      void prefolder_Open();
+
       // recent files
-      void showContextMenuFile(const QPoint &pt);
+      void showContext_Files(const QPoint &pt);
       void rf_Open();
       void rf_ClearList();
       void rf_DeleteName();
       void rf_RemoveFName();
 
       // open (tab) files
-      void showContextTabFile(const QPoint &pt);
+      void showContext_Tabs(const QPoint &pt);
       void openTab_Select();
       void openTab_redo();
 

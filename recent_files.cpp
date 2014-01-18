@@ -82,7 +82,7 @@ void MainWindow::rf_Open()
    }
 }
 
-void MainWindow::showContextMenuFile(const QPoint &pt)
+void MainWindow::showContext_Files(const QPoint &pt)
 {
    QAction *action = m_ui->menuFile->actionAt(pt);
 
@@ -232,7 +232,7 @@ void MainWindow::rfolder_Open()
    }
 }
 
-void MainWindow::showContextMenuFolder(const QPoint &pt)
+void MainWindow::showContext_RecentFolder(const QPoint &pt)
 {
    QAction *action = m_ui->actionOpen_RecentFolder->menu()->actionAt(pt);
 
@@ -334,3 +334,111 @@ void MainWindow::rfolder_UpdateActions()
    }
 }
 
+
+
+// ****  preset folders
+void MainWindow::prefolder_CreateMenus()
+{
+   int cnt = m_prefolder_List.count();
+
+   QString tName;
+   QMenu *menu = new QMenu(this);
+
+   for (int i = 0; i < prefolder_MaxCnt; ++i) {
+
+      if (i < cnt)  {
+         tName = m_prefolder_List[i];
+      } else {
+         tName = "prefolder"+QString::number(i);
+      }
+
+      prefolder_Actions[i] = new QAction(tName, this);
+      prefolder_Actions[i]->setData("preset-folder");
+
+      menu->addAction(prefolder_Actions[i]);
+
+      if (i >= cnt)  {
+         prefolder_Actions[i]->setVisible(false);
+      }
+
+      connect(prefolder_Actions[i], SIGNAL(triggered()), this, SLOT(prefolder_Open()));
+   }
+
+   m_ui->actionOpen_PresetFolder->setMenu(menu);
+
+}
+
+void MainWindow::prefolder_Open()
+{
+   QAction *action;
+   action = (QAction *)sender();
+
+   if (action) {
+      // pass the path
+      this->open(action->text());
+   }
+}
+
+
+/*
+
+void MainWindow::rfolder_ClearList()
+{
+   QAction *action;
+   action = (QAction *)sender();
+
+   if (action) {
+      m_rfolder_List.clear();
+
+      // save new list
+      json_Write(RECENTFOLDER);
+
+      // update actions
+      rfolder_UpdateActions();
+   }
+}
+
+
+void MainWindow::rfolder_Add()
+{
+   if (m_curFile.isEmpty()) {
+      return;
+   }
+
+   int cnt = m_rfolder_List.count();
+
+   if (cnt >= rfolder_MaxCnt ) {
+      m_rfolder_List.removeFirst();
+   }
+
+   QString fileName = this->pathName(m_curFile);
+
+   if (! m_rfolder_List.contains(fileName)) {
+      m_rfolder_List.append(fileName);
+   }
+
+   // save new list
+   json_Write(RECENTFOLDER);
+
+   // update actions
+   rfolder_UpdateActions();
+}
+
+void MainWindow::rfolder_UpdateActions()
+{
+   int cnt = m_rfolder_List.count();
+
+   for (int i = 0; i < rfolder_MaxCnt; ++i) {
+
+     if (i < cnt)  {
+        rfolder_Actions[i]->setText(m_rfolder_List[i]);
+        rfolder_Actions[i]->setVisible(true);
+
+     } else {
+        rfolder_Actions[i]->setVisible(false);
+     }
+
+   }
+}
+
+*/

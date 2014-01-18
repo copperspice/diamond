@@ -106,7 +106,7 @@ void MainWindow::openTab_Select()
    }
 }
 
-void MainWindow::showContextTabFile(const QPoint &pt)
+void MainWindow::showContext_Tabs(const QPoint &pt)
 {
    QAction *action = m_ui->menuWindow->actionAt(pt);
 
