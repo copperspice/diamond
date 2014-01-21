@@ -82,15 +82,6 @@ MainWindow::MainWindow(QStringList fileList, QStringList flagList)
    createToggles();
    createConnections();
 
-
-   // BROOM - hard coded
-   m_prefolder_List.append("z:\\cs4\\src");
-   m_prefolder_List.append("z:\\w_doxygen\\cs_build");
-   m_prefolder_List.append("z:\\");
-   m_prefolder_List.append("c:\\Documents and Settings\\Barbara\\bin");
-
-
-
    // recent folders
    rfolder_CreateMenus();
 

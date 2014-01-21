@@ -284,6 +284,14 @@ bool MainWindow::json_Read()
          json_Write(MACRO_NAMES);
       }
 
+      // preset folders
+      list = object.value("preset-folders").toArray();
+      cnt = list.count();
+
+      for (int k = 0; k < cnt; k++)  {
+         m_prefolder_List.append(list.at(k).toString());
+      }
+
       // recent folders
       list = object.value("recent-folders").toArray();
       cnt = list.count();
@@ -592,6 +600,13 @@ bool MainWindow::json_Write(Option route)
             {
                QJsonArray temp = QJsonArray::fromStringList(m_macroNames);
                object.insert("macro-names", temp);
+               break;
+            }
+
+         case PRESET_FOLDER:
+            {                       
+               QJsonArray temp = QJsonArray::fromStringList(m_prefolder_List);
+               object.insert("preset-folders", temp);
                break;
             }
 
