@@ -28,7 +28,7 @@
 
 class Dialog_GetLine : public QDialog
 {     
-   Q_OBJECT
+   CS_OBJECT(Dialog_GetLine)
 
    public:
       Dialog_GetLine();
@@ -39,9 +39,11 @@ class Dialog_GetLine : public QDialog
    private:
       Ui::Dialog_GetLine *m_ui;
 
-   private slots:
-      void Ok();
-      void Cancel();
+   private :
+      CS_SLOT_1(Private, void Ok())
+      CS_SLOT_2(Ok) 
+      CS_SLOT_1(Private, void Cancel())
+      CS_SLOT_2(Cancel) 
 };
 
 #endif

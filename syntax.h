@@ -33,7 +33,7 @@
 
 class Syntax : public QSyntaxHighlighter
 {
-   Q_OBJECT
+   CS_OBJECT(Syntax)
 
    public:
       Syntax(QTextDocument *document,

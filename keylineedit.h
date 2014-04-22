@@ -26,7 +26,7 @@
 
 class KeyLineEdit : public QLineEdit
 {
-   Q_OBJECT
+   CS_OBJECT(KeyLineEdit)
 
    public:
       explicit KeyLineEdit(QWidget *parent = 0);

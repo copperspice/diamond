@@ -303,9 +303,12 @@ bool MainWindow::querySave()
 
 bool MainWindow::saveFile(const QString &fileName, bool isSaveOne)
 {
-
-   // BROOM
    int whichTab = m_tabWidget->currentIndex();
+   m_tabWidget->setTabText(whichTab, strippedName(fileName));
+   m_tabWidget->setTabWhatsThis(whichTab, fileName);
+
+
+   // BROOM  
    QString t1 = m_tabWidget->tabWhatsThis(whichTab);
    QString t2 = m_tabWidget->tabText(whichTab);
 
@@ -313,12 +316,11 @@ bool MainWindow::saveFile(const QString &fileName, bool isSaveOne)
 
       if (fileName != t1 || ! fileName.endsWith(t2))  {
 
-         csError("Save File", "FileName: " + fileName + "\n  T1: " + t1 + "\n T2: " + t2);
+         csError("Save File Error", "Passed FN: " + fileName + "\n  Whats's This: " + t1 + "\n Tab Text: " + t2);
 
          return false;
       }
    }
-
    // BROOM
 
 
@@ -422,7 +424,7 @@ void MainWindow::setDiamondTitle(const QString title)
 
    // displays as: Diamond Editor --  File Name[*]
    QString temp = QChar(0x02014);
-   setWindowTitle("Diamond Editor " + temp + " " + title + " [*]" );
+   setWindowTitle("Diamond Editor CS4 " + temp + " " + title + " [*]" );      // BROOM
 }
 
 void MainWindow::setStatus_LineCol()

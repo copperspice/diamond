@@ -15,7 +15,8 @@
       "\\bor\\b",
       "\\bor_eq\\b",
       "\\bxor\\b",
-      "\\bxor_eq\\b"
+      "\\bxor_eq\\b",
+      "<.*>\\s*$"
     ],
     "comment-multi-start": "/\\*",
     "comment-multi-end": "\\*/",
@@ -126,6 +127,10 @@
       "\\bvolatile\\b",
       "\\buchar\\b",
       "\\buint\\b",
+      "\\bulong\\b",
+      "\\bushort\\b",
+      "\\bqint64\\b",
+      "\\bquint64\\b",
       "\\bint8_t\\b",
       "\\bint16_t\\b",
       "\\bint32_t\\b",

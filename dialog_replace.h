@@ -31,7 +31,7 @@
 
 class Dialog_Replace : public QDialog
 {     
-   Q_OBJECT
+   CS_OBJECT(Dialog_Replace)
 
    public:      
       Dialog_Replace(QString findText, QStringList findList,
@@ -56,18 +56,27 @@ class Dialog_Replace : public QDialog
       bool m_upd_Find;
       bool m_upd_Replace;
 
-   private slots:
-      void replace();
-      void replaceAll();
-      void cancel();
+   private :
+      CS_SLOT_1(Private, void replace())
+      CS_SLOT_2(replace) 
+      CS_SLOT_1(Private, void replaceAll())
+      CS_SLOT_2(replaceAll) 
+      CS_SLOT_1(Private, void cancel())
+      CS_SLOT_2(cancel) 
 
-      void combo_ContextMenu_F(const QPoint &pt);
-      void menu_clearList_F();
-      void menu_deleteEntry_F();
+      CS_SLOT_1(Private, void combo_ContextMenu_F(const QPoint & pt))
+      CS_SLOT_2(combo_ContextMenu_F) 
+      CS_SLOT_1(Private, void menu_clearList_F())
+      CS_SLOT_2(menu_clearList_F) 
+      CS_SLOT_1(Private, void menu_deleteEntry_F())
+      CS_SLOT_2(menu_deleteEntry_F) 
 
-      void combo_ContextMenu_R(const QPoint &pt);
-      void menu_clearList_R();
-      void menu_deleteEntry_R();
+      CS_SLOT_1(Private, void combo_ContextMenu_R(const QPoint & pt))
+      CS_SLOT_2(combo_ContextMenu_R) 
+      CS_SLOT_1(Private, void menu_clearList_R())
+      CS_SLOT_2(menu_clearList_R) 
+      CS_SLOT_1(Private, void menu_deleteEntry_R())
+      CS_SLOT_2(menu_deleteEntry_R) 
 };
 
 #endif

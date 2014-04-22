@@ -29,7 +29,7 @@
 
 class Dialog_AdvFind : public QDialog
 {     
-   Q_OBJECT
+   CS_OBJECT(Dialog_AdvFind)
 
    public:
       Dialog_AdvFind(QString text, QString fileType, QString findFolder, bool searchFolders);
@@ -46,10 +46,13 @@ class Dialog_AdvFind : public QDialog
    private:
       Ui::Dialog_AdvFind *m_ui;
 
-   private slots:
-      void pick_Folder();
-      void Find();
-      void Cancel();
+   private :
+      CS_SLOT_1(Private, void pick_Folder())
+      CS_SLOT_2(pick_Folder) 
+      CS_SLOT_1(Private, void Find())
+      CS_SLOT_2(Find) 
+      CS_SLOT_1(Private, void Cancel())
+      CS_SLOT_2(Cancel) 
 };
 
 #endif

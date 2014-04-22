@@ -13,7 +13,7 @@ hunspell_path=../hunspell
 gcclibs=libgcc_s_sjlj-1  libstdc++-6  libwinpthread-1
 
 # list of CopperSpice libraries
-cslibs=Core Gui Network Script WebKit
+cslibs=Core Gui Network WebKit
 
 # dll for runtime, la for linking
 hunspell_dll=$(hunspell_path)/bin/libhunspell-1.3-0.dll
@@ -23,23 +23,25 @@ hunspell_la=$(hunspell_path)/lib/libhunspell-1.3.dll.a
 AM_CXXFLAGS+=-mwindows -I$(hunspell_path)/include  -I..  -Wall
 
 # target app name
-deploy_PROGRAMS = Diamond
+deploy_PROGRAMS = Diamond_Cs4
 
 # copy the required CopperSpice and gcc files for deployment - windows only
 install-data-hook:
 	mkdir -p $(deploydir)
-	cp --preserve=timestamps -u $(patsubst %,$(gccpath)/bin/%.dll,$(gcclibs))  $(deploydir)
-	cp --preserve=timestamps -u $(patsubst %,$(CS_HOME)/bin/libCs%1-0.dll,$(cslibs))  $(deploydir)
-	cp --preserve=timestamps -u $(hunspell_dll)  $(deploydir)
+
+	rsync -W -a --modify-window=2  $(patsubst %,$(gccpath)/bin/%.dll,$(gcclibs))  $(deploydir)
+	rsync -W -a --modify-window=2  $(patsubst %,$(CS_HOME)/bin/libCs%1-0.dll,$(cslibs))  $(deploydir)
+	rsync -W -a --modify-window=2  $(hunspell_dll)  $(deploydir)
 
 # search path for source
 VPATH = ../
 
 # linking
-Diamond_LDFLAGS=$(AM_LDFLAGS)   $(patsubst %,-lCs%1,$(cslibs))
+Diamond_Cs4_LDFLAGS=$(AM_LDFLAGS)   $(patsubst %,-lCs%1,$(cslibs))
+Diamond_Cs4_LDADD=$(hunspell_la)
 
 # 'Diamond' must match the app name
-Diamond_SOURCES = \
+Diamond_Cs4_SOURCES = \
     about.cpp \
     dialog_advfind.cpp \
     dialog_buffer.cpp \
@@ -97,31 +99,6 @@ noinst_HEADERS = \
     util.h
 
 #
-MOCS = \
-    about.h \
-    dialog_advfind.h \
-    dialog_buffer.h \
-    dialog_config.h \
-    dialog_colors.h\
-    dialog_find.h \
-    dialog_fonts.h\
-    dialog_getline.h  \
-    dialog_open.h \
-    dialog_options.h \
-    dialog_macro.h \
-    dialog_print_opt.h \
-    dialog_replace.h  \
-    dialog_symbols.h \
-    dialog_xp_getdir.h \
-    diamond_edit.h  \
-    keylineedit.h \
-    mainwindow.h  \
-    search.h \
-    syntax.h
-
-Diamond_LDADD=$(patsubst %.h,moc_%.$(OBJEXT),$(MOCS))  $(hunspell_la)
-
-#
 FORMS = \
     forms/dialog_advfind.ui \
     forms/dialog_buffer.ui \
@@ -149,7 +126,7 @@ RESOURCES = diamond.qrc
 qrc_diamond.cpp: diamond.qrc   $(wildcard ../resources/*)
 
 # source distribution
-nodist_Diamond_SOURCES = qrc_diamond.cpp
+nodist_Diamond_Cs4_SOURCES = qrc_diamond.cpp
 
 distdir: $(DISTFILES)
 	cd .. ; \
@@ -163,13 +140,13 @@ distdir: $(DISTFILES)
 	mkdir -p $(distdir_custom)/hunspell      ; \
 	mkdir -p $(distdir_custom)/resources     ; \
 	mkdir -p $(distdir_custom)/syntax        ; \
-	cp diamond.qrc                   $(distdir_custom)/              ; \
-	cp bin/*.am                      $(distdir_custom)/bin/          ; \
-	cp resources/*                   $(distdir_custom)/resources/    ; \
-	cp install_files/dictionary/*    $(distdir_custom)/dictionary/   ; \
-	cp install_files/syntax/*.json   $(distdir_custom)/syntax/       ; \
-	cp -r install_files/help/*	      $(distdir_custom)/help/         ; \
-	cp -r $(hunspell_path)/*         $(distdir_custom)/hunspell/     ; \
+	cp diamond.qrc                   $(distdir_custom)/                 ; \
+	cp bin/*.am                      $(distdir_custom)/bin/             ; \
+	cp resources/*                   $(distdir_custom)/resources/       ; \
+	cp install_files/dictionary/*    $(distdir_custom)/dictionary/      ; \
+	cp install_files/syntax/*.json   $(distdir_custom)/syntax/          ; \
+	cp -r install_files/help/*	      $(distdir_custom)/help/            ; \
+	cp -r $(hunspell_path)/*         $(distdir_custom)/hunspell/        ; \
 	find $(distdir_custom)/hunspell/ -name \*.exe -exec rm \{\} \;      ; \
 	find $(distdir_custom)/hunspell/ -name \*.o   -exec rm \{\} \;      ; \
 	find $(distdir_custom)/hunspell/ -name \*.lo  -exec rm \{\} \;      ; \

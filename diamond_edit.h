@@ -39,7 +39,7 @@ class LineNumberArea;
 
 class DiamondTextEdit : public QPlainTextEdit
 {
-   Q_OBJECT
+   CS_OBJECT(DiamondTextEdit)
 
    public:
       DiamondTextEdit(MainWindow *from, struct Settings settings, SpellCheck *spell);
@@ -116,14 +116,19 @@ class DiamondTextEdit : public QPlainTextEdit
       QString m_synFName;
       SyntaxTypes m_syntaxEnum;     
 
-   private slots:
-      void update_LineNumWidth(int newBlockCount);
-      void update_LineNumArea(const QRect &rect, int value);
+   private :
+      CS_SLOT_1(Private, void update_LineNumWidth(int newBlockCount))
+      CS_SLOT_2(update_LineNumWidth) 
+      CS_SLOT_1(Private, void update_LineNumArea(const QRect & rect,int value))
+      CS_SLOT_2(update_LineNumArea) 
 
-   public slots:     
-      void cut();
-      void copy();
-      void paste();      
+   public :     
+      CS_SLOT_1(Public, void cut())
+      CS_SLOT_2(cut) 
+      CS_SLOT_1(Public, void copy())
+      CS_SLOT_2(copy) 
+      CS_SLOT_1(Public, void paste())
+      CS_SLOT_2(paste)       
 };
 
 

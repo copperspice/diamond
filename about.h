@@ -28,7 +28,7 @@
 
 class About : public QWidget
 {
-   Q_OBJECT
+   CS_OBJECT(About)
 
    public:
       About(QString kind, QString file);
@@ -40,13 +40,18 @@ class About : public QWidget
       QVector<int> m_zoomLevels;
       int m_currentZoom;
 
-   private slots:
-      void setCustomContextMenu(const QPoint &pos);
-      void zoomIn();
-      void zoomOut();
+   private :
+      CS_SLOT_1(Private, void setCustomContextMenu(const QPoint & pos))
+      CS_SLOT_2(setCustomContextMenu) 
+      CS_SLOT_1(Private, void zoomIn())
+      CS_SLOT_2(zoomIn) 
+      CS_SLOT_1(Private, void zoomOut())
+      CS_SLOT_2(zoomOut) 
 
-      void actionClose();
-      void actionHome();
+      CS_SLOT_1(Private, void actionClose())
+      CS_SLOT_2(actionClose) 
+      CS_SLOT_1(Private, void actionHome())
+      CS_SLOT_2(actionHome) 
 };
 
 #endif

@@ -29,7 +29,7 @@
 
 class Dialog_Symbols : public QDialog
 {
-   Q_OBJECT
+   CS_OBJECT(Dialog_Symbols)
 
    public:
       Dialog_Symbols(MainWindow *from);
@@ -41,9 +41,11 @@ class Dialog_Symbols : public QDialog
       MainWindow *m_parent;
       QStringList initData();
 
-   private slots:
-      void Insert();
-      void Cancel();     
+   private :
+      CS_SLOT_1(Private, void Insert())
+      CS_SLOT_2(Insert) 
+      CS_SLOT_1(Private, void Cancel())
+      CS_SLOT_2(Cancel)      
 };
 
 #endif

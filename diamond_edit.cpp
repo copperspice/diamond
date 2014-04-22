@@ -57,8 +57,8 @@ DiamondTextEdit::DiamondTextEdit(MainWindow *from, struct Settings settings, Spe
    update_LineNumWidth(0);
 
    // line highlight
-   connect(this, SIGNAL(blockCountChanged(int)),   this, SLOT(update_LineNumWidth(int)));
-   connect(this, SIGNAL(updateRequest(QRect,int)), this, SLOT(update_LineNumArea(QRect,int)));
+   connect(this, SIGNAL(blockCountChanged(int)), this, SLOT(update_LineNumWidth(int)));
+   connect(this, SIGNAL(updateRequest(const QRect &,int)), this, SLOT(update_LineNumArea(const QRect &,int)));
 }
 
 DiamondTextEdit::~DiamondTextEdit()

@@ -31,7 +31,7 @@
 
 class Dialog_PrintOptions: public QDialog
 {
-   Q_OBJECT
+   CS_OBJECT(Dialog_PrintOptions)
 
    public:
       Dialog_PrintOptions(MainWindow *from, struct PrintSettings data);
@@ -49,28 +49,46 @@ class Dialog_PrintOptions: public QDialog
       void initData();
       void macroMenu(QToolButton *widget);
 
-   private slots:
-      void Save();
-      void Cancel();
+   private :
+      CS_SLOT_1(Private, void Save())
+      CS_SLOT_2(Save) 
+      CS_SLOT_1(Private, void Cancel())
+      CS_SLOT_2(Cancel) 
 
-      void fileName();
-      void pathFileName();
-      void pageNumber();
-      void totalPages();
-      void pages();
-      void date();
-      void time();
+      CS_SLOT_1(Private, void fileName())
+      CS_SLOT_2(fileName) 
+      CS_SLOT_1(Private, void pathFileName())
+      CS_SLOT_2(pathFileName) 
+      CS_SLOT_1(Private, void pageNumber())
+      CS_SLOT_2(pageNumber) 
+      CS_SLOT_1(Private, void totalPages())
+      CS_SLOT_2(totalPages) 
+      CS_SLOT_1(Private, void pages())
+      CS_SLOT_2(pages) 
+      CS_SLOT_1(Private, void date())
+      CS_SLOT_2(date) 
+      CS_SLOT_1(Private, void time())
+      CS_SLOT_2(time) 
 
-      void headerLeft();
-      void headerCenter();
-      void headerRight();
-      void footerLeft();
-      void footerCenter();
-      void footerRight();      
+      CS_SLOT_1(Private, void headerLeft())
+      CS_SLOT_2(headerLeft) 
+      CS_SLOT_1(Private, void headerCenter())
+      CS_SLOT_2(headerCenter) 
+      CS_SLOT_1(Private, void headerRight())
+      CS_SLOT_2(headerRight) 
+      CS_SLOT_1(Private, void footerLeft())
+      CS_SLOT_2(footerLeft) 
+      CS_SLOT_1(Private, void footerCenter())
+      CS_SLOT_2(footerCenter) 
+      CS_SLOT_1(Private, void footerRight())
+      CS_SLOT_2(footerRight)       
 
-      void fontHeader();
-      void fontFooter();
-      void fontText();
+      CS_SLOT_1(Private, void fontHeader())
+      CS_SLOT_2(fontHeader) 
+      CS_SLOT_1(Private, void fontFooter())
+      CS_SLOT_2(fontFooter) 
+      CS_SLOT_1(Private, void fontText())
+      CS_SLOT_2(fontText) 
 };
 
 #endif

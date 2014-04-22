@@ -29,7 +29,7 @@
 
 class Dialog_Buffer : public QDialog
 {
-   Q_OBJECT
+   CS_OBJECT(Dialog_Buffer)
 
    public:
       Dialog_Buffer(QList<QString> copyBuffer);
@@ -42,9 +42,11 @@ class Dialog_Buffer : public QDialog
    protected:
       bool eventFilter(QObject *object, QEvent *event);
 
-   private slots:     
-      void Select();
-      void Cancel();     
+   private :     
+      CS_SLOT_1(Private, void Select())
+      CS_SLOT_2(Select) 
+      CS_SLOT_1(Private, void Cancel())
+      CS_SLOT_2(Cancel)      
 };
 
 #endif

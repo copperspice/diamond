@@ -28,7 +28,7 @@ class MainWindow;
 
 class ReplaceReply: public QDialog
 {
-   Q_OBJECT
+   CS_OBJECT(ReplaceReply)
 
    public:
       ReplaceReply(MainWindow *parent);

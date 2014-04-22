@@ -31,7 +31,7 @@
 
 class Dialog_Options : public QDialog
 {
-   Q_OBJECT
+   CS_OBJECT(Dialog_Options)
 
    public:
       Dialog_Options(MainWindow *from, struct Options data);
@@ -46,14 +46,21 @@ class Dialog_Options : public QDialog
       struct Options m_options;
       void initData();
 
-   private slots:
-      void pick_Main();
-      void pick_User();
-      void pick_Syntax();
-      void pick_About();
-      void reset_StandardKey();
-      void Save();
-      void Cancel();
+   private :
+      CS_SLOT_1(Private, void pick_Main())
+      CS_SLOT_2(pick_Main) 
+      CS_SLOT_1(Private, void pick_User())
+      CS_SLOT_2(pick_User) 
+      CS_SLOT_1(Private, void pick_Syntax())
+      CS_SLOT_2(pick_Syntax) 
+      CS_SLOT_1(Private, void pick_About())
+      CS_SLOT_2(pick_About) 
+      CS_SLOT_1(Private, void reset_StandardKey())
+      CS_SLOT_2(reset_StandardKey) 
+      CS_SLOT_1(Private, void Save())
+      CS_SLOT_2(Save) 
+      CS_SLOT_1(Private, void Cancel())
+      CS_SLOT_2(Cancel) 
 };
 
 #endif

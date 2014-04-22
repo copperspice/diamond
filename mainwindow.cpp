@@ -281,9 +281,9 @@ void MainWindow::close_Doc()
 
    if (okClose) {
 
-      if (m_isSplit && (m_splitName == m_curFile)) {
+      if (m_isSplit && (m_splitFileName == m_curFile)) {
          // close the split tab
-         this->bottomClose();
+         this->split_CloseButton();
       }
 
       // update open tab list
@@ -386,12 +386,6 @@ bool MainWindow::save()
    } else {
       return saveFile(m_curFile, true);
    }      
-}
-
-bool MainWindow::saveAs()
-{
-   // called from clicking on the menu
-   return saveAs(true);
 }
 
 bool MainWindow::saveAs(bool isSaveOne)
@@ -1555,9 +1549,9 @@ void MainWindow::tabClose(int index)
 
       if (okClose)  {
 
-         if (m_isSplit && (m_splitName == m_curFile)) {
+         if (m_isSplit && (m_splitFileName == m_curFile)) {
             // close the split tab
-            this->bottomClose();
+            this->split_CloseButton();
          }
 
          // update open tab list
@@ -1661,7 +1655,7 @@ void MainWindow::about()
    msgB.setWindowIcon(QIcon("://resources/diamond.png"));
 
    msgB.setWindowTitle(tr("About Diamond"));
-   msgB.setText(tr("<p style=margin-right:25><center><h5>Version: 1.0<br>Build # 1.15.2014</h5></center></p>"));
+   msgB.setText(tr("<p style=margin-right:25><center><h5>Version: 1.0<br>Build # 5.05.2014</h5></center></p>"));
    msgB.setInformativeText(textBody);
 
    msgB.setStandardButtons(QMessageBox::Ok);
@@ -1692,7 +1686,7 @@ void MainWindow::createConnections()
    connect(m_ui->actionReload,            SIGNAL(triggered()), this, SLOT(reload()));
 
    connect(m_ui->actionSave,              SIGNAL(triggered()), this, SLOT(save()));
-   connect(m_ui->actionSave_As,           SIGNAL(triggered()), this, SLOT(saveAs()));
+   connect(m_ui->actionSave_As,           &QAction::triggered, this, [this](bool){ saveAs(true); } );
    connect(m_ui->actionSave_All,          SIGNAL(triggered()), this, SLOT(saveAll()));
 
    connect(m_ui->actionPrint,             SIGNAL(triggered()), this, SLOT(print()));

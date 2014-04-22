@@ -29,7 +29,7 @@
 
 class Dialog_Open : public QDialog
 {
-   Q_OBJECT
+   CS_OBJECT(Dialog_Open)
 
    public:
       Dialog_Open(QStringList list);
@@ -40,9 +40,11 @@ class Dialog_Open : public QDialog
       Ui::Dialog_Open *m_ui;    
       QStringList m_list;
 
-   private slots:
-      void Open();
-      void Cancel();     
+   private :
+      CS_SLOT_1(Private, void Open())
+      CS_SLOT_2(Open) 
+      CS_SLOT_1(Private, void Cancel())
+      CS_SLOT_2(Cancel)      
 };
 
 #endif

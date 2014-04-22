@@ -30,6 +30,7 @@
 #include "util.h"
 
 #include <QAction>
+#include <QComboBox>
 #include <QFile>
 #include <QFrame>
 #include <QJsonObject>
@@ -63,7 +64,7 @@ struct advFindStruct
 
 class MainWindow : public QMainWindow
 {
-   Q_OBJECT
+   CS_OBJECT(MainWindow)
 
    public:      
       MainWindow(QStringList fileList, QStringList flagList);
@@ -85,6 +86,13 @@ class MainWindow : public QMainWindow
 
       void setStatus_FName2(QString name);
 
+      // indent
+      CS_SLOT_1(Public, void indentIncr(QString route))
+      CS_SLOT_2(indentIncr)
+
+      CS_SLOT_1(Public, void indentDecr(QString route))
+      CS_SLOT_2(indentDecr)
+
    protected:
       void closeEvent(QCloseEvent *event);
       void dragEnterEvent(QDragEnterEvent *event);
@@ -103,11 +111,12 @@ class MainWindow : public QMainWindow
       DiamondTextEdit *m_noSplit_textEdit;
 
       QSplitter *m_splitter;
-      QLabel *m_splitTitle;
-      QFrame *m_sideWidget;
-      QFrame *m_bottomWidget;
 
-      QString m_splitName;
+      QString m_splitFileName;
+      QComboBox *m_splitName_CB;
+
+      QFrame *m_sideWidget;
+      QFrame *m_bottomWidget;      
       bool m_isSplit;
 
       // arg
@@ -276,8 +285,7 @@ class MainWindow : public QMainWindow
 
       int get_HeaderSize(QPainter *painter);
       int get_FooterSize(QPainter *painter);
-
-      void printOut(QPrinter *printer);
+     
       void doHeader(QPainter *painter);
       void doFooter(QPainter *painter);
       QString macroExpand(QString macro);
@@ -297,159 +305,327 @@ class MainWindow : public QMainWindow
       QString strippedName(const QString filename);
       QString suffixName() const;   
 
-   private slots:
-      void focusChanged(QWidget *, QWidget *);
+      CS_SLOT_1(Private, void focusChanged(QWidget * un_named_arg1,QWidget * un_named_arg2))
+      CS_SLOT_2(focusChanged) 
 
-      void newFile();
-      void mw_open();
-      void open_RelatedFile();
-      void close_Doc();
-      bool closeAll_Doc();
-      void reload();
-      bool save();
-      bool saveAs();
-      void saveAll();
-      void print();
-      void printPreview();
-      void printPdf();
+      CS_SLOT_1(Private, void newFile())
+      CS_SLOT_2(newFile) 
 
-      void mw_undo();
-      void mw_redo();
-      void mw_cut();
-      void mw_copy();
-      void mw_paste();
+      CS_SLOT_1(Private, void mw_open())
+      CS_SLOT_2(mw_open) 
 
-      void selectAll();
-      void selectBlock();
-      void selectLine();
-      void selectWord();
-      void caseUpper();
-      void caseLower();
-      void caseCap();
+      CS_SLOT_1(Private, void open_RelatedFile())
+      CS_SLOT_2(open_RelatedFile) 
 
-      void mw_indentIncr();
-      void mw_indentDecr();
-      void deleteLine();
-      void deleteEOL();
+      CS_SLOT_1(Private, void close_Doc())
+      CS_SLOT_2(close_Doc) 
 
-      void insertDate();
-      void insertTime();
-      void insertSymbol();      
-      void columnMode();
+      CS_SLOT_1(Private, bool closeAll_Doc())
+      CS_SLOT_2(closeAll_Doc) 
 
-      void find();
-      void replace();
-      void findNext();
-      void findPrevious();
-      void advFind();
-      void goLine();
-      void goColumn();
-      void goTop();
-      void goBottom();
+      CS_SLOT_1(Private, void reload())
+      CS_SLOT_2(reload) 
 
-      void lineHighlight();
-      void moveBar();
-      void lineNumbers();
-      void wordWrap();
-      void show_Spaces();
-      void show_Breaks();
-      void displayHTML();
+      CS_SLOT_1(Private, bool save())
+      CS_SLOT_2(save) 
+     
+      CS_SLOT_1(Private, void saveAll())
+      CS_SLOT_2(saveAll) 
 
-      void setSyn_C();
-      void setSyn_Clipper();
-      void setSyn_Css();
-      void setSyn_Dox();
-      void setSyn_Html();
-      void setSyn_Java();
-      void setSyn_Javascript();
-      void setSyn_Json();
-      void setSyn_Makefile();
-      void setSyn_Nsis();
-      void setSyn_Text();
-      void setSyn_Shell_S();
-      void setSyn_Perl();
-      void setSyn_Php();
-      void setSyn_Python();
-      void setSyn_None();
+      CS_SLOT_1(Private, void print())
+      CS_SLOT_2(print) 
 
-      void formatUnix();
-      void formatWin();
-      void formatMac();
-      void fixTab_Spaces();
-      void fixSpaces_Tab();
-      void deleteEOL_Spaces();
+      CS_SLOT_1(Private, void printOut(QPrinter *))
+      CS_SLOT_2(printOut) 
 
-      void mw_macroStart();
-      void mw_macroStop();
-      void macroPlay();
-      void macroLoad();
-      void macroEditNames();
-      void spellCheck();
+      CS_SLOT_1(Private, void printPdf())
+      CS_SLOT_2(printPdf) 
 
-      void setColors();
-      void setFont();     
-      void setOptions();
-      void setPrintOptions();
-      void move_ConfigFile();
-      void save_ConfigFile();
+      CS_SLOT_1(Private, void printPreview())
+      CS_SLOT_2(printPreview)       
 
-      void tabNew();
-      void tabClose(int index);
-      void split_Horizontal();
-      void split_Vertical();
+      CS_SLOT_1(Private, void mw_undo())
+      CS_SLOT_2(mw_undo) 
 
-      void diamondHelp();
-      void about();
+      CS_SLOT_1(Private, void mw_redo())
+      CS_SLOT_2(mw_redo) 
+
+      CS_SLOT_1(Private, void mw_cut())
+      CS_SLOT_2(mw_cut) 
+
+      CS_SLOT_1(Private, void mw_copy())
+      CS_SLOT_2(mw_copy) 
+
+      CS_SLOT_1(Private, void mw_paste())
+      CS_SLOT_2(mw_paste) 
+
+      CS_SLOT_1(Private, void selectAll())
+      CS_SLOT_2(selectAll) 
+
+      CS_SLOT_1(Private, void selectBlock())
+      CS_SLOT_2(selectBlock) 
+
+      CS_SLOT_1(Private, void selectLine())
+      CS_SLOT_2(selectLine) 
+
+      CS_SLOT_1(Private, void selectWord())
+      CS_SLOT_2(selectWord) 
+
+      CS_SLOT_1(Private, void caseUpper())
+      CS_SLOT_2(caseUpper) 
+
+      CS_SLOT_1(Private, void caseLower())
+      CS_SLOT_2(caseLower) 
+
+      CS_SLOT_1(Private, void caseCap())
+      CS_SLOT_2(caseCap) 
+
+      CS_SLOT_1(Private, void mw_indentIncr())
+      CS_SLOT_2(mw_indentIncr) 
+
+      CS_SLOT_1(Private, void mw_indentDecr())
+      CS_SLOT_2(mw_indentDecr) 
+
+      CS_SLOT_1(Private, void deleteLine())
+      CS_SLOT_2(deleteLine) 
+
+      CS_SLOT_1(Private, void deleteEOL())
+      CS_SLOT_2(deleteEOL) 
+
+      CS_SLOT_1(Private, void insertDate())
+      CS_SLOT_2(insertDate) 
+
+      CS_SLOT_1(Private, void insertTime())
+      CS_SLOT_2(insertTime) 
+
+      CS_SLOT_1(Private, void insertSymbol())
+      CS_SLOT_2(insertSymbol)       
+
+      CS_SLOT_1(Private, void columnMode())
+      CS_SLOT_2(columnMode) 
+
+      CS_SLOT_1(Private, void find())
+      CS_SLOT_2(find) 
+
+      CS_SLOT_1(Private, void replace())
+      CS_SLOT_2(replace) 
+
+      CS_SLOT_1(Private, void findNext())
+      CS_SLOT_2(findNext) 
+
+      CS_SLOT_1(Private, void findPrevious())
+      CS_SLOT_2(findPrevious) 
+
+      CS_SLOT_1(Private, void advFind())
+      CS_SLOT_2(advFind) 
+
+      CS_SLOT_1(Private, void goLine())
+      CS_SLOT_2(goLine) 
+
+      CS_SLOT_1(Private, void goColumn())
+      CS_SLOT_2(goColumn) 
+
+      CS_SLOT_1(Private, void goTop())
+      CS_SLOT_2(goTop) 
+
+      CS_SLOT_1(Private, void goBottom())
+      CS_SLOT_2(goBottom) 
+
+      CS_SLOT_1(Private, void lineHighlight())
+      CS_SLOT_2(lineHighlight) 
+
+      CS_SLOT_1(Private, void moveBar())
+      CS_SLOT_2(moveBar) 
+
+      CS_SLOT_1(Private, void lineNumbers())
+      CS_SLOT_2(lineNumbers) 
+
+      CS_SLOT_1(Private, void wordWrap())
+      CS_SLOT_2(wordWrap) 
+
+      CS_SLOT_1(Private, void show_Spaces())
+      CS_SLOT_2(show_Spaces) 
+
+      CS_SLOT_1(Private, void show_Breaks())
+      CS_SLOT_2(show_Breaks) 
+
+      CS_SLOT_1(Private, void displayHTML())
+      CS_SLOT_2(displayHTML) 
+
+      CS_SLOT_1(Private, void setSyn_C())
+      CS_SLOT_2(setSyn_C) 
+      CS_SLOT_1(Private, void setSyn_Clipper())
+      CS_SLOT_2(setSyn_Clipper) 
+      CS_SLOT_1(Private, void setSyn_Css())
+      CS_SLOT_2(setSyn_Css) 
+      CS_SLOT_1(Private, void setSyn_Dox())
+      CS_SLOT_2(setSyn_Dox) 
+      CS_SLOT_1(Private, void setSyn_Html())
+      CS_SLOT_2(setSyn_Html) 
+      CS_SLOT_1(Private, void setSyn_Java())
+      CS_SLOT_2(setSyn_Java) 
+      CS_SLOT_1(Private, void setSyn_Javascript())
+      CS_SLOT_2(setSyn_Javascript) 
+      CS_SLOT_1(Private, void setSyn_Json())
+      CS_SLOT_2(setSyn_Json) 
+      CS_SLOT_1(Private, void setSyn_Makefile())
+      CS_SLOT_2(setSyn_Makefile) 
+      CS_SLOT_1(Private, void setSyn_Nsis())
+      CS_SLOT_2(setSyn_Nsis) 
+      CS_SLOT_1(Private, void setSyn_Text())
+      CS_SLOT_2(setSyn_Text) 
+      CS_SLOT_1(Private, void setSyn_Shell_S())
+      CS_SLOT_2(setSyn_Shell_S) 
+      CS_SLOT_1(Private, void setSyn_Perl())
+      CS_SLOT_2(setSyn_Perl) 
+      CS_SLOT_1(Private, void setSyn_Php())
+      CS_SLOT_2(setSyn_Php) 
+      CS_SLOT_1(Private, void setSyn_Python())
+      CS_SLOT_2(setSyn_Python) 
+      CS_SLOT_1(Private, void setSyn_None())
+      CS_SLOT_2(setSyn_None) 
+
+      CS_SLOT_1(Private, void formatUnix())
+      CS_SLOT_2(formatUnix) 
+      CS_SLOT_1(Private, void formatWin())
+      CS_SLOT_2(formatWin) 
+      CS_SLOT_1(Private, void formatMac())
+      CS_SLOT_2(formatMac) 
+      CS_SLOT_1(Private, void fixTab_Spaces())
+      CS_SLOT_2(fixTab_Spaces) 
+      CS_SLOT_1(Private, void fixSpaces_Tab())
+      CS_SLOT_2(fixSpaces_Tab) 
+      CS_SLOT_1(Private, void deleteEOL_Spaces())
+      CS_SLOT_2(deleteEOL_Spaces) 
+
+      CS_SLOT_1(Private, void mw_macroStart())
+      CS_SLOT_2(mw_macroStart) 
+      CS_SLOT_1(Private, void mw_macroStop())
+      CS_SLOT_2(mw_macroStop) 
+      CS_SLOT_1(Private, void macroPlay())
+      CS_SLOT_2(macroPlay) 
+      CS_SLOT_1(Private, void macroLoad())
+      CS_SLOT_2(macroLoad) 
+      CS_SLOT_1(Private, void macroEditNames())
+      CS_SLOT_2(macroEditNames) 
+      CS_SLOT_1(Private, void spellCheck())
+      CS_SLOT_2(spellCheck) 
+
+      CS_SLOT_1(Private, void setColors())
+      CS_SLOT_2(setColors) 
+      CS_SLOT_1(Private, void setFont())
+      CS_SLOT_2(setFont)      
+      CS_SLOT_1(Private, void setOptions())
+      CS_SLOT_2(setOptions) 
+      CS_SLOT_1(Private, void setPrintOptions())
+      CS_SLOT_2(setPrintOptions) 
+      CS_SLOT_1(Private, void move_ConfigFile())
+      CS_SLOT_2(move_ConfigFile) 
+      CS_SLOT_1(Private, void save_ConfigFile())
+      CS_SLOT_2(save_ConfigFile) 
+
+      CS_SLOT_1(Private, void tabNew())
+      CS_SLOT_2(tabNew) 
+
+      CS_SLOT_1(Private, void tabClose(int index))
+      CS_SLOT_2(tabClose) 
+
+      CS_SLOT_1(Private, void diamondHelp())
+      CS_SLOT_2(diamondHelp) 
+
+      CS_SLOT_1(Private, void about())
+      CS_SLOT_2(about) 
 
       //
-      void documentWasModified();     
-      void printPreview(QPrinter *printer);      
-      void setStatus_LineCol();
+      CS_SLOT_1(Private, void documentWasModified())
+      CS_SLOT_2(documentWasModified)      
 
-      void mw_tabClose();
-      void tabChanged(int index);
+      CS_SLOT_1(Private, void setStatus_LineCol())
+      CS_SLOT_2(setStatus_LineCol) 
+
+      CS_SLOT_1(Private, void mw_tabClose())
+      CS_SLOT_2(mw_tabClose) 
+
+      CS_SLOT_1(Private, void tabChanged(int index))
+      CS_SLOT_2(tabChanged) 
 
       // adv find
-      void advFind_View(const QModelIndex &index);
-      void advFind_Close();
+      CS_SLOT_1(Private, void advFind_View(const QModelIndex & index))
+      CS_SLOT_2(advFind_View) 
+
+      CS_SLOT_1(Private, void advFind_Close())
+      CS_SLOT_2(advFind_Close) 
 
       // copy buffer
-      void showCopyBuffer();
+      CS_SLOT_1(Private, void showCopyBuffer())
+      CS_SLOT_2(showCopyBuffer) 
 
       // spell check
-      void spell_addUserDict();
-      void spell_replaceWord();
+      CS_SLOT_1(Private, void spell_addUserDict())
+      CS_SLOT_2(spell_addUserDict) 
+
+      CS_SLOT_1(Private, void spell_replaceWord())
+      CS_SLOT_2(spell_replaceWord) 
 
       // recent folders
-      void showContext_RecentFolder(const QPoint &pt);
-      void rfolder_Open();
-      void rfolder_ClearList();
-      void rfolder_RemoveFName();
+      CS_SLOT_1(Private, void showContext_RecentFolder(const QPoint & pt))
+      CS_SLOT_2(showContext_RecentFolder) 
+
+      CS_SLOT_1(Private, void rfolder_Open())
+      CS_SLOT_2(rfolder_Open) 
+
+      CS_SLOT_1(Private, void rfolder_ClearList())
+      CS_SLOT_2(rfolder_ClearList) 
+
+      CS_SLOT_1(Private, void rfolder_RemoveFName())
+      CS_SLOT_2(rfolder_RemoveFName) 
 
       // preset folders      
-      void prefolder_Open();
+      CS_SLOT_1(Private, void prefolder_Open())
+      CS_SLOT_2(prefolder_Open) 
 
       // recent files
-      void showContext_Files(const QPoint &pt);
-      void rf_Open();
-      void rf_ClearList();
-      void rf_DeleteName();
-      void rf_RemoveFName();
+      CS_SLOT_1(Private, void showContext_Files(const QPoint & pt))
+      CS_SLOT_2(showContext_Files) 
+
+      CS_SLOT_1(Private, void rf_Open())
+      CS_SLOT_2(rf_Open) 
+
+      CS_SLOT_1(Private, void rf_ClearList())
+      CS_SLOT_2(rf_ClearList) 
+
+      CS_SLOT_1(Private, void rf_DeleteName())
+      CS_SLOT_2(rf_DeleteName) 
+
+      CS_SLOT_1(Private, void rf_RemoveFName())
+      CS_SLOT_2(rf_RemoveFName) 
 
       // open (tab) files
-      void showContext_Tabs(const QPoint &pt);
-      void openTab_Select();
-      void openTab_redo();
+      CS_SLOT_1(Private, void showContext_Tabs(const QPoint & pt))
+      CS_SLOT_2(showContext_Tabs) 
+
+      CS_SLOT_1(Private, void openTab_Select())
+      CS_SLOT_2(openTab_Select) 
+
+      CS_SLOT_1(Private, void openTab_redo())
+      CS_SLOT_2(openTab_redo) 
 
       // split
-      void split_Title();     
-      void sideClose();
-      void bottomClose();         
+      CS_SLOT_1(Private, void split_Title())
+      CS_SLOT_2(split_Title)
 
-   public slots:
-      // indent
-      void indentIncr(QString route);
-      void indentDecr(QString route);
+      CS_SLOT_1(Private, void split_Horizontal())
+      CS_SLOT_2(split_Horizontal)
+
+      CS_SLOT_1(Private, void split_Vertical())
+      CS_SLOT_2(split_Vertical)
+
+      CS_SLOT_1(Private, void split_NameChanged(int))
+      CS_SLOT_2(split_NameChanged)
+
+      CS_SLOT_1(Private, void split_CloseButton())
+      CS_SLOT_2(split_CloseButton)
+
 };
 
 #endif

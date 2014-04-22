@@ -29,7 +29,7 @@
 
 class Dialog_Fonts : public QDialog
 {     
-   Q_OBJECT
+   CS_OBJECT(Dialog_Fonts)
 
    public:
       Dialog_Fonts(QFont normal, QFont column);
@@ -43,12 +43,16 @@ class Dialog_Fonts : public QDialog
       QFont m_fontNormal;
       QFont m_fontColumn;
 
-   private slots:
-      void save();
-      void cancel();
+   private :
+      CS_SLOT_1(Private, void save())
+      CS_SLOT_2(save) 
+      CS_SLOT_1(Private, void cancel())
+      CS_SLOT_2(cancel) 
 
-      void fontNormal();
-      void fontColumn();     
+      CS_SLOT_1(Private, void fontNormal())
+      CS_SLOT_2(fontNormal) 
+      CS_SLOT_1(Private, void fontColumn())
+      CS_SLOT_2(fontColumn)      
 };
 
 #endif
