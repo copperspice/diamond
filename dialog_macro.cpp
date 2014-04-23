@@ -46,7 +46,7 @@ Dialog_Macro::Dialog_Macro(MainWindow *from, MacroEnum enumValue, QStringList ma
    m_ui->tableView->setPalette(temp);
 
    // highlight cell
-   QModelIndex index = m_model->index(0, 0);
+   QModelIndex index = m_model->index(0, 1);
    m_ui->tableView->setCurrentIndex(index);
 
    // resize the dialog widget after the text has been displayed
@@ -64,32 +64,18 @@ Dialog_Macro::~Dialog_Macro()
 
 void Dialog_Macro::initData()
 {   
-   QString msg1 = "Edit the text in the 'Macro Name' column to change the macro name.\n\n"
-                  "'View Macro' will display the contents of the highlighted macro.";
-
-   QString msg2 = "";
-
    if (m_enum == MACRO_LOAD) {
       setWindowTitle("Load Macro");
-      msg2 += "Highlight a macro name, then press 'Select' to load the Macro for playback.";
 
    } else if (m_enum == MACRO_SAVE)  {
       m_ui->select_PB->setText("Save");
-      setWindowTitle("Save Macro");
-
-      msg2 += "All macros are being used.\n"
-              "Highlight a macro name, then press 'Save' to overwrite the existing macro.\n\n"
-              "Pressing 'Cancel' will not save the macro for future loading.\n"
-              "This macro can be run until a new macro is recoreded or loaded.";
+      setWindowTitle("Save Macro");    
 
    } else if (m_enum == MACRO_EDITNAMES) {
       m_ui->select_PB->setDisabled(true);
       setWindowTitle("Edit Macro Names");
 
-   }
-
-   m_ui->msg1->setText(msg1);
-   m_ui->msg2->setText(msg2);
+   } 
 }
 
 void Dialog_Macro::setUpView()
@@ -111,12 +97,17 @@ void Dialog_Macro::setUpView()
    m_ui->tableView->horizontalHeader()->setStretchLastSection(true); 
 
    // add data
-   m_maxCount = m_macroIds.size();
+   m_maxCount   = m_macroIds.size();
+   QBrush brush = QColor(0,0,255);
 
    for (int row = 0; row < m_maxCount; ++row) {
 
       QStandardItem *item1 = new QStandardItem(m_macroIds.at(row));
+      item1->setForeground(brush);
+      item1->setEnabled(false);
+
       QStandardItem *item2 = new QStandardItem(m_macroNames.at(row));
+      item2->setEditable(true);
 
       m_model->setItem(row, 0, item1);
       m_model->setItem(row, 1, item2);
@@ -126,18 +117,11 @@ void Dialog_Macro::setUpView()
    m_ui->tableView->sortByColumn(0, Qt::AscendingOrder);
    m_ui->tableView->setSortingEnabled(true);
 
+   m_ui->tableView->setEditTriggers(QAbstractItemView::DoubleClicked);
+
    // signal
-   connect(m_ui->tableView, SIGNAL(clicked(const QModelIndex &)), this, SLOT(tableClicked(const QModelIndex &)));
    connect(m_model, SIGNAL(dataChanged(const QModelIndex &, const QModelIndex &)), this,
             SLOT(tableDataChanged(const QModelIndex &, const QModelIndex &)));
-}
-
-void Dialog_Macro::tableClicked(const QModelIndex & index)
-{
-   if (index.column() == 1) {
-      // edit macro name
-      m_ui->tableView->edit(index);
-   }
 }
 
 void Dialog_Macro::tableDataChanged(const QModelIndex & topLeft, const QModelIndex & bottomRight)
@@ -163,6 +147,12 @@ void Dialog_Macro::Select()
    this->done(QDialog::Accepted);
 }
 
+void Dialog_Macro::Cancel()
+{
+   this->done(QDialog::Rejected);
+}
+
+//
 void Dialog_Macro::View()
 {
    QString macroId = this->get_Macro();
@@ -177,9 +167,7 @@ void Dialog_Macro::View()
       msg += "Key:" + QString::number(data.at(k).key) +
              "  Modifier:" + QString::number(data.at(k).modifier);
 
-
       QString textAsc = data.at(k).text;
-      // volatile auto foo = textAsc.toLatin1().data();
 
       if (textAsc.isEmpty()) {
          msg += + "        \n";
@@ -196,11 +184,6 @@ void Dialog_Macro::View()
    msgB.exec();
 }
 
-void Dialog_Macro::Cancel()
-{
-   this->done(QDialog::Rejected);
-}
-
 QString Dialog_Macro::get_Macro()
 {
    QModelIndex index = m_ui->tableView->currentIndex();
@@ -215,5 +198,4 @@ QString Dialog_Macro::get_Macro()
 
    return data;
 }
-
 

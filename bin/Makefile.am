@@ -50,9 +50,10 @@ Diamond_Cs4_SOURCES = \
     dialog_find.cpp \
     dialog_fonts.cpp\
     dialog_getline.cpp \
+    dialog_macro.cpp \
     dialog_open.cpp \
     dialog_options.cpp \
-    dialog_macro.cpp \
+    dialog_preset.cpp \
     dialog_print_opt.cpp \
     dialog_replace.cpp \
     dialog_symbols.cpp \
@@ -84,9 +85,11 @@ noinst_HEADERS = \
     dialog_find.h \
     dialog_fonts.h\
     dialog_getline.h  \
+    dialog_macro.h \
     dialog_options.h \
     dialog_open.h \
-    dialog_macro.h \
+    dialog_preset.h \
+    dialog_print_opt.h  \
     dialog_replace.h  \
     dialog_symbols.h \
     dialog_xp_getdir.h \
@@ -110,6 +113,7 @@ FORMS = \
     forms/dialog_macro.ui \
     forms/dialog_open.ui \
     forms/dialog_options.ui \
+    forms/dialog_preset.ui\
     forms/dialog_print_opt.ui \
     forms/dialog_replace.ui \
     forms/dialog_symbols.ui \

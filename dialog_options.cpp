@@ -26,8 +26,6 @@
 #include <QKeySequence>
 #include <QLineEdit>
 #include <QString>
-#include <QStringList>
-
 #include <qglobal.h>
 
 Dialog_Options::Dialog_Options(MainWindow *from, struct Options data)
@@ -134,6 +132,7 @@ void Dialog_Options::initData()
 
    // ** tab three
    m_ui->key_printPreview->setText(m_options.key_printPreview);
+   m_ui->key_reload->setText(m_options.key_reload);
    m_ui->key_selectLine->setText(m_options.key_selectLine);
    m_ui->key_selectWord->setText(m_options.key_selectWord);
    m_ui->key_selectBlock->setText(m_options.key_selectBlock);
@@ -260,6 +259,7 @@ struct Options Dialog_Options::get_Results()
 
    // ** tab 3
    m_options.key_printPreview = m_ui->key_printPreview->text();
+   m_options.key_reload       = m_ui->key_reload->text();
    m_options.key_selectLine   = m_ui->key_selectLine->text();
    m_options.key_selectWord   = m_ui->key_selectWord->text();
    m_options.key_selectBlock  = m_ui->key_selectBlock->text();

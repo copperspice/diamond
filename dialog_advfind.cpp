@@ -24,9 +24,11 @@
 #include <QDir>
 #include <QFileDialog>
 
-Dialog_AdvFind::Dialog_AdvFind(QString findText, QString fileType, QString findFolder, bool searchFolders)
+Dialog_AdvFind::Dialog_AdvFind(MainWindow *from, QString findText, QString fileType, QString findFolder, bool searchFolders)
    : m_ui(new Ui::Dialog_AdvFind)
-{
+{   
+   m_parent = from;
+
    m_ui->setupUi(this);
    this->setWindowIcon(QIcon("://resources/diamond.png"));
 
@@ -50,25 +52,16 @@ Dialog_AdvFind::~Dialog_AdvFind()
 
 void Dialog_AdvFind::pick_Folder()
 {
-   QString dir = m_ui->findFolder->text();
+   QString oldFolder = m_ui->findFolder->text();
 
-   if (dir.isEmpty())    {
-      dir = QDir::currentPath();
+   if (oldFolder.isEmpty())    {
+      oldFolder = QDir::currentPath();
    }
 
-   QFileDialog::Options options;
-   options |= QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks;
+   QString newFolder = m_parent->get_DirPath("Select Directory or Folder to Search", oldFolder);
 
-   // on X11 the title bar may not be displayed
-   QString path = QFileDialog::getExistingDirectory(this,"Select Directory or Folder to Search",
-                       dir, options);
-
-   // silly adjust for platform slash issue
-   QDir temp(path + "/");
-   path = temp.canonicalPath() + "/";
-
-   if (! path.isEmpty()) {
-      m_ui->findFolder->setText(path);
+   if (! newFolder.isEmpty()) {
+      m_ui->findFolder->setText(newFolder);
    }
 }
 

@@ -379,66 +379,11 @@ void MainWindow::prefolder_Open()
    }
 }
 
-
-/*
-
-void MainWindow::rfolder_ClearList()
+void MainWindow::prefolder_RedoList()
 {
-   QAction *action;
-   action = (QAction *)sender();
+   QMenu *menu = m_ui->actionOpen_PresetFolder->menu();
+   menu->deleteLater();
 
-   if (action) {
-      m_rfolder_List.clear();
-
-      // save new list
-      json_Write(RECENTFOLDER);
-
-      // update actions
-      rfolder_UpdateActions();
-   }
+   prefolder_CreateMenus();
 }
 
-
-void MainWindow::rfolder_Add()
-{
-   if (m_curFile.isEmpty()) {
-      return;
-   }
-
-   int cnt = m_rfolder_List.count();
-
-   if (cnt >= rfolder_MaxCnt ) {
-      m_rfolder_List.removeFirst();
-   }
-
-   QString fileName = this->pathName(m_curFile);
-
-   if (! m_rfolder_List.contains(fileName)) {
-      m_rfolder_List.append(fileName);
-   }
-
-   // save new list
-   json_Write(RECENTFOLDER);
-
-   // update actions
-   rfolder_UpdateActions();
-}
-
-void MainWindow::rfolder_UpdateActions()
-{
-   int cnt = m_rfolder_List.count();
-
-   for (int i = 0; i < rfolder_MaxCnt; ++i) {
-
-     if (i < cnt)  {
-        rfolder_Actions[i]->setText(m_rfolder_List[i]);
-        rfolder_Actions[i]->setVisible(true);
-
-     } else {
-        rfolder_Actions[i]->setVisible(false);
-     }
-
-   }
-}
-
-*/

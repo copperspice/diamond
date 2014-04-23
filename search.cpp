@@ -136,7 +136,7 @@ void MainWindow::findPrevious()
 // * advanced find
 void MainWindow::advFind()
 {
-   Dialog_AdvFind *dw = new Dialog_AdvFind(m_advFindText, m_advFindFileType, m_advFindFolder, m_advFSearchFolders);
+   Dialog_AdvFind *dw = new Dialog_AdvFind(this, m_advFindText, m_advFindFileType, m_advFindFolder, m_advFSearchFolders);
    int result = dw->exec();
 
    if (result == QDialog::Accepted) {

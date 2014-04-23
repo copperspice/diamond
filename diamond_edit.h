@@ -61,7 +61,6 @@ class DiamondTextEdit : public QPlainTextEdit
       void macroStart();
       void macroStop();
       QList<QKeyEvent *> get_MacroKeyList();
-      void add_MacroEvent(QKeyEvent *event);
 
       // spell
       void set_Spell(bool value);

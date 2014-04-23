@@ -40,7 +40,7 @@
      <property name="sizeHint" stdset="0">
       <size>
        <width>20</width>
-       <height>12</height>
+       <height>8</height>
       </size>
      </property>
     </spacer>
@@ -48,7 +48,7 @@
    <item row="2" column="0">
     <layout class="QHBoxLayout" name="horizontalLayout_101">
      <item>
-      <spacer name="horizontalSpacer_100">
+      <spacer name="horizontalSpacer_101">
        <property name="orientation">
         <enum>Qt::Horizontal</enum>
        </property>
@@ -68,7 +68,7 @@
       </widget>
      </item>
      <item>
-      <spacer name="horizontalSpacer_101">
+      <spacer name="horizontalSpacer_102">
        <property name="orientation">
         <enum>Qt::Horizontal</enum>
        </property>
@@ -1121,8 +1121,8 @@
        <string>User Defined Hot Keys</string>
       </attribute>
       <layout class="QGridLayout" name="gridLayout_3">
-       <item row="4" column="0">
-        <spacer name="horizontalSpacer_31">
+       <item row="7" column="6">
+        <spacer name="horizontalSpacer_33">
          <property name="orientation">
           <enum>Qt::Horizontal</enum>
          </property>
@@ -1136,64 +1136,6 @@
           </size>
          </property>
         </spacer>
-       </item>
-       <item row="3" column="2">
-        <widget class="KeyLineEdit" name="key_selectLine">
-         <property name="minimumSize">
-          <size>
-           <width>120</width>
-           <height>0</height>
-          </size>
-         </property>
-         <property name="font">
-          <font>
-           <pointsize>10</pointsize>
-          </font>
-         </property>
-        </widget>
-       </item>
-       <item row="3" column="1">
-        <widget class="QLabel" name="label_41">
-         <property name="font">
-          <font>
-           <pointsize>10</pointsize>
-          </font>
-         </property>
-         <property name="text">
-          <string>Edit - Select Line:</string>
-         </property>
-        </widget>
-       </item>
-       <item row="1" column="1">
-        <widget class="QLabel" name="label_7">
-         <property name="font">
-          <font>
-           <pointsize>10</pointsize>
-          </font>
-         </property>
-         <property name="text">
-          <string>File - Print Preview:</string>
-         </property>
-        </widget>
-       </item>
-       <item row="4" column="4">
-        <widget class="QLabel" name="label_39">
-         <property name="text">
-          <string>View - Show Tabs:</string>
-         </property>
-        </widget>
-       </item>
-       <item row="3" column="4">
-        <widget class="QLabel" name="label_9">
-         <property name="font">
-          <font>
-           <pointsize>10</pointsize>
-          </font>
-         </property>
-         <property name="text">
-          <string>Search - Go to Line:</string>
-         </property>
-        </widget>
        </item>
        <item row="0" column="4">
         <spacer name="verticalSpacer_31">
@@ -1211,32 +1153,20 @@
          </property>
         </spacer>
        </item>
-       <item row="4" column="1">
-        <widget class="QLabel" name="label_8">
-         <property name="font">
-          <font>
-           <pointsize>10</pointsize>
-          </font>
-         </property>
-         <property name="text">
-          <string>Edit - Select Word:</string>
-         </property>
-        </widget>
-       </item>
        <item row="1" column="4">
-        <widget class="QLabel" name="label_10">
+        <widget class="QLabel" name="label_18">
          <property name="font">
           <font>
            <pointsize>10</pointsize>
           </font>
          </property>
          <property name="text">
-          <string>Edit - Column Mode:</string>
+          <string>Edit - Delete to EOL:</string>
          </property>
         </widget>
        </item>
-       <item row="1" column="5">
-        <widget class="KeyLineEdit" name="key_columnMode">
+       <item row="7" column="5">
+        <widget class="KeyLineEdit" name="key_show_Breaks">
          <property name="minimumSize">
           <size>
            <width>120</width>
@@ -1250,21 +1180,93 @@
          </property>
         </widget>
        </item>
-       <item row="6" column="3">
-        <spacer name="horizontalSpacer_32">
-         <property name="orientation">
-          <enum>Qt::Horizontal</enum>
+       <item row="7" column="4">
+        <widget class="QLabel" name="label_40">
+         <property name="text">
+          <string>View - Show Line Breaks:</string>
          </property>
-         <property name="sizeType">
-          <enum>QSizePolicy::Fixed</enum>
-         </property>
-         <property name="sizeHint" stdset="0">
+        </widget>
+       </item>
+       <item row="6" column="5">
+        <widget class="KeyLineEdit" name="key_show_Spaces">
+         <property name="minimumSize">
           <size>
-           <width>10</width>
-           <height>20</height>
+           <width>120</width>
+           <height>0</height>
           </size>
          </property>
-        </spacer>
+         <property name="font">
+          <font>
+           <pointsize>10</pointsize>
+          </font>
+         </property>
+        </widget>
+       </item>
+       <item row="8" column="5">
+        <widget class="KeyLineEdit" name="key_macroPlay">
+         <property name="minimumSize">
+          <size>
+           <width>120</width>
+           <height>0</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+       <item row="6" column="4">
+        <widget class="QLabel" name="label_39">
+         <property name="text">
+          <string>View - Show Tabs:</string>
+         </property>
+        </widget>
+       </item>
+       <item row="4" column="4">
+        <widget class="QLabel" name="label_9">
+         <property name="font">
+          <font>
+           <pointsize>10</pointsize>
+          </font>
+         </property>
+         <property name="text">
+          <string>Search - Go to Line:</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="5">
+        <widget class="KeyLineEdit" name="key_deleteEOL">
+         <property name="minimumSize">
+          <size>
+           <width>120</width>
+           <height>0</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+       <item row="4" column="5">
+        <widget class="KeyLineEdit" name="key_goLine">
+         <property name="minimumSize">
+          <size>
+           <width>120</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>10</pointsize>
+          </font>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="1">
+        <widget class="QLabel" name="label_7">
+         <property name="font">
+          <font>
+           <pointsize>10</pointsize>
+          </font>
+         </property>
+         <property name="text">
+          <string>File - Print Preview:</string>
+         </property>
+        </widget>
        </item>
        <item row="15" column="4">
         <spacer name="verticalSpacer_30">
@@ -1282,23 +1284,8 @@
          </property>
         </spacer>
        </item>
-       <item row="4" column="2">
-        <widget class="KeyLineEdit" name="key_selectWord">
-         <property name="minimumSize">
-          <size>
-           <width>120</width>
-           <height>0</height>
-          </size>
-         </property>
-         <property name="font">
-          <font>
-           <pointsize>10</pointsize>
-          </font>
-         </property>
-        </widget>
-       </item>
-       <item row="7" column="6">
-        <spacer name="horizontalSpacer_33">
+       <item row="6" column="3">
+        <spacer name="horizontalSpacer_32">
          <property name="orientation">
           <enum>Qt::Horizontal</enum>
          </property>
@@ -1307,7 +1294,7 @@
          </property>
          <property name="sizeHint" stdset="0">
           <size>
-           <width>8</width>
+           <width>10</width>
            <height>20</height>
           </size>
          </property>
@@ -1328,44 +1315,7 @@
          </property>
         </widget>
        </item>
-       <item row="4" column="5">
-        <widget class="KeyLineEdit" name="key_show_Spaces">
-         <property name="minimumSize">
-          <size>
-           <width>120</width>
-           <height>0</height>
-          </size>
-         </property>
-         <property name="font">
-          <font>
-           <pointsize>10</pointsize>
-          </font>
-         </property>
-        </widget>
-       </item>
-       <item row="3" column="5">
-        <widget class="KeyLineEdit" name="key_goLine">
-         <property name="minimumSize">
-          <size>
-           <width>120</width>
-           <height>0</height>
-          </size>
-         </property>
-         <property name="font">
-          <font>
-           <pointsize>10</pointsize>
-          </font>
-         </property>
-        </widget>
-       </item>
-       <item row="6" column="4">
-        <widget class="QLabel" name="label_40">
-         <property name="text">
-          <string>View - Show Line Breaks:</string>
-         </property>
-        </widget>
-       </item>
-       <item row="7" column="4">
+       <item row="8" column="4">
         <widget class="QLabel" name="label_14">
          <property name="font">
           <font>
@@ -1377,154 +1327,24 @@
          </property>
         </widget>
        </item>
-       <item row="8" column="4">
-        <widget class="QLabel" name="label_15">
-         <property name="font">
-          <font>
-           <pointsize>10</pointsize>
-          </font>
+       <item row="4" column="0">
+        <spacer name="horizontalSpacer_31">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
          </property>
-         <property name="text">
-          <string>Tools - Spell Check:</string>
+         <property name="sizeType">
+          <enum>QSizePolicy::Fixed</enum>
          </property>
-        </widget>
-       </item>
-       <item row="6" column="5">
-        <widget class="KeyLineEdit" name="key_show_Breaks">
-         <property name="minimumSize">
+         <property name="sizeHint" stdset="0">
           <size>
-           <width>120</width>
-           <height>0</height>
+           <width>8</width>
+           <height>20</height>
           </size>
          </property>
-         <property name="font">
-          <font>
-           <pointsize>10</pointsize>
-          </font>
-         </property>
-        </widget>
+        </spacer>
        </item>
-       <item row="7" column="5">
-        <widget class="KeyLineEdit" name="key_macroPlay">
-         <property name="minimumSize">
-          <size>
-           <width>120</width>
-           <height>0</height>
-          </size>
-         </property>
-        </widget>
-       </item>
-       <item row="8" column="5">
-        <widget class="KeyLineEdit" name="key_spellCheck">
-         <property name="minimumSize">
-          <size>
-           <width>120</width>
-           <height>0</height>
-          </size>
-         </property>
-        </widget>
-       </item>
-       <item row="6" column="1">
-        <widget class="QLabel" name="label_12">
-         <property name="font">
-          <font>
-           <pointsize>10</pointsize>
-          </font>
-         </property>
-         <property name="text">
-          <string>Edit - Select Block:</string>
-         </property>
-        </widget>
-       </item>
-       <item row="7" column="1">
-        <widget class="QLabel" name="label_13">
-         <property name="font">
-          <font>
-           <pointsize>10</pointsize>
-          </font>
-         </property>
-         <property name="text">
-          <string>Edit - Uppercase:</string>
-         </property>
-        </widget>
-       </item>
-       <item row="8" column="1">
-        <widget class="QLabel" name="label_11">
-         <property name="font">
-          <font>
-           <pointsize>10</pointsize>
-          </font>
-         </property>
-         <property name="text">
-          <string>Edit - Lowercase:</string>
-         </property>
-        </widget>
-       </item>
-       <item row="10" column="1">
-        <widget class="QLabel" name="label_16">
-         <property name="font">
-          <font>
-           <pointsize>10</pointsize>
-          </font>
-         </property>
-         <property name="text">
-          <string>Edit - Increase Indent:</string>
-         </property>
-        </widget>
-       </item>
-       <item row="11" column="1">
-        <widget class="QLabel" name="label_17">
-         <property name="font">
-          <font>
-           <pointsize>10</pointsize>
-          </font>
-         </property>
-         <property name="text">
-          <string>Edit - Decrease Indent:</string>
-         </property>
-        </widget>
-       </item>
-       <item row="12" column="1">
-        <widget class="QLabel" name="label_20">
-         <property name="font">
-          <font>
-           <pointsize>10</pointsize>
-          </font>
-         </property>
-         <property name="text">
-          <string>Edit - Delete Line:</string>
-         </property>
-        </widget>
-       </item>
-       <item row="13" column="1">
-        <widget class="QLabel" name="label_18">
-         <property name="font">
-          <font>
-           <pointsize>10</pointsize>
-          </font>
-         </property>
-         <property name="text">
-          <string>Edit - Delete to EOL:</string>
-         </property>
-        </widget>
-       </item>
-       <item row="6" column="2">
-        <widget class="KeyLineEdit" name="key_selectBlock">
-         <property name="minimumSize">
-          <size>
-           <width>120</width>
-           <height>0</height>
-          </size>
-         </property>
-         <property name="font">
-          <font>
-           <pointsize>10</pointsize>
-          </font>
-         </property>
-        </widget>
-       </item>
-       <item row="7" column="2">
-        <widget class="KeyLineEdit" name="key_upper">
+       <item row="13" column="2">
+        <widget class="KeyLineEdit" name="key_indentDecr">
          <property name="minimumSize">
           <size>
            <width>120</width>
@@ -1539,6 +1359,182 @@
         </widget>
        </item>
        <item row="8" column="2">
+        <widget class="KeyLineEdit" name="key_upper">
+         <property name="minimumSize">
+          <size>
+           <width>120</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>10</pointsize>
+          </font>
+         </property>
+        </widget>
+       </item>
+       <item row="7" column="2">
+        <widget class="KeyLineEdit" name="key_selectBlock">
+         <property name="minimumSize">
+          <size>
+           <width>120</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>10</pointsize>
+          </font>
+         </property>
+        </widget>
+       </item>
+       <item row="6" column="2">
+        <widget class="KeyLineEdit" name="key_selectWord">
+         <property name="minimumSize">
+          <size>
+           <width>120</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>10</pointsize>
+          </font>
+         </property>
+        </widget>
+       </item>
+       <item row="4" column="2">
+        <widget class="KeyLineEdit" name="key_selectLine">
+         <property name="minimumSize">
+          <size>
+           <width>120</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>10</pointsize>
+          </font>
+         </property>
+        </widget>
+       </item>
+       <item row="13" column="1">
+        <widget class="QLabel" name="label_17">
+         <property name="font">
+          <font>
+           <pointsize>10</pointsize>
+          </font>
+         </property>
+         <property name="text">
+          <string>Edit - Decrease Indent:</string>
+         </property>
+        </widget>
+       </item>
+       <item row="9" column="1">
+        <widget class="QLabel" name="label_11">
+         <property name="font">
+          <font>
+           <pointsize>10</pointsize>
+          </font>
+         </property>
+         <property name="text">
+          <string>Edit - Lowercase:</string>
+         </property>
+        </widget>
+       </item>
+       <item row="8" column="1">
+        <widget class="QLabel" name="label_13">
+         <property name="font">
+          <font>
+           <pointsize>10</pointsize>
+          </font>
+         </property>
+         <property name="text">
+          <string>Edit - Uppercase:</string>
+         </property>
+        </widget>
+       </item>
+       <item row="7" column="1">
+        <widget class="QLabel" name="label_12">
+         <property name="font">
+          <font>
+           <pointsize>10</pointsize>
+          </font>
+         </property>
+         <property name="text">
+          <string>Edit - Select Block:</string>
+         </property>
+        </widget>
+       </item>
+       <item row="6" column="1">
+        <widget class="QLabel" name="label_8">
+         <property name="font">
+          <font>
+           <pointsize>10</pointsize>
+          </font>
+         </property>
+         <property name="text">
+          <string>Edit - Select Word:</string>
+         </property>
+        </widget>
+       </item>
+       <item row="4" column="1">
+        <widget class="QLabel" name="label_41">
+         <property name="font">
+          <font>
+           <pointsize>10</pointsize>
+          </font>
+         </property>
+         <property name="text">
+          <string>Edit - Select Line:</string>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="2">
+        <widget class="KeyLineEdit" name="key_reload">
+         <property name="minimumSize">
+          <size>
+           <width>120</width>
+           <height>0</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="1">
+        <widget class="QLabel" name="label_43">
+         <property name="text">
+          <string>File - Reload:</string>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="4">
+        <widget class="QLabel" name="label_10">
+         <property name="font">
+          <font>
+           <pointsize>10</pointsize>
+          </font>
+         </property>
+         <property name="text">
+          <string>Edit - Column Mode:</string>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="5">
+        <widget class="KeyLineEdit" name="key_columnMode">
+         <property name="minimumSize">
+          <size>
+           <width>120</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>10</pointsize>
+          </font>
+         </property>
+        </widget>
+       </item>
+       <item row="9" column="2">
         <widget class="KeyLineEdit" name="key_lower">
          <property name="minimumSize">
           <size>
@@ -1550,6 +1546,50 @@
           <font>
            <pointsize>10</pointsize>
           </font>
+         </property>
+        </widget>
+       </item>
+       <item row="9" column="5">
+        <widget class="KeyLineEdit" name="key_spellCheck">
+         <property name="minimumSize">
+          <size>
+           <width>120</width>
+           <height>0</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+       <item row="10" column="5">
+        <widget class="KeyLineEdit" name="key_copyBuffer"/>
+       </item>
+       <item row="9" column="4">
+        <widget class="QLabel" name="label_15">
+         <property name="font">
+          <font>
+           <pointsize>10</pointsize>
+          </font>
+         </property>
+         <property name="text">
+          <string>Tools - Spell Check:</string>
+         </property>
+        </widget>
+       </item>
+       <item row="10" column="4">
+        <widget class="QLabel" name="label_42">
+         <property name="text">
+          <string>Copy Buffer:</string>
+         </property>
+        </widget>
+       </item>
+       <item row="10" column="1">
+        <widget class="QLabel" name="label_16">
+         <property name="font">
+          <font>
+           <pointsize>10</pointsize>
+          </font>
+         </property>
+         <property name="text">
+          <string>Edit - Increase Indent:</string>
          </property>
         </widget>
        </item>
@@ -1568,22 +1608,7 @@
          </property>
         </widget>
        </item>
-       <item row="11" column="2">
-        <widget class="KeyLineEdit" name="key_indentDecr">
-         <property name="minimumSize">
-          <size>
-           <width>120</width>
-           <height>0</height>
-          </size>
-         </property>
-         <property name="font">
-          <font>
-           <pointsize>10</pointsize>
-          </font>
-         </property>
-        </widget>
-       </item>
-       <item row="12" column="2">
+       <item row="14" column="2">
         <widget class="KeyLineEdit" name="key_deleteLine">
          <property name="minimumSize">
           <size>
@@ -1593,25 +1618,17 @@
          </property>
         </widget>
        </item>
-       <item row="13" column="2">
-        <widget class="KeyLineEdit" name="key_deleteEOL">
-         <property name="minimumSize">
-          <size>
-           <width>120</width>
-           <height>0</height>
-          </size>
+       <item row="14" column="1">
+        <widget class="QLabel" name="label_20">
+         <property name="font">
+          <font>
+           <pointsize>10</pointsize>
+          </font>
          </property>
-        </widget>
-       </item>
-       <item row="10" column="4">
-        <widget class="QLabel" name="label_42">
          <property name="text">
-          <string>Copy Buffer:</string>
+          <string>Edit - Delete Line:</string>
          </property>
         </widget>
-       </item>
-       <item row="10" column="5">
-        <widget class="KeyLineEdit" name="key_copyBuffer"/>
        </item>
       </layout>
      </widget>
@@ -1660,6 +1677,7 @@
   <tabstop>key_newTab</tabstop>
   <tabstop>reset_PB</tabstop>
   <tabstop>key_printPreview</tabstop>
+  <tabstop>key_reload</tabstop>
   <tabstop>key_selectLine</tabstop>
   <tabstop>key_selectWord</tabstop>
   <tabstop>key_selectBlock</tabstop>

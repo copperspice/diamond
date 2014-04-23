@@ -38,7 +38,6 @@ void MainWindow::split_Horizontal()
    // sync documents
    m_split_textEdit->setDocument(m_textEdit->document());
 
-   //
    if (m_split_textEdit->get_ColumnMode()) {
       m_split_textEdit->setFont(m_struct.fontColumn);
    } else {
@@ -50,9 +49,7 @@ void MainWindow::split_Horizontal()
    temp.setColor(QPalette::Base, m_struct.colorBack);
    m_split_textEdit->setPalette(temp);
 
-   m_isSplit = true;
-
-   // copy to real edit
+   m_isSplit  = true;
    m_textEdit = m_split_textEdit;
 
    //
@@ -63,6 +60,7 @@ void MainWindow::split_Horizontal()
    m_splitName_CB = new QComboBox();
    m_splitName_CB->setMinimumWidth(175);
 
+/*
    QPalette palette = m_splitName_CB->palette();
    palette.setColor(QPalette::Base, QColor{64,64,96} );
    palette.setColor(QPalette::Text, QColor{255,255,255} );
@@ -70,8 +68,8 @@ void MainWindow::split_Horizontal()
    palette.setColor(QPalette::Highlight, QColor{255,255,0} );
    palette.setColor(QPalette::HighlightedText, QColor{0,128,0} );
 
-// m_splitName_CB->setPalette(palette);
-
+   m_splitName_CB->setPalette(palette);
+*/
 
    QFont font2 = m_splitName_CB->font();
    font2.setPointSize(11);
@@ -87,13 +85,13 @@ void MainWindow::split_Horizontal()
    m_splitName_CB->setCurrentIndex(splitIndex);
 
    //
-   QPushButton *split_close = new QPushButton();
-   split_close->setText("Close");
+   m_splitClose_PB = new QPushButton();
+   m_splitClose_PB->setText("Close");
 
    QBoxLayout *topbar_Layout = new QHBoxLayout();
    topbar_Layout->addWidget(m_splitName_CB, 1);
    topbar_Layout->addSpacing(25);
-   topbar_Layout->addWidget(split_close);
+   topbar_Layout->addWidget(m_splitClose_PB);
    topbar_Layout->addStretch(2);
 
    //
@@ -110,8 +108,8 @@ void MainWindow::split_Horizontal()
    split_Title();
    moveBar();
 
-   connect(m_splitName_CB, SIGNAL(currentIndexChanged(int)), this, SLOT(split_NameChanged(int)));
-   connect(split_close,    SIGNAL(clicked()),                this, SLOT(split_CloseButton()));
+   connect(m_splitName_CB,   SIGNAL(currentIndexChanged(int)), this, SLOT(split_NameChanged(int)));
+   connect(m_splitClose_PB,  SIGNAL(clicked()),                this, SLOT(split_CloseButton()));
 
    connect(m_split_textEdit->document(), SIGNAL(contentsChanged()),       this, SLOT(split_Title()));
    connect(m_split_textEdit,             SIGNAL(cursorPositionChanged()), this, SLOT(moveBar()));
@@ -135,7 +133,6 @@ void MainWindow::split_Vertical()
    // sync documents
    m_split_textEdit->setDocument(m_textEdit->document());
 
-   // (1) this->setScreenColors(), based on tabwidget must do by hand
    if (m_split_textEdit->get_ColumnMode()) {
       m_split_textEdit->setFont(m_struct.fontColumn);
    } else {
@@ -147,31 +144,54 @@ void MainWindow::split_Vertical()
    temp.setColor(QPalette::Base, m_struct.colorBack);
    m_split_textEdit->setPalette(temp);
 
-   m_isSplit = true;
-
-   // hold for reference
+   m_isSplit  = true;
    m_textEdit = m_split_textEdit;
 
    //
    m_bottomWidget = new QFrame(this);
    m_bottomWidget->setFrameShape(QFrame::Panel);
 
-   //QFont font = m_splitTitle->font();
-   //font.setPointSize(12);
-   //m_splitTitle->setFont(font);
+   //
+   m_splitName_CB = new QComboBox();
+   m_splitName_CB->setMinimumWidth(175);
 
-   QPushButton *closeButton = new QPushButton();
-   closeButton->setText("Close");
+/*
+   QPalette palette = m_splitName_CB->palette();
+   palette.setColor(QPalette::Base, QColor{64,64,96} );
+   palette.setColor(QPalette::Text, QColor{255,255,255} );
 
-   QBoxLayout *buttonLayout = new QHBoxLayout();
-   buttonLayout->addStretch();
-   buttonLayout->addWidget(closeButton);
-   buttonLayout->addStretch();
+   palette.setColor(QPalette::Highlight, QColor{255,255,0} );
+   palette.setColor(QPalette::HighlightedText, QColor{0,128,0} );
 
-   QBoxLayout *layout = new QVBoxLayout();
-   // layout->addWidget(m_splitTitle);
-   layout->addWidget(m_split_textEdit);
-   layout->addLayout(buttonLayout);
+   m_splitName_CB->setPalette(palette);
+*/
+
+   QFont font2 = m_splitName_CB->font();
+   font2.setPointSize(11);
+   m_splitName_CB->setFont(font2);
+
+   for (int k = 0; k < m_openedFiles.size(); ++k) {
+      QString temp = strippedName(m_openedFiles[k]);
+
+      // file name, full name with path
+      m_splitName_CB->addItem(temp, m_openedFiles[k]);
+   }
+   int splitIndex = m_splitName_CB->findData(m_splitFileName);
+   m_splitName_CB->setCurrentIndex(splitIndex);
+
+   //
+   m_splitClose_PB = new QPushButton();
+   m_splitClose_PB->setText("Close");
+
+   QBoxLayout *topbar_Layout = new QHBoxLayout();
+   topbar_Layout->addWidget(m_splitName_CB, 1);
+   topbar_Layout->addSpacing(25);
+   topbar_Layout->addWidget(m_splitClose_PB);
+   topbar_Layout->addStretch(2);
+
+   QBoxLayout *layout = new QVBoxLayout();  
+   layout->addLayout(topbar_Layout);
+    layout->addWidget(m_split_textEdit);
 
    m_bottomWidget->setLayout(layout);
 
@@ -181,6 +201,9 @@ void MainWindow::split_Vertical()
    // BROOM
    split_Title();
    moveBar();
+
+   connect(m_splitName_CB,   SIGNAL(currentIndexChanged(int)), this, SLOT(split_NameChanged(int)));
+   connect(m_splitClose_PB,  SIGNAL(clicked()),                this, SLOT(split_CloseButton()));
 
    connect(m_split_textEdit->document(), SIGNAL(contentsChanged()),       this, SLOT(split_Title()));
    connect(m_split_textEdit,             SIGNAL(cursorPositionChanged()), this, SLOT(moveBar()));
@@ -207,13 +230,51 @@ void MainWindow::split_NameChanged(int data)
 {  
    QString newName = m_splitName_CB->itemData(data).toString();
 
-   // show a new file change file !  BROOM
+   if (m_splitFileName != newName)  {
+
+      csMsg("about to load a new file: " +  newName);
+
+
+      m_splitFileName = newName;
+
+ //     int count    = m_tabWidget->count();
+      int whichTab = 0;    // BROOM
+
+      QWidget *temp = m_tabWidget->widget(whichTab);
+      DiamondTextEdit *textEdit = dynamic_cast<DiamondTextEdit *>(temp);
+
+      if (textEdit) {
+         // get document matching the file name
+         m_split_textEdit->setDocument(textEdit->document());
+
+         if (m_split_textEdit->get_ColumnMode()) {
+            m_split_textEdit->setFont(m_struct.fontColumn);
+         } else {
+            m_split_textEdit->setFont(m_struct.fontNormal);
+         }
+
+         QPalette temp = m_split_textEdit->palette();
+         temp.setColor(QPalette::Text, m_struct.colorText);
+         temp.setColor(QPalette::Base, m_struct.colorBack);
+         m_split_textEdit->setPalette(temp);
+
+         // new file
+         m_textEdit = m_split_textEdit;
+
+         moveBar();
+
+      } else {
+         // close the split
+         split_CloseButton();
+      }
+
+   }
 }
 
 void MainWindow::split_CloseButton()
 {
-   disconnect(m_splitName_CB, SIGNAL(currentIndexChanged(int)), this, SLOT(split_NameChanged(int)));
-   //disconnect(split_close,  SIGNAL(clicked()),                this, SLOT(split_CloseButton()));
+   disconnect(m_splitName_CB,  SIGNAL(currentIndexChanged(int)), this, SLOT(split_NameChanged(int)));
+   disconnect(m_splitClose_PB, SIGNAL(clicked()),                this, SLOT(split_CloseButton()));
 
    disconnect(m_split_textEdit->document(), SIGNAL(contentsChanged()),       this, SLOT(split_Title()));
    disconnect(m_split_textEdit,             SIGNAL(cursorPositionChanged()), this, SLOT(moveBar()));

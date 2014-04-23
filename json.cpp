@@ -168,6 +168,7 @@ bool MainWindow::json_Read()
 
       // user keys
       m_struct.key_printPreview = object.value("key-printPreview").toString();
+      m_struct.key_reload       = object.value("key-reload").toString();
       m_struct.key_selectLine   = object.value("key-selectLine").toString();
       m_struct.key_selectWord   = object.value("key-selectWord").toString();
       m_struct.key_selectBlock  = object.value("key-selectBlock").toString();
@@ -466,6 +467,7 @@ bool MainWindow::json_Write(Option route)
 
             // user keys
             object.insert("key-printPreview", m_struct.key_printPreview);
+            object.insert("key-reload",       m_struct.key_reload);
             object.insert("key-selectLine",   m_struct.key_selectLine);
             object.insert("key-selectWord",   m_struct.key_selectWord);
             object.insert("key-selectBlock",  m_struct.key_selectBlock);
@@ -1329,7 +1331,8 @@ bool MainWindow::json_Load_Macro(QString macroName)
    list = object.value(macroName).toArray();
    int cnt = list.count();
 
-   m_textEdit->macroStart();
+   m_textEdit->macroStart();   
+   m_macroList.clear();
 
    for (int k = 0; k < cnt; k++)  {
 
@@ -1341,8 +1344,7 @@ bool MainWindow::json_Load_Macro(QString macroName)
       QString text = element.at(2).toString();
 
       QKeyEvent *event = new QKeyEvent(QEvent::KeyPress, key, modifier, text);
-
-      m_textEdit->add_MacroEvent(event);
+      m_macroList.append(event);
    }
 
    m_textEdit->macroStop();

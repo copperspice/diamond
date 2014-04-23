@@ -72,6 +72,7 @@ struct Settings {
    QString key_newTab;
 
    QString key_printPreview;
+   QString key_reload;
    QString key_selectLine;
    QString key_selectWord;
    QString key_selectBlock;
@@ -143,6 +144,7 @@ struct Options {
    QString key_newTab;
 
    QString key_printPreview;
+   QString key_reload;
    QString key_selectLine;
    QString key_selectWord;
    QString key_selectBlock;

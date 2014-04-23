@@ -394,11 +394,6 @@ QList<QKeyEvent *> DiamondTextEdit::get_MacroKeyList()
    return m_macroKeyList;
 }
 
-void DiamondTextEdit::add_MacroEvent(QKeyEvent *event)
-{
-  m_macroKeyList.append(event);
-}
-
 
 // ** process key press
 bool DiamondTextEdit::event(QEvent *event)

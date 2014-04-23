@@ -22,6 +22,7 @@
 #include "dialog_colors.h"
 #include "dialog_fonts.h"
 #include "dialog_options.h"
+#include "dialog_preset.h"
 #include "dialog_print_opt.h"
 #include "mainwindow.h"
 
@@ -179,6 +180,7 @@ void MainWindow::setOptions()
 
    // tab 3
    options.key_printPreview = m_struct.key_printPreview;
+   options.key_reload       = m_struct.key_reload;
    options.key_selectLine   = m_struct.key_selectLine;
    options.key_selectWord   = m_struct.key_selectWord;
    options.key_selectBlock  = m_struct.key_selectBlock;
@@ -280,6 +282,7 @@ void MainWindow::setOptions()
 
       // keys 3
       m_struct.key_printPreview = options.key_printPreview;
+      m_struct.key_reload       = options.key_reload;
       m_struct.key_selectLine   = options.key_selectLine;
       m_struct.key_selectWord   = options.key_selectWord;
       m_struct.key_selectBlock  = options.key_selectBlock;
@@ -301,6 +304,24 @@ void MainWindow::setOptions()
 
       // false will redisplay only user defined shortcuts
       this->createShortCuts(true);
+   }
+
+   delete dw;
+}
+
+void MainWindow::setPresetFolders()
+{
+   Dialog_Preset *dw = new Dialog_Preset(this, m_prefolder_List);
+   int result = dw->exec();
+
+   if (result == QDialog::Accepted) {
+
+      m_prefolder_List = dw->getData();
+
+      // save new list
+      json_Write(PRESET_FOLDER);
+
+      prefolder_RedoList();
    }
 
    delete dw;

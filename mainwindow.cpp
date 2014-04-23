@@ -913,7 +913,6 @@ void MainWindow::moveBar()
 
    extraSelections.append(selection);   
    m_textEdit->setExtraSelections(extraSelections);
-
 }
 
 void MainWindow::lineNumbers()
@@ -1398,6 +1397,9 @@ void MainWindow::mw_macroStop()
       // save macro
       json_Write(MACRO);
 
+      // save macro to global list
+      m_macroList = m_textEdit->get_MacroKeyList();
+
       setStatusBar(tr("Macro recorded"), 1200);
 
    } else {
@@ -1411,11 +1413,8 @@ void MainWindow::macroPlay()
    if (m_record) {
       csError("Macro Playback", "Unable to play back a macro while recording");
 
-   }  else {
-      QList<QKeyEvent *> macroList;
-      macroList = m_textEdit->get_MacroKeyList();
-
-      int cnt = macroList.count();
+   }  else {    
+      int cnt = m_macroList.count();
 
       if (cnt == 0) {
          csError("Macro Playback", "No macro to play back");
@@ -1424,7 +1423,7 @@ void MainWindow::macroPlay()
          QKeyEvent *event;
 
          for (int k = 0; k < cnt; ++k)   {
-            event = macroList.at(k);
+            event = m_macroList.at(k);
 
             QKeyEvent *newEvent;
             newEvent = new QKeyEvent(*event);
@@ -1776,6 +1775,7 @@ void MainWindow::createConnections()
    connect(m_ui->actionColors,            SIGNAL(triggered()), this, SLOT(setColors()));
    connect(m_ui->actionFonts,             SIGNAL(triggered()), this, SLOT(setFont()));  
    connect(m_ui->actionOptions,           SIGNAL(triggered()), this, SLOT(setOptions()));
+   connect(m_ui->actionPresetFolders,     SIGNAL(triggered()), this, SLOT(setPresetFolders()));
    connect(m_ui->actionPrintOptions,      SIGNAL(triggered()), this, SLOT(setPrintOptions()));
    connect(m_ui->actionMove_ConfigFile,   SIGNAL(triggered()), this, SLOT(move_ConfigFile()));
    connect(m_ui->actionSave_ConfigFile,   SIGNAL(triggered()), this, SLOT(save_ConfigFile()));
@@ -1867,6 +1867,7 @@ void MainWindow::createShortCuts(bool setupAll)
    struct_temp.key_newTab       = m_struct.key_newTab;
 
    struct_temp.key_printPreview = m_struct.key_printPreview;
+   struct_temp.key_reload       = m_struct.key_reload;
    struct_temp.key_selectLine   = m_struct.key_selectLine;
    struct_temp.key_selectWord   = m_struct.key_selectWord ;
    struct_temp.key_selectBlock  = m_struct.key_selectBlock;
@@ -1905,6 +1906,7 @@ void MainWindow::createShortCuts(bool setupAll)
    struct_temp.key_newTab       = this->adjustKey(struct_temp.key_newTab);
 
    struct_temp.key_printPreview = this->adjustKey(struct_temp.key_printPreview);
+   struct_temp.key_reload       = this->adjustKey(struct_temp.key_reload);
    struct_temp.key_selectLine   = this->adjustKey(struct_temp.key_selectLine);
    struct_temp.key_selectWord   = this->adjustKey(struct_temp.key_selectWord);
    struct_temp.key_selectBlock  = this->adjustKey(struct_temp.key_selectBlock);
@@ -1962,6 +1964,8 @@ void MainWindow::createShortCuts(bool setupAll)
 
    // edit
    m_ui->actionPrint_Preview->setShortcut(QKeySequence(struct_temp.key_printPreview) );
+   m_ui->actionReload->setShortcut(QKeySequence(struct_temp.key_reload) );
+
    m_ui->actionSelect_Line->setShortcut(QKeySequence(struct_temp.key_selectLine)   );
    m_ui->actionSelect_Word->setShortcut(QKeySequence(struct_temp.key_selectWord)   );
    m_ui->actionSelect_Block->setShortcut(QKeySequence(struct_temp.key_selectBlock) );
@@ -2115,4 +2119,8 @@ void MainWindow::showNotDone(QString item)
 {
    csMsg( item + " - this feature has not been implemented.");
 }
+
+
+
+
 

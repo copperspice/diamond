@@ -111,13 +111,13 @@ class MainWindow : public QMainWindow
       DiamondTextEdit *m_noSplit_textEdit;
 
       QSplitter *m_splitter;
+      QFrame *m_sideWidget;
+      QFrame *m_bottomWidget;
+      bool m_isSplit;
 
       QString m_splitFileName;
       QComboBox *m_splitName_CB;
-
-      QFrame *m_sideWidget;
-      QFrame *m_bottomWidget;      
-      bool m_isSplit;
+      QPushButton *m_splitClose_PB;
 
       // arg
       void autoLoad();
@@ -169,7 +169,7 @@ class MainWindow : public QMainWindow
 
       // macros    
       bool m_record;
-      QList<QKeyEvent *> m_keyList;
+      QList<QKeyEvent *> m_macroList;
       QStringList m_macroNames;
       void replaceQuery();
       void replaceAll();
@@ -195,7 +195,7 @@ class MainWindow : public QMainWindow
       QStringList m_prefolder_List;
 
       void prefolder_CreateMenus();
-      //void prefolder_Add();
+      void prefolder_RedoList();
       //void prefolder_UpdateActions();
 
       // recent files
@@ -452,34 +452,49 @@ class MainWindow : public QMainWindow
       CS_SLOT_1(Private, void displayHTML())
       CS_SLOT_2(displayHTML) 
 
+      // syntax
       CS_SLOT_1(Private, void setSyn_C())
       CS_SLOT_2(setSyn_C) 
+
       CS_SLOT_1(Private, void setSyn_Clipper())
       CS_SLOT_2(setSyn_Clipper) 
+
       CS_SLOT_1(Private, void setSyn_Css())
       CS_SLOT_2(setSyn_Css) 
+
       CS_SLOT_1(Private, void setSyn_Dox())
       CS_SLOT_2(setSyn_Dox) 
-      CS_SLOT_1(Private, void setSyn_Html())
+
+      CS_SLOT_1(Private, void setSyn_Html())      
       CS_SLOT_2(setSyn_Html) 
+
       CS_SLOT_1(Private, void setSyn_Java())
       CS_SLOT_2(setSyn_Java) 
+
       CS_SLOT_1(Private, void setSyn_Javascript())
       CS_SLOT_2(setSyn_Javascript) 
+
       CS_SLOT_1(Private, void setSyn_Json())
       CS_SLOT_2(setSyn_Json) 
+
       CS_SLOT_1(Private, void setSyn_Makefile())
       CS_SLOT_2(setSyn_Makefile) 
+
       CS_SLOT_1(Private, void setSyn_Nsis())
       CS_SLOT_2(setSyn_Nsis) 
+
       CS_SLOT_1(Private, void setSyn_Text())
       CS_SLOT_2(setSyn_Text) 
+
       CS_SLOT_1(Private, void setSyn_Shell_S())
       CS_SLOT_2(setSyn_Shell_S) 
+
       CS_SLOT_1(Private, void setSyn_Perl())
       CS_SLOT_2(setSyn_Perl) 
+
       CS_SLOT_1(Private, void setSyn_Php())
       CS_SLOT_2(setSyn_Php) 
+
       CS_SLOT_1(Private, void setSyn_Python())
       CS_SLOT_2(setSyn_Python) 
       CS_SLOT_1(Private, void setSyn_None())
@@ -487,40 +502,60 @@ class MainWindow : public QMainWindow
 
       CS_SLOT_1(Private, void formatUnix())
       CS_SLOT_2(formatUnix) 
+
       CS_SLOT_1(Private, void formatWin())
       CS_SLOT_2(formatWin) 
+
       CS_SLOT_1(Private, void formatMac())
       CS_SLOT_2(formatMac) 
+
       CS_SLOT_1(Private, void fixTab_Spaces())
       CS_SLOT_2(fixTab_Spaces) 
+
       CS_SLOT_1(Private, void fixSpaces_Tab())
       CS_SLOT_2(fixSpaces_Tab) 
+
       CS_SLOT_1(Private, void deleteEOL_Spaces())
       CS_SLOT_2(deleteEOL_Spaces) 
 
+      // macro
       CS_SLOT_1(Private, void mw_macroStart())
       CS_SLOT_2(mw_macroStart) 
+
       CS_SLOT_1(Private, void mw_macroStop())
       CS_SLOT_2(mw_macroStop) 
+
       CS_SLOT_1(Private, void macroPlay())
       CS_SLOT_2(macroPlay) 
+
       CS_SLOT_1(Private, void macroLoad())
       CS_SLOT_2(macroLoad) 
+
       CS_SLOT_1(Private, void macroEditNames())
       CS_SLOT_2(macroEditNames) 
+
       CS_SLOT_1(Private, void spellCheck())
       CS_SLOT_2(spellCheck) 
 
+      // options
       CS_SLOT_1(Private, void setColors())
       CS_SLOT_2(setColors) 
+
       CS_SLOT_1(Private, void setFont())
-      CS_SLOT_2(setFont)      
+      CS_SLOT_2(setFont)
+
       CS_SLOT_1(Private, void setOptions())
       CS_SLOT_2(setOptions) 
+
+      CS_SLOT_1(Private, void setPresetFolders())
+      CS_SLOT_2(setPresetFolders)
+
       CS_SLOT_1(Private, void setPrintOptions())
       CS_SLOT_2(setPrintOptions) 
+
       CS_SLOT_1(Private, void move_ConfigFile())
       CS_SLOT_2(move_ConfigFile) 
+
       CS_SLOT_1(Private, void save_ConfigFile())
       CS_SLOT_2(save_ConfigFile) 
 
@@ -530,6 +565,7 @@ class MainWindow : public QMainWindow
       CS_SLOT_1(Private, void tabClose(int index))
       CS_SLOT_2(tabClose) 
 
+      // help
       CS_SLOT_1(Private, void diamondHelp())
       CS_SLOT_2(diamondHelp) 
 
@@ -625,7 +661,6 @@ class MainWindow : public QMainWindow
 
       CS_SLOT_1(Private, void split_CloseButton())
       CS_SLOT_2(split_CloseButton)
-
 };
 
 #endif

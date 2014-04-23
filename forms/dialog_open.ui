@@ -9,13 +9,13 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>500</width>
-    <height>268</height>
+    <width>525</width>
+    <height>263</height>
    </rect>
   </property>
   <property name="minimumSize">
    <size>
-    <width>500</width>
+    <width>525</width>
     <height>0</height>
    </size>
   </property>
@@ -38,7 +38,7 @@
    <item row="3" column="0" colspan="2">
     <layout class="QHBoxLayout" name="horizontalLayout_101">
      <item>
-      <spacer name="horizontalSpacer_100">
+      <spacer name="horizontalSpacer_101">
        <property name="orientation">
         <enum>Qt::Horizontal</enum>
        </property>
@@ -58,7 +58,7 @@
       </widget>
      </item>
      <item>
-      <spacer name="horizontalSpacer_101">
+      <spacer name="horizontalSpacer_102">
        <property name="orientation">
         <enum>Qt::Horizontal</enum>
        </property>
@@ -106,7 +106,7 @@
      <property name="sizeHint" stdset="0">
       <size>
        <width>20</width>
-       <height>15</height>
+       <height>10</height>
       </size>
      </property>
     </spacer>

@@ -26,7 +26,7 @@
      <x>0</x>
      <y>0</y>
      <width>800</width>
-     <height>24</height>
+     <height>28</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -109,6 +109,7 @@
     <addaction name="actionColors"/>
     <addaction name="actionFonts"/>
     <addaction name="actionOptions"/>
+    <addaction name="actionPresetFolders"/>
     <addaction name="actionPrintOptions"/>
     <addaction name="separator"/>
     <addaction name="actionMove_ConfigFile"/>
@@ -208,18 +209,13 @@
     <property name="title">
      <string>Tools</string>
     </property>
-    <widget class="QMenu" name="menuMacros">
-     <property name="title">
-      <string>Macros</string>
-     </property>
-     <addaction name="actionMacro_Start"/>
-     <addaction name="actionMacro_Stop"/>
-     <addaction name="actionMacro_Play"/>
-     <addaction name="separator"/>
-     <addaction name="actionMacro_Load"/>
-     <addaction name="actionMacro_EditNames"/>
-    </widget>
-    <addaction name="menuMacros"/>
+    <addaction name="actionMacro_Start"/>
+    <addaction name="actionMacro_Stop"/>
+    <addaction name="actionMacro_Play"/>
+    <addaction name="separator"/>
+    <addaction name="actionMacro_Load"/>
+    <addaction name="actionMacro_EditNames"/>
+    <addaction name="separator"/>
     <addaction name="actionSpell_Check"/>
    </widget>
    <addaction name="menuFile"/>
@@ -319,7 +315,7 @@
   </action>
   <action name="actionMacro_Start">
    <property name="text">
-    <string>Begin Recording</string>
+    <string>Begin Macro Recording</string>
    </property>
    <property name="toolTip">
     <string>Begin Recording Macro</string>
@@ -327,7 +323,7 @@
   </action>
   <action name="actionMacro_Stop">
    <property name="text">
-    <string>End Recording</string>
+    <string>End Macro Recording</string>
    </property>
    <property name="toolTip">
     <string>End Recording Macro</string>
@@ -790,6 +786,11 @@
   <action name="actionOpen_PresetFolder">
    <property name="text">
     <string>Open From Preset Folder</string>
+   </property>
+  </action>
+  <action name="actionPresetFolders">
+   <property name="text">
+    <string>Preset Folders</string>
    </property>
   </action>
  </widget>

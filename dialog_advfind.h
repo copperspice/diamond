@@ -23,6 +23,7 @@
 #define DIALOG_ADVFIND_H
 
 #include "ui_dialog_advfind.h"
+#include "mainwindow.h"
 
 #include <QDialog>
 #include <QString>
@@ -32,7 +33,7 @@ class Dialog_AdvFind : public QDialog
    CS_OBJECT(Dialog_AdvFind)
 
    public:
-      Dialog_AdvFind(QString text, QString fileType, QString findFolder, bool searchFolders);
+      Dialog_AdvFind(MainWindow *from, QString text, QString fileType, QString findFolder, bool searchFolders);
       ~Dialog_AdvFind();
 
       QString get_findText();      
@@ -45,12 +46,14 @@ class Dialog_AdvFind : public QDialog
 
    private:
       Ui::Dialog_AdvFind *m_ui;
+      MainWindow *m_parent;
 
-   private :
       CS_SLOT_1(Private, void pick_Folder())
       CS_SLOT_2(pick_Folder) 
+
       CS_SLOT_1(Private, void Find())
       CS_SLOT_2(Find) 
+
       CS_SLOT_1(Private, void Cancel())
       CS_SLOT_2(Cancel) 
 };

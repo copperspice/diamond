@@ -50,16 +50,18 @@ class Dialog_Find : public QDialog
       void setUp();    
       bool m_upd_Find;
 
-   private :
       CS_SLOT_1(Private, void Find())
       CS_SLOT_2(Find) 
+
       CS_SLOT_1(Private, void Cancel())
       CS_SLOT_2(Cancel) 
 
-      CS_SLOT_1(Private, void combo_ContextMenu(const QPoint & pt))
+      CS_SLOT_1(Private, void combo_ContextMenu(const QPoint & pt))      
       CS_SLOT_2(combo_ContextMenu) 
+
       CS_SLOT_1(Private, void menu_clearList())
       CS_SLOT_2(menu_clearList) 
+
       CS_SLOT_1(Private, void menu_deleteEntry())
       CS_SLOT_2(menu_deleteEntry) 
 };

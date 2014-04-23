@@ -57,15 +57,15 @@ class Dialog_Macro : public QDialog
       MacroEnum m_enum;
       QStringList m_macroList;
 
-   private :
       CS_SLOT_1(Private, void Select())
       CS_SLOT_2(Select) 
+
       CS_SLOT_1(Private, void View())
       CS_SLOT_2(View) 
+
       CS_SLOT_1(Private, void Cancel())
-      CS_SLOT_2(Cancel) 
-      CS_SLOT_1(Private, void tableClicked(const QModelIndex & index))
-      CS_SLOT_2(tableClicked) 
+      CS_SLOT_2(Cancel)
+
       CS_SLOT_1(Private, void tableDataChanged(const QModelIndex & topLeft,const QModelIndex & bottomRight))
       CS_SLOT_2(tableDataChanged) 
 };
