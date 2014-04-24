@@ -28,15 +28,15 @@
 Dialog_Macro::Dialog_Macro(MainWindow *from, MacroEnum enumValue, QStringList macroIds, QStringList macroNames )
    : m_ui(new Ui::Dialog_Macro)
 {
-   m_parent     = from;
-   m_enum       = enumValue;
-   m_macroIds   = macroIds;
-   m_macroNames = macroNames;
+   m_parent       = from;
+   m_enum         = enumValue;
+   m_macroIds_D   = macroIds;
+   m_macroNames_D = macroNames;
 
    m_ui->setupUi(this);
    this->setWindowIcon(QIcon("://resources/diamond.png"));
 
-   initData();
+   setupTitle();
    setUpView();
 
    // alter the hightlight color
@@ -62,7 +62,7 @@ Dialog_Macro::~Dialog_Macro()
    delete m_ui;
 }
 
-void Dialog_Macro::initData()
+void Dialog_Macro::setupTitle()
 {   
    if (m_enum == MACRO_LOAD) {
       setWindowTitle("Load Macro");
@@ -94,19 +94,18 @@ void Dialog_Macro::setUpView()
    m_ui->tableView->setColumnWidth(1, 250);
 
    // resize the last column
-   m_ui->tableView->horizontalHeader()->setStretchLastSection(true); 
+   m_ui->tableView->horizontalHeader()->setStretchLastSection(true);      
+   QBrush brush = QColor(0,0,255);    
 
    // add data
-   m_maxCount   = m_macroIds.size();
-   QBrush brush = QColor(0,0,255);
-
+   m_maxCount = m_macroIds_D.size();
    for (int row = 0; row < m_maxCount; ++row) {
 
-      QStandardItem *item1 = new QStandardItem(m_macroIds.at(row));
+      QStandardItem *item1 = new QStandardItem(m_macroIds_D.at(row));
       item1->setForeground(brush);
       item1->setEnabled(false);
 
-      QStandardItem *item2 = new QStandardItem(m_macroNames.at(row));
+      QStandardItem *item2 = new QStandardItem(m_macroNames_D.at(row));
       item2->setEditable(true);
 
       m_model->setItem(row, 0, item1);
@@ -134,14 +133,13 @@ void Dialog_Macro::Select()
    if (m_updateNames) {
 
       for (int row = 0; row < m_maxCount; ++row) {
-
          QStandardItem *item = m_model->item(row, 1);
          QString data = item->data(Qt::DisplayRole).toString();
 
-         m_macroNames.replace(row, data);
+         m_macroNames_D.replace(row, data);
       }
 
-      m_parent->json_Save_MacroNames(m_macroNames);
+      m_parent->json_Save_MacroNames(m_macroNames_D);
    }
 
    this->done(QDialog::Accepted);
@@ -155,31 +153,99 @@ void Dialog_Macro::Cancel()
 //
 void Dialog_Macro::View()
 {
-   QString macroId = this->get_Macro();
+   QString macro = this->get_Macro();
 
    // get the macro
    QList<macroStruct> data;
-   data = m_parent->json_View_Macro(macroId);
+   data = m_parent->json_View_Macro(macro);
 
    QString msg;
 
    for (int k = 0; k < data.size(); ++k) {
-      msg += "Key:" + QString::number(data.at(k).key) +
-             "  Modifier:" + QString::number(data.at(k).modifier);
 
+      int key         = data.at(k).key;
+      int modifier    = data.at(k).modifier;
       QString textAsc = data.at(k).text;
 
-      if (textAsc.isEmpty()) {
-         msg += + "        \n";
+      msg += "Modifier: ";
 
-         } else {
-         msg += "  Text:" + textAsc + "        \n";
+      switch (modifier)  {
+
+         case 0:
+            msg += " ";
+            break;
+
+         case Qt::SHIFT:
+            msg += "Shift";
+            break;
+
+         case Qt::CTRL:
+            msg += "Control";
+            break;
+
+         case Qt::META:
+            msg += "Meta";
+            break;
+
+         case Qt::ALT:
+            msg += "Alt";
+            break;
+
+         default:
+            msg += "  (modifier)" + QString::number(modifier);
       }
+
+      // part 2
+      bool isKey = false;
+
+      switch (key)  {
+
+         case Qt::Key_Tab:
+            msg += "\t Key: Tab";
+            isKey = true;
+            break;
+
+         case Qt::Key_Space:
+            msg += "\t Key: Space";
+            isKey = true;
+            break;
+
+         case Qt::Key_Shift:
+            msg += " ";
+            isKey = true;
+            break;
+
+         case Qt::Key_Up:
+            msg += "\t Key: Up";
+            isKey = true;
+            break;
+
+         case Qt::Key_Down:
+            msg += "\t Key: Down";
+            isKey = true;
+            break;
+
+         default:
+            if (textAsc.isEmpty()) {
+               msg += "\t (key) " + QString::number(key);
+               isKey = true;
+            }
+            break;
+
+      }
+
+      // part 3
+      if (! isKey) {
+         msg += "\t Text:" + textAsc;
+      }
+
+      msg += "\n";
    }
 
    //
    QMessageBox msgB;
-   msgB.setWindowTitle("View Macro - " + macroId);
+   msgB.setWindowTitle("View Macro - " + macro);
+   msgB.setMinimumWidth(100);
    msgB.setText(msg);
    msgB.exec();
 }

@@ -113,7 +113,7 @@
       </font>
      </property>
      <property name="currentIndex">
-      <number>2</number>
+      <number>0</number>
      </property>
      <widget class="QWidget" name="tab1">
       <attribute name="title">
@@ -220,7 +220,7 @@
        <item row="11" column="4">
         <widget class="QToolButton" name="syntax_TB">
          <property name="text">
-          <string>...</string>
+          <string>►</string>
          </property>
         </widget>
        </item>
@@ -294,7 +294,7 @@
        <item row="10" column="4">
         <widget class="QToolButton" name="dictUser_TB">
          <property name="text">
-          <string>...</string>
+          <string>►</string>
          </property>
         </widget>
        </item>
@@ -316,7 +316,7 @@
        <item row="9" column="4">
         <widget class="QToolButton" name="dictMain_TB">
          <property name="text">
-          <string>...</string>
+          <string>►</string>
          </property>
         </widget>
        </item>
@@ -390,7 +390,7 @@
        <item row="12" column="4">
         <widget class="QToolButton" name="about_TB">
          <property name="text">
-          <string>...</string>
+          <string>►</string>
          </property>
         </widget>
        </item>

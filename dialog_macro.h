@@ -40,18 +40,18 @@ class Dialog_Macro : public QDialog
       Dialog_Macro(MainWindow *from, MacroEnum enumValue, QStringList macroIds, QStringList macroNames);
       ~Dialog_Macro();
       QString get_Macro();
-      static const int MACRO_MAX_COUNT = 4;
 
    private:
       Ui::Dialog_Macro *m_ui;
       MainWindow *m_parent;
       QStandardItemModel *m_model;
-      QStringList m_macroIds;
-      QStringList m_macroNames;
+
+      QStringList m_macroIds_D;
+      QStringList m_macroNames_D;
       int m_maxCount;
       bool m_updateNames = false;
 
-      void initData();
+      void setupTitle();
       void setUpView();
 
       MacroEnum m_enum;

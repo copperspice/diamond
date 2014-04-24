@@ -42,7 +42,7 @@ MainWindow::MainWindow(QStringList fileList, QStringList flagList)
 
    this->setDiamondTitle("untitled.txt");
 
-   if ( ! json_Read() ) {
+   if ( ! json_Read(CFG_STARTUP) ) {
       // do not start program
       csError(tr("Configuration File Missing"), tr("Unable to locate or open the Diamond Configuration file."));
       throw std::runtime_error("");
@@ -107,10 +107,7 @@ MainWindow::MainWindow(QStringList fileList, QStringList flagList)
    m_ui->menuWindow->setContextMenuPolicy(Qt::CustomContextMenu);
    connect(m_ui->menuWindow, SIGNAL(customContextMenuRequested(const QPoint &)), this, SLOT(showContext_Tabs(const QPoint &)));
 
-   // save flags after reading config and before autoload
-   m_args.flag_noAutoLoad   = false;
-   m_args.flag_noSaveConfig = false;
-
+   // set flags after reading config and before autoload
    if (flagList.contains("--no_autoload", Qt::CaseInsensitive)) {
       m_args.flag_noAutoLoad = true;
    }
@@ -304,7 +301,6 @@ bool MainWindow::closeAll_Doc()
    int count = m_tabWidget->count();
    int whichTab = 0;
 
-   //
    m_openedFiles.clear();
 
    for (int k = 0; k < count; ++k) {
@@ -953,8 +949,10 @@ void MainWindow::wordWrap()
 
 void MainWindow::show_Spaces()
 {   
-   QTextDocument *td = m_textEdit->document();
+   QTextDocument *td   = m_textEdit->document();
    QTextOption textOpt = td->defaultTextOption();
+
+   bool oldValue = m_struct.show_Spaces;
 
    if (m_ui->actionShow_Spaces->isChecked()) {
       //on
@@ -985,13 +983,17 @@ void MainWindow::show_Spaces()
        td->setDefaultTextOption(textOpt);
    }
 
-   json_Write(SHOW_SPACES);
+   if (oldValue != m_struct.show_Spaces)  {
+      json_Write(SHOW_SPACES);
+   }
 }
 
 void MainWindow::show_Breaks()
 {
    QTextDocument *td = m_textEdit->document();
    QTextOption textOpt = td->defaultTextOption();
+
+   bool oldValue = m_struct.show_Breaks;
 
    if (m_ui->actionShow_Breaks->isChecked()) {
       //on
@@ -1022,7 +1024,9 @@ void MainWindow::show_Breaks()
       td->setDefaultTextOption(textOpt);
    }
 
-   json_Write(SHOW_BREAKS);
+   if (oldValue != m_struct.show_Breaks)  {
+      json_Write(SHOW_BREAKS);
+   }
 }
 
 void MainWindow::displayHTML()
@@ -1438,7 +1442,11 @@ void MainWindow::macroLoad()
 {
    QStringList macroIds = json_Load_MacroIds();
 
-   //
+   if (macroIds.count() == 0)  {
+      csError("Load Macros", "No exiting macros");
+      return;
+   }
+
    Dialog_Macro *dw = new Dialog_Macro(this, Dialog_Macro::MACRO_LOAD, macroIds, m_macroNames);
    int result = dw->exec();
 
@@ -1454,7 +1462,11 @@ void MainWindow::macroEditNames()
 {
    QStringList macroIds = json_Load_MacroIds();
 
-   //
+   if (macroIds.count() == 0)  {
+      csError("Load Macros", "No exiting macros");
+      return;
+   }
+
    Dialog_Macro *dw = new Dialog_Macro(this, Dialog_Macro::MACRO_EDITNAMES, macroIds, m_macroNames);
    dw->exec();
 

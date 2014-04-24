@@ -104,7 +104,6 @@ void MainWindow::split_Horizontal()
    m_splitter->setOrientation(Qt::Horizontal);        // Difference Here
    m_splitter->addWidget(m_bottomWidget);
 
-   // BROOM
    split_Title();
    moveBar();
 
@@ -198,7 +197,6 @@ void MainWindow::split_Vertical()
    m_splitter->setOrientation(Qt::Vertical);          // Difference Here
    m_splitter->addWidget(m_bottomWidget);
 
-   // BROOM
    split_Title();
    moveBar();
 
@@ -232,13 +230,27 @@ void MainWindow::split_NameChanged(int data)
 
    if (m_splitFileName != newName)  {
 
-      csMsg("about to load a new file: " +  newName);
+      // old doc
+      disconnect(m_split_textEdit->document(), SIGNAL(contentsChanged()), this, SLOT(split_Title()));
 
-
+      // new doc
       m_splitFileName = newName;
 
- //     int count    = m_tabWidget->count();
-      int whichTab = 0;    // BROOM
+      int whichTab = -1;
+      for (int k = 0; k < m_tabWidget->count(); ++k) {
+
+         if (newName == this->get_curFileName(k)) {
+            whichTab = k;
+            break;
+         }
+      }
+
+      if (whichTab == -1) {
+         csError("Split Window Selection", "Unable to locate selected document");
+
+         split_CloseButton();
+         return;
+      }
 
       QWidget *temp = m_tabWidget->widget(whichTab);
       DiamondTextEdit *textEdit = dynamic_cast<DiamondTextEdit *>(temp);
@@ -258,16 +270,18 @@ void MainWindow::split_NameChanged(int data)
          temp.setColor(QPalette::Base, m_struct.colorBack);
          m_split_textEdit->setPalette(temp);
 
-         // new file
          m_textEdit = m_split_textEdit;
 
+         split_Title();
          moveBar();
+
+         connect(m_split_textEdit->document(), SIGNAL(contentsChanged()),       this, SLOT(split_Title()));
 
       } else {
          // close the split
+         csError("Split Window Selection", "Selected document invalid");
          split_CloseButton();
       }
-
    }
 }
 

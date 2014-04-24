@@ -48,6 +48,8 @@
 #include <QStackedWidget>
 #include <QTabWidget>
 
+static const int MACRO_MAX_COUNT = 10;
+
 struct macroStruct
 {
    int key;
@@ -78,7 +80,7 @@ class MainWindow : public QMainWindow
       void changeFont();
 
       // macros
-      void json_Save_MacroNames(QStringList m_macroNames);
+      void json_Save_MacroNames(QStringList macroNames);
       QList<macroStruct> json_View_Macro(QString macroName);
 
       // spell
@@ -231,12 +233,14 @@ class MainWindow : public QMainWindow
       // status bar
       QLabel *m_statusLine;
       QLabel *m_statusMode;
-      QLabel *m_statusName;    
+      QLabel *m_statusName;                
 
       enum Option { ABOUTURL, ADVFIND, AUTOLOAD, CLOSE, COLORS, COLUMN_MODE, DICT_MAIN, DICT_USER, FIND_LIST, FIND_REPLACE,
                     FONT, FORMAT_DATE, FORMAT_TIME, KEYS, MACRO, MACRO_NAMES, PATH_SYNTAX, PATH_PRIOR, PRESET_FOLDER,
                     PRINT_OPTIONS, RECENTFOLDER, RECENTFILE, SHOW_LINEHIGHLIGHT, SHOW_LINENUMBERS, SHOW_SPACES, SHOW_BREAKS,
                     SPELLCHECK, TAB_SPACING, USESPACES, WORDWRAP};
+
+      enum Config { CFG_STARTUP, CFG_DEFAULT };
 
       void setScreenColors();
       void setSyntax();
@@ -258,8 +262,8 @@ class MainWindow : public QMainWindow
       void showNotDone(QString item);
 
       // json
-      bool json_Read();
-      bool json_Write(Option data);
+      bool json_Read(Config trail = CFG_DEFAULT);
+      bool json_Write(Option route, Config trail = CFG_DEFAULT);
       void json_getFileName();
       bool json_CreateNew();
       bool json_SaveFile(QByteArray route);

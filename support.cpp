@@ -238,7 +238,10 @@ bool MainWindow::loadFile(const QString &fileName, bool addNewTab, bool isAuto)
       tabNew();
 
       m_struct.pathPrior = this->pathName(fileName);
-      json_Write(PATH_PRIOR);
+
+      if (! isAuto) {
+         json_Write(PATH_PRIOR);
+      }
    }
 
    QString fileData = QString::fromUtf8(temp);      
@@ -414,7 +417,7 @@ void MainWindow::setCurrentTitle(const QString &fileName, bool tabChange)
       }
    }
 
-   this->setDiamondTitle(showName);
+   setDiamondTitle(showName);
 }
 
 void MainWindow::setDiamondTitle(const QString title)

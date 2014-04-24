@@ -39,7 +39,7 @@
 
 #include <qglobal.h>
 
-bool MainWindow::json_Read()
+bool MainWindow::json_Read(Config trail)
 {
    bool ok = true;
 
@@ -267,22 +267,22 @@ bool MainWindow::json_Read()
          m_macroNames.append(list.at(k).toString());
       }
 
-      // ensure there is a name for each macro id
-      QStringList macroIds = json_Load_MacroIds();
-
-      int maxCount  = macroIds.size();
+      // ensure there is a macro name for each macro id
+      QStringList macroIds = json_Load_MacroIds();      
       bool modified = false;
 
-      for (int id = 0; id < maxCount; ++id) {
+      for (int k = 0; k < macroIds.count()  ; ++k)  {        
 
-         if (m_macroNames.size() <= id || m_macroNames.at(id).isEmpty()) {
-            m_macroNames.append("Macro Name " + QString::number(id+1) );
+         if ( (m_macroNames.count() <= k) || (m_macroNames.at(k).isEmpty()) )  {
+            QString temp = "Macro Name " + QString::number(k+1);
+            m_macroNames.append(temp);
+
             modified  = true;
-         }
+         }         
       }
 
       if (modified) {
-         json_Write(MACRO_NAMES);
+         json_Write(MACRO_NAMES, trail);
       }
 
       // preset folders
@@ -327,10 +327,14 @@ bool MainWindow::json_Read()
    return ok;
 }
 
-bool MainWindow::json_Write(Option route)
+bool MainWindow::json_Write(Option route, Config trail)
 {   
-   if (m_args.flag_noSaveConfig) {
+   if (trail == CFG_STARTUP) {
+      // fall thru
+
+   } else if (m_args.flag_noSaveConfig) {
       return true;
+
    }
 
    QSettings settings("Diamond Editor", "Settings");
@@ -558,10 +562,10 @@ bool MainWindow::json_Write(Option route)
                   // get next macro name
                   QString macroName = object.value("macro-next").toString();
 
-                  // increment next macro name
-                  int id = macroName.right(1).toInt() + 1;
+                  // next macro id number
+                  int id = macroName.right(1).toInt();
 
-                  if (id > Dialog_Macro::MACRO_MAX_COUNT)  {
+                  if (id > MACRO_MAX_COUNT)  {
 
                      QStringList macroIds = json_Load_MacroIds();
 
@@ -582,16 +586,20 @@ bool MainWindow::json_Write(Option route)
                      delete dw;
 
                   } else   {
-                     // save next macro name
-                     macroName = "macro" + QString::number(id);
-                     object.insert("macro-next", macroName);
+                     // save next macro name                    
+                     object.insert("macro-next", "macro" + QString::number(id + 1));
 
+                     // save macro_names
+                     m_macroNames.append("Macro Name " + QString::number(id));
+
+                     QJsonArray temp = QJsonArray::fromStringList(m_macroNames);
+                     object.insert("macro-names", temp);
                   }
 
                   if (ok)  {
                      // save macro
                      QJsonArray temp = QJsonArray::fromVariantList(macroList);
-                     object.insert(macroName, temp);                    
+                     object.insert(macroName, temp);
                   }
                }
 
@@ -599,7 +607,7 @@ bool MainWindow::json_Write(Option route)
             }
 
          case MACRO_NAMES:
-            {
+            {           
                QJsonArray temp = QJsonArray::fromStringList(m_macroNames);
                object.insert("macro-names", temp);
                break;
@@ -1264,7 +1272,7 @@ void MainWindow::move_ConfigFile()
          QString newName = dw->get_newName();
 
          if (newName.isEmpty()) {
-            csError("Diamond Configuration", "No configuration file specified, unable to rename.");
+            csError("Diamond Configuration", "No configuration file name specified, unable to rename.");
 
          } if (QFile::exists(newName) ) {
             csError("Diamond Configuration", "New configuration file already exists, unable to rename.");
@@ -1302,9 +1310,7 @@ QStringList MainWindow::json_Load_MacroIds()
    QStringList keyList = object.keys();
    QStringList macroList;
 
-   int count = keyList.count();
-
-   for (int k = 0; k < count; k++)  {
+   for (int k = 0; k < keyList.count(); k++)  {
       QString key = keyList.at(k);
 
       if (key.left(5) == "macro" && key != "macro-names" && key != "macro-next"  ) {

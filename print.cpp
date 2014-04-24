@@ -59,11 +59,18 @@ void MainWindow::print()
 }
 
 void MainWindow::printPreview()
-{
+{  
    // called from menu
    QPrinter printer(QPrinter::HighResolution);
 
-   QPrintPreviewDialog preview(&printer, this);
+
+
+   csMsg("broom, - called print preview   START");
+   QPrintPreviewDialog preview(&printer, this);       // ERROR
+   csMsg("broom, - called print preview   C");
+
+
+
    preview.setWindowTitle(m_curFile);
 
    connect(&preview, SIGNAL(paintRequested(QPrinter *)), this, SLOT(printOut(QPrinter *)));
