@@ -59,6 +59,20 @@ DiamondTextEdit::DiamondTextEdit(MainWindow *from, struct Settings settings, Spe
    // line highlight
    connect(this, SIGNAL(blockCountChanged(int)), this, SLOT(update_LineNumWidth(int)));
    connect(this, SIGNAL(updateRequest(const QRect &,int)), this, SLOT(update_LineNumArea(const QRect &,int)));
+
+/*
+   // broom
+   const QMetaObject *mObj = this->metaObject();
+
+   QMetaMethod mMethod = mObj->method(mObj->indexOfMethod("paste()"));
+   int value = mMethod.revision();
+   qDebug("Rev for paste %d",value);
+
+   mMethod = mObj->method(mObj->indexOfMethod("copy()"));
+   value = mMethod.revision();
+   qDebug("Rev for copy %d",value);
+*/
+
 }
 
 DiamondTextEdit::~DiamondTextEdit()

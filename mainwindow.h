@@ -160,7 +160,7 @@ class MainWindow : public QMainWindow
       QStringList m_recursiveList;
       QFrame *m_findWidget;
       QStandardItemModel *m_model;
-      QList<advFindStruct> advFind_getResults();
+      QList<advFindStruct> advFind_getResults(bool &aborted);
       void findRecursive(const QString &path);
       void advFind_ShowFiles(QList<advFindStruct> foundList);
 

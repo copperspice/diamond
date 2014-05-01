@@ -66,19 +66,32 @@ QStringList Dialog_Symbols::initData()
         << "&nbsp;"
         << "&lt;"
         << "&gt;"
+        << "&mdash;"
+        << "&ndash;"
+        << "Tab Character"    // tab
+        << QChar(0x00BC)      // "1/4"
+        << QChar(0x00BD)      // "1/2"
+        << QChar(0x00BE)      // "3/4"
         << QChar(0x02153)     // "1/3"
         << QChar(0x02154)     // "2/3"
         << QChar(0x0215C)     // "3/8"
         << QChar(0x0215D)     // "5/8"
-        << QChar(0x0215E)     // "7/8"
-        << QChar(0x00BC)      // "1/4"
-        << QChar(0x00BD)      // "1/2"
-        << QChar(0x00BE)      // "3/4"
+        << QChar(0x0215E)     // "7/8"      
         << QChar(0x00AE)      // "R"
         << QChar(0x00A9)      // "C"
         << QChar(0x2122)      // "TM"
         << QChar(0x20AC)      // euro
         << QChar(0x00A3)      // pound
+        << QChar(0x00C4)      // Ä
+        << QChar(0x00CB)      // Ë
+        << QChar(0x00CF)      // Ï
+        << QChar(0x00D6)      // Ö
+        << QChar(0x00DC)      // Ü
+        << QChar(0x00E4)      // ä
+        << QChar(0x00EB)      // ë
+        << QChar(0x00EF)      // ï
+        << QChar(0x00F6)      // ö
+        << QChar(0x00FC)      // ü
         << QChar(0x00BF)      // upside down ?
         << QChar(0x00A1);     // upside down !
 

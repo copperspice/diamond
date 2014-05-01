@@ -74,6 +74,16 @@ class DiamondTextEdit : public QPlainTextEdit
       SyntaxTypes get_SyntaxEnum();
       void set_SyntaxEnum(SyntaxTypes data);
 
+      CS_SLOT_1(Public, void cut())
+      CS_SLOT_2(cut)
+
+      CS_SLOT_1(Public, void copy())
+      CS_SLOT_2(copy)
+
+      CS_SLOT_1(Public, void paste())
+      CS_SLOT_2(paste)
+//       CS_REVISION(paste,1)
+
    protected:
       void contextMenuEvent(QContextMenuEvent *event);
       bool event(QEvent *event);
@@ -113,21 +123,13 @@ class DiamondTextEdit : public QPlainTextEdit
       // syntax
       Syntax *m_syntaxParser;
       QString m_synFName;
-      SyntaxTypes m_syntaxEnum;     
+      SyntaxTypes m_syntaxEnum;
 
-   private :
       CS_SLOT_1(Private, void update_LineNumWidth(int newBlockCount))
       CS_SLOT_2(update_LineNumWidth) 
-      CS_SLOT_1(Private, void update_LineNumArea(const QRect & rect,int value))
-      CS_SLOT_2(update_LineNumArea) 
 
-   public :     
-      CS_SLOT_1(Public, void cut())
-      CS_SLOT_2(cut) 
-      CS_SLOT_1(Public, void copy())
-      CS_SLOT_2(copy) 
-      CS_SLOT_1(Public, void paste())
-      CS_SLOT_2(paste)       
+      CS_SLOT_1(Private, void update_LineNumArea(const QRect & rect,int value))
+      CS_SLOT_2(update_LineNumArea)
 };
 
 

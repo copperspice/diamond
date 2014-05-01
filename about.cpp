@@ -113,9 +113,6 @@ About::About(QString kind, QString file)
 
    mainLayout->setContentsMargins(0, 0, 0, 15);
 
-   QSize size = QSize(1050, 650);
-   resize(size);
-
    //
    m_zoomLevels << 30 << 50 << 67 << 80 << 90 << 100;
    m_zoomLevels << 110 << 120 << 133 << 150 << 170 << 200 << 240 << 300;
@@ -166,6 +163,11 @@ void About::setCustomContextMenu(const QPoint &pos)
    menu->addAction(tr("Zoom Out"), this, SLOT(zoomOut()), QKeySequence::ZoomOut );
 
    menu->exec(mapToGlobal(pos));
+}
+
+QSize About::sizeHint() const
+{
+   return QSize(1050,650);
 }
 
 void About::zoomIn()

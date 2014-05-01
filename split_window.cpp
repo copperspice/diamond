@@ -298,10 +298,7 @@ void MainWindow::split_CloseButton()
    disconnect(m_split_textEdit, SIGNAL(copyAvailable(bool)), m_ui->actionCut,  SLOT(setEnabled(bool)));
    disconnect(m_split_textEdit, SIGNAL(copyAvailable(bool)), m_ui->actionCopy, SLOT(setEnabled(bool)));
 
-
-   delete m_bottomWidget;
-   // m_bottomWidget->deleteLater();      BROOM
-
+   m_bottomWidget->deleteLater();
 
    m_split_textEdit = 0;
    m_isSplit = false;

@@ -595,7 +595,13 @@ void MainWindow::insertSymbol()
       QString text = dw->get_Symbol();
 
       if (! text.isEmpty() ) {
-         m_textEdit->textCursor().insertText(text);
+
+         if (text.toLower() == "tab character")  {
+            m_textEdit->textCursor().insertText(QChar(9));
+
+         } else  {
+            m_textEdit->textCursor().insertText(text);
+         }
       }
    }
 

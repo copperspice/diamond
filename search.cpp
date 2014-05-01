@@ -163,9 +163,13 @@ void MainWindow::advFind()
          }
 
          //
-         QList<advFindStruct> foundList = this->advFind_getResults();
+         bool aborted = false;
+         QList<advFindStruct> foundList = this->advFind_getResults(aborted);
 
-         if (foundList.isEmpty())  {
+         if (aborted)  {
+            // do nothing
+
+         } else if (foundList.isEmpty())  {
             csError("Advanced Find", "Not found: " + m_advFindText);
 
             // close the search box
@@ -185,8 +189,10 @@ void MainWindow::advFind()
    delete dw;
 }
 
-QList<advFindStruct> MainWindow::advFind_getResults()
-{
+QList<advFindStruct> MainWindow::advFind_getResults(bool &aborted)
+{   
+   aborted = false;
+
    // part 1
    QStringList searchList;
    QDir currentDir;
@@ -202,17 +208,17 @@ QList<advFindStruct> MainWindow::advFind_getResults()
       searchList = currentDir.entryList(QStringList(m_advFindFileType), QDir::Files | QDir::NoSymLinks);
    }
 
-   QProgressDialog progressDialog(this);
+   QProgressDialog progressDialog(this);      
 
-   // unused
-   // progressDialog.setCancelButtonText(tr("&Cancel"));
-
-   progressDialog.setMinimumWidth(275);
-   progressDialog.setCancelButton(0);
+   progressDialog.setMinimumDuration(1500);
+   progressDialog.setMinimumWidth(275);   
    progressDialog.setRange(0, searchList.size());
    progressDialog.setWindowTitle(tr("Advanced File Search"));
 
-   QLabel *label = new QLabel(this);
+   progressDialog.setCancelButtonText(tr("&Cancel"));
+   progressDialog.setCancelButtonCentered(true);
+
+   QLabel *label = new QLabel;
 
    QFont font = label->font();
    font.setPointSize(11);
@@ -243,12 +249,13 @@ QList<advFindStruct> MainWindow::advFind_getResults()
       progressDialog.setLabelText(tr("Searching file %1 of %2").arg(k).arg(searchList.size()));
       qApp->processEvents();
 
-/*
-      not used
       if (progressDialog.wasCanceled()) {
-          break;
+
+         csMsg("stop, i want out!");
+
+         aborted = true;
+         break;
       }
-*/
 
       if (m_advFSearchFolders)  {
          name = searchList[k];
@@ -270,11 +277,6 @@ QList<advFindStruct> MainWindow::advFind_getResults()
 
          while (! in.atEnd()) {
 
-/*          not used
-            if (progressDialog.wasCanceled())  {
-                break;
-            }
-*/
             line = in.readLine();
             lineNumber++;
 
@@ -288,10 +290,6 @@ QList<advFindStruct> MainWindow::advFind_getResults()
 
             // store the results
             if (position != -1)  {
-               // QString markedLine = line.trimmed();
-               // markedLine.replace(m_advFindText,  "<b>" + m_advFindText + "<\b>");
-               // markedLine = "<b>" + m_advFindText + "</b>" +  line;
-
                advFindStruct temp;
 
                temp.fileName   = name;

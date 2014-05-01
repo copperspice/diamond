@@ -39,9 +39,6 @@ Dialog_XP_GetDir::Dialog_XP_GetDir(MainWindow *from, const QString title, const 
    this->setWindowIcon(QIcon("://resources/diamond.png"));
    setWindowTitle(title);
 
-   QSize size = QSize(750, 650);
-   resize(size);
-
    // set the width of the panes
    QSizePolicy sizePolicy1(QSizePolicy::Expanding, QSizePolicy::Expanding);
 
