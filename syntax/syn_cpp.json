@@ -53,6 +53,7 @@
       "\\bdelete\\b",
       "\\bdynamic_cast\\b",
       "\\benum\\b",
+      "\\belif\\b",
       "\\belse\\b",
       "\\bendif\\b",
       "\\bexplicit\\b",

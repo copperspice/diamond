@@ -31,10 +31,8 @@
 #endif
 
 Dialog_XP_GetDir::Dialog_XP_GetDir(MainWindow *from, const QString title, const QString path, QFileDialog::Options options)
-   : m_ui(new Ui::Dialog_XP_GetDir)
+   : QDialog(from), m_ui(new Ui::Dialog_XP_GetDir)
 {
-   m_parent = from;
-
    m_ui->setupUi(this);
    this->setWindowIcon(QIcon("://resources/diamond.png"));
    setWindowTitle(title);
@@ -42,7 +40,7 @@ Dialog_XP_GetDir::Dialog_XP_GetDir(MainWindow *from, const QString title, const 
    // set the width of the panes
    QSizePolicy sizePolicy1(QSizePolicy::Expanding, QSizePolicy::Expanding);
 
-   sizePolicy1.setHorizontalStretch(1.5);
+   sizePolicy1.setHorizontalStretch(2);
    sizePolicy1.setVerticalStretch(0);
    sizePolicy1.setHeightForWidth(m_ui->drives_TV->sizePolicy().hasHeightForWidth());
    m_ui->drives_TV->setSizePolicy(sizePolicy1);
@@ -109,7 +107,8 @@ Dialog_XP_GetDir::Dialog_XP_GetDir(MainWindow *from, const QString title, const 
 
    // search for the current path
    index = m_model_R->index(path);
-   m_ui->folders_TV->setCurrentIndex(index);
+   m_ui->folders_TV->setCurrentIndex(index);   
+   m_ui->folders_TV->scrollTo(index, QAbstractItemView::PositionAtCenter);
 
    // tree view triggers
    connect(m_ui->drives_TV, SIGNAL(currentItemChanged(QTreeWidgetItem *, QTreeWidgetItem *)),
@@ -124,25 +123,9 @@ Dialog_XP_GetDir::~Dialog_XP_GetDir()
    delete m_ui;
 }
 
-void Dialog_XP_GetDir::showDirectories(QTreeWidgetItem *current, QTreeWidgetItem *previous)
+void Dialog_XP_GetDir::Cancel()
 {
-   if (! current) {
-      return;
-   }
-
-   m_ui->drives_TV->setCurrentItem(current);
-   QString drive = current->text(0) + "/";
-
-   // 1
-   m_model_R = new QFileSystemModel;
-   m_model_R->setFilter(QDir::Drives | QDir::Dirs | QDir::NoDotAndDotDot);
-   m_model_R->setRootPath(drive);
-
-   // 2
-   m_ui->folders_TV->setModel(m_model_R);
-
-   QModelIndex index = m_model_R->index(drive);
-   m_ui->folders_TV->setRootIndex(index);
+   this->done(QDialog::Rejected);
 }
 
 QString Dialog_XP_GetDir::getDriveType(QString drive)
@@ -182,18 +165,8 @@ QString Dialog_XP_GetDir::getDriveType(QString drive)
    return "";
 }
 
-void Dialog_XP_GetDir::Ok()
-{
-   this->done(QDialog::Accepted);
-}
-
-void Dialog_XP_GetDir::Cancel()
-{
-   this->done(QDialog::Rejected);
-}
-
 QString Dialog_XP_GetDir::getDirectory()
-{  
+{
    QString retval;
 
    QModelIndex index = m_ui->folders_TV->currentIndex();
@@ -214,3 +187,35 @@ QString Dialog_XP_GetDir::getDirectory()
 
    return retval;
 }
+
+void Dialog_XP_GetDir::Ok()
+{
+   this->done(QDialog::Accepted);
+}
+
+void Dialog_XP_GetDir::showDirectories(QTreeWidgetItem *current, QTreeWidgetItem *previous)
+{
+   if (! current) {
+      return;
+   }
+
+   m_ui->drives_TV->setCurrentItem(current);
+   QString drive = current->text(0) + "/";
+
+   // 1
+   m_model_R = new QFileSystemModel;
+   m_model_R->setFilter(QDir::Drives | QDir::Dirs | QDir::NoDotAndDotDot);
+   m_model_R->setRootPath(drive);
+
+   // 2
+   m_ui->folders_TV->setModel(m_model_R);
+
+   QModelIndex index = m_model_R->index(drive);
+   m_ui->folders_TV->setRootIndex(index);
+}
+
+QSize Dialog_XP_GetDir::sizeHint() const
+{
+   return QSize(350,800);
+}
+

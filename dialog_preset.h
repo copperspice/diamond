@@ -44,6 +44,7 @@ class Dialog_Preset : public QDialog
       QStringList m_dataList;
       MainWindow *m_parent;
 
+      void verify_Folder(QString number, QLineEdit *field);
       void pick_Folder(QString number, QLineEdit *field);
 
       CS_SLOT_1(Private, void save())
@@ -52,29 +53,6 @@ class Dialog_Preset : public QDialog
       CS_SLOT_1(Private, void cancel())
       CS_SLOT_2(cancel)
 
-      CS_SLOT_1(Private, void folder1_TB())
-      CS_SLOT_2(folder1_TB)
-
-      CS_SLOT_1(Private, void folder2_TB())
-      CS_SLOT_2(folder2_TB)
-
-      CS_SLOT_1(Private, void folder3_TB())
-      CS_SLOT_2(folder3_TB)
-
-      CS_SLOT_1(Private, void folder4_TB())
-      CS_SLOT_2(folder4_TB)
-
-      CS_SLOT_1(Private, void folder5_TB())
-      CS_SLOT_2(folder5_TB)
-
-      CS_SLOT_1(Private, void folder6_TB())
-      CS_SLOT_2(folder6_TB)
-
-      CS_SLOT_1(Private, void folder7_TB())
-      CS_SLOT_2(folder7_TB)
-
-      CS_SLOT_1(Private, void folder8_TB())
-      CS_SLOT_2(folder8_TB)
 };
 
 #endif

@@ -293,6 +293,11 @@ bool MainWindow::json_Read(Config trail)
          m_prefolder_List.append(list.at(k).toString());
       }
 
+      // silly way to pad the list
+      for (int k = cnt; k < prefolder_MaxCnt; k++)  {
+         m_prefolder_List.append("");
+      }
+
       // recent folders
       list = object.value("recent-folders").toArray();
       cnt = list.count();

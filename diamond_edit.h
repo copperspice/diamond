@@ -82,7 +82,6 @@ class DiamondTextEdit : public QPlainTextEdit
 
       CS_SLOT_1(Public, void paste())
       CS_SLOT_2(paste)
-//       CS_REVISION(paste,1)
 
    protected:
       void contextMenuEvent(QContextMenuEvent *event);

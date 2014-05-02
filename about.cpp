@@ -131,8 +131,8 @@ About::About(QString kind, QString file)
 
    // set up custom context menu
    m_viewer->setContextMenuPolicy(Qt::CustomContextMenu);
-   connect(m_viewer, SIGNAL(customContextMenuRequested(const QPoint)), this,
-                 SLOT(setCustomContextMenu(const QPoint)) );
+   connect(m_viewer, SIGNAL(customContextMenuRequested(const QPoint &)), this,
+                 SLOT(setCustomContextMenu(const QPoint &)) );
 
    // signals   
    if (kind == "Help") {

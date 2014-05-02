@@ -124,6 +124,7 @@ QString MainWindow::get_DirPath(QString message, QString path)
 #ifdef Q_OS_WIN
 
    if (QSysInfo::WindowsVersion < QSysInfo::WV_VISTA) {
+
       Dialog_XP_GetDir *dw = new Dialog_XP_GetDir(this, message, path, options);
       int result = dw->exec();
 

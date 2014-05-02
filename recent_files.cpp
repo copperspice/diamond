@@ -339,28 +339,21 @@ void MainWindow::rfolder_UpdateActions()
 // ****  preset folders
 void MainWindow::prefolder_CreateMenus()
 {
-   int cnt = m_prefolder_List.count();
-
    QString tName;
    QMenu *menu = new QMenu(this);
 
    for (int i = 0; i < prefolder_MaxCnt; ++i) {
 
-      if (i < cnt)  {
-         tName = m_prefolder_List[i];
-      } else {
-         tName = "prefolder"+QString::number(i);
+      tName = m_prefolder_List[i];
+
+      if (tName.isEmpty())  {
+         continue;
       }
 
       prefolder_Actions[i] = new QAction(tName, this);
       prefolder_Actions[i]->setData("preset-folder");
 
       menu->addAction(prefolder_Actions[i]);
-
-      if (i >= cnt)  {
-         prefolder_Actions[i]->setVisible(false);
-      }
-
       connect(prefolder_Actions[i], SIGNAL(triggered()), this, SLOT(prefolder_Open()));
    }
 

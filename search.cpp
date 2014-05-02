@@ -250,9 +250,6 @@ QList<advFindStruct> MainWindow::advFind_getResults(bool &aborted)
       qApp->processEvents();
 
       if (progressDialog.wasCanceled()) {
-
-         csMsg("stop, i want out!");
-
          aborted = true;
          break;
       }

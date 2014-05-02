@@ -50,9 +50,6 @@ void MainWindow::setColors()
 
       QLabel *label = new QLabel;
       label->setAlignment(Qt::AlignCenter);
-      label->setFrameStyle(QFrame::Box | QFrame::Raised);
-      label->setLineWidth(0);
-      label->setMidLineWidth(1);
       label->setText("Updating colors for each Tab. Please Wait...");
 
       QFont font = label->font();
@@ -61,8 +58,10 @@ void MainWindow::setColors()
 
       QBoxLayout *layout = new QVBoxLayout();      
       layout->addWidget(label);
-      tDialog.setLayout(layout);
+      layout->setContentsMargins(9,9,9,20);
+      layout->itemAt(0)->setAlignment(Qt::AlignVCenter);
 
+      tDialog.setLayout(layout);
       showDialog(tDialog);
 
       if (m_struct.showLineHighlight)  {

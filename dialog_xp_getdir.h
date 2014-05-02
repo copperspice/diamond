@@ -38,19 +38,20 @@ class Dialog_XP_GetDir  : public QDialog
       ~Dialog_XP_GetDir();
 
        QString getDirectory();
+       QSize sizeHint() const;
 
    private:
-      Ui::Dialog_XP_GetDir *m_ui;
-      MainWindow *m_parent;
+      Ui::Dialog_XP_GetDir *m_ui;      
       QFileSystemModel *m_model_R;
 
       QString getDriveType(QString drive);
 
-   private :
       CS_SLOT_1(Private, void showDirectories(QTreeWidgetItem * current,QTreeWidgetItem * previous))
       CS_SLOT_2(showDirectories) 
+
       CS_SLOT_1(Private, void Ok())
       CS_SLOT_2(Ok) 
+
       CS_SLOT_1(Private, void Cancel())
       CS_SLOT_2(Cancel) 
 };
