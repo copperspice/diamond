@@ -75,7 +75,7 @@ Dialog_Colors::Dialog_Colors(MainWindow *from)
    connect(m_ui->mline_Italic_CB,   SIGNAL(clicked()), this, SLOT(mline_italic())  );
 
    connect(m_ui->save_PB,           SIGNAL(clicked()), this, SLOT(Save()));
-   connect(m_ui->cancel_PB,         SIGNAL(clicked()), this, SLOT(Cancel()));
+   connect(m_ui->cancel_PB,         SIGNAL(clicked()), this, SLOT(Cancel()));  
 }
 
 Dialog_Colors::~Dialog_Colors()

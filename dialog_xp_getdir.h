@@ -38,11 +38,16 @@ class Dialog_XP_GetDir  : public QDialog
       ~Dialog_XP_GetDir();
 
        QString getDirectory();
+
+       void showMe(const QString &);
        QSize sizeHint() const;
 
    private:
       Ui::Dialog_XP_GetDir *m_ui;      
       QFileSystemModel *m_model_R;
+
+      QString m_path;
+      QModelIndex m_index_R;
 
       QString getDriveType(QString drive);
 

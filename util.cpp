@@ -27,6 +27,8 @@ void csMsg(const QString &msg)
    QMessageBox msgB;
 
    msgB.setWindowTitle("Debug Information");
+   msgB.setWindowIcon(QIcon("://resources/diamond.png"));
+
    msgB.setText(msg);
    msgB.exec();
 }
@@ -38,6 +40,8 @@ void csMsg(QString msg, int value)
    QMessageBox msgB;
 
    msgB.setWindowTitle("Debug Information");
+   msgB.setWindowIcon(QIcon("://resources/diamond.png"));
+
    msgB.setText(msg);
    msgB.exec();
 }
@@ -51,6 +55,8 @@ void csMsg(QWidget *parent, const QString &title, const QString &msg)
    }
 
    msgB.setWindowTitle(title);
+   msgB.setWindowIcon(QIcon("://resources/diamond.png"));
+
    msgB.setText(msg);
    msgB.exec();
 }
@@ -60,6 +66,8 @@ void csError(QString title, QString msg)
    QMessageBox msgB;
 
    msgB.setWindowTitle(title);
+   msgB.setWindowIcon(QIcon("://resources/diamond.png"));
+
    msgB.setIcon(QMessageBox::Warning);
    msgB.setText(msg);
    msgB.exec();

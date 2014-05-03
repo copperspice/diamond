@@ -52,13 +52,15 @@ class Dialog_Colors : public QDialog
       void updateParser(bool newSettings);
       QColor pickColor(QColor oldColor);
 
-   private :
       CS_SLOT_1(Private, void text_TB())
       CS_SLOT_2(text_TB) 
+
       CS_SLOT_1(Private, void back_TB())
       CS_SLOT_2(back_TB) 
+
       CS_SLOT_1(Private, void highText_TB())
       CS_SLOT_2(highText_TB) 
+
       CS_SLOT_1(Private, void highBack_TB())
       CS_SLOT_2(highBack_TB) 
 

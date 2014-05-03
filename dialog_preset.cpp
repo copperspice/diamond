@@ -22,11 +22,12 @@
 #include "dialog_preset.h"
 #include "util.h"
 
+#include <QPalette>
 #include <QFileDialog>
 #include <QFileInfo>
 
 Dialog_Preset::Dialog_Preset(MainWindow *from, QStringList data)
-   : m_ui(new Ui::Dialog_Preset)
+   : QDialog(from), m_ui(new Ui::Dialog_Preset)
 {
    m_parent   = from;
    m_dataList = data;
@@ -94,16 +95,19 @@ Dialog_Preset::Dialog_Preset(MainWindow *from, QStringList data)
        }
    }
 
-   connect(m_ui->folder1,  &QLineEdit::editingFinished, this, [this](){ verify_Folder("1",  m_ui->folder1);  } );
-   connect(m_ui->folder2,  &QLineEdit::editingFinished, this, [this](){ verify_Folder("2",  m_ui->folder2);  } );
-   connect(m_ui->folder3,  &QLineEdit::editingFinished, this, [this](){ verify_Folder("3",  m_ui->folder3);  } );
-   connect(m_ui->folder4,  &QLineEdit::editingFinished, this, [this](){ verify_Folder("4",  m_ui->folder4);  } );
-   connect(m_ui->folder5,  &QLineEdit::editingFinished, this, [this](){ verify_Folder("5",  m_ui->folder5);  } );
-   connect(m_ui->folder6,  &QLineEdit::editingFinished, this, [this](){ verify_Folder("6",  m_ui->folder6);  } );
-   connect(m_ui->folder7,  &QLineEdit::editingFinished, this, [this](){ verify_Folder("7",  m_ui->folder7);  } );
-   connect(m_ui->folder8,  &QLineEdit::editingFinished, this, [this](){ verify_Folder("8",  m_ui->folder8);  } );
-   connect(m_ui->folder9,  &QLineEdit::editingFinished, this, [this](){ verify_Folder("9",  m_ui->folder9);  } );
-   connect(m_ui->folder10, &QLineEdit::editingFinished, this, [this](){ verify_Folder("10", m_ui->folder10); } );
+   // save for later
+   m_editPalette = m_ui->folder1->palette();
+
+   connect(m_ui->folder1,  &QLineEdit::editingFinished, this, [this](){ verify_Folder(m_ui->folder1);  } );
+   connect(m_ui->folder2,  &QLineEdit::editingFinished, this, [this](){ verify_Folder(m_ui->folder2);  } );
+   connect(m_ui->folder3,  &QLineEdit::editingFinished, this, [this](){ verify_Folder(m_ui->folder3);  } );
+   connect(m_ui->folder4,  &QLineEdit::editingFinished, this, [this](){ verify_Folder(m_ui->folder4);  } );
+   connect(m_ui->folder5,  &QLineEdit::editingFinished, this, [this](){ verify_Folder(m_ui->folder5);  } );
+   connect(m_ui->folder6,  &QLineEdit::editingFinished, this, [this](){ verify_Folder(m_ui->folder6);  } );
+   connect(m_ui->folder7,  &QLineEdit::editingFinished, this, [this](){ verify_Folder(m_ui->folder7);  } );
+   connect(m_ui->folder8,  &QLineEdit::editingFinished, this, [this](){ verify_Folder(m_ui->folder8);  } );
+   connect(m_ui->folder9,  &QLineEdit::editingFinished, this, [this](){ verify_Folder(m_ui->folder9);  } );
+   connect(m_ui->folder10, &QLineEdit::editingFinished, this, [this](){ verify_Folder(m_ui->folder10); } );
 
    connect(m_ui->folder1_TB,  &QPushButton::clicked, this, [this](){ pick_Folder("1",  m_ui->folder1);  } );
    connect(m_ui->folder2_TB,  &QPushButton::clicked, this, [this](){ pick_Folder("2",  m_ui->folder2);  } );
@@ -125,18 +129,22 @@ Dialog_Preset::~Dialog_Preset()
    delete m_ui;
 }
 
-void Dialog_Preset::verify_Folder(QString number, QLineEdit *field)
+void Dialog_Preset::verify_Folder(QLineEdit *field)
 {
    QString folder = field->text();
 
    if (! folder.isEmpty()) {
-
-      csMsg(folder);
-
       bool ok = QFileInfo(folder).isDir();
 
-      if (! ok) {
-         csError("Preset Folder" + number, folder + "does not exist or is not valid");
+      if (ok) {
+         // set back to the normal text color
+         field->setPalette(m_editPalette);
+
+      } else {
+         // change the text to red
+         QPalette temp = field->palette();
+         temp.setColor(QPalette::Text, Qt::red);
+         field->setPalette(temp);
       }
    }
 }
@@ -150,6 +158,9 @@ void Dialog_Preset::pick_Folder(QString number, QLineEdit *field)
 
    if (! newFolder.isEmpty()) {
       field->setText(newFolder);
+
+      // no reason to test, just reset the text color
+      field->setPalette(m_editPalette);
    }
 }
 
@@ -200,10 +211,7 @@ QStringList Dialog_Preset::getData()
             m_dataList.replace(k, m_ui->folder7->text());
             break;
 
-         case 8:
-
-            csMsg("adding folder 8");
-
+         case 8:  
             m_dataList.replace(k, m_ui->folder8->text());
             break;
 

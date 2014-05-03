@@ -41,10 +41,12 @@ class Dialog_Preset : public QDialog
 
    private:
       Ui::Dialog_Preset *m_ui;
+
+      QPalette m_editPalette;
       QStringList m_dataList;
       MainWindow *m_parent;
 
-      void verify_Folder(QString number, QLineEdit *field);
+      void verify_Folder(QLineEdit *field);
       void pick_Folder(QString number, QLineEdit *field);
 
       CS_SLOT_1(Private, void save())
