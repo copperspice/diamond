@@ -48,6 +48,8 @@
 #include <QStackedWidget>
 #include <QTabWidget>
 
+class Dialog_AdvFind;
+
 static const int MACRO_MAX_COUNT = 10;
 
 struct macroStruct
@@ -149,6 +151,7 @@ class MainWindow : public QMainWindow
       bool m_fWholeWords;
 
       // advanced find
+      Dialog_AdvFind *m_dwAdvFind;
       QString m_advFindText;
       QString m_advFindFileType;
       QString m_advFindFolder;     
@@ -161,7 +164,7 @@ class MainWindow : public QMainWindow
       QFrame *m_findWidget;
       QStandardItemModel *m_model;
       QList<advFindStruct> advFind_getResults(bool &aborted);
-      void findRecursive(const QString &path);
+      void findRecursive(const QString &path, bool isFirstLoop = true);
       void advFind_ShowFiles(QList<advFindStruct> foundList);
 
       // replace

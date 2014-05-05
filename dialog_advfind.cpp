@@ -65,14 +65,40 @@ void Dialog_AdvFind::pick_Folder()
    }
 }
 
-void Dialog_AdvFind::Find()
+void Dialog_AdvFind::showBusyMsg()
 {
-   this->done(1);
+   m_ui->find_PB->setVisible(false);
+   m_ui->horizontalSpacer_32->changeSize(0,0);
+   m_ui->cancel_PB->setVisible(false);
+   m_ui->horizontalSpacer_33->changeSize(0,0);
+
+   QLabel *msg = new QLabel();
+   msg->setText("Preparing file list, this process may take a minute...");
+
+   QFont font = msg->font();
+   font.setPointSize(10);
+   msg->setFont(font);
+
+   QPalette palette = msg->palette();
+   palette.setColor(QPalette::WindowText, QColor{0,0,255} );
+   msg->setPalette(palette);
+
+   m_ui->layout_buttons->addWidget(msg);
+   m_ui->layout_buttons->addStretch();
+
+   show();
+   QApplication::processEvents();
 }
+
 
 void Dialog_AdvFind::Cancel()
 {
    this->done(0);
+}
+
+void Dialog_AdvFind::Find()
+{
+   this->done(1);
 }
 
 QString Dialog_AdvFind::get_findText()

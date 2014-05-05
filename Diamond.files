@@ -25,6 +25,7 @@ forms/dialog_getline.ui
 forms/dialog_macro.ui
 forms/dialog_open.ui
 forms/dialog_options.ui
+forms/dialog_preset.ui
 forms/dialog_print_opt.ui
 forms/dialog_symbols.ui
 forms/dialog_replace.ui
@@ -43,7 +44,6 @@ mainwindow.h
 mainwindow.cpp
 options.cpp
 recent_files.cpp
-settings.cpp
 settings.h
 spell.cpp
 spellcheck.cpp
@@ -79,6 +79,8 @@ dialog_open.h
 dialog_open.cpp
 dialog_options.h
 dialog_options.cpp
+dialog_preset.cpp
+dialog_preset.h
 dialog_print_opt.h
 dialog_print_opt.cpp
 dialog_replace.h

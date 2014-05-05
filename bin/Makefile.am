@@ -1,47 +1,112 @@
 include copperspice.am
 
-# dist windows
+# dist (windows)
 distdir_custom=install_win/dist
 
-# path to gcc
-gccpath=/c/MingW
+# path to gcc (windows)
+gccpath=/c/MingW/bin
 
-# path to hunspell
-hunspell_path=../hunspell
-
-# list of gcc libraries
+# list of gcc libraries (windows)
 gcclibs=libgcc_s_sjlj-1  libstdc++-6  libwinpthread-1
 
 # list of CopperSpice libraries
 cslibs=Core Gui Network WebKit
 
-# dll for runtime, la for linking
-hunspell_dll=$(hunspell_path)/bin/libhunspell-1.3-0.dll
-hunspell_la=$(hunspell_path)/lib/libhunspell-1.3.dll.a
+if OSTYPE_LINUX
+   hunspell_path=/usr  
+   
+   hunspell_la=/usr/lib/libhunspell-1.2.so
+   AM_CXXFLAGS+=-I$(hunspell_path)/include
+endif
 
-# disable console on window, location of includes, defines
-AM_CXXFLAGS+=-mwindows -I$(hunspell_path)/include  -I..  -Wall
+if OSTYPE_DARWIN
+   hunspell_la=/opt/local/lib/libhunspell-1.3.la
+
+   AM_CXXFLAGS+=-I/opt/local/include/hunspell
+endif
+
+if OSTYPE_WIN
+   # path to hunspell
+   hunspell_path=../hunspell
+
+   hunspell_dll=$(hunspell_path)/bin/libhunspell-1.3-0.dll
+   hunspell_la=$(hunspell_path)/lib/libhunspell-1.3.dll.a
+
+   # disable console on window
+   AM_CXXFLAGS+=-mwindows -I$(hunspell_path)/include
+endif
 
 # target app name
-deploy_PROGRAMS = Diamond_Cs4
+bin_PROGRAMS = Diamond
 
-# copy the required CopperSpice and gcc files for deployment - windows only
-install-data-hook:
+# copy required CopperSpice and gcc files for deployment
+.PHONY: deploy
+
+if OSTYPE_LINUX
+deploy: $(bin_PROGRAMS)
+	mkdir -p $(deploydir)
+endif
+
+if OSTYPE_DARWIN
+
+deployapp=$(deploydir)/$(deploy_PROGRAMS).app/Contents
+
+deploy: $(bin_PROGRAMS)
+	mkdir -p $(deployapp)/Frameworks
+	mkdir -p $(deployapp)/MacOS
+	mkdir -p $(deployapp)/Resources
+
+   $(LIBTOOL) --mode=install cp $(bin_PROGRAMS) $(deployapp)/MacOS	
+	
+	rm -f $(deployapp)/Info.plist
+	sed -e "s,@ICON@,,g" \
+	    -e "s,@TYPEINFO@,????,g" \
+	    -e "s,@EXECUTABLE@,$(deploy_PROGRAMS),g" \
+	$(CS_HOME)/mac/Info.plist.app > $(deployapp)/Info.plist
+	
+	rm -f $(deployapp)/PkgInfo
+	echo "APPL????" > $(deployapp)/PkgInfo
+	
+	touch $(deployapp)/Resources/empty.lproj
+	cp -r $(CS_HOME)/mac/qt_menu.nib $(deployapp)/Resources
+	
+	rsync -W -a $(patsubst %,$(CS_HOME)/lib/libCs%1.0.dylib,$(cslibs)) $(deployapp)/Frameworks		
+   
+	for libname in $(patsubst %,libCs%1.0.dylib,$(cslibs)) ; do \
+	\
+	install_name_tool -change $(CS_HOME)/lib/$$libname \
+	@executable_path/../Frameworks/$$libname $(deployapp)/MacOS/$(deploy_PROGRAMS); \
+	\
+	for templib in $(patsubst %,libCs%1.0.dylib,$(cslibs)) ; do \
+	install_name_tool -change $(CS_HOME)/lib/$$templib \
+	@executable_path/../Frameworks/$$templib $(deployapp)/Frameworks/$$libname \
+	; done \
+	\
+	; done
+
+   # generate dmg	
+	hdiutil create -ov -srcfolder $(deploydir) -format UDBZ -volname $(deploy_PROGRAMS) ../$(deploy_PROGRAMS).dmg
+	hdiutil internet-enable -yes ../$(deploy_PROGRAMS).dmg
+endif
+
+if OSTYPE_WIN
+deploy: $(bin_PROGRAMS)
 	mkdir -p $(deploydir)
 
-	rsync -W -a --modify-window=2  $(patsubst %,$(gccpath)/bin/%.dll,$(gcclibs))  $(deploydir)
+	$(LIBTOOL) --mode=install cp $(bin_PROGRAMS) $(deploydir)
+
+	rsync -W -a --modify-window=2  $(patsubst %,$(gccpath)/%.dll,$(gcclibs))  $(deploydir)
 	rsync -W -a --modify-window=2  $(patsubst %,$(CS_HOME)/bin/libCs%1-0.dll,$(cslibs))  $(deploydir)
 	rsync -W -a --modify-window=2  $(hunspell_dll)  $(deploydir)
+endif
 
 # search path for source
 VPATH = ../
 
 # linking
-Diamond_Cs4_LDFLAGS=$(AM_LDFLAGS)   $(patsubst %,-lCs%1,$(cslibs))
-Diamond_Cs4_LDADD=$(hunspell_la)
+Diamond_LDFLAGS=$(AM_LDFLAGS) $(patsubst %,-lCs%1,$(cslibs)) $(hunspell_la)
 
-# 'Diamond' must match the app name
-Diamond_Cs4_SOURCES = \
+Diamond_SOURCES = \
     about.cpp \
     dialog_advfind.cpp \
     dialog_buffer.cpp \
@@ -75,7 +140,6 @@ Diamond_Cs4_SOURCES = \
     support.cpp \
     util.cpp
 
-#
 noinst_HEADERS = \
     about.h \
     dialog_advfind.h \
@@ -101,7 +165,6 @@ noinst_HEADERS = \
     spellcheck.h \
     util.h
 
-#
 FORMS = \
     forms/dialog_advfind.ui \
     forms/dialog_buffer.ui \
@@ -120,17 +183,15 @@ FORMS = \
     forms/dialog_xp_getdir.ui \
     forms/mainwindow.ui
 
-#
 TRANSLATIONS =
 
-#
 RESOURCES = diamond.qrc
 
 # use wilcard to obtain just the dependency list
 qrc_diamond.cpp: diamond.qrc   $(wildcard ../resources/*)
 
 # source distribution
-nodist_Diamond_Cs4_SOURCES = qrc_diamond.cpp
+nodist_Diamond_SOURCES=qrc_diamond.cpp
 
 distdir: $(DISTFILES)
 	cd .. ; \

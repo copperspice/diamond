@@ -43,6 +43,7 @@ class Dialog_AdvFind : public QDialog
       bool get_Case();
       bool get_WholeWords();
       bool get_SearchSubFolders();
+      void showBusyMsg();
 
    private:
       Ui::Dialog_AdvFind *m_ui;

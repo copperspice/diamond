@@ -136,19 +136,19 @@ void MainWindow::findPrevious()
 // * advanced find
 void MainWindow::advFind()
 {
-   Dialog_AdvFind *dw = new Dialog_AdvFind(this, m_advFindText, m_advFindFileType, m_advFindFolder, m_advFSearchFolders);
-   int result = dw->exec();
+   m_dwAdvFind = new Dialog_AdvFind(this, m_advFindText, m_advFindFileType, m_advFindFolder, m_advFSearchFolders);
+   int result = m_dwAdvFind->exec();
 
    if (result == QDialog::Accepted) {
 
-      m_advFindText     = dw->get_findText();
-      m_advFindFileType = dw->get_findType();
-      m_advFindFolder   = dw->get_findFolder();
+      m_advFindText     = m_dwAdvFind->get_findText();
+      m_advFindFileType = m_dwAdvFind->get_findType();
+      m_advFindFolder   = m_dwAdvFind->get_findFolder();
 
       // get the flags
-      m_advFCase          = dw->get_Case();
-      m_advFWholeWords    = dw->get_WholeWords();
-      m_advFSearchFolders = dw->get_SearchSubFolders();
+      m_advFCase          = m_dwAdvFind->get_Case();
+      m_advFWholeWords    = m_dwAdvFind->get_WholeWords();
+      m_advFSearchFolders = m_dwAdvFind->get_SearchSubFolders();
 
       json_Write(ADVFIND);
 
@@ -186,7 +186,7 @@ void MainWindow::advFind()
       }
    }
 
-   delete dw;
+   delete m_dwAdvFind;
 }
 
 QList<advFindStruct> MainWindow::advFind_getResults(bool &aborted)
@@ -304,28 +304,33 @@ QList<advFindStruct> MainWindow::advFind_getResults(bool &aborted)
    return foundList;
 }
 
-void MainWindow::findRecursive(const QString &path)
+void MainWindow::findRecursive(const QString &path, bool isFirstLoop)
 {
    QDir dir(path);
    dir.setFilter(QDir::AllDirs | QDir::Files | QDir::NoDotAndDotDot | QDir::NoSymLinks);
 
    QFileInfoList list = dir.entryInfoList(QStringList(m_advFindFileType));
+   int cnt = list.count();
+
+   if (isFirstLoop && cnt > 0) {
+      m_dwAdvFind->showBusyMsg();
+   }
 
    if (! list.isEmpty()) {
-      for (int k = 0; k != list.count(); ++k) {
+      for (int k = 0; k != cnt; ++k) {
 
           QString filePath = list[k].filePath();
 
          if ( list[k].isDir() )  {
             // recursive
-            findRecursive(filePath);
+            findRecursive(filePath, false);
 
          } else  {
             m_recursiveList.append(filePath);
 
          }
       }
-   }
+   }   
 }
 
 void MainWindow::advFind_ShowFiles(QList<advFindStruct> foundList)

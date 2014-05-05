@@ -1,14 +1,12 @@
 AUTOMAKE_OPTIONS=subdir-objects
 
-# adjustment for windows slash vs backslash
-#    12/12/2013 - temp change
-#    CS_HOME:=$(shell cd $(CS_HOME); pwd)
-CS_HOME="/z/cs4_lib"
+# location where CopperSpice libraries are installed
+CS_HOME:=$(shell cd $(CS_HOME); pwd)
 
-# location of includes, libs, defines
+# location of includes, libs, defines for compiling
 AM_CXXFLAGS=$(AM_CFLAGS) -I$(CS_HOME)/include $(patsubst %,-I$(CS_HOME)/include/Qt%,$(cslibs))    
      
-# location of CopperSpice libraries
+# location of CopperSpice libraries for linking
 AM_LDFLAGS=-L$(CS_HOME)/lib     
 
 # location of CopperSpice programs
@@ -16,15 +14,15 @@ LRELEASE=$(CS_HOME)/bin/lrelease
 RCC=$(CS_HOME)/bin/rcc
 UIC=$(CS_HOME)/bin/uic
 
-# 'deploy' is the folder where the install will be located
+# 'deploy' is the folder for "make deploy"
 deploydir=$(abs_top_builddir)/deploy
 
 # compiling .ui files
-BUILT_SOURCES=$(patsubst forms/%.ui, ui_%.h,$(FORMS))    
+BUILT_SOURCES=$(patsubst forms/%.ui, ui_%.h,$(FORMS))     
 EXTRA_DIST=$(FORMS)    
 
-# compiling .qrc files 
-BUILT_SOURCES+=$(patsubst %.qrc, qrc_%.cpp,$(RESOURCES))    
+# compiling .qrc files
+BUILT_SOURCES+=$(patsubst %.qrc,qrc_%.cpp,$(RESOURCES))    
 EXTRA_DIST+=$(RESOURCES)    
 
 # compiling .ts files
@@ -34,14 +32,14 @@ EXTRA_DIST+=$(TRANSLATIONS)
 # rules
 %.qm: %.ts
 	$(LRELEASE) $< $@
-	
+	    
 qrc_%.cpp: %.qrc
 	$(RCC) $< -o $@ -name $(notdir $(basename $<))
 
 ui_%.h: forms/%.ui
 	$(UIC) $< -o $@
     
-# additional files to delete on 'make clean'
+# additional files to delete on "make clean"
 clean-local:	
 	-rm qrc_*.cpp
 	-rm ui_*.h

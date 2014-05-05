@@ -27,6 +27,19 @@ AC_PROG_CXX
 AC_LANG([C++])
 AX_CXX_COMPILE_STDCXX_11([noext])
 
+case "$target" in
+*-*-mingw*)
+	OSTYPE=WIN ;;
+*-*-linux-*)
+	OSTYPE=LINUX ;;
+*-*-darwin*)
+	OSTYPE=DARWIN ;;
+esac
+
+AM_CONDITIONAL(OSTYPE_WIN, test "$OSTYPE" == WIN)
+AM_CONDITIONAL(OSTYPE_LINUX, test "$OSTYPE" == LINUX)
+AM_CONDITIONAL(OSTYPE_DARWIN, test "$OSTYPE" == DARWIN)
+
 # location of .am files that will create Makefiles
 AC_CONFIG_FILES( [Makefile bin/Makefile ] )
 AC_OUTPUT
