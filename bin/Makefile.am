@@ -16,7 +16,7 @@ if OSTYPE_LINUX
    hunspell_path=/usr  
    
    hunspell_la=/usr/lib/libhunspell-1.2.so
-   AM_CXXFLAGS+=-I$(hunspell_path)/include
+   AM_CXXFLAGS+=-I$(hunspell_path)/include   
 endif
 
 if OSTYPE_DARWIN
@@ -34,6 +34,9 @@ if OSTYPE_WIN
 
    # disable console on window
    AM_CXXFLAGS+=-mwindows -I$(hunspell_path)/include
+
+   # 'instal' is the folder for "make install"
+   installdir=$(abs_top_builddir)/install
 endif
 
 # target app name
@@ -45,6 +48,14 @@ bin_PROGRAMS = Diamond
 if OSTYPE_LINUX
 deploy: $(bin_PROGRAMS)
 	mkdir -p $(deploydir)
+	mkdir -p $(deploydir)/dictionary
+	mkdir -p $(deploydir)/help
+	mkdir -p $(deploydir)/syntax
+
+	$(LIBTOOL) --mode=install cp $(bin_PROGRAMS) $(deploydir)	
+
+	rsync -W -a $(patsubst %,$(CS_HOME)/lib/libCs%1-0.so*,$(cslibs)) $(deploydir)
+	rsync -W -a $(top_srcdir)/source_extra/{dictionary,help,syntax} $(deploydir)	
 endif
 
 if OSTYPE_DARWIN
@@ -56,7 +67,7 @@ deploy: $(bin_PROGRAMS)
 	mkdir -p $(deployapp)/MacOS
 	mkdir -p $(deployapp)/Resources
 
-   $(LIBTOOL) --mode=install cp $(bin_PROGRAMS) $(deployapp)/MacOS	
+	$(LIBTOOL) --mode=install cp $(bin_PROGRAMS) $(deployapp)/MacOS	
 	
 	rm -f $(deployapp)/Info.plist
 	sed -e "s,@ICON@,,g" \

@@ -95,8 +95,10 @@ void MainWindow::find()
 
 void MainWindow::findNext()
 {
+   // broom: may want to modify m_FindText if it is html
+
    QTextDocument::FindFlags flags = QTextDocument::FindFlags(~QTextDocument::FindBackward & m_flags);
-   bool found = m_textEdit->find(m_findText, flags);
+   bool found = m_textEdit->find(m_findText, flags);   
 
    if (! found)  {
       QString msg = "Not found: " + m_findText + "\n\n";

@@ -9,7 +9,6 @@ Makefile.in
 aclocal.m4
 configure
 config.log
-barb.json
 Diamond.creator.user
 /bin/.deps
 /bin/.libs
@@ -18,13 +17,6 @@ Diamond.creator.user
 /bin/qrc_diamond.cpp
 /bin/Makefile
 /bin/Diamond.exe
-/deploy/*.*
-/dictionary/userDict.txt
-/hunspell/*
-/install/dictionary/*
-/install/dist/*
-/install/help/*
-/install/test.ci
-/install/*.exe
-/install/*.zip
-/install/*.log
+/deploy/
+/hunspell/
+/source_win/

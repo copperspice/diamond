@@ -428,7 +428,7 @@ void MainWindow::setDiamondTitle(const QString title)
 
    // displays as: Diamond Editor --  File Name[*]
    QString temp = QChar(0x02014);
-   setWindowTitle("Diamond Editor CS4 " + temp + " " + title + " [*]" );      // BROOM
+   setWindowTitle("Diamond Editor " + temp + " " + title + " [*]" );      // BROOM
 }
 
 void MainWindow::setStatus_LineCol()
