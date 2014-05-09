@@ -12,11 +12,12 @@ gcclibs=libgcc_s_sjlj-1  libstdc++-6  libwinpthread-1
 # list of CopperSpice libraries
 cslibs=Core Gui Network WebKit
 
+AM_CXXFLAGS+=-I..
+
 if OSTYPE_LINUX
-   hunspell_path=/usr  
-   
-   hunspell_la=/usr/lib/libhunspell-1.2.so
-   AM_CXXFLAGS+=-I$(hunspell_path)/include   
+   hunspell_la=`pkg-config hunspell --libs`
+
+   AM_CXXFLAGS+=`pkg-config hunspell --cflags`
 endif
 
 if OSTYPE_DARWIN
@@ -34,9 +35,6 @@ if OSTYPE_WIN
 
    # disable console on window
    AM_CXXFLAGS+=-mwindows -I$(hunspell_path)/include
-
-   # 'instal' is the folder for "make install"
-   installdir=$(abs_top_builddir)/install
 endif
 
 # target app name
@@ -52,10 +50,10 @@ deploy: $(bin_PROGRAMS)
 	mkdir -p $(deploydir)/help
 	mkdir -p $(deploydir)/syntax
 
-	$(LIBTOOL) --mode=install cp $(bin_PROGRAMS) $(deploydir)	
+	$(LIBTOOL) --mode=install cp $(bin_PROGRAMS) $(deploydir)
 
-	rsync -W -a $(patsubst %,$(CS_HOME)/lib/libCs%1-0.so*,$(cslibs)) $(deploydir)
-	rsync -W -a $(top_srcdir)/source_extra/{dictionary,help,syntax} $(deploydir)	
+	rsync -W -a $(patsubst %,$(CS_HOME)/lib/libCs%1.so*,$(cslibs)) $(deploydir)
+	rsync -W -a $(top_srcdir)/source_extra/{dictionary,help,syntax} $(deploydir)
 endif
 
 if OSTYPE_DARWIN
@@ -67,7 +65,7 @@ deploy: $(bin_PROGRAMS)
 	mkdir -p $(deployapp)/MacOS
 	mkdir -p $(deployapp)/Resources
 
-	$(LIBTOOL) --mode=install cp $(bin_PROGRAMS) $(deployapp)/MacOS	
+	$(LIBTOOL) --mode=install cp $(bin_PROGRAMS) $(deployapp)/MacOS
 	
 	rm -f $(deployapp)/Info.plist
 	sed -e "s,@ICON@,,g" \
@@ -81,8 +79,8 @@ deploy: $(bin_PROGRAMS)
 	touch $(deployapp)/Resources/empty.lproj
 	cp -r $(CS_HOME)/mac/qt_menu.nib $(deployapp)/Resources
 	
-	rsync -W -a $(patsubst %,$(CS_HOME)/lib/libCs%1.0.dylib,$(cslibs)) $(deployapp)/Frameworks		
-   
+	rsync -W -a $(patsubst %,$(CS_HOME)/lib/libCs%1.0.dylib,$(cslibs)) $(deployapp)/Frameworks
+
 	for libname in $(patsubst %,libCs%1.0.dylib,$(cslibs)) ; do \
 	\
 	install_name_tool -change $(CS_HOME)/lib/$$libname \
@@ -200,6 +198,53 @@ RESOURCES = diamond.qrc
 
 # use wilcard to obtain just the dependency list
 qrc_diamond.cpp: diamond.qrc   $(wildcard ../resources/*)
+
+# install
+
+if OSTYPE_LINUX
+   dictionarydir=$(pkgdatadir)/dictionary
+   dictionary_DATA=$(wildcard $(top_srcdir)/source_extra/dictionary/*)
+
+   syntaxdir=$(pkgdatadir)/syntax
+   syntax_DATA=$(wildcard $(top_srcdir)/source_extra/syntax/*)
+
+   helpdir=$(pkgdatadir)/help
+   help_DATA=$(wildcard $(top_srcdir)/source_extra/help/*.*)
+   helpsearchdir=$(pkgdatadir)/help/search
+   helpsearch_DATA=$(wildcard $(top_srcdir)/source_extra/help/search/*.*)
+endif
+
+if OSTYPE_DARWIN
+   dictionarydir=$(pkgdatadir)/dictionary
+   dictionary_DATA=$(wildcard $(top_srcdir)/source_extra/dictionary/*)
+
+   syntaxdir=$(pkgdatadir)/syntax
+   syntax_DATA=$(wildcard $(top_srcdir)/source_extra/syntax/*)
+
+   helpdir=$(pkgdatadir)/help
+   help_DATA=$(wildcard $(top_srcdir)/source_extra/help/*.*)
+   helpsearchdir=$(pkgdatadir)/help/search
+   helpsearch_DATA=$(wildcard $(top_srcdir)/source_extra/help/search/*.*)
+endif
+
+if OSTYPE_WIN
+dictionarydir=$(prefix)/dictionary
+dictionary_DATA=$(wildcard $(top_srcdir)/source_extra/dictionary/*)
+
+syntaxdir=$(prefix)/syntax
+syntax_DATA=$(wildcard $(top_srcdir)/source_extra/syntax/*)
+
+helpdir=$(prefix)/help
+help_DATA=$(wildcard $(top_srcdir)/source_extra/help/*.*)
+helpsearchdir=$(prefix)/help/search
+helpsearch_DATA=$(wildcard $(top_srcdir)/source_extra/help/search/*.*)
+
+install-exec-hook:
+	rsync -W -a --modify-window=2  $(patsubst %,$(gccpath)/%.dll,$(gcclibs))  $(bindir)
+	rsync -W -a --modify-window=2  $(patsubst %,$(CS_HOME)/bin/libCs%1-0.dll,$(cslibs))  $(bindir)
+	rsync -W -a --modify-window=2  $(hunspell_dll)  $(bindir)
+endif
+
 
 # source distribution
 nodist_Diamond_SOURCES=qrc_diamond.cpp

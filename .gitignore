@@ -9,7 +9,7 @@ Makefile.in
 aclocal.m4
 configure
 config.log
-Diamond.creator.user
+Diamond.creator.user*
 /bin/.deps
 /bin/.libs
 /bin/*.o
@@ -20,3 +20,6 @@ Diamond.creator.user
 /deploy/
 /hunspell/
 /source_win/
+/source_extra/*.bat
+/install/
+/keep_future/
