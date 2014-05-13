@@ -17,15 +17,16 @@
       "\\bxor\\b",
       "\\bxor_eq\\b",
       "<.*>\\s*$"
-    ],
-    "comment-multi-start": "/\\*",
-    "comment-multi-end": "\\*/",
-    "comment-single": "//[^\n]*",
-    "functions": [
-      "\\bQ_[A-Z]+\\b"
-    ],
-    "ignore-case" : false,
-    "keywords": [
+   ],
+   "comment-multi-start": "/\\*",
+   "comment-multi-end": "\\*/",
+   "comment-single": "//[^\n]*",
+   "functions": [
+      "\\bQ_[A-Z]+\\b",
+      "\\b[A-Za-z0-9_]+(?=\\()"
+   ],
+   "ignore-case" : false,
+   "keywords": [
       "\\bSIGNAL\\b",
       "\\bSLOT\\b",
       "\\bTRUE\\b",
@@ -107,7 +108,7 @@
       "\\bvolatile\\b",
       "\\bwhile\\b"
    ],
-    "types": [
+   "types": [
       "\\bauto\\b",
       "\\bbool\\b",
       "\\bchar\\b",

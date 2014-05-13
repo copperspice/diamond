@@ -1,10 +1,10 @@
 {
-	"classes": [
-	],
-	"comment-multi-start": "(?!E)E",
-    "comment-multi-end": "(?!E)E",
-	"comment-single": "#[^\n]*",
-	"functions": [
+   "classes": [
+   ],
+   "comment-multi-start": "(?!E)E",
+   "comment-multi-end": "(?!E)E",
+   "comment-single": "#[^\n]*",
+   "functions": [
       "\\babs\\b",
       "\\baccept\\b",
       "\\balarm\\b",
@@ -200,10 +200,10 @@
       "\\bwantarray\\b",
       "\\bwarn\\b",
       "\\bwrite\\b"
-   	],
-	"ignore-case" : true,
-	"keywords": [   
-   	  "\\bif\\b",
+   ],
+   "ignore-case" : true,
+   "keywords": [   
+      "\\bif\\b",
       "\\bunless\\b",
       "\\belse\\b",
       "\\belsif\\b",
@@ -233,8 +233,8 @@
       "\\b__DATA__\\b",
       "\\b__FILE__\\b",
       "\\b__LINE__\\b",
-      "\\b__PACKAGE__\\b"	  
-   	],
-   	"types": [
-   	] 
+      "\\b__PACKAGE__\\b"    
+   ],
+   "types": [
+   ] 
 }

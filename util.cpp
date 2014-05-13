@@ -20,7 +20,10 @@
 **************************************************************************/
 
 #include "util.h"
+
 #include <QApplication>
+#include <QMessageBox>
+#include <QString>
 
 void csMsg(const QString &msg)
 {
@@ -81,7 +84,4 @@ void showDialog(QDialog &t_Dialog)
 
    QApplication::processEvents();
 }
-
-
-//   printf("%s\n",  qPrintable(string) );
 

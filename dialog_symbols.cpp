@@ -68,6 +68,7 @@ QStringList Dialog_Symbols::initData()
         << "&gt;"
         << "&mdash;"
         << "&ndash;"
+        << "&quot;"
         << "Tab Character"    // tab
         << QChar(0x00BC)      // "1/4"
         << QChar(0x00BD)      // "1/2"

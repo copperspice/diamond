@@ -40,6 +40,7 @@
 #include <QMainWindow>
 #include <QModelIndex>
 #include <QPlainTextEdit>
+#include <QPushButton>
 #include <QRectF>
 #include <QShortcut>
 #include <QStandardItemModel>
@@ -74,12 +75,12 @@ class MainWindow : public QMainWindow
       MainWindow(QStringList fileList, QStringList flagList);
       struct Settings get_StructData();           
 
-      // support
-      QString get_DirPath(QString message, QString path);
-      bool loadFile(const QString &fileName, bool newTab, bool isAuto);
-
       // fonts
       void changeFont();
+
+      // indent
+      void indentIncr(QString route);
+      void indentDecr(QString route);
 
       // macros
       void json_Save_MacroNames(QStringList macroNames);
@@ -88,14 +89,9 @@ class MainWindow : public QMainWindow
       // spell
       QStringList spell_getMaybe(QString word);
 
-      void setStatus_FName2(QString name);
-
-      // indent
-      CS_SLOT_1(Public, void indentIncr(QString route))
-      CS_SLOT_2(indentIncr)
-
-      CS_SLOT_1(Public, void indentDecr(QString route))
-      CS_SLOT_2(indentDecr)
+      // support
+      QString get_DirPath(QString message, QString path);
+      bool loadFile(const QString &fileName, bool newTab, bool isAuto);
 
    protected:
       void closeEvent(QCloseEvent *event);
@@ -108,39 +104,24 @@ class MainWindow : public QMainWindow
       // textEdit
       DiamondTextEdit *m_textEdit;      
       QTabWidget *m_tabWidget;
-      QString m_curFile;
+      QString m_curFile;     
 
       // split
       DiamondTextEdit *m_split_textEdit;
       DiamondTextEdit *m_noSplit_textEdit;
+      QSplitter *m_splitter;     
 
-      QSplitter *m_splitter;
-      QFrame *m_sideWidget;
-      QFrame *m_bottomWidget;
       bool m_isSplit;
-
+      QFrame *m_splitWidget;
       QString m_splitFileName;
       QComboBox *m_splitName_CB;
       QPushButton *m_splitClose_PB;
 
-      // arg
-      void autoLoad();
-      void argLoad(QList<QString> argList);
-      QStringList m_openedFiles;
+      void add_splitCombo(QString fname);
+      void rm_splitCombo(QString fname);
 
       // copy buffer
       QShortcut *m_actionCopyBuffer;
-
-      // syntax
-      QString m_appPath;
-      QString m_jsonFname;
-      SyntaxTypes m_syntaxEnum;
-      Syntax *m_syntaxParser;
-      void runSyntax(QString synFName);
-
-      // tab stops
-      QList<int> m_tabStops;
-      void setUpTabStops();
 
       // find
       QString m_findText;
@@ -179,20 +160,10 @@ class MainWindow : public QMainWindow
       void replaceQuery();
       void replaceAll();
 
-      // settings
-      struct Arugments m_args;
-      struct Settings m_struct;
-      struct PrintSettings m_printer;
-
-      // recent folders
-      static const int rfolder_MaxCnt = 10;
-      QAction *rfolder_Actions[rfolder_MaxCnt];
-      QStringList m_rfolder_List;
-
-      void rfolder_CreateMenus();
-      void rfolder_Add();
-      void rfolder_UpdateActions();
-      void open(QString path);
+      // passed parms
+      void autoLoad();
+      void argLoad(QList<QString> argList);
+      QStringList m_openedFiles;
 
       // preset folders
       static const int prefolder_MaxCnt = 10;
@@ -203,6 +174,15 @@ class MainWindow : public QMainWindow
       void prefolder_RedoList();
       //void prefolder_UpdateActions();
 
+      // recent folders
+      static const int rfolder_MaxCnt = 10;
+      QAction *rfolder_Actions[rfolder_MaxCnt];
+      QStringList m_rfolder_List;
+
+      void rfolder_CreateMenus();
+      void rfolder_Add();
+      void rfolder_UpdateActions();
+
       // recent files
       static const int rf_MaxCnt = 10;
       QAction *rf_Actions[rf_MaxCnt];
@@ -212,7 +192,23 @@ class MainWindow : public QMainWindow
       void rf_Update();
       void rf_UpdateActions();
 
-      // currently open tabs
+      // syntax
+      QString m_appPath;
+      QString m_jsonFname;
+      SyntaxTypes m_syntaxEnum;
+      Syntax *m_syntaxParser;
+      void runSyntax(QString synFName);
+
+      // settings
+      struct Arugments m_args;
+      struct Settings m_struct;
+      struct PrintSettings m_printer;
+
+      // tab stops
+      QList<int> m_tabStops;
+      void setUpTabStops();
+
+      // open tabs
       static const int openTab_MaxCnt = 20;
       QAction *openTab_Actions[openTab_MaxCnt];
 
@@ -244,6 +240,9 @@ class MainWindow : public QMainWindow
                     SPELLCHECK, TAB_SPACING, USESPACES, WORDWRAP};
 
       enum Config { CFG_STARTUP, CFG_DEFAULT };
+
+      void openDoc(QString path);
+      bool closeAll_Doc(bool isExit);
 
       void setScreenColors();
       void setSyntax();
@@ -299,7 +298,7 @@ class MainWindow : public QMainWindow
       QString convertBlockToHTML(const QString &plain) const;
 
       // support           
-      int get_Value1(const QString route);
+      int get_line_col(const QString route);
       bool querySave();     
       bool saveFile(const QString &fileName, bool isSaveOne);
       bool saveAs(bool isSaveOne);      
@@ -316,19 +315,13 @@ class MainWindow : public QMainWindow
       CS_SLOT_2(focusChanged) 
 
       CS_SLOT_1(Private, void newFile())
-      CS_SLOT_2(newFile) 
-
-      CS_SLOT_1(Private, void mw_open())
-      CS_SLOT_2(mw_open) 
+      CS_SLOT_2(newFile)      
 
       CS_SLOT_1(Private, void open_RelatedFile())
       CS_SLOT_2(open_RelatedFile) 
 
-      CS_SLOT_1(Private, void close_Doc())
+      CS_SLOT_1(Private, bool close_Doc())
       CS_SLOT_2(close_Doc) 
-
-      CS_SLOT_1(Private, bool closeAll_Doc())
-      CS_SLOT_2(closeAll_Doc) 
 
       CS_SLOT_1(Private, void reload())
       CS_SLOT_2(reload) 
@@ -386,12 +379,6 @@ class MainWindow : public QMainWindow
 
       CS_SLOT_1(Private, void caseCap())
       CS_SLOT_2(caseCap) 
-
-      CS_SLOT_1(Private, void mw_indentIncr())
-      CS_SLOT_2(mw_indentIncr) 
-
-      CS_SLOT_1(Private, void mw_indentDecr())
-      CS_SLOT_2(mw_indentDecr) 
 
       CS_SLOT_1(Private, void deleteLine())
       CS_SLOT_2(deleteLine) 
@@ -459,62 +446,12 @@ class MainWindow : public QMainWindow
       CS_SLOT_1(Private, void displayHTML())
       CS_SLOT_2(displayHTML) 
 
-      // syntax
-      CS_SLOT_1(Private, void setSyn_C())
-      CS_SLOT_2(setSyn_C) 
-
-      CS_SLOT_1(Private, void setSyn_Clipper())
-      CS_SLOT_2(setSyn_Clipper) 
-
-      CS_SLOT_1(Private, void setSyn_Css())
-      CS_SLOT_2(setSyn_Css) 
-
-      CS_SLOT_1(Private, void setSyn_Dox())
-      CS_SLOT_2(setSyn_Dox) 
-
-      CS_SLOT_1(Private, void setSyn_Html())      
-      CS_SLOT_2(setSyn_Html) 
-
-      CS_SLOT_1(Private, void setSyn_Java())
-      CS_SLOT_2(setSyn_Java) 
-
-      CS_SLOT_1(Private, void setSyn_Javascript())
-      CS_SLOT_2(setSyn_Javascript) 
-
-      CS_SLOT_1(Private, void setSyn_Json())
-      CS_SLOT_2(setSyn_Json) 
-
-      CS_SLOT_1(Private, void setSyn_Makefile())
-      CS_SLOT_2(setSyn_Makefile) 
-
-      CS_SLOT_1(Private, void setSyn_Nsis())
-      CS_SLOT_2(setSyn_Nsis) 
-
-      CS_SLOT_1(Private, void setSyn_Text())
-      CS_SLOT_2(setSyn_Text) 
-
-      CS_SLOT_1(Private, void setSyn_Shell_S())
-      CS_SLOT_2(setSyn_Shell_S) 
-
-      CS_SLOT_1(Private, void setSyn_Perl())
-      CS_SLOT_2(setSyn_Perl) 
-
-      CS_SLOT_1(Private, void setSyn_Php())
-      CS_SLOT_2(setSyn_Php) 
-
-      CS_SLOT_1(Private, void setSyn_Python())
-      CS_SLOT_2(setSyn_Python) 
-      CS_SLOT_1(Private, void setSyn_None())
-      CS_SLOT_2(setSyn_None) 
-
+      // document
       CS_SLOT_1(Private, void formatUnix())
       CS_SLOT_2(formatUnix) 
 
       CS_SLOT_1(Private, void formatWin())
-      CS_SLOT_2(formatWin) 
-
-      CS_SLOT_1(Private, void formatMac())
-      CS_SLOT_2(formatMac) 
+      CS_SLOT_2(formatWin)     
 
       CS_SLOT_1(Private, void fixTab_Spaces())
       CS_SLOT_2(fixTab_Spaces) 
@@ -654,8 +591,8 @@ class MainWindow : public QMainWindow
       CS_SLOT_2(openTab_redo) 
 
       // split
-      CS_SLOT_1(Private, void split_Title())
-      CS_SLOT_2(split_Title)
+      CS_SLOT_1(Private, void set_splitCombo())
+      CS_SLOT_2(set_splitCombo)
 
       CS_SLOT_1(Private, void split_Horizontal())
       CS_SLOT_2(split_Horizontal)

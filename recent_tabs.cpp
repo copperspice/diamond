@@ -35,7 +35,13 @@ void MainWindow::openTab_CreateMenus()
 
    for (int k = 0; k < cnt; ++k) {
       tName = this->get_curFileName(k);
-      m_openedFiles.append(tName);
+
+      if (tName.isEmpty()) {
+         --cnt;
+
+      } else {
+         m_openedFiles.append(tName);
+      }
    }
 
    //
@@ -187,7 +193,7 @@ void MainWindow::openTab_UpdateActions()
 
       if (i < cnt)  {
 
-/*       Not working as desired
+/*       not working a desired, on hold
 
          if (m_textEdit->document()->isModified()) {
             isModified = " *";
@@ -195,7 +201,6 @@ void MainWindow::openTab_UpdateActions()
             isModified = "";
          }                  
 */
-
          openTab_Actions[i]->setText(m_openedFiles[i] + isModified);
          openTab_Actions[i]->setVisible(true);
 

@@ -32,8 +32,8 @@ void MainWindow::split_Horizontal()
       split_CloseButton();
    }
 
-   m_split_textEdit = new DiamondTextEdit(this, m_struct, m_spellCheck);
-   m_splitFileName  = m_curFile;
+   m_split_textEdit = new DiamondTextEdit(this, m_struct, m_spellCheck, "split");
+   m_splitFileName  = m_curFile;   
 
    // sync documents
    m_split_textEdit->setDocument(m_textEdit->document());
@@ -53,23 +53,13 @@ void MainWindow::split_Horizontal()
    m_textEdit = m_split_textEdit;
 
    //
-   m_bottomWidget = new QFrame(this);
-   m_bottomWidget->setFrameShape(QFrame::Panel);
+   m_splitWidget = new QFrame(this);
+   m_splitWidget->setFrameShape(QFrame::Panel);
+   m_splitWidget->setWhatsThis("split_widget");
 
    //
    m_splitName_CB = new QComboBox();
    m_splitName_CB->setMinimumWidth(175);
-
-/*
-   QPalette palette = m_splitName_CB->palette();
-   palette.setColor(QPalette::Base, QColor{64,64,96} );
-   palette.setColor(QPalette::Text, QColor{255,255,255} );
-
-   palette.setColor(QPalette::Highlight, QColor{255,255,0} );
-   palette.setColor(QPalette::HighlightedText, QColor{0,128,0} );
-
-   m_splitName_CB->setPalette(palette);
-*/
 
    QFont font2 = m_splitName_CB->font();
    font2.setPointSize(11);
@@ -99,19 +89,21 @@ void MainWindow::split_Horizontal()
    layout->addLayout(topbar_Layout);
    layout->addWidget(m_split_textEdit);
 
-   m_bottomWidget->setLayout(layout);
+   m_splitWidget->setLayout(layout);
 
    m_splitter->setOrientation(Qt::Horizontal);        // Difference Here
-   m_splitter->addWidget(m_bottomWidget);
+   m_splitter->addWidget(m_splitWidget);
 
-   split_Title();
+   set_splitCombo();
    moveBar();
 
    connect(m_splitName_CB,   SIGNAL(currentIndexChanged(int)), this, SLOT(split_NameChanged(int)));
    connect(m_splitClose_PB,  SIGNAL(clicked()),                this, SLOT(split_CloseButton()));
 
-   connect(m_split_textEdit->document(), SIGNAL(contentsChanged()),       this, SLOT(split_Title()));
-   connect(m_split_textEdit,             SIGNAL(cursorPositionChanged()), this, SLOT(moveBar()));
+   connect(m_split_textEdit->document(), SIGNAL(contentsChanged()), this, SLOT(set_splitCombo()));
+
+   connect(m_split_textEdit, SIGNAL(cursorPositionChanged()), this, SLOT(moveBar()));
+   connect(m_split_textEdit, SIGNAL(cursorPositionChanged()), this, SLOT(setStatus_LineCol()));
 
    connect(m_split_textEdit, SIGNAL(undoAvailable(bool)), m_ui->actionUndo, SLOT(setEnabled(bool)));
    connect(m_split_textEdit, SIGNAL(redoAvailable(bool)), m_ui->actionRedo, SLOT(setEnabled(bool)));
@@ -126,7 +118,7 @@ void MainWindow::split_Vertical()
       split_CloseButton();
    }
 
-   m_split_textEdit = new DiamondTextEdit(this, m_struct, m_spellCheck);
+   m_split_textEdit = new DiamondTextEdit(this, m_struct, m_spellCheck, "split");
    m_splitFileName  = m_curFile;
 
    // sync documents
@@ -147,23 +139,13 @@ void MainWindow::split_Vertical()
    m_textEdit = m_split_textEdit;
 
    //
-   m_bottomWidget = new QFrame(this);
-   m_bottomWidget->setFrameShape(QFrame::Panel);
+   m_splitWidget = new QFrame(this);
+   m_splitWidget->setFrameShape(QFrame::Panel);
+   m_splitWidget->setWhatsThis("split_widget");
 
    //
    m_splitName_CB = new QComboBox();
    m_splitName_CB->setMinimumWidth(175);
-
-/*
-   QPalette palette = m_splitName_CB->palette();
-   palette.setColor(QPalette::Base, QColor{64,64,96} );
-   palette.setColor(QPalette::Text, QColor{255,255,255} );
-
-   palette.setColor(QPalette::Highlight, QColor{255,255,0} );
-   palette.setColor(QPalette::HighlightedText, QColor{0,128,0} );
-
-   m_splitName_CB->setPalette(palette);
-*/
 
    QFont font2 = m_splitName_CB->font();
    font2.setPointSize(11);
@@ -190,21 +172,23 @@ void MainWindow::split_Vertical()
 
    QBoxLayout *layout = new QVBoxLayout();  
    layout->addLayout(topbar_Layout);
-    layout->addWidget(m_split_textEdit);
+   layout->addWidget(m_split_textEdit);
 
-   m_bottomWidget->setLayout(layout);
+   m_splitWidget->setLayout(layout);
 
-   m_splitter->setOrientation(Qt::Vertical);          // Difference Here
-   m_splitter->addWidget(m_bottomWidget);
+   m_splitter->setOrientation(Qt::Vertical);          // Difference is here
+   m_splitter->addWidget(m_splitWidget);
 
-   split_Title();
+   set_splitCombo();
    moveBar();
 
    connect(m_splitName_CB,   SIGNAL(currentIndexChanged(int)), this, SLOT(split_NameChanged(int)));
    connect(m_splitClose_PB,  SIGNAL(clicked()),                this, SLOT(split_CloseButton()));
 
-   connect(m_split_textEdit->document(), SIGNAL(contentsChanged()),       this, SLOT(split_Title()));
-   connect(m_split_textEdit,             SIGNAL(cursorPositionChanged()), this, SLOT(moveBar()));
+   connect(m_split_textEdit->document(), SIGNAL(contentsChanged()), this, SLOT(set_splitCombo()));
+
+   connect(m_split_textEdit, SIGNAL(cursorPositionChanged()), this, SLOT(moveBar()));
+   connect(m_split_textEdit, SIGNAL(cursorPositionChanged()), this, SLOT(setStatus_LineCol()));
 
    connect(m_split_textEdit, SIGNAL(undoAvailable(bool)), m_ui->actionUndo, SLOT(setEnabled(bool)));
    connect(m_split_textEdit, SIGNAL(redoAvailable(bool)), m_ui->actionRedo, SLOT(setEnabled(bool)));
@@ -212,7 +196,7 @@ void MainWindow::split_Vertical()
    connect(m_split_textEdit, SIGNAL(copyAvailable(bool)), m_ui->actionCopy, SLOT(setEnabled(bool)));  
 }
 
-void MainWindow::split_Title()
+void MainWindow::set_splitCombo()
 {       
    QString newName = strippedName(m_splitFileName);
 
@@ -224,6 +208,21 @@ void MainWindow::split_Title()
    m_splitName_CB->setItemText(splitIndex, newName);
 }
 
+void MainWindow::add_splitCombo(QString fname)
+{
+   QString temp = strippedName(fname);
+   m_splitName_CB->addItem(temp, fname);
+}
+
+void MainWindow::rm_splitCombo(QString fname)
+{
+   int splitIndex = m_splitName_CB->findData(fname);
+
+   if (splitIndex != -1) {
+      m_splitName_CB->removeItem(splitIndex);
+   }
+}
+
 void MainWindow::split_NameChanged(int data)
 {  
    QString newName = m_splitName_CB->itemData(data).toString();
@@ -231,7 +230,7 @@ void MainWindow::split_NameChanged(int data)
    if (m_splitFileName != newName)  {
 
       // old doc
-      disconnect(m_split_textEdit->document(), SIGNAL(contentsChanged()), this, SLOT(split_Title()));
+      disconnect(m_split_textEdit->document(), SIGNAL(contentsChanged()), this, SLOT(set_splitCombo()));
 
       // new doc
       m_splitFileName = newName;
@@ -272,10 +271,26 @@ void MainWindow::split_NameChanged(int data)
 
          m_textEdit = m_split_textEdit;
 
-         split_Title();
-         moveBar();
+         set_splitCombo();
 
-         connect(m_split_textEdit->document(), SIGNAL(contentsChanged()),       this, SLOT(split_Title()));
+         //
+         m_curFile = m_splitFileName;
+         setStatus_FName(m_curFile);
+
+         // ** retrieve slected syntax type
+//       m_syntaxParser = m_textEdit->get_SyntaxParser();
+
+         // retrieve the menu enum
+//       m_syntaxEnum = m_textEdit->get_SyntaxEnum();
+
+         // check the menu item
+//       setSynType(m_syntaxEnum);
+
+         moveBar();
+         show_Spaces();
+         show_Breaks();
+
+         connect(m_split_textEdit->document(), SIGNAL(contentsChanged()), this, SLOT(set_splitCombo()));
 
       } else {
          // close the split
@@ -287,23 +302,28 @@ void MainWindow::split_NameChanged(int data)
 
 void MainWindow::split_CloseButton()
 {
-   disconnect(m_splitName_CB,  SIGNAL(currentIndexChanged(int)), this, SLOT(split_NameChanged(int)));
-   disconnect(m_splitClose_PB, SIGNAL(clicked()),                this, SLOT(split_CloseButton()));
+   // set focus to the current tab widget
+   QWidget *temp = m_tabWidget->currentWidget();
+   temp->setFocus();
 
-   disconnect(m_split_textEdit->document(), SIGNAL(contentsChanged()),       this, SLOT(split_Title()));
-   disconnect(m_split_textEdit,             SIGNAL(cursorPositionChanged()), this, SLOT(moveBar()));
+   //
+   m_isSplit = false;
+
+   disconnect(m_splitName_CB,   SIGNAL(currentIndexChanged(int)), this, SLOT(split_NameChanged(int)));
+   disconnect(m_splitClose_PB,  SIGNAL(clicked()),                this, SLOT(split_CloseButton()));
+
+   disconnect(m_split_textEdit->document(), SIGNAL(contentsChanged()), this, SLOT(set_splitCombo()));
+
+   disconnect(m_split_textEdit, SIGNAL(cursorPositionChanged()), this, SLOT(moveBar()));
+   disconnect(m_split_textEdit, SIGNAL(cursorPositionChanged()), this, SLOT(setStatus_LineCol()));
 
    disconnect(m_split_textEdit, SIGNAL(undoAvailable(bool)), m_ui->actionUndo, SLOT(setEnabled(bool)));
    disconnect(m_split_textEdit, SIGNAL(redoAvailable(bool)), m_ui->actionRedo, SLOT(setEnabled(bool)));
    disconnect(m_split_textEdit, SIGNAL(copyAvailable(bool)), m_ui->actionCut,  SLOT(setEnabled(bool)));
-   disconnect(m_split_textEdit, SIGNAL(copyAvailable(bool)), m_ui->actionCopy, SLOT(setEnabled(bool)));
+   disconnect(m_split_textEdit, SIGNAL(copyAvailable(bool)), m_ui->actionCopy, SLOT(setEnabled(bool)));   
 
-   m_bottomWidget->deleteLater();
-
+   m_splitName_CB->clear();
    m_split_textEdit = 0;
-   m_isSplit = false;
 
-   // set focus to the current tab
-   QWidget *temp = m_tabWidget->currentWidget();
-   temp->setFocus();
+   m_splitWidget->deleteLater();
 }

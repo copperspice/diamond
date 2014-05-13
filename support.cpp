@@ -66,6 +66,7 @@ void MainWindow::autoLoad()
       tabNew();
 
    } else {
+
       for (int k = 0; k < count; k++)  {
          fileName = m_openedFiles.at(k);
 
@@ -76,8 +77,8 @@ void MainWindow::autoLoad()
 }
 
 void MainWindow::closeEvent(QCloseEvent *event)
-{   
-   bool exit = closeAll_Doc();
+{
+   bool exit = closeAll_Doc(true);
 
    if (exit) {
       json_Write(CLOSE);
@@ -157,7 +158,7 @@ struct Settings MainWindow::get_StructData()
    return m_struct;
 }
 
-int MainWindow::get_Value1(const QString route)
+int MainWindow::get_line_col(const QString route)
 {
    Dialog_GetLine *dw = new Dialog_GetLine();
 
@@ -252,6 +253,11 @@ bool MainWindow::loadFile(const QString &fileName, bool addNewTab, bool isAuto)
    setCurrentTitle(fileName);
    setStatusBar(tr("File loaded"), 1500);
 
+   if (m_isSplit) {
+      // update split combo box
+      add_splitCombo(fileName);
+   }
+
    if (! addNewTab)  {
       // recent folders
       rfolder_Add();
@@ -312,7 +318,7 @@ bool MainWindow::saveFile(const QString &fileName, bool isSaveOne)
    m_tabWidget->setTabWhatsThis(whichTab, fileName);
 
 
-   // BROOM  
+   // BROOM - test code only
    QString t1 = m_tabWidget->tabWhatsThis(whichTab);
    QString t2 = m_tabWidget->tabText(whichTab);
 
@@ -325,7 +331,6 @@ bool MainWindow::saveFile(const QString &fileName, bool isSaveOne)
          return false;
       }
    }
-   // BROOM
 
 
    QFile file(fileName);
@@ -352,7 +357,7 @@ bool MainWindow::saveFile(const QString &fileName, bool isSaveOne)
       setDiamondTitle(m_curFile);
 
       if (m_isSplit) {
-         split_Title();
+         set_splitCombo();
       }
 
       setStatusBar(tr("File saved"), 2000);
@@ -422,20 +427,17 @@ void MainWindow::setCurrentTitle(const QString &fileName, bool tabChange)
 }
 
 void MainWindow::setDiamondTitle(const QString title)
-{
-   // displays as: File Name[*] --- Diamond Editor
-   // setWindowFilePath(showName);
-
+{   
    // displays as: Diamond Editor --  File Name[*]
    QString temp = QChar(0x02014);
-   setWindowTitle("Diamond Editor " + temp + " " + title + " [*]" );      // BROOM
+   setWindowTitle("Diamond Editor " + temp + " " + title + " [*]" );
 }
 
 void MainWindow::setStatus_LineCol()
 {
    QTextCursor cursor(m_textEdit->textCursor());
 
-   // BROOM - resolve for tabs
+   // BROOM - adjust value when tabs are used instead of spaces
    int adjColNum = cursor.columnNumber()+1;
 
    m_statusLine->setText(" Line: "  + QString::number(cursor.blockNumber()+1) +
@@ -457,12 +459,6 @@ void MainWindow::setStatus_ColMode()
 void MainWindow::setStatus_FName(QString fullName)
 {
    m_statusName->setText(" " + fullName + "  ");
-}
-
-void MainWindow::setStatus_FName2(QString text)
-{
-   // test only !
-   m_statusName->setText(" " + text + " ");
 }
 
 void MainWindow::setUpTabStops()

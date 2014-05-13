@@ -321,9 +321,7 @@ bool MainWindow::json_Read(Config trail)
       for (int k = 0; k < cnt; k++)  {
          QString fname = list.at(k).toString();
 
-         if (fname.isEmpty()) {
-           // maybe save the updated list
-         } else {
+         if (! fname.isEmpty()) {
             m_openedFiles.append(fname);
          }
       }

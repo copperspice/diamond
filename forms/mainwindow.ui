@@ -158,11 +158,10 @@
     </property>
     <widget class="QMenu" name="menuFile_Format">
      <property name="title">
-      <string>File Format *</string>
+      <string>File Format</string>
      </property>
      <addaction name="actionFormat_Unix"/>
      <addaction name="actionFormat_Win"/>
-     <addaction name="actionFormat_Mac"/>
     </widget>
     <widget class="QMenu" name="menuSyntax_Type">
      <property name="title">
@@ -180,7 +179,7 @@
      <addaction name="actionSyn_Makefile"/>
      <addaction name="actionSyn_Nsis"/>
      <addaction name="actionSyn_Text"/>
-     <addaction name="actionSyn_Shell_S"/>
+     <addaction name="actionSyn_Shell"/>
      <addaction name="actionSyn_Perl"/>
      <addaction name="actionSyn_PHP"/>
      <addaction name="actionSyn_Python"/>
@@ -399,7 +398,7 @@
     <string>Makefile</string>
    </property>
   </action>
-  <action name="actionSyn_Shell_S">
+  <action name="actionSyn_Shell">
    <property name="text">
     <string>Shell Script</string>
    </property>

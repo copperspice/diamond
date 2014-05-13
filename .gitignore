@@ -19,7 +19,6 @@ Diamond.creator.user*
 /bin/Diamond.exe
 /deploy/
 /hunspell/
+/install/
 /source_win/
 /source_extra/*.bat
-/install/
-/keep_future/

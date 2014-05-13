@@ -228,7 +228,7 @@ void MainWindow::rfolder_Open()
 
    if (action) {
       // pass the path
-      this->open(action->text());
+      openDoc(action->text());
    }
 }
 
@@ -368,7 +368,7 @@ void MainWindow::prefolder_Open()
 
    if (action) {
       // pass the path
-      this->open(action->text());
+      openDoc(action->text());
    }
 }
 

@@ -189,18 +189,12 @@ bool Syntax::processSyntax()
       highlightingRules.append(rule);
    }
 
-   // functions - everyone
-   rule.format.setFontWeight(m_settings.syn_FuncWeight);
-   rule.format.setFontItalic(m_settings.syn_FuncItalic);
-   rule.format.setForeground(m_settings.syn_FuncText);
-   rule.pattern = QRegExp("\\b[A-Za-z0-9_]+(?=\\()");
-   highlightingRules.append(rule);
-
    // quoted text - everyone
    rule.format.setFontWeight(m_settings.syn_QuoteWeight);
    rule.format.setFontItalic(m_settings.syn_QuoteItalic);
    rule.format.setForeground(m_settings.syn_QuoteText);
    rule.pattern = QRegExp("\".*\"");
+   rule.pattern.setMinimal(true);
    highlightingRules.append(rule);
 
    // single line comment

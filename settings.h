@@ -192,8 +192,7 @@ struct Arugments{
    bool flag_noSaveConfig = false;
 };
 
-enum SyntaxTypes {SYN_C, SYN_CLIPPER, SYN_CSS, SYN_DOX, SYN_HTML, SYN_JAVA, SYN_JS,
-                  SYN_JSON, SYN_MAKE, SYN_NSIS, SYN_TEXT, SYN_SHELL_S, SYN_PERL,
-                  SYN_PHP, SYN_PYTHON, SYN_NONE };
+enum SyntaxTypes {SYN_C, SYN_CLIPPER, SYN_CSS, SYN_DOX, SYN_HTML, SYN_JAVA, SYN_JS, SYN_JSON,
+                  SYN_MAKE, SYN_NSIS, SYN_TEXT, SYN_SHELL, SYN_PERL, SYN_PHP, SYN_PYTHON, SYN_NONE };
 
 #endif

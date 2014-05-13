@@ -73,7 +73,7 @@ void Dialog_AdvFind::showBusyMsg()
    m_ui->horizontalSpacer_33->changeSize(0,0);
 
    QLabel *msg = new QLabel();
-   msg->setText("Preparing file list, this process may take a minute...");
+   msg->setText("Preparing list of files, this process may take a minute...");
 
    QFont font = msg->font();
    font.setPointSize(10);

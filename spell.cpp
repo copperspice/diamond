@@ -161,7 +161,7 @@ void MainWindow::setSyntax()
          m_syntaxEnum = SYN_TEXT;
 
       } else if ( suffix == "sh")  {
-         m_syntaxEnum = SYN_SHELL_S;
+         m_syntaxEnum = SYN_SHELL;
 
       } else if ( suffix == "pl")  {
          m_syntaxEnum = SYN_PERL;
@@ -234,7 +234,7 @@ void MainWindow::forceSyntax(SyntaxTypes data)
          synFName = m_struct.pathSyntax + "syn_txt.json";
          break;
 
-      case SYN_SHELL_S:
+      case SYN_SHELL:
          synFName = m_struct.pathSyntax + "syn_sh.json";
          break;
 

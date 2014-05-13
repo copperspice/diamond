@@ -1,10 +1,33 @@
 {
-    "classes": [
-    ],
-	"comment-multi-start": "/\\*",
-    "comment-multi-end": "\\*/",
-    "comment-single": "//[^\n]*",
-    "functions": [    
+   "classes": [
+      "</?b[^>]*>",
+      "</?body[^>]*>",
+      "</?br[^>]*>",
+      "</?dir[^>]*>",
+      "</?div[^>]*>",
+      "</?font[^>]*>",
+      "</?head[^>]*>",
+      "</?html[^>]*>",
+      "</?meta[^>]*>",
+      "</?script[^>]*>",
+      "</?smal[^>]*>",
+      "</?span[^>]*>",
+      "</?table[^>]*>",
+      "</?td[^>]*>",
+      "</?th[^>]*>",
+      "</?tr[^>]*>",
+      "</?title[^>]*>",
+      "</?a[^>]*>",
+      "</?b[^>]*>",
+      "</?li[^>]*>",
+      "</?lu[^>]*>",
+      "</?p[^>]*>",
+      "</?u[^>]*>"
+   ],
+   "comment-multi-start": "/\\*",
+   "comment-multi-end": "\\*/",
+   "comment-single": "//[^\n]*",
+   "functions": [
       "\\babs\\b",
       "\\bacos\\b",
       "\\bacosh\\b",
@@ -3237,10 +3260,10 @@
       "\\bzip_entry_read\\b",
       "\\bzip_open\\b",
       "\\bzip_read\\b",
-      "\\bzlib_get_coding_type\\b"    
-    ],
-    "ignore-case" : true,
-    "keywords": [
+      "\\bzlib_get_coding_type\\b"
+   ],
+   "ignore-case" : true,
+   "keywords": [
       "\\babstract\\b",
       "\\bcatch\\b",
       "\\bclass\\b",
@@ -3292,7 +3315,7 @@
       "\\bendwhile\\b",
       "\\bendfor\\b",
       "\\bendforeach\\b",
-      "\\bendswitch\\b"         
+      "\\bendswitch\\b"
     ],
     "types": [
     ]

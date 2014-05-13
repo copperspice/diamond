@@ -1,5 +1,3 @@
-diamond.qrc
-
 syntax/syn_txt.json
 syntax/syn_sh.json
 syntax/syn_make.json
@@ -32,6 +30,8 @@ forms/dialog_replace.ui
 forms/dialog_xp_getdir.ui
 forms/mainwindow.ui
 
+diamond.qrc
+
 about.h
 about.cpp
 diamond_edit.cpp
@@ -43,12 +43,14 @@ main.cpp
 mainwindow.h
 mainwindow.cpp
 options.cpp
+print.cpp
 recent_files.cpp
+recent_tabs.cpp
 settings.h
 spell.cpp
 spellcheck.cpp
 spellcheck.h
-print.cpp
+split_window.cpp
 search.cpp
 search.h
 support.cpp
@@ -56,8 +58,6 @@ syntax.h
 syntax.cpp
 util.h
 util.cpp
-recent_tabs.cpp
-split_window.cpp
 
 dialog_advfind.h
 dialog_advfind.cpp

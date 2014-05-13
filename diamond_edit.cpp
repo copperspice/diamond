@@ -29,11 +29,12 @@
 
 const QColor FILL_COLOR = QColor(0xD0D0D0);
 
-DiamondTextEdit::DiamondTextEdit(MainWindow *from, struct Settings settings, SpellCheck *spell)
+DiamondTextEdit::DiamondTextEdit(MainWindow *from, struct Settings settings, SpellCheck *spell, QString owner)
       : QPlainTextEdit()
 {
-   m_mainWindow   = from;
-   m_record       = false;
+   m_mainWindow = from;
+   m_record     = false;
+   m_owner      = owner;
 
    //
    m_showlineNum  = settings.showLineNumbers;
@@ -297,8 +298,7 @@ void DiamondTextEdit::mouseMoveEvent(QMouseEvent *event)
 {
    if (m_isColumnMode) {
       // Show x and y coordinate values of mouse cursor here
-//    QString text = "X:"+QString::number(event->x())+"-- Y:"+QString::number(event->y());
-//    m_mainWindow->setStatus_FName2(text);
+      // QString text = "X:"+QString::number(event->x())+"-- Y:"+QString::number(event->y());
 
       return true;
    }
@@ -306,7 +306,6 @@ void DiamondTextEdit::mouseMoveEvent(QMouseEvent *event)
    return QPlainTextEdit::mouseMoveEvent(event)
 
 }  */
-
 
 void DiamondTextEdit::cut()
 {

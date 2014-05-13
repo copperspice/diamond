@@ -42,8 +42,10 @@ class DiamondTextEdit : public QPlainTextEdit
    CS_OBJECT(DiamondTextEdit)
 
    public:
-      DiamondTextEdit(MainWindow *from, struct Settings settings, SpellCheck *spell);
+      DiamondTextEdit(MainWindow *from, struct Settings settings, SpellCheck *spell, QString owner);
       ~DiamondTextEdit();
+
+      QString m_owner;
 
       void lineNum_PaintEvent(QPaintEvent *event);
       int lineNum_Width();
@@ -93,7 +95,7 @@ class DiamondTextEdit : public QPlainTextEdit
 
    private:
       MainWindow *m_mainWindow;
-      QWidget *m_lineNumArea;
+      QWidget *m_lineNumArea;     
 
       // column mode
       bool m_isColumnMode;
