@@ -221,15 +221,14 @@ void MainWindow::open_RelatedFile()
       int cnt = list.count();
 
       if (cnt == 0) {
-         csError("Open Related Files", "No related files were found");
+         csError(tr("Open Related Files"), tr("No related files were found"));
 
       } else if (cnt == 1)  {
          // open the one related file
          this->loadFile(list.at(0), true, false);
 
       }  else {
-         // display the full list of files
-
+         // display the full list of related files
          Dialog_Open *dw = new Dialog_Open(list);
          int result = dw->exec();
 
@@ -242,7 +241,7 @@ void MainWindow::open_RelatedFile()
       }
 
    } else {
-      csError("Open Related Files", "Related files only configured for .cpp and .h files");
+      csError(tr("Open Related Files"), tr("Related files only configured for .cpp and .h files"));
 
    }
 }
@@ -282,17 +281,14 @@ bool MainWindow::close_Doc()
             split_CloseButton();
          }
 
-         // update split combo box
          rm_splitCombo(m_curFile);
       }
 
-      // update open tab list
       openTab_Delete();
 
       m_textEdit->clear();
       setCurrentTitle("");      
    }
-
 
    return okClose;
 }
@@ -333,17 +329,17 @@ bool MainWindow::closeAll_Doc(bool isExit)
                m_textEdit->clear();
                setCurrentTitle("");
 
-            } else {
-               // may need to delete the widget
+            } else {               
                m_tabWidget->removeTab(whichTab);
+
             }
 
          } else  {           
             // modified file not closed, move over one tab
             ++whichTab;
 
-            // update open tab list
             if ( m_curFile != "untitled.txt" ) {
+               // save for the auto reload
                m_openedFiles.append(m_curFile);
             }
 
@@ -374,13 +370,13 @@ bool MainWindow::closeAll_Doc(bool isExit)
 void MainWindow::reload()
 {   
    if (m_curFile.isEmpty()) {
-      csError("Reload", tr("Unable to reload a file which was not saved."));
+      csError(tr("Reload"), tr("Unable to reload a file which was not saved."));
 
    } else if (m_textEdit->document()->isModified()) {
 
       QMessageBox quest;
       quest.setWindowTitle(tr("Reload File"));
-      quest.setText( "File: " + m_curFile + tr(" has been modified. Reload file?"));
+      quest.setText(tr("File: ") + m_curFile + tr(" has been modified. Reload file?"));
 
       QPushButton *reload = quest.addButton("Reload", QMessageBox::AcceptRole );
       quest.setStandardButtons(QMessageBox::Cancel);
@@ -401,15 +397,15 @@ void MainWindow::reload()
 bool MainWindow::save()
 {
    if (m_curFile.isEmpty()) {
-      return saveAs(true);
+      return saveAs(SAVE_ONE);
 
    } else {
-     return saveFile(m_curFile, true);
+     return saveFile(m_curFile, SAVE_ONE);
 
    }      
 }
 
-bool MainWindow::saveAs(bool isSaveOne)
+bool MainWindow::saveAs(SaveFiles saveType)
 {
    bool retval = false;
 
@@ -437,12 +433,23 @@ bool MainWindow::saveAs(bool isSaveOne)
       retval = false;
 
    } else {
-      retval = saveFile(fileName, isSaveOne);
+      retval = saveFile(fileName, saveType);
 
-      if (retval) {
-         setCurrentTitle(fileName);
+      if (retval) {         
+         // update open tab list
+         openTab_Delete();
 
          if (m_isSplit) {
+            rm_splitCombo(m_curFile);
+         }
+
+         setCurrentTitle(fileName);
+
+         // update open tab list
+         openTab_Add();
+
+         if (m_isSplit) {
+            add_splitCombo(m_curFile);
             set_splitCombo();
          }
       }
@@ -453,9 +460,11 @@ bool MainWindow::saveAs(bool isSaveOne)
 
 void MainWindow::saveAll()
 {
-   // hold to reload
+   // hold for reload
    DiamondTextEdit *hold_textEdit = m_textEdit;
-   int index = m_tabWidget->currentIndex();
+   int hold_index = m_tabWidget->currentIndex();
+
+   QString fileName;
 
    QWidget *temp;
    DiamondTextEdit *textEdit;
@@ -468,35 +477,49 @@ void MainWindow::saveAll()
       textEdit = dynamic_cast<DiamondTextEdit *>(temp);
 
       if (textEdit) {
-         m_textEdit = textEdit;
+         m_textEdit = textEdit;         
+         fileName   = m_tabWidget->tabWhatsThis(k);
 
-         QString fName = m_tabWidget->tabWhatsThis(k);
+         if (m_textEdit->document()->isModified())  {
 
-         if (fName == "untitled.txt") {
-            if (saveAs(false)) {
-               m_textEdit->document()->setModified(false);
+            if (fileName == "untitled.txt") {
+               m_tabWidget->setCurrentIndex(k);
+               saveAs(SAVE_ALL);
+
+            } else  {
+               saveFile(fileName, SAVE_ALL);
+
             }
-
-         } else {
-
-            csMsg("about to save " + fName);
-
-            // BROOM
-
-//            if (saveFile(fName, false)) {
-//               m_textEdit->document()->setModified(false);
-//            }
-
          }
       }
    }
 
-   // reload the current textEdit again
-   m_tabWidget->setCurrentIndex(index);
+   // reload the current textEdit again   
    m_textEdit = hold_textEdit;
+
+   if (m_tabWidget->currentIndex() == hold_index) {
+
+      fileName = m_tabWidget->tabWhatsThis(hold_index);
+
+      if (fileName == "untitled.txt") {
+         m_curFile = "";
+
+      } else {
+         m_curFile = fileName;
+         setDiamondTitle(m_curFile);
+      }
+
+   } else {
+      m_tabWidget->setCurrentIndex(hold_index);
+
+   }
 
    if (! m_textEdit->document()->isModified())  {
       setWindowModified(false);      
+   }
+
+   if (m_isSplit) {
+      set_splitCombo();
    }
 
    setStatusBar(tr("File(s) saved"), 2000);
@@ -1685,7 +1708,7 @@ void MainWindow::createConnections()
    connect(m_ui->actionReload,            SIGNAL(triggered()), this, SLOT(reload()));
 
    connect(m_ui->actionSave,              SIGNAL(triggered()), this, SLOT(save()));
-   connect(m_ui->actionSave_As,           &QAction::triggered, this, [this](bool){ saveAs(true); } );
+   connect(m_ui->actionSave_As,           &QAction::triggered, this, [this](bool){ saveAs(SAVE_ONE); } );
    connect(m_ui->actionSave_All,          SIGNAL(triggered()), this, SLOT(saveAll()));
 
    connect(m_ui->actionPrint,             SIGNAL(triggered()), this, SLOT(print()));

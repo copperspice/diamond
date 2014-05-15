@@ -294,7 +294,7 @@ bool MainWindow::json_Read(Config trail)
       }
 
       // silly way to pad the list
-      for (int k = cnt; k < prefolder_MaxCnt; k++)  {
+      for (int k = cnt; k < PRESET_FOLDERS_MAX; k++)  {
          m_prefolder_List.append("");
       }
 
@@ -323,6 +323,7 @@ bool MainWindow::json_Read(Config trail)
 
          if (! fname.isEmpty()) {
             m_openedFiles.append(fname);
+            m_openedModified.append(false);
          }
       }
    }
@@ -568,7 +569,7 @@ bool MainWindow::json_Write(Option route, Config trail)
                   // next macro id number
                   int id = macroName.right(1).toInt();
 
-                  if (id > MACRO_MAX_COUNT)  {
+                  if (id > MACRO_MAX)  {
 
                      QStringList macroIds = json_Load_MacroIds();
 

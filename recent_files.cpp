@@ -36,7 +36,7 @@ void MainWindow::rf_CreateMenus()
    QMenu   *fileMenu = m_ui->menuFile;
    QAction *action   = fileMenu->insertSeparator(m_ui->actionExit);
 
-   for (int i = 0; i < rf_MaxCnt; ++i) {
+   for (int i = 0; i < RECENT_FILES_MAX; ++i) {
 
       if (i < cnt)  {
          tName = m_rf_List[i];
@@ -156,7 +156,7 @@ void MainWindow::rf_Update()
 {
    int cnt = m_rf_List.count();
 
-   if (cnt >= rf_MaxCnt ) {
+   if (cnt >= RECENT_FILES_MAX) {
       m_rf_List.removeFirst();
    }
 
@@ -173,7 +173,7 @@ void MainWindow::rf_UpdateActions()
 {
    int cnt = m_rf_List.count();
 
-   for (int i = 0; i < rf_MaxCnt; ++i) {
+   for (int i = 0; i < RECENT_FILES_MAX; ++i) {
 
      if (i < cnt)  {
         rf_Actions[i]->setText(m_rf_List[i]);
@@ -197,7 +197,7 @@ void MainWindow::rfolder_CreateMenus()
    QString tName;
    QMenu *menu = new QMenu(this);
 
-   for (int i = 0; i < rfolder_MaxCnt; ++i) {
+   for (int i = 0; i < RECENT_FOLDERS_MAX; ++i) {
 
       if (i < cnt)  {
          tName = m_rfolder_List[i];
@@ -300,7 +300,7 @@ void MainWindow::rfolder_Add()
 
    int cnt = m_rfolder_List.count();
 
-   if (cnt >= rfolder_MaxCnt ) {
+   if (cnt >= RECENT_FOLDERS_MAX) {
       m_rfolder_List.removeFirst();
    }
 
@@ -321,7 +321,7 @@ void MainWindow::rfolder_UpdateActions()
 {
    int cnt = m_rfolder_List.count();
 
-   for (int i = 0; i < rfolder_MaxCnt; ++i) {
+   for (int i = 0; i < RECENT_FOLDERS_MAX; ++i) {
 
      if (i < cnt)  {
         rfolder_Actions[i]->setText(m_rfolder_List[i]);
@@ -342,7 +342,7 @@ void MainWindow::prefolder_CreateMenus()
    QString tName;
    QMenu *menu = new QMenu(this);
 
-   for (int i = 0; i < prefolder_MaxCnt; ++i) {
+   for (int i = 0; i < PRESET_FOLDERS_MAX; ++i) {
 
       tName = m_prefolder_List[i];
 

@@ -28,19 +28,20 @@
 void MainWindow::openTab_CreateMenus()
 {
    // re-populate m_openedFiles
+   QString fullName;
    QString tName;
 
    int cnt = m_tabWidget->count();
    m_openedFiles.clear();
 
    for (int k = 0; k < cnt; ++k) {
-      tName = this->get_curFileName(k);
+      fullName = this->get_curFileName(k);
 
-      if (tName.isEmpty()) {
+      if (fullName.isEmpty()) {
          --cnt;
 
       } else {
-         m_openedFiles.append(tName);
+         m_openedFiles.append(fullName);
       }
    }
 
@@ -48,66 +49,66 @@ void MainWindow::openTab_CreateMenus()
    QMenu *windowMenu = m_ui->menuWindow;
    windowMenu->addSeparator();
 
-   for (int i = 0; i < openTab_MaxCnt; ++i) {
+   for (int k = 0; k < OPENTABS_MAX; ++k) {
 
-      if (i < cnt)  {
-         tName = m_openedFiles[i];
+      if (k < cnt)  {
+         fullName = m_openedFiles[k];
+         tName    = fullName;
+
+         if (m_openedModified[k]) {
+            tName += " *";
+         }
+
       } else {
-         tName = "file"+QString::number(i);
+         tName = "file"+QString::number(k);
+
       }
 
-      openTab_Actions[i] = new QAction(tName, this);
-      openTab_Actions[i]->setData("select-tab");
+      openTab_Actions[k] = new QAction(tName, this);
+      openTab_Actions[k]->setData("select-tab");
 
-      windowMenu->addAction(openTab_Actions[i]);
+      windowMenu->addAction(openTab_Actions[k]);
 
-      if (i >= cnt)  {
-         openTab_Actions[i]->setVisible(false);         
+      if (k >= cnt)  {
+         openTab_Actions[k]->setVisible(false);
       }
 
-      connect(openTab_Actions[i], SIGNAL(triggered()), this, SLOT(openTab_Select()));      
+      connect(openTab_Actions[k], &QAction::triggered, this, [this, k](bool){ openTab_Select(k); } );
    }
 }
 
-void MainWindow::openTab_Select()
-{
-   QAction *action;
-   action = (QAction *)sender();
-
+void MainWindow::openTab_Select(int index)
+{ 
    bool match = false;
+   QString fullName = m_openedFiles[index];
 
-   if (action) {
-      QString fileName = action->text();
+   if (fullName.isEmpty()) {
+      // something is pretty bogus
 
-      if (fileName.isEmpty()) {
-         // something is pretty bogus
+   } else {
+      int cnt   = m_tabWidget->count();
+      int index = m_tabWidget->currentIndex();
+
+      for (int k = 0; k < cnt; ++k) {
+         QString tcurFile = this->get_curFileName(k);
+
+         if (tcurFile == fullName) {
+            match = true;
+            index = k;
+            break;
+         }
+      }
+
+      if (match) {
+         // select new tab
+         m_tabWidget->setCurrentIndex(index);
 
       } else {
-         int cnt   = m_tabWidget->count();
-         int index = m_tabWidget->currentIndex();
+         // delete entry from list since it did not exist
+         m_openedFiles.removeOne(fullName);
 
-         for (int k = 0; k < cnt; ++k) {
-            QString tcurFile = this->get_curFileName(k);
-
-            if (tcurFile == fileName) {
-               match = true;
-               index = k;
-               break;
-            }
-         }
-
-         if (match) {
-            // select new tab
-            m_tabWidget->setCurrentIndex(index);
-
-         } else {
-            // delete entry from list since it did not exist
-            m_openedFiles.removeOne(fileName);
-
-            // update actions
-            openTab_UpdateActions();
-         }
-
+         // update actions
+         openTab_UpdateActions();
       }
    }
 }
@@ -131,25 +132,45 @@ void MainWindow::showContext_Tabs(const QPoint &pt)
 
 void MainWindow::openTab_redo()
 {
+   QWidget *temp;
+   DiamondTextEdit *textEdit;
+
    QAction *action;
    action = (QAction *)sender();
 
    if (action) {
-      // re-populate m_openedFiles
+      // re-populate m_openedFiles and m_openedModified
       QString tName;
+      bool isModified;
+
+      m_openedFiles.clear();
+      m_openedModified.clear();
 
       int cnt = m_tabWidget->count();
-      m_openedFiles.clear();
 
       for (int k = 0; k < cnt; ++k) {
          tName = this->get_curFileName(k);
          m_openedFiles.append(tName);
+
+         //
+         temp = m_tabWidget->widget(k);
+         textEdit = dynamic_cast<DiamondTextEdit *>(temp);
+
+         if (textEdit) {
+            isModified = textEdit->document()->isModified();
+            m_openedModified.append(isModified);
+         }
       }
 
-      for (int i = 0; i < openTab_MaxCnt; ++i) {
+      for (int i = 0; i < OPENTABS_MAX; ++i) {
 
          if (i < cnt)  {
             tName = m_openedFiles[i];
+
+            if (m_openedModified[i]) {
+               tName += " *";
+            }
+
          } else {
             tName = "file"+QString::number(i);
          }
@@ -171,6 +192,7 @@ void MainWindow::openTab_Add()
    }
 
    m_openedFiles.append(m_curFile);
+   m_openedModified.append(false);
 
    // update actions
    openTab_UpdateActions();
@@ -187,26 +209,35 @@ void MainWindow::openTab_Delete()
 void MainWindow::openTab_UpdateActions()
 {
    int cnt = m_openedFiles.count();
-   QString isModified;
 
-   for (int i = 0; i < openTab_MaxCnt; ++i) {
+   for (int k = 0; k < OPENTABS_MAX; ++k) {
 
-      if (i < cnt)  {
+      if (k < cnt)  {
+         QString modified;
 
-/*       not working a desired, on hold
+         if (m_openedModified[k]) {
+            modified += " *";
+         }
 
-         if (m_textEdit->document()->isModified()) {
-            isModified = " *";
-         } else {
-            isModified = "";
-         }                  
-*/
-         openTab_Actions[i]->setText(m_openedFiles[i] + isModified);
-         openTab_Actions[i]->setVisible(true);
+         openTab_Actions[k]->setText(m_openedFiles[k] + modified);
+         openTab_Actions[k]->setVisible(true);
 
      } else {        
-         openTab_Actions[i]->setVisible(false);
+         openTab_Actions[k]->setVisible(false);
      }
 
+   }
+}
+
+void MainWindow::openTab_UpdateOneAction(int index, bool isModified)
+{
+   if (index < OPENTABS_MAX) {
+      QString modified;
+
+      if (isModified) {
+         modified += " *";
+      }
+
+      openTab_Actions[index]->setText(m_openedFiles[index] + modified);
    }
 }

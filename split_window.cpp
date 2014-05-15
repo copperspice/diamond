@@ -65,14 +65,15 @@ void MainWindow::split_Horizontal()
    font2.setPointSize(11);
    m_splitName_CB->setFont(font2);
 
-   for (int k = 0; k < m_openedFiles.size(); ++k) {
-      QString temp = strippedName(m_openedFiles[k]);
+   for (int k = 0; k < m_openedFiles.size(); ++k) {   
 
-      // file name, full name with path
-      m_splitName_CB->addItem(temp, m_openedFiles[k]);
-   }
-   int splitIndex = m_splitName_CB->findData(m_splitFileName);
-   m_splitName_CB->setCurrentIndex(splitIndex);
+      QString fullName = m_openedFiles[k];
+      add_splitCombo(fullName);
+
+      if ( m_openedModified[k] ) {
+        update_splitCombo(fullName, true);
+      }      
+   }   
 
    //
    m_splitClose_PB = new QPushButton();
@@ -94,7 +95,10 @@ void MainWindow::split_Horizontal()
    m_splitter->setOrientation(Qt::Horizontal);        // Difference Here
    m_splitter->addWidget(m_splitWidget);
 
-   set_splitCombo();
+   //
+   int splitIndex = m_splitName_CB->findData(m_splitFileName);
+   m_splitName_CB->setCurrentIndex(splitIndex);
+
    moveBar();
 
    connect(m_splitName_CB,   SIGNAL(currentIndexChanged(int)), this, SLOT(split_NameChanged(int)));
@@ -152,17 +156,17 @@ void MainWindow::split_Vertical()
    m_splitName_CB->setFont(font2);
 
    for (int k = 0; k < m_openedFiles.size(); ++k) {
-      QString temp = strippedName(m_openedFiles[k]);
+      QString fullName = m_openedFiles[k];
+      add_splitCombo(fullName);
 
-      // file name, full name with path
-      m_splitName_CB->addItem(temp, m_openedFiles[k]);
-   }
-   int splitIndex = m_splitName_CB->findData(m_splitFileName);
-   m_splitName_CB->setCurrentIndex(splitIndex);
+      if ( m_openedModified[k] ) {
+        update_splitCombo(fullName, true);
+      }
+   }     
 
    //
    m_splitClose_PB = new QPushButton();
-   m_splitClose_PB->setText("Close");
+   m_splitClose_PB->setText(tr("Close"));
 
    QBoxLayout *topbar_Layout = new QHBoxLayout();
    topbar_Layout->addWidget(m_splitName_CB, 1);
@@ -179,7 +183,10 @@ void MainWindow::split_Vertical()
    m_splitter->setOrientation(Qt::Vertical);          // Difference is here
    m_splitter->addWidget(m_splitWidget);
 
-   set_splitCombo();
+   //
+   int splitIndex = m_splitName_CB->findData(m_splitFileName);
+   m_splitName_CB->setCurrentIndex(splitIndex);
+
    moveBar();
 
    connect(m_splitName_CB,   SIGNAL(currentIndexChanged(int)), this, SLOT(split_NameChanged(int)));
@@ -197,26 +204,60 @@ void MainWindow::split_Vertical()
 }
 
 void MainWindow::set_splitCombo()
-{       
+{
    QString newName = strippedName(m_splitFileName);
 
-   if (m_split_textEdit->document()->isModified()) {
+   bool isModified = m_split_textEdit->document()->isModified();
+
+   if (isModified) {
       newName += " *";
    }
 
+   int index = m_openedFiles.indexOf(m_splitFileName);
+   if (index != -1)  {
+      m_openedModified.replace(index,isModified);
+   }
+
+   //
    int splitIndex = m_splitName_CB->findData(m_splitFileName);
-   m_splitName_CB->setItemText(splitIndex, newName);
+
+   if (splitIndex != -1)  {
+      m_splitName_CB->setItemText(splitIndex, newName);
+   }
 }
 
-void MainWindow::add_splitCombo(QString fname)
+void MainWindow::update_splitCombo(QString fullName, bool isModified)
 {
-   QString temp = strippedName(fname);
-   m_splitName_CB->addItem(temp, fname);
+   QString shortName = strippedName(fullName);
+
+   if (isModified) {
+      shortName += " *";
+   }
+
+   int splitIndex = m_splitName_CB->findData(fullName);
+
+   if (splitIndex != -1)  {
+      m_splitName_CB->setItemText(splitIndex, shortName);
+   }
 }
 
-void MainWindow::rm_splitCombo(QString fname)
+void MainWindow::add_splitCombo(QString fullName)
 {
-   int splitIndex = m_splitName_CB->findData(fname);
+   int splitIndex = m_splitName_CB->findData(fullName);
+
+   if (splitIndex == -1)  {
+      QString shortName = strippedName(fullName);
+      m_splitName_CB->addItem(shortName, fullName);
+
+   } else {
+      set_splitCombo();
+
+   }
+}
+
+void MainWindow::rm_splitCombo(QString fullName)
+{
+   int splitIndex = m_splitName_CB->findData(fullName);
 
    if (splitIndex != -1) {
       m_splitName_CB->removeItem(splitIndex);
@@ -245,7 +286,7 @@ void MainWindow::split_NameChanged(int data)
       }
 
       if (whichTab == -1) {
-         csError("Split Window Selection", "Unable to locate selected document");
+         csError(tr("Split Window Selection"), tr("Unable to locate selected document"));
 
          split_CloseButton();
          return;
@@ -294,7 +335,7 @@ void MainWindow::split_NameChanged(int data)
 
       } else {
          // close the split
-         csError("Split Window Selection", "Selected document invalid");
+         csError(tr("Split Window Selection"), tr("Selected document invalid"));
          split_CloseButton();
       }
    }

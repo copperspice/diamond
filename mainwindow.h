@@ -51,7 +51,11 @@
 
 class Dialog_AdvFind;
 
-static const int MACRO_MAX_COUNT = 10;
+static const int MACRO_MAX           = 10;
+static const int OPENTABS_MAX        = 20;
+static const int PRESET_FOLDERS_MAX  = 10;
+static const int RECENT_FOLDERS_MAX  = 10;
+static const int RECENT_FILES_MAX    = 10;
 
 struct macroStruct
 {
@@ -106,6 +110,9 @@ class MainWindow : public QMainWindow
       QTabWidget *m_tabWidget;
       QString m_curFile;     
 
+      QStringList m_openedFiles;
+      QList<bool> m_openedModified;
+
       // split
       DiamondTextEdit *m_split_textEdit;
       DiamondTextEdit *m_noSplit_textEdit;
@@ -117,8 +124,9 @@ class MainWindow : public QMainWindow
       QComboBox *m_splitName_CB;
       QPushButton *m_splitClose_PB;
 
-      void add_splitCombo(QString fname);
-      void rm_splitCombo(QString fname);
+      void add_splitCombo(QString fullName);
+      void rm_splitCombo(QString fullName);
+      void update_splitCombo(QString fullName, bool isModified);
 
       // copy buffer
       QShortcut *m_actionCopyBuffer;
@@ -157,35 +165,32 @@ class MainWindow : public QMainWindow
       bool m_record;
       QList<QKeyEvent *> m_macroList;
       QStringList m_macroNames;
+
       void replaceQuery();
       void replaceAll();
 
       // passed parms
       void autoLoad();
-      void argLoad(QList<QString> argList);
-      QStringList m_openedFiles;
+      void argLoad(QList<QString> argList);      
 
-      // preset folders
-      static const int prefolder_MaxCnt = 10;
-      QAction *prefolder_Actions[prefolder_MaxCnt];
+      // preset folders      
+      QAction *prefolder_Actions[PRESET_FOLDERS_MAX];
       QStringList m_prefolder_List;
 
       void prefolder_CreateMenus();
       void prefolder_RedoList();
       //void prefolder_UpdateActions();
 
-      // recent folders
-      static const int rfolder_MaxCnt = 10;
-      QAction *rfolder_Actions[rfolder_MaxCnt];
+      // recent folders     
+      QAction *rfolder_Actions[RECENT_FOLDERS_MAX];
       QStringList m_rfolder_List;
 
       void rfolder_CreateMenus();
       void rfolder_Add();
       void rfolder_UpdateActions();
 
-      // recent files
-      static const int rf_MaxCnt = 10;
-      QAction *rf_Actions[rf_MaxCnt];
+      // recent files      
+      QAction *rf_Actions[RECENT_FILES_MAX];
       QStringList m_rf_List;
 
       void rf_CreateMenus();
@@ -208,14 +213,16 @@ class MainWindow : public QMainWindow
       QList<int> m_tabStops;
       void setUpTabStops();
 
-      // open tabs
-      static const int openTab_MaxCnt = 20;
-      QAction *openTab_Actions[openTab_MaxCnt];
+      // open tabs      
+      QAction *openTab_Actions[OPENTABS_MAX];
 
       void openTab_CreateMenus();      
       void openTab_Add();
       void openTab_Delete();
       void openTab_UpdateActions();
+
+      void openTab_Select(int index);
+      void openTab_UpdateOneAction(int index, bool isModified);
 
       // spell check     
       void createSpellCheck();
@@ -240,6 +247,8 @@ class MainWindow : public QMainWindow
                     SPELLCHECK, TAB_SPACING, USESPACES, WORDWRAP};
 
       enum Config { CFG_STARTUP, CFG_DEFAULT };
+
+      enum SaveFiles { SAVE_ONE, SAVE_ALL };
 
       void openDoc(QString path);
       bool closeAll_Doc(bool isExit);
@@ -300,8 +309,8 @@ class MainWindow : public QMainWindow
       // support           
       int get_line_col(const QString route);
       bool querySave();     
-      bool saveFile(const QString &fileName, bool isSaveOne);
-      bool saveAs(bool isSaveOne);      
+      bool saveFile(const QString &fileName, SaveFiles saveType);
+      bool saveAs(SaveFiles saveType);
 
       void setCurrentTitle(const QString &fileName, bool tabChange = false);
       void setDiamondTitle(const QString title);
@@ -311,7 +320,7 @@ class MainWindow : public QMainWindow
       QString strippedName(const QString filename);
       QString suffixName() const;   
 
-      CS_SLOT_1(Private, void focusChanged(QWidget * un_named_arg1,QWidget * un_named_arg2))
+      CS_SLOT_1(Private, void focusChanged(QWidget *prior, QWidget *current))
       CS_SLOT_2(focusChanged) 
 
       CS_SLOT_1(Private, void newFile())
@@ -530,7 +539,7 @@ class MainWindow : public QMainWindow
       CS_SLOT_2(tabChanged) 
 
       // adv find
-      CS_SLOT_1(Private, void advFind_View(const QModelIndex & index))
+      CS_SLOT_1(Private, void advFind_View(const QModelIndex &index))
       CS_SLOT_2(advFind_View) 
 
       CS_SLOT_1(Private, void advFind_Close())
@@ -548,7 +557,7 @@ class MainWindow : public QMainWindow
       CS_SLOT_2(spell_replaceWord) 
 
       // recent folders
-      CS_SLOT_1(Private, void showContext_RecentFolder(const QPoint & pt))
+      CS_SLOT_1(Private, void showContext_RecentFolder(const QPoint &pt))
       CS_SLOT_2(showContext_RecentFolder) 
 
       CS_SLOT_1(Private, void rfolder_Open())
@@ -565,7 +574,7 @@ class MainWindow : public QMainWindow
       CS_SLOT_2(prefolder_Open) 
 
       // recent files
-      CS_SLOT_1(Private, void showContext_Files(const QPoint & pt))
+      CS_SLOT_1(Private, void showContext_Files(const QPoint &pt))
       CS_SLOT_2(showContext_Files) 
 
       CS_SLOT_1(Private, void rf_Open())
@@ -581,11 +590,8 @@ class MainWindow : public QMainWindow
       CS_SLOT_2(rf_RemoveFName) 
 
       // open (tab) files
-      CS_SLOT_1(Private, void showContext_Tabs(const QPoint & pt))
+      CS_SLOT_1(Private, void showContext_Tabs(const QPoint &pt))
       CS_SLOT_2(showContext_Tabs) 
-
-      CS_SLOT_1(Private, void openTab_Select())
-      CS_SLOT_2(openTab_Select) 
 
       CS_SLOT_1(Private, void openTab_redo())
       CS_SLOT_2(openTab_redo) 
@@ -600,7 +606,7 @@ class MainWindow : public QMainWindow
       CS_SLOT_1(Private, void split_Vertical())
       CS_SLOT_2(split_Vertical)
 
-      CS_SLOT_1(Private, void split_NameChanged(int))
+      CS_SLOT_1(Private, void split_NameChanged(int data))
       CS_SLOT_2(split_NameChanged)
 
       CS_SLOT_1(Private, void split_CloseButton())

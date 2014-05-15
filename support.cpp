@@ -101,7 +101,28 @@ void MainWindow::changeFont()
 
 void MainWindow::documentWasModified()
 {    
-   setWindowModified(m_textEdit->document()->isModified());
+   bool isModified;
+
+   if (m_isSplit) {
+      isModified = m_noSplit_textEdit->document()->isModified();
+      update_splitCombo(m_curFile, isModified);
+
+   } else {
+      isModified = m_textEdit->document()->isModified();
+
+   }
+
+   setWindowModified(isModified);
+
+   int index = m_openedFiles.indexOf(m_curFile);
+   if (index != -1)  {
+      bool wasModified = m_openedModified[index];
+
+      if (wasModified != isModified) {
+         m_openedModified.replace(index,isModified);
+         openTab_UpdateOneAction(index,isModified);
+      }
+   }
 }
 
 QString MainWindow::get_curFileName(int whichTab)
@@ -250,8 +271,9 @@ bool MainWindow::loadFile(const QString &fileName, bool addNewTab, bool isAuto)
    m_textEdit->setPlainText(fileData);   
    QApplication::restoreOverrideCursor();
 
-   setCurrentTitle(fileName);
-   setStatusBar(tr("File loaded"), 1500);
+   if (m_textEdit->m_owner == "tab") {
+      setCurrentTitle(fileName);
+   }
 
    if (m_isSplit) {
       // update split combo box
@@ -265,8 +287,15 @@ bool MainWindow::loadFile(const QString &fileName, bool addNewTab, bool isAuto)
 
    if ( addNewTab && (! isAuto) )  {
       // update open tab list
-      openTab_Add();
+      openTab_Add();   
+
+      int index = m_openedFiles.indexOf(fileName);
+      if (index != -1)  {
+         m_openedModified.replace(index,false);
+      }
    }
+
+   setStatusBar(tr("File loaded"), 1500);
 
    return true;
 }
@@ -297,7 +326,7 @@ bool MainWindow::querySave()
       if (retval == QMessageBox::Save) {
 
          if (fileName == "untitled.txt") {
-            return saveAs(false);
+            return saveAs(SAVE_ONE);
          } else {
             return save();
          }
@@ -311,35 +340,15 @@ bool MainWindow::querySave()
    return true;
 }
 
-bool MainWindow::saveFile(const QString &fileName, bool isSaveOne)
+bool MainWindow::saveFile(const QString &fileName, SaveFiles saveType)
 {
-   int whichTab = m_tabWidget->currentIndex();
-   m_tabWidget->setTabText(whichTab, strippedName(fileName));
-   m_tabWidget->setTabWhatsThis(whichTab, fileName);
-
-
-   // BROOM - test code only
-   QString t1 = m_tabWidget->tabWhatsThis(whichTab);
-   QString t2 = m_tabWidget->tabText(whichTab);
-
-   if (t2 != "untitled.txt") {
-
-      if (fileName != t1 || ! fileName.endsWith(t2))  {
-
-         csError("Save File Error", "Passed FN: " + fileName + "\n  Whats's This: " + t1 + "\n Tab Text: " + t2);
-
-         return false;
-      }
-   }
-
-
    QFile file(fileName);
 
    if (! file.open(QFile::WriteOnly | QFile::Text)) {
 
       QString temp = fileName;
       if (temp.isEmpty()) {
-         temp = "(No file name available)";
+         temp = tr("(No file name available)");
       }
 
       QString error = tr("Unable to save/write file %1:\n%2.").arg(temp).arg(file.errorString());
@@ -351,14 +360,21 @@ bool MainWindow::saveFile(const QString &fileName, bool isSaveOne)
    file.write(m_textEdit->toPlainText().toUtf8());
    QApplication::restoreOverrideCursor();
 
-   if (isSaveOne) {
-      m_textEdit->document()->setModified(false);
-      setWindowModified(false);     
-      setDiamondTitle(m_curFile);
+   m_textEdit->document()->setModified(false);
 
-      if (m_isSplit) {
-         set_splitCombo();
-      }
+   int index = m_openedFiles.indexOf(fileName);
+   if (index != -1)  {
+      m_openedModified.replace(index,false);
+      openTab_UpdateOneAction(index,false);
+   }
+
+   if (m_isSplit) {
+      update_splitCombo(fileName, false);
+   }
+
+   if (saveType == SAVE_ONE) {
+      setWindowModified(false);     
+      setDiamondTitle(fileName);
 
       setStatusBar(tr("File saved"), 2000);
    }

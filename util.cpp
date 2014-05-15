@@ -29,7 +29,7 @@ void csMsg(const QString &msg)
 {
    QMessageBox msgB;
 
-   msgB.setWindowTitle("Debug Information");
+   msgB.setWindowTitle(QApplication::translate("csMsg", "Debug Information"));
    msgB.setWindowIcon(QIcon("://resources/diamond.png"));
 
    msgB.setText(msg);
@@ -42,7 +42,7 @@ void csMsg(QString msg, int value)
 
    QMessageBox msgB;
 
-   msgB.setWindowTitle("Debug Information");
+   msgB.setWindowTitle(QApplication::translate("csMsg", "Debug Information"));
    msgB.setWindowIcon(QIcon("://resources/diamond.png"));
 
    msgB.setText(msg);
