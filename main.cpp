@@ -20,7 +20,7 @@
 **************************************************************************/
 
 #include "mainwindow.h"
-#include <util.h>
+#include "util.h"
 
 #include <QApplication>
 
@@ -73,9 +73,9 @@ int main(int argc, char *argv[])
 
          //
          QMessageBox msgB;
+         msgB.setWindowTitle("Diamond Editor - Issue");
          msgB.setIcon(QMessageBox::NoIcon);
 
-         msgB.setWindowTitle("Diamond Editor - Issue");
          msgB.setText(errMsg);
          msgB.exec();
       }

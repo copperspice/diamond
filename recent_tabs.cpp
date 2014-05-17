@@ -42,6 +42,7 @@ void MainWindow::openTab_CreateMenus()
 
       } else {
          m_openedFiles.append(fullName);
+         m_openedModified.append(false);
       }
    }
 

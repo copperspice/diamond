@@ -199,8 +199,10 @@ RESOURCES = diamond.qrc
 # use wilcard to obtain just the dependency list
 qrc_diamond.cpp: diamond.qrc   $(wildcard ../resources/*)
 
-# install
+# required to compile qrc
+nodist_Diamond_SOURCES=qrc_diamond.cpp
 
+# install
 if OSTYPE_LINUX
    dictionarydir=$(pkgdatadir)/dictionary
    dictionary_DATA=$(wildcard $(top_srcdir)/source_extra/dictionary/*)
@@ -246,9 +248,7 @@ install-exec-hook:
 endif
 
 
-# source distribution
-nodist_Diamond_SOURCES=qrc_diamond.cpp
-
+# distribution
 distdir: $(DISTFILES)
 	cd .. ; \
 	test -d "$(distdir_custom)" || mkdir -p "$(distdir_custom)" ; \
