@@ -12,6 +12,7 @@ gcclibs=libgcc_s_sjlj-1  libstdc++-6  libwinpthread-1
 # list of CopperSpice libraries
 cslibs=Core Gui Network WebKit
 
+# location of includes
 AM_CXXFLAGS+=-I..
 
 if OSTYPE_LINUX
@@ -35,6 +36,9 @@ if OSTYPE_WIN
 
    # disable console on window
    AM_CXXFLAGS+=-mwindows -I$(hunspell_path)/include
+
+   # location for 'make install'
+   installdir=$(abs_top_builddir)/install
 endif
 
 # target app name
@@ -58,7 +62,7 @@ endif
 
 if OSTYPE_DARWIN
 
-deployapp=$(deploydir)/$(deploy_PROGRAMS).app/Contents
+deployapp=$(deploydir)/$(bin_PROGRAMS).app/Contents
 
 deploy: $(bin_PROGRAMS)
 	mkdir -p $(deployapp)/Frameworks
@@ -84,7 +88,7 @@ deploy: $(bin_PROGRAMS)
 	for libname in $(patsubst %,libCs%1.0.dylib,$(cslibs)) ; do \
 	\
 	install_name_tool -change $(CS_HOME)/lib/$$libname \
-	@executable_path/../Frameworks/$$libname $(deployapp)/MacOS/$(deploy_PROGRAMS); \
+	@executable_path/../Frameworks/$$libname $(deployapp)/MacOS/$(bin_PROGRAMS); \
 	\
 	for templib in $(patsubst %,libCs%1.0.dylib,$(cslibs)) ; do \
 	install_name_tool -change $(CS_HOME)/lib/$$templib \
@@ -94,8 +98,8 @@ deploy: $(bin_PROGRAMS)
 	; done
 
    # generate dmg	
-	hdiutil create -ov -srcfolder $(deploydir) -format UDBZ -volname $(deploy_PROGRAMS) ../$(deploy_PROGRAMS).dmg
-	hdiutil internet-enable -yes ../$(deploy_PROGRAMS).dmg
+	hdiutil create -ov -srcfolder $(deploydir) -format UDBZ -volname $(bin_PROGRAMS) ../$(bin_PROGRAMS).dmg
+	hdiutil internet-enable -yes ../$(bin_PROGRAMS).dmg
 endif
 
 if OSTYPE_WIN
@@ -230,16 +234,16 @@ if OSTYPE_DARWIN
 endif
 
 if OSTYPE_WIN
-dictionarydir=$(prefix)/dictionary
-dictionary_DATA=$(wildcard $(top_srcdir)/source_extra/dictionary/*)
-
-syntaxdir=$(prefix)/syntax
-syntax_DATA=$(wildcard $(top_srcdir)/source_extra/syntax/*)
-
-helpdir=$(prefix)/help
-help_DATA=$(wildcard $(top_srcdir)/source_extra/help/*.*)
-helpsearchdir=$(prefix)/help/search
-helpsearch_DATA=$(wildcard $(top_srcdir)/source_extra/help/search/*.*)
+   dictionarydir=$(prefix)/dictionary
+   dictionary_DATA=$(wildcard $(top_srcdir)/source_extra/dictionary/*)
+   
+   syntaxdir=$(prefix)/syntax
+   syntax_DATA=$(wildcard $(top_srcdir)/source_extra/syntax/*)
+   
+   helpdir=$(prefix)/help
+   help_DATA=$(wildcard $(top_srcdir)/source_extra/help/*.*)
+   helpsearchdir=$(prefix)/help/search
+   helpsearch_DATA=$(wildcard $(top_srcdir)/source_extra/help/search/*.*)
 
 install-exec-hook:
 	rsync -W -a --modify-window=2  $(patsubst %,$(gccpath)/%.dll,$(gcclibs))  $(bindir)

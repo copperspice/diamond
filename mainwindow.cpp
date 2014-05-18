@@ -305,6 +305,7 @@ bool MainWindow::closeAll_Doc(bool isExit)
 
    // clear open tab list
    m_openedFiles.clear();
+   m_openedModified.clear();
 
    for (int k = 0; k < count; ++k) {
 
@@ -322,14 +323,16 @@ bool MainWindow::closeAll_Doc(bool isExit)
             if (isExit && (m_curFile != "untitled.txt")) {
                // save for the auto reload
                m_openedFiles.append(m_curFile);
+               m_openedModified.append(false);
             }
 
             if (m_tabWidget->count() == 1) {
                // do not remove this tab !
+
                m_textEdit->clear();
                setCurrentTitle("");
 
-            } else {               
+            } else {
                m_tabWidget->removeTab(whichTab);
 
             }
@@ -341,6 +344,7 @@ bool MainWindow::closeAll_Doc(bool isExit)
             if ( m_curFile != "untitled.txt" ) {
                // save for the auto reload
                m_openedFiles.append(m_curFile);
+               m_openedModified.append(true);
             }
 
             // at least one tab is staying open
@@ -356,7 +360,7 @@ bool MainWindow::closeAll_Doc(bool isExit)
       if (m_isSplit) {
          // close the split tab
          split_CloseButton();
-      }
+      }            
 
       // update open tab list
       openTab_UpdateActions();

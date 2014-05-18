@@ -33,6 +33,7 @@ void MainWindow::openTab_CreateMenus()
 
    int cnt = m_tabWidget->count();
    m_openedFiles.clear();
+   m_openedModified.clear();
 
    for (int k = 0; k < cnt; ++k) {
       fullName = this->get_curFileName(k);
