@@ -22,3 +22,5 @@ Diamond.creator.user*
 /install/
 /source_win/
 /source_extra/*.bat
+/source_dist/
+diamond*.tar.gz

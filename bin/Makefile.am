@@ -1,7 +1,7 @@
 include copperspice.am
 
-# dist (windows)
-distdir_custom=install_win/dist
+# dist
+distdir_custom=source_dist/dist
 
 # path to gcc (windows)
 gccpath=/c/MingW/bin
@@ -176,6 +176,7 @@ noinst_HEADERS = \
     search.h \
     settings.h \
     spellcheck.h \
+    syntax.h \
     util.h
 
 FORMS = \
@@ -236,10 +237,10 @@ endif
 if OSTYPE_WIN
    dictionarydir=$(prefix)/dictionary
    dictionary_DATA=$(wildcard $(top_srcdir)/source_extra/dictionary/*)
-   
+
    syntaxdir=$(prefix)/syntax
    syntax_DATA=$(wildcard $(top_srcdir)/source_extra/syntax/*)
-   
+
    helpdir=$(prefix)/help
    help_DATA=$(wildcard $(top_srcdir)/source_extra/help/*.*)
    helpsearchdir=$(prefix)/help/search
@@ -256,35 +257,43 @@ endif
 distdir: $(DISTFILES)
 	cd .. ; \
 	test -d "$(distdir_custom)" || mkdir -p "$(distdir_custom)" ; \
+	mkdir -p $(distdir_custom)/bin                              ; \
+	mkdir -p $(distdir_custom)/dictionary                       ; \
+	mkdir -p $(distdir_custom)/help                             ; \
+	mkdir -p $(distdir_custom)/hunspell                         ; \
+	mkdir -p $(distdir_custom)/resources                        ; \
+	mkdir -p $(distdir_custom)/syntax                           ; \
+\
 	for f in $(DIST_SOURCES)  ; do install -D $$f $(distdir_custom)/$$f ; done ;\
 	for f in $(HEADERS)       ; do install -D $$f $(distdir_custom)/$$f ; done ;\
 	for f in $(FORMS)         ; do install -D $$f $(distdir_custom)/$$f ; done ;\
-	mkdir -p $(distdir_custom)/bin           ; \
-	mkdir -p $(distdir_custom)/dictionary    ; \
-	mkdir -p $(distdir_custom)/help          ; \
-	mkdir -p $(distdir_custom)/hunspell      ; \
-	mkdir -p $(distdir_custom)/resources     ; \
-	mkdir -p $(distdir_custom)/syntax        ; \
+\
 	cp diamond.qrc                   $(distdir_custom)/                 ; \
 	cp bin/*.am                      $(distdir_custom)/bin/             ; \
 	cp resources/*                   $(distdir_custom)/resources/       ; \
-	cp install_files/dictionary/*    $(distdir_custom)/dictionary/      ; \
-	cp install_files/syntax/*.json   $(distdir_custom)/syntax/          ; \
-	cp -r install_files/help/*	      $(distdir_custom)/help/            ; \
+	cp source_extra/dictionary/*     $(distdir_custom)/dictionary/      ; \
+	cp source_extra/syntax/*.json    $(distdir_custom)/syntax/          ; \
+	cp -r source_extra/help/*	      $(distdir_custom)/help/            ; \
 	cp -r $(hunspell_path)/*         $(distdir_custom)/hunspell/        ; \
+\
 	find $(distdir_custom)/hunspell/ -name \*.exe -exec rm \{\} \;      ; \
 	find $(distdir_custom)/hunspell/ -name \*.o   -exec rm \{\} \;      ; \
 	find $(distdir_custom)/hunspell/ -name \*.lo  -exec rm \{\} \;      ; \
 	find $(distdir_custom)/hunspell/ -name .libs  -exec rm -r \{\} \;   ; \
 	find $(distdir_custom)/hunspell/ -name .deps  -exec rm -r \{\} \;   ; \
 	rm -r $(distdir_custom)/hunspell/deploy/share
+
 	$(MAKE) $(AM_MAKEFLAGS) dist-hook
 
+# distdir is a temp folder
 dist-hook:
-	cd .. ; \
+	cd ..  ; \
+\
 	cp -r bin/$(distdir)/../*   $(distdir_custom) ; \
-	rm -r bin/$(distdir)/../   ; \
-	cd $(distdir_custom)       ; \
-	rm -f  ../Diamond-$(VERSION).zip  ; \
-	zip -r ../Diamond-$(VERSION).zip .
+	cd $(distdir_custom)                          ; \
+\
+	rm  -f   ../Diamond-$(VERSION).zip         ; \
+	zip -r   ../Diamond-$(VERSION).zip .       ; \
+	rm  -f   ../Diamond-$(VERSION).tar.bz2     ; \
+	tar -cjf ../Diamond-$(VERSION).tar.bz2 .
 
