@@ -23,5 +23,6 @@
         <file>resources/tab_remove.png</file>
         <file>resources/undo.png</file>
         <file>resources/diamond.png</file>
+        <file>resources/diamond.ico</file>
     </qresource>
 </RCC>

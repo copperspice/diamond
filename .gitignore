@@ -21,6 +21,6 @@ Diamond.creator.user*
 /hunspell/
 /install/
 /source_win/
-/source_extra/*.bat
 /source_dist/
+/source_extra/*.bat
 diamond*.tar.gz

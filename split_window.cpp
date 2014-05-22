@@ -205,12 +205,12 @@ void MainWindow::split_Vertical()
 
 void MainWindow::set_splitCombo()
 {
-   QString newName = strippedName(m_splitFileName);
+   QString shortName = strippedName(m_splitFileName);
 
    bool isModified = m_split_textEdit->document()->isModified();
 
    if (isModified) {
-      newName += " *";
+      shortName += " *";
    }
 
    int index = m_openedFiles.indexOf(m_splitFileName);
@@ -222,7 +222,8 @@ void MainWindow::set_splitCombo()
    int splitIndex = m_splitName_CB->findData(m_splitFileName);
 
    if (splitIndex != -1)  {
-      m_splitName_CB->setItemText(splitIndex, newName);
+      m_splitName_CB->setItemText(splitIndex, shortName);
+      m_splitName_CB->setItemData(splitIndex, m_splitFileName, Qt::ToolTipRole);
    }
 }
 
@@ -238,6 +239,7 @@ void MainWindow::update_splitCombo(QString fullName, bool isModified)
 
    if (splitIndex != -1)  {
       m_splitName_CB->setItemText(splitIndex, shortName);
+      m_splitName_CB->setItemData(splitIndex,fullName, Qt::ToolTipRole );
    }
 }
 
@@ -248,6 +250,9 @@ void MainWindow::add_splitCombo(QString fullName)
    if (splitIndex == -1)  {
       QString shortName = strippedName(fullName);
       m_splitName_CB->addItem(shortName, fullName);
+
+      splitIndex = m_splitName_CB->count() - 1;
+      m_splitName_CB->setItemData(splitIndex,fullName, Qt::ToolTipRole );
 
    } else {
       set_splitCombo();

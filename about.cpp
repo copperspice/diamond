@@ -35,10 +35,10 @@
 #include <QWebSettings>
 #include <QVBoxLayout>
 
-About::About(QString kind, QString file)
+About::About(QString route, QString file)
    : QWidget()
 {   
-   if (kind == "Help") {
+   if (route == "Help") {
       m_url = file;
 
       QFileInfo temp(m_url);
@@ -77,15 +77,17 @@ About::About(QString kind, QString file)
    }
 
    //
-   m_viewer = new QWebView;   
+   m_viewer = new QWebView;
    m_viewer->setUrl(m_url);
+
+   setWindowIcon(QIcon("://resources/diamond.png"));
 
    m_currentZoom = 100;
    m_viewer->setZoomFactor(static_cast<qreal>(m_currentZoom)/100.0);
 
    QPushButton *homePB = nullptr;
 
-   if (kind == "Help") {
+   if (route == "Help") {
       homePB = new QPushButton;
       homePB->setText("Home");
    }
@@ -97,7 +99,7 @@ About::About(QString kind, QString file)
    QHBoxLayout *buttonLayout = new QHBoxLayout;
    buttonLayout->addStretch();
 
-   if (kind == "Help") {
+   if (route == "Help") {
       buttonLayout->addWidget(homePB);
       buttonLayout->addSpacing(10);
    }
@@ -135,7 +137,7 @@ About::About(QString kind, QString file)
                  SLOT(setCustomContextMenu(const QPoint &)) );
 
    // signals   
-   if (kind == "Help") {
+   if (route == "Help") {
       connect(homePB,   SIGNAL(clicked()), this, SLOT(actionHome()) );
    }
    connect(closePB,  SIGNAL(clicked()), this, SLOT(actionClose()) );

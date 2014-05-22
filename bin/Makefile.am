@@ -1,7 +1,7 @@
 include copperspice.am
 
 # dist
-distdir_custom=source_dist/dist
+distdir_custom=source_dist/dist/Diamond-$(VERSION)
 
 # path to gcc (windows)
 gccpath=/c/MingW/bin
@@ -29,7 +29,7 @@ endif
 
 if OSTYPE_WIN
    # path to hunspell
-   hunspell_path=../hunspell
+   hunspell_path=../hunspell_lib
 
    hunspell_dll=$(hunspell_path)/bin/libhunspell-1.3-0.dll
    hunspell_la=$(hunspell_path)/lib/libhunspell-1.3.dll.a
@@ -48,7 +48,7 @@ bin_PROGRAMS = Diamond
 .PHONY: deploy
 
 if OSTYPE_LINUX
-deploy: $(bin_PROGRAMS)
+deploy : all
 	mkdir -p $(deploydir)
 	mkdir -p $(deploydir)/dictionary
 	mkdir -p $(deploydir)/help
@@ -61,10 +61,9 @@ deploy: $(bin_PROGRAMS)
 endif
 
 if OSTYPE_DARWIN
-
 deployapp=$(deploydir)/$(bin_PROGRAMS).app/Contents
 
-deploy: $(bin_PROGRAMS)
+deploy : all
 	mkdir -p $(deployapp)/Frameworks
 	mkdir -p $(deployapp)/MacOS
 	mkdir -p $(deployapp)/Resources
@@ -103,10 +102,12 @@ deploy: $(bin_PROGRAMS)
 endif
 
 if OSTYPE_WIN
-deploy: $(bin_PROGRAMS)
+deploy : all 
 	mkdir -p $(deploydir)
 
 	$(LIBTOOL) --mode=install cp $(bin_PROGRAMS) $(deploydir)
+
+	rsync -W -a --modify-window=2  $(top_srcdir)/resources/diamond.ico $(deploydir)
 
 	rsync -W -a --modify-window=2  $(patsubst %,$(gccpath)/%.dll,$(gcclibs))  $(deploydir)
 	rsync -W -a --modify-window=2  $(patsubst %,$(CS_HOME)/bin/libCs%1-0.dll,$(cslibs))  $(deploydir)
@@ -247,6 +248,8 @@ if OSTYPE_WIN
    helpsearch_DATA=$(wildcard $(top_srcdir)/source_extra/help/search/*.*)
 
 install-exec-hook:
+	rsync -W -a --modify-window=2  $(top_srcdir)/resources/diamond.ico $(bindir)
+
 	rsync -W -a --modify-window=2  $(patsubst %,$(gccpath)/%.dll,$(gcclibs))  $(bindir)
 	rsync -W -a --modify-window=2  $(patsubst %,$(CS_HOME)/bin/libCs%1-0.dll,$(cslibs))  $(bindir)
 	rsync -W -a --modify-window=2  $(hunspell_dll)  $(bindir)
@@ -258,30 +261,23 @@ distdir: $(DISTFILES)
 	cd .. ; \
 	test -d "$(distdir_custom)" || mkdir -p "$(distdir_custom)" ; \
 	mkdir -p $(distdir_custom)/bin                              ; \
-	mkdir -p $(distdir_custom)/dictionary                       ; \
-	mkdir -p $(distdir_custom)/help                             ; \
-	mkdir -p $(distdir_custom)/hunspell                         ; \
 	mkdir -p $(distdir_custom)/resources                        ; \
-	mkdir -p $(distdir_custom)/syntax                           ; \
+	mkdir -p $(distdir_custom)/source_extra/dictionary          ; \
+	mkdir -p $(distdir_custom)/source_extra/help                ; \
+	mkdir -p $(distdir_custom)/source_extra/syntax              ; \
 \
-	for f in $(DIST_SOURCES)  ; do install -D $$f $(distdir_custom)/$$f ; done ;\
-	for f in $(HEADERS)       ; do install -D $$f $(distdir_custom)/$$f ; done ;\
-	for f in $(FORMS)         ; do install -D $$f $(distdir_custom)/$$f ; done ;\
+	for f in $(DIST_SOURCES)  ; do install -D $$f $(distdir_custom)/$$f ; done   ;\
+	for f in $(HEADERS)       ; do install -D $$f $(distdir_custom)/$$f ; done   ;\
+	for f in $(FORMS)         ; do install -D $$f $(distdir_custom)/$$f ; done   ;\
 \
-	cp diamond.qrc                   $(distdir_custom)/                 ; \
-	cp bin/*.am                      $(distdir_custom)/bin/             ; \
-	cp resources/*                   $(distdir_custom)/resources/       ; \
-	cp source_extra/dictionary/*     $(distdir_custom)/dictionary/      ; \
-	cp source_extra/syntax/*.json    $(distdir_custom)/syntax/          ; \
-	cp -r source_extra/help/*	      $(distdir_custom)/help/            ; \
-	cp -r $(hunspell_path)/*         $(distdir_custom)/hunspell/        ; \
-\
-	find $(distdir_custom)/hunspell/ -name \*.exe -exec rm \{\} \;      ; \
-	find $(distdir_custom)/hunspell/ -name \*.o   -exec rm \{\} \;      ; \
-	find $(distdir_custom)/hunspell/ -name \*.lo  -exec rm \{\} \;      ; \
-	find $(distdir_custom)/hunspell/ -name .libs  -exec rm -r \{\} \;   ; \
-	find $(distdir_custom)/hunspell/ -name .deps  -exec rm -r \{\} \;   ; \
-	rm -r $(distdir_custom)/hunspell/deploy/share
+	cp diamond.qrc                   $(distdir_custom)/                          ; \
+	cp read_me.txt                   $(distdir_custom)/                          ; \
+	cp bin/*.am                      $(distdir_custom)/bin/                      ; \
+	cp bin/Makefile.in               $(distdir_custom)/bin/                      ; \
+	cp resources/*                   $(distdir_custom)/resources/                ; \
+	cp source_extra/dictionary/*     $(distdir_custom)/source_extra/dictionary/  ; \
+	cp source_extra/syntax/*.json    $(distdir_custom)/source_extra/syntax/      ; \
+	cp -r source_extra/help/*        $(distdir_custom)/source_extra/help/
 
 	$(MAKE) $(AM_MAKEFLAGS) dist-hook
 
@@ -290,7 +286,7 @@ dist-hook:
 	cd ..  ; \
 \
 	cp -r bin/$(distdir)/../*   $(distdir_custom) ; \
-	cd $(distdir_custom)                          ; \
+	cd $(distdir_custom)/..                       ; \
 \
 	rm  -f   ../Diamond-$(VERSION).zip         ; \
 	zip -r   ../Diamond-$(VERSION).zip .       ; \

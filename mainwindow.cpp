@@ -37,10 +37,10 @@ MainWindow::MainWindow(QStringList fileList, QStringList flagList)
    : m_ui(new Ui::MainWindow)
 {
    m_ui->setupUi(this);
-   setIconSize(QSize(32,32));
-   setWindowIcon( QIcon("://resources/diamond.png"));
+   setDiamondTitle("untitled.txt");
 
-   this->setDiamondTitle("untitled.txt");
+   setIconSize(QSize(32,32));
+   setWindowIcon(QIcon("://resources/diamond.png"));
 
    if ( ! json_Read(CFG_STARTUP) ) {
       // do not start program

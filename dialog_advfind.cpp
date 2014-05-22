@@ -30,7 +30,7 @@ Dialog_AdvFind::Dialog_AdvFind(MainWindow *from, QString findText, QString fileT
    m_parent = from;
 
    m_ui->setupUi(this);
-   this->setWindowIcon(QIcon("://resources/diamond.png"));
+   setWindowIcon(QIcon("://resources/diamond.png"));
 
    m_ui->find->setText(findText);
    m_ui->findType->setText(fileType);
