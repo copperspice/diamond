@@ -894,7 +894,7 @@ void MainWindow::goLine()
    QTextCursor cursor(m_textEdit->textCursor());
    cursor.movePosition(QTextCursor::Start);
 
-   cursor.movePosition(QTextCursor::Down, QTextCursor::MoveAnchor, line);
+   cursor.movePosition(QTextCursor::NextBlock, QTextCursor::MoveAnchor, line - 1);
    m_textEdit->setTextCursor(cursor);
 }
 

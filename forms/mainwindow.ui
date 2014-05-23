@@ -475,7 +475,7 @@
   </action>
   <action name="actionColumn_Mode">
    <property name="text">
-    <string>Column Mode *</string>
+    <string>Column Mode</string>
    </property>
   </action>
   <action name="actionFind">

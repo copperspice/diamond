@@ -101,12 +101,12 @@ class DiamondTextEdit : public QPlainTextEdit
       bool m_isColumnMode;
 
       bool m_showlineNum;
-      bool colHighlight;
+      bool m_colHighlight;
 
-      int startRow;
-      int startCol;
-      int endRow;
-      int endCol;
+      int m_startRow;
+      int m_startCol;
+      int m_endRow;
+      int m_endCol;
 
       // copy buffer
       QList<QString> m_copyBuffer;
