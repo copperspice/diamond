@@ -23,6 +23,6 @@ var NAVTREEINDEX0 =
 "pages.html":[],
 "release.html":[7],
 "require-mac.html":[2,2],
-"require-win.html":[2,0],
-"require-x11.html":[2,1]
+"require-win.html":[2,1],
+"require-x11.html":[2,0]
 };

@@ -49,7 +49,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
     <ul class="tablist">
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
       <li class="current"><a href="pages.html"><span>Overview</span></a></li>
-      <li><a href="http://www.sourceforge.net/p/copperspice/discussion/diamond"><span>Support</span></a></li>
+      <li><a href="http://www.sourceforge.net/p/copperspice/discussion-diamond"><span>Support</span></a></li>
       <li>
         <div id="MSearchBox" class="MSearchBoxInactive">
           <div class="left">
@@ -84,26 +84,29 @@ $(document).ready(function(){initNavTree('build.html','');});
 <div class="title">Building </div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><p>Diamond was compiled with the CopperSpice libraries, Hunspell Libraries using GCC, GNU Autotools, and GNU Make. To build Diamond from source all libraries and tools will need to be installed on your development system.</p>
+<div class="textblock"><p>Diamond was compiled with the CopperSpice libraries using GCC (4.7.2 or greater), GNU Autotools, and GNU Make. To build Diamond from source all of the approprieate libraries and tools must be installed on your development system.</p>
 <h3>CopperSpice Libraries</h3>
-<p>The CopperSpice binaries (compiled version) contain the DLLs or shared libraries needed to compile and distribute your application.</p>
+<p>The CopperSpice binary download contains the DLLs or shared libraries needed to compile and distribute Diamond.</p>
 <ul>
-<li>(1) &#160;Download the CopperSpice binary files from the download links located on the right side of our CopperSpice web site. Select the link for the desired CS version, then select source files. Pick the desired platform. <a href="http://www.copperspice.com" class="www-link">CS Binary Download</a></li>
+<li>(1) &#160;Click on th link to be directed to the CopperSpice web site&#160;&#160; <a href="http://www.copperspice.com" class="www-link">CopperSpice</a></li>
 </ul>
 <ul>
-<li>(2) &#160;Run the Setup program or install the package as required for the selected platform.</li>
+<li>(2) &#160;On the right side of the page is a 'downloads' box, lick on the desired version of CopperSpice</li>
+</ul>
+<ul>
+<li>(3) &#160;Select the binary folder and then click on the distribution or installer for your platform</li>
+</ul>
+<ul>
+<li>(4) &#160;Install the distribuiton or run the installer</li>
 </ul>
 <h3>Hunspell Libraries</h3>
-<p>Hunspell 1.3 is the library used for spell checking.</p>
+<p>Diamond uses the Hunspell 1.3 library for spell checking.</p>
 <ul>
-<li>For Windows the Hunspell <code>bin</code>, <code>include</code>, and <code>lib</code> files are included with the Diamond source. These files are only needed when building Diamond from source. The Hunspell run time DLL is supplied with the Diamond binary installer.</li>
+<li>X11 - install the appropriate Hunspell package for your specific platform</li>
 </ul>
-<ul>
-<li>For X11 install the appropriate Hunspell package for your specific platform.</li>
-</ul>
-<div style="margin-top:15px;margin-left:65px;margin-bottom:25px"> <table class="doxtable">
+<div style="margin-top:25px;margin-left:55px;margin-bottom:25px"> <table class="doxtable">
 <tr>
-<th width="100">Platform </th><th width="125">Package  </th></tr>
+<th width="110">Platform </th><th width="135">Package  </th></tr>
 <tr>
 <td>Debian </td><td>libhunspell-dev  </td></tr>
 <tr>
@@ -112,7 +115,22 @@ $(document).ready(function(){initNavTree('build.html','');});
 <td>Ubuntu </td><td>libhunspell-dev  </td></tr>
 </table>
 </div><ul>
-<li>For OS X use macports to install Hunspell.</li>
+<li>
+<p class="startli">Windows</p>
+<ul>
+<li>
+The 32-bit dll for Hunspell is included with the Diamond 32-bit binary installer </li>
+<li>
+The 64-bit dll for Hunspell is included with the Diamond 64-bit binary installer </li>
+<li>
+The Hunspell 1.3.2 source files can be downloaded from our repository, required to build Diamond from source <br/>
+ <a href="http://www.sourceforge.net/projects/copperspice/files/diamond/source" class="www-link">Diamond Source</a>  </li>
+</ul>
+<p class="endli"></p>
+</li>
+</ul>
+<ul>
+<li>OS X - use macports to install Hunspell</li>
 </ul>
 <h3>Autotools &amp; Make</h3>
 <p>Autotools is a suite of programming tools designed to assist in making source code packages portable to many Unix-like systems. The GNU build system uses Bourne-compatible shell scripts to assist the user in the configuration and build process.</p>
@@ -122,12 +140,12 @@ $(document).ready(function(){initNavTree('build.html','');});
 <li>Automake version <b>1.12.1</b> or greater </li>
 <li>GNU Make version <b>3.81</b> or greater</li>
 </ul>
-<p>For additional information about these utilities, refer to our CopperSpice documentation <a href="http://www.copperspice.com/docs/build.html" class="www-link">Building CopperSpice</a></p>
+<p>For additional information about these utilities, refer to our CopperSpice documentation <a href="http://www.copperspice.com/docs/cs_build/main-build.html" class="www-link">Building CopperSpice</a></p>
 <h3>Compiler Specifics</h3>
 <p>The following sections detail the utilities and packages required for each platform.</p>
 <ul>
-<li><a class="el" href="require-win.html">Building for Windows</a> </li>
 <li><a class="el" href="require-x11.html">Building for X11</a> </li>
+<li><a class="el" href="require-win.html">Building for Windows</a> </li>
 <li><a class="el" href="require-mac.html">Building for OS X</a></li>
 </ul>
 <h3>Compile &amp; Link</h3>
@@ -142,7 +160,7 @@ $(document).ready(function(){initNavTree('build.html','');});
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="footer">Generated on Wed May 21 2014 09:37:39 for Diamond Editor by
+    <li class="footer">Generated on Sat May 24 2014 22:12:14 for Diamond Editor by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.6 </li>
   </ul>

@@ -49,7 +49,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
     <ul class="tablist">
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
       <li class="current"><a href="pages.html"><span>Overview</span></a></li>
-      <li><a href="http://www.sourceforge.net/p/copperspice/discussion/diamond"><span>Support</span></a></li>
+      <li><a href="http://www.sourceforge.net/p/copperspice/discussion-diamond"><span>Support</span></a></li>
       <li>
         <div id="MSearchBox" class="MSearchBoxInactive">
           <div class="left">
@@ -84,24 +84,22 @@ $(document).ready(function(){initNavTree('copperspice.html','');});
 <div class="title">CopperSpice Library </div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><p>CopperSpice is a library written in C++. It was derived from the Qt 4.8 framework in conjunction with the C++ Standard library. The CopperSpice library is built using Autotools.</p>
-<p>The Qt framework reimplemented many classes which are now available in the C++ standard. By removing duplicated classes CopperSpice will smoothly and elegantly integrate with existing C++ code. Wrapper classes are provided to ease the migration process for existing Qt applications.</p>
-<p>CopperSpice has been modified to remove moc, the Qt meta object compiler. Moc was removed to simplify the build process, allow CopperSpice to be a standalone library, increase run time performance, and so developers can leverage C+11 features.</p>
+<div class="textblock"><p>CopperSpice is a set of libraries written in C++. The libraries were derived from the Qt 4.8 framework in conjunction with the C++ Standard library.</p>
+<p>We redesigned the core libraries leveraging template functionality and taking advantage of the new C++11 capabilities. CopperSpice consists of several different libraries to handle core functionality, gui interfaces, networking, web capabilites, and more.</p>
 <ul>
-<li>The CopperSpice library is a fork of Nokia LGPL Qt 4.8.2 </li>
+<li>The CopperSpice libraries are a fork of Nokia LGPL Qt 4.8.2 </li>
 <li>CopperSpice is written in C++11 </li>
-<li>C++ programs can link directly with CopperSpice </li>
-<li>The Qt Meta-Object Compiler (moc) is obsolete </li>
-<li>The CopperSpice libraries were built using GNU Autotools instead of qmake</li>
+<li>Our library can link directly into any standard C++ application </li>
+<li>The CopperSpice libraries were built using GNU Autotools</li>
 </ul>
 <p><br/>
- For additional information about the CopperSpice project refer to our web site: <a href="http://www.copperspice.com" class="www-link">CopperSpice</a> </p>
+ For additional information about the CopperSpice libraries please refer to our web site: <a href="http://www.copperspice.com" class="www-link">CopperSpice</a> </p>
 </div></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="footer">Generated on Wed May 21 2014 09:37:39 for Diamond Editor by
+    <li class="footer">Generated on Sat May 24 2014 22:12:14 for Diamond Editor by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.6 </li>
   </ul>

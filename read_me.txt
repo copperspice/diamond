@@ -1,6 +1,7 @@
 
 ReadMe - Build Instructions for Windows
 
+
 1   Download diamond zip or tar source and install
 
 2   Download hunspell zip or tar source and install

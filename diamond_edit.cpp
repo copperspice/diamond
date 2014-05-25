@@ -305,6 +305,7 @@ void DiamondTextEdit::cut()
       QString text;
       QList<QTextEdit::ExtraSelection> oldSelections = this->extraSelections();
 
+      // obtain text
       for (int k = 0; k < oldSelections.size(); ++k) {
 
          if (oldSelections[k].format.property(QTextFormat::UserProperty) != "highlightbar") {
@@ -312,23 +313,41 @@ void DiamondTextEdit::cut()
          }
       }
 
-      QApplication::clipboard()->setText(text);
+      // temporary, check mouse usage
+      if (text.isEmpty()) {
 
-      // save to copy buffer
-      addToCopyBuffer(text);
+         QTextCursor cursor(textCursor());
+         QString selectedText = cursor.selectedText();
 
-      // now cut
-      QTextCursor cursorT(textCursor());
-      cursorT.beginEditBlock();
+         if (! selectedText.isEmpty())  {
+            QApplication::clipboard()->setText(selectedText);
 
-      for (int k = 0; k < oldSelections.size(); ++k) {
+            // save to copy buffer
+            addToCopyBuffer(selectedText);
 
-         if (oldSelections[k].format.property(QTextFormat::UserProperty) != "highlightbar") {
-            oldSelections[k].cursor.removeSelectedText();
+            cursor.removeSelectedText();
          }
-      }
 
-      cursorT.endEditBlock();
+      } else {
+
+         QApplication::clipboard()->setText(text);
+
+         // save to copy buffer
+         addToCopyBuffer(text);
+
+         // cut selected text
+         QTextCursor cursorT(textCursor());
+         cursorT.beginEditBlock();
+
+         for (int k = 0; k < oldSelections.size(); ++k) {
+
+            if (oldSelections[k].format.property(QTextFormat::UserProperty) != "highlightbar") {
+               oldSelections[k].cursor.removeSelectedText();
+            }
+         }
+
+         cursorT.endEditBlock();
+      }
 
    } else {
       QPlainTextEdit::cut();
@@ -343,6 +362,7 @@ void DiamondTextEdit::copy()
       QString text;
       QList<QTextEdit::ExtraSelection> oldSelections = this->extraSelections();
 
+      // obtain text
       for (int k = 0; k < oldSelections.count(); ++k) {
 
          if (oldSelections[k].format.property(QTextFormat::UserProperty) != "highlightbar") {
@@ -350,8 +370,18 @@ void DiamondTextEdit::copy()
          }
       }
 
-      // take off last newline
+      // remove last newline
       text.chop(1);
+
+      // temporary, check mouse usage
+      if (text.isEmpty()) {
+         QTextCursor cursor(textCursor());
+         QString selectedText = cursor.selectedText();
+
+         if (! selectedText.isEmpty())  {
+            text = selectedText;
+         }
+      }
 
       QApplication::clipboard()->setText(text);
 

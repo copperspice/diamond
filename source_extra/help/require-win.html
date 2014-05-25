@@ -49,7 +49,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
     <ul class="tablist">
       <li><a href="index.html"><span>Main&#160;Page</span></a></li>
       <li class="current"><a href="pages.html"><span>Overview</span></a></li>
-      <li><a href="http://www.sourceforge.net/p/copperspice/discussion/diamond"><span>Support</span></a></li>
+      <li><a href="http://www.sourceforge.net/p/copperspice/discussion-diamond"><span>Support</span></a></li>
       <li>
         <div id="MSearchBox" class="MSearchBoxInactive">
           <div class="left">
@@ -96,14 +96,49 @@ $(document).ready(function(){initNavTree('require-win.html','');});
 <p>MinGW 64-bit Version <b>x64-4.8.1-release-posix-sjlj-rev5.7z</b>&#160;&#160; <a href="http://sourceforge.net/projects/mingwbuilds/files/host-windows/releases/4.8.1/64-bit/threads-posix/sjlj/" class="www-link">MinGW 64</a></p>
 <h3>Utilities</h3>
 <p>We recommend installing this version of MSYS, which provides GNU Make and other tools designed to work with the MinGW version of GCC. There is only one version of MSYS for 32-bit and 64-bit systems.</p>
-<p>MSYS Version <b>msys+7za+wget+svn+git+mercurial+cvs-rev9.7z</b> <a href="http://sourceforge.net/projects/mingwbuilds/files/external-binary-packages/" class="www-link">MSYS</a> </p>
+<p>MSYS Version <b>msys+7za+wget+svn+git+mercurial+cvs-rev9.7z</b> <a href="http://sourceforge.net/projects/mingwbuilds/files/external-binary-packages/" class="www-link">MSYS</a></p>
+<h3>Building Diamond</h3>
+<ul>
+<li>
+<p class="startli">Download Diamond zip or tar source and Install</p>
+<p class="endli"></p>
+</li>
+<li>
+<p class="startli">Download Hunspell zip or tar source and Install</p>
+<p class="endli"></p>
+</li>
+<li>
+<p class="startli">From a bash prompt in /hunspell</p>
+<ul>
+<li>
+<code>./do-config-hunspell</code> </li>
+<li>
+cd build </li>
+<li>
+make install </li>
+</ul>
+<p class="endli"></p>
+</li>
+<li>
+<p class="startli">From a bash prompt in /diamond</p>
+<ul>
+<li>
+<code>./configure CXXFLAGS="O2"</code> </li>
+<li>
+make install </li>
+</ul>
+</li>
+</ul>
+<p><br/>
+ <br/>
+ </p>
 </div></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="build.html">Building</a></li>
-    <li class="footer">Generated on Wed May 21 2014 09:37:39 for Diamond Editor by
+    <li class="footer">Generated on Sat May 24 2014 22:12:14 for Diamond Editor by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.6 </li>
   </ul>

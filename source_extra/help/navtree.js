@@ -9,7 +9,7 @@ var NAVTREE =
     [ "Licensing", "license.html", null ],
     [ "CopperSpice Library", "copperspice.html", null ],
     [ "Release Notes", "release.html", null ],
-    [ "Support", "^http://www.sourceforge.net/p/copperspice/discussion/diamond", null ]
+    [ "Support", "^http://www.sourceforge.net/p/copperspice/discussion-diamond", null ]
   ] ]
 ];
 
