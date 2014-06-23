@@ -682,7 +682,20 @@ bool MainWindow::json_Write(Option route, Config trail)
 }
 
 void MainWindow::json_getFileName()
-{
+{   
+
+#ifdef Q_OS_MAC
+   if (m_appPath.contains(".app/Contents/MacOS")) {
+      QString homePath = QDir::homePath();      
+      m_jsonFname = homePath + "/Library/Diamond/config.json";
+
+      QDir(homePath + "/Library").mkdir("Diamond");
+      QDir(homePath + "/Library/Diamond").mkdir("dictionary");
+
+      return;
+   }
+#endif
+
    QString selectedFilter;
    QFileDialog::Options options;
 
@@ -699,7 +712,6 @@ void MainWindow::json_getFileName()
    quest.exec();
 
    if (quest.clickedButton() == createNew) {
-
       QString fname = m_appPath + "/config.json";
 
       // force windows 7 and 8 to honor initial path
@@ -781,36 +793,86 @@ bool MainWindow::json_CreateNew()
    value = QJsonValue(m_appPath);
    object.insert("pathPrior", value);
 
-   // get syntax folder
-   QString syntaxPath = get_SyntaxPath();
+   bool isAutoDetect = false;
 
-   value = QJsonValue(QString(syntaxPath));
-   object.insert("pathSyntax", value);
+#ifdef Q_OS_MAC
+   if (m_appPath.contains(".app/Contents/MacOS")) {
+      isAutoDetect = true;
 
-   // get dictionary file location
-   QString dictFile = get_xxFile("Dictionary File (*.dic)", "en_US.dic", "Dictionary Files (*.dic)" );
+      QString resourcePath = this->pathName(m_appPath) + "/../Contents/Resources";
+      QString libraryPath  = QDir::homePath() + "/Library/Diamond/";
 
-   value = QJsonValue(QString(dictFile));
-   object.insert("dictMain", value);
+      QDir dir = resourcePath;
+      dir.makeAbsolute();
 
-   // default dictionary to dictPath
-   dictFile = this->pathName(dictFile) + "/userDict.txt";
+      resourcePath = dir.path();
 
-   if (! QFile::exists(dictFile) ) {
+      // get syntax folder (1)
+      QString syntaxPath = resourcePath + "/syntax/";
 
-      QFile temp(dictFile);
-      temp.open(QIODevice::WriteOnly);
-      temp.close();
+      value = QJsonValue(QString(syntaxPath));
+      object.insert("pathSyntax", value);
+
+      // get dictionary file location (2)
+      QString dictFile = libraryPath + "dictionary/en_US.dic";
+
+      value = QJsonValue(QString(dictFile));
+      object.insert("dictMain", value);
+
+      // default dictionary to dictPath
+      dictFile = libraryPath + "dictionary/userDict.txt";
+
+      if (! QFile::exists(dictFile) ) {
+         QFile temp(dictFile);
+         temp.open(QIODevice::WriteOnly);
+         temp.close();
+      }
+
+      value = QJsonValue(QString(dictFile));
+      object.insert("dictUser", value);
+
+      QFile::copy(resourcePath + "/dictionary/en_US.aff", libraryPath + "dictionary/en_US.aff");
+      QFile::copy(resourcePath + "/dictionary/en_US.dic", libraryPath + "dictionary/en_US.dic");
+
+      // get help file location (3)
+      QString indexPath = resourcePath + "/help/index.html";
+      value = QJsonValue(QString(indexPath));
+      object.insert("aboutUrl", value);
    }
+#endif
 
-   value = QJsonValue(QString( dictFile) );
-   object.insert("dictUser", value);      
 
-   // get aboutURL file location
-   QString indexPath = get_xxFile("Help File (index.html)", "index.html", "HTML Files (index.html)" );
+   if (! isAutoDetect) {
+      // get syntax folder (1)
+      QString syntaxPath = get_SyntaxPath();
 
-   value = QJsonValue(QString(indexPath));
-   object.insert("aboutUrl", value);
+      value = QJsonValue(QString(syntaxPath));
+      object.insert("pathSyntax", value);
+
+      // get dictionary file location (2)
+      QString dictFile = get_xxFile("Dictionary File (*.dic)", "en_US.dic", "Dictionary Files (*.dic)" );
+
+      value = QJsonValue(QString(dictFile));
+      object.insert("dictMain", value);
+
+      // default dictionary to dictPath
+      dictFile = this->pathName(dictFile) + "/userDict.txt";
+
+      if (! QFile::exists(dictFile) ) {
+
+         QFile temp(dictFile);
+         temp.open(QIODevice::WriteOnly);
+         temp.close();
+      }
+
+      value = QJsonValue(QString( dictFile) );
+      object.insert("dictUser", value);
+
+      // get help file location (3)
+      QString indexPath = get_xxFile("Help File (index.html)", "index.html", "HTML Files (index.html)" );
+      value = QJsonValue(QString(indexPath));
+      object.insert("aboutUrl", value);
+   }
 
    // adv find
    value = QJsonValue(QString("diamond"));

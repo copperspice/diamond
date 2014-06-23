@@ -119,7 +119,7 @@ class DiamondTextEdit : public QPlainTextEdit
       // spell check
       QTextCursor m_cursor;
       bool m_isSpellCheck;
-      bool m_spellCheck;
+      SpellCheck *m_spellCheck;
 
       // syntax
       Syntax *m_syntaxParser;

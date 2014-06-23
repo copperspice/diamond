@@ -174,10 +174,11 @@ void DiamondTextEdit::contextMenuEvent(QContextMenuEvent *event)
       // set up to save words, used in add_userDict() and replaceWord()
       m_cursor = cursor;
 
-      QStringList m_maybeList =  m_mainWindow->spell_getMaybe(selectedText);
+      QStringList m_maybeList = m_mainWindow->spell_getMaybe(selectedText);
       int cnt = m_maybeList.count();
 
-      if (cnt > 0)  {
+      if (cnt > 0)  {              
+
          for (int k = 0; k < cnt; ++k)  {
             menu->addAction(m_maybeList[k],  m_mainWindow, SLOT(spell_replaceWord())  );
          }

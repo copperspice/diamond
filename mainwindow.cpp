@@ -416,15 +416,15 @@ bool MainWindow::saveAs(SaveFiles saveType)
    QString selectedFilter;
    QFileDialog::Options options;
 
-   //
-   QString path;
+   // find the current or prior path
+   QString path = pathName(m_curFile);
 
-   if (m_curFile.isEmpty())  {
-      path = QDir::homePath();
+   if (path.isEmpty() || path == ".")  {
+      path = m_struct.pathPrior;
 
-   } else  {
-      path = m_curFile;
-
+      if (path.isEmpty()) {
+         path = QDir::homePath();
+      }
    }
 
    // force windows 7 and 8 to honor initial path

@@ -69,19 +69,26 @@ deploy : all
 	mkdir -p $(deployapp)/Resources
 
 	$(LIBTOOL) --mode=install cp $(bin_PROGRAMS) $(deployapp)/MacOS
-	
+
 	rm -f $(deployapp)/Info.plist
-	sed -e "s,@ICON@,,g" \
+	sed -e "s,@ICON@,diamond.icns,g" \
 	    -e "s,@TYPEINFO@,????,g" \
-	    -e "s,@EXECUTABLE@,$(deploy_PROGRAMS),g" \
+	    -e "s,@EXECUTABLE@,$(bin_PROGRAMS),g" \
+	    -e "s,com.yourcompany.,com.copperspice.,g" \
 	$(CS_HOME)/mac/Info.plist.app > $(deployapp)/Info.plist
-	
+
 	rm -f $(deployapp)/PkgInfo
 	echo "APPL????" > $(deployapp)/PkgInfo
-	
+
 	touch $(deployapp)/Resources/empty.lproj
 	cp -r $(CS_HOME)/mac/qt_menu.nib $(deployapp)/Resources
-	
+
+	cp $(top_srcdir)/resources/diamond.icns $(deployapp)/Resources
+
+	cp -r $(top_srcdir)/source_extra/dictionary  $(deployapp)/Resources
+	cp -r $(top_srcdir)/source_extra/help        $(deployapp)/Resources
+	cp -r $(top_srcdir)/source_extra/syntax      $(deployapp)/Resources
+
 	rsync -W -a $(patsubst %,$(CS_HOME)/lib/libCs%1.0.dylib,$(cslibs)) $(deployapp)/Frameworks
 
 	for libname in $(patsubst %,libCs%1.0.dylib,$(cslibs)) ; do \
@@ -102,7 +109,7 @@ deploy : all
 endif
 
 if OSTYPE_WIN
-deploy : all 
+deploy : all
 	mkdir -p $(deploydir)
 
 	$(LIBTOOL) --mode=install cp $(bin_PROGRAMS) $(deploydir)
