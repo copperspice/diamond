@@ -684,7 +684,18 @@ bool MainWindow::json_Write(Option route, Config trail)
 void MainWindow::json_getFileName()
 {   
 
-#ifdef Q_OS_MAC
+#if defined(Q_OS_UNIX) && ! defined(Q_OS_MAC)
+
+   QString homePath = QDir::homePath();
+   m_jsonFname = homePath + "/.config/Diamond/config.json";
+
+   QDir(homePath).mkdir(".config");
+   QDir(homePath + "/.config").mkdir("Diamond");
+   QDir(homePath + "/.config/Diamond").mkdir("dictionary");
+
+   return;
+
+#elif defined(Q_OS_MAC)
    if (m_appPath.contains(".app/Contents/MacOS")) {
       QString homePath = QDir::homePath();      
       m_jsonFname = homePath + "/Library/Diamond/config.json";
@@ -795,7 +806,46 @@ bool MainWindow::json_CreateNew()
 
    bool isAutoDetect = false;
 
-#ifdef Q_OS_MAC
+#if defined(Q_OS_UNIX) && ! defined(Q_OS_MAC)
+
+   isAutoDetect = true;
+
+   QString resourcePath = m_appPath;
+   QString libraryPath  = QDir::homePath() + "/.config/Diamond/";
+
+   // get syntax folder (1)
+   QString syntaxPath = resourcePath + "/syntax/";
+
+   value = QJsonValue(QString(syntaxPath));
+   object.insert("pathSyntax", value);
+
+   // get dictionary file location (2)
+   QString dictFile = libraryPath + "dictionary/en_US.dic";
+
+   value = QJsonValue(QString(dictFile));
+   object.insert("dictMain", value);
+
+   // default dictionary to dictPath
+   dictFile = libraryPath + "dictionary/userDict.txt";
+
+   if (! QFile::exists(dictFile) ) {
+      QFile temp(dictFile);
+      temp.open(QIODevice::WriteOnly);
+      temp.close();
+   }
+
+   value = QJsonValue(QString(dictFile));
+   object.insert("dictUser", value);
+
+   QFile::copy(resourcePath + "/dictionary/en_US.aff", libraryPath + "dictionary/en_US.aff");
+   QFile::copy(resourcePath + "/dictionary/en_US.dic", libraryPath + "dictionary/en_US.dic");
+
+   // get help file location (3)
+   QString indexPath = resourcePath + "/help/index.html";
+   value = QJsonValue(QString(indexPath));
+   object.insert("aboutUrl", value);
+
+#elif defined(Q_OS_MAC)
    if (m_appPath.contains(".app/Contents/MacOS")) {
       isAutoDetect = true;
 
@@ -840,7 +890,6 @@ bool MainWindow::json_CreateNew()
       object.insert("aboutUrl", value);
    }
 #endif
-
 
    if (! isAutoDetect) {
       // get syntax folder (1)

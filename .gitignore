@@ -9,6 +9,9 @@ Makefile.in
 aclocal.m4
 configure
 config.log
+do-config-diamond
+do-update-hunspell
+diamond*.tar.gz
 Diamond.creator.user*
 /bin/.deps
 /bin/.libs
@@ -19,8 +22,9 @@ Diamond.creator.user*
 /bin/Diamond.exe
 /deploy/
 /hunspell/
+/hunspell_lib/
 /install/
 /source_win/
 /source_dist/
 /source_extra/*.bat
-diamond*.tar.gz
+

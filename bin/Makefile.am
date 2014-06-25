@@ -58,6 +58,7 @@ deploy : all
 
 	rsync -W -a $(patsubst %,$(CS_HOME)/lib/libCs%1.so*,$(cslibs)) $(deploydir)
 	rsync -W -a $(top_srcdir)/source_extra/{dictionary,help,syntax} $(deploydir)
+	rsync -W -a $(top_srcdir)/resources/diamond.png $(deploydir)
 endif
 
 if OSTYPE_DARWIN
@@ -89,16 +90,20 @@ deploy : all
 	cp -r $(top_srcdir)/source_extra/help        $(deployapp)/Resources
 	cp -r $(top_srcdir)/source_extra/syntax      $(deployapp)/Resources
 
+	rsync -W -a /opt/local/lib/libhunspell-1.3.0.dylib  $(deployapp)/Frameworks
+	install_name_tool -change /opt/local/lib/libhunspell-1.3.0.dylib \
+	@executable_path/../Frameworks/libhunspell-1.3.0.dylib  $(deployapp)/MacOS/$(bin_PROGRAMS)
+
 	rsync -W -a $(patsubst %,$(CS_HOME)/lib/libCs%1.0.dylib,$(cslibs)) $(deployapp)/Frameworks
 
 	for libname in $(patsubst %,libCs%1.0.dylib,$(cslibs)) ; do \
 	\
 	install_name_tool -change $(CS_HOME)/lib/$$libname \
-	@executable_path/../Frameworks/$$libname $(deployapp)/MacOS/$(bin_PROGRAMS); \
+	@executable_path/../Frameworks/$$libname  $(deployapp)/MacOS/$(bin_PROGRAMS); \
 	\
 	for templib in $(patsubst %,libCs%1.0.dylib,$(cslibs)) ; do \
 	install_name_tool -change $(CS_HOME)/lib/$$templib \
-	@executable_path/../Frameworks/$$templib $(deployapp)/Frameworks/$$libname \
+	@executable_path/../Frameworks/$$templib  $(deployapp)/Frameworks/$$libname \
 	; done \
 	\
 	; done
