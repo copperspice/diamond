@@ -1667,6 +1667,8 @@ void MainWindow::diamondHelp()
 
 void MainWindow::about()
 {
+   // change mainwindow.cpp & main.cpp
+
    QString textBody = "<font color='#000080'><table style=margin-right:25>"
                       "<tr><td><nobr>Developed by Barbara Geller</nobr></td><td>barbara@copperspice.com</td></tr>"
                       "<tr><td style=padding-right:25><nobr>Developed by Ansel Sermersheim</nobr></td><td>ansel@copperspice.com</td></tr>"
@@ -1804,7 +1806,7 @@ void MainWindow::createConnections()
    connect(m_ui->actionPresetFolders,     SIGNAL(triggered()), this, SLOT(setPresetFolders()));
    connect(m_ui->actionPrintOptions,      SIGNAL(triggered()), this, SLOT(setPrintOptions()));
    connect(m_ui->actionMove_ConfigFile,   SIGNAL(triggered()), this, SLOT(move_ConfigFile()));
-   connect(m_ui->actionSave_ConfigFile,   SIGNAL(triggered()), this, SLOT(save_ConfigFile()));
+   connect(m_ui->actionSave_ConfigFile,   &QAction::triggered, this, [this](bool){ save_ConfigFile(); } );
 
    // window
    connect(m_ui->actionTab_New,           SIGNAL(triggered()), this, SLOT(tabNew()));

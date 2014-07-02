@@ -23,6 +23,9 @@
 #include "util.h"
 
 #include <QApplication>
+#include <QDialog>
+#include <QLabel>
+#include <QVBoxLayout>
 
 static void showHelp();
 static void showVersion();
@@ -86,28 +89,57 @@ int main(int argc, char *argv[])
 
 static void showHelp()
 {
-   QString textBody = "<table style=margin-right:25>"
-                      "<tr><td width=225>&ndash;&ndash;no_autoload</td><td width=240>Force no auto load of prior files</td></tr>"
-                      "<tr><td>&ndash;&ndash;no_saveconfig</td><td>Do not write config file</td></tr>"
-                      "<tr></tr>"
-                      "<tr><td>[fileName] [fileName] ...</td><td>Files to open</td></tr></table><br>";
+   QString textBody;
+   textBody = "<table style=margin-right:25>"
 
-   QMessageBox msgB;
-   msgB.setIcon(QMessageBox::NoIcon);
+              "<tr><td width=200>&minus;&minus;help</td><td width=240>Displays this message</td></tr>"
+              "<tr><td width=200>&minus;&minus;version</td><td width=240>Displays the current version</td></tr>"
+
+              "<tr></tr>"
+
+              "<tr><td width=200>&minus;&minus;no_autoload</td><td width=240>Force no auto load of previously open files</td></tr>"
+              "<tr><td>&minus;&minus;no_saveconfig</td><td>Do not save config file</td></tr>"
+              "<tr></tr>"
+
+              "<tr><td>[fileName] [fileName] ...</td><td>Files to open when starting Diamond</td></tr></table><br>";
+
+   QDialog msgB;
    msgB.setWindowIcon(QIcon("://resources/diamond.png"));
 
-   msgB.setWindowTitle("Diamond Editor Usage");
-   msgB.setText("&ndash;&ndash;help<br>&ndash;&ndash;version");
-   msgB.setInformativeText(textBody);
+   msgB.setWindowTitle("Diamond Editor Help");
 
-   msgB.setStandardButtons(QMessageBox::Ok);
-   msgB.setDefaultButton(QMessageBox::Ok);
+   QLabel *label = new QLabel;
+
+   QFont font = label->font();
+   font.setPointSize(11);
+   label->setFont(font);
+
+   label->setText(textBody);
+
+   QPushButton *button = new QPushButton();
+   button->setText("Ok");
+
+   QHBoxLayout *layoutButton = new QHBoxLayout();
+   layoutButton->addStretch();
+   layoutButton->addWidget(button);
+   layoutButton->addStretch();
+
+   QVBoxLayout *layoutMain = new QVBoxLayout();
+   layoutMain->addWidget(label);
+   layoutMain->addLayout(layoutButton);
+
+   msgB.setLayout(layoutMain);
+
+   QObject::connect(button, SIGNAL(clicked()), &msgB, SLOT(accept()));
 
    msgB.exec();
 }
 
+
 static void showVersion()
 {
+   // change mainwindow.cpp & main.cpp
+
    QString textBody = "<font color='#000080'><table style=margin-right:25>"
                       "<tr><td><nobr>Developed by Barbara Geller</nobr></td><td>barbara@copperspice.com</td></tr>"
                       "<tr><td style=padding-right:25><nobr>Developed by Ansel Sermersheim</nobr></td><td>ansel@copperspice.com</td></tr>"
@@ -121,7 +153,7 @@ static void showVersion()
    msgB.setWindowIcon(QIcon("://resources/diamond.png"));
 
    msgB.setWindowTitle("About Diamond");
-   msgB.setText("<p style=margin-right:25><center><h5>Version: 1.0<br>Build # 01.15.2014</h5></center></p>");
+   msgB.setText("<p style=margin-right:25><center><h5>Version: 1.0<br>Build # 05.21.2014</h5></center></p>");
    msgB.setInformativeText(textBody);
 
    msgB.setStandardButtons(QMessageBox::Ok);

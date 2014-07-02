@@ -267,18 +267,18 @@ bool MainWindow::json_Read(Config trail)
          m_macroNames.append(list.at(k).toString());
       }
 
-      // ensure there is a macro name for each macro id
-      QStringList macroIds = json_Load_MacroIds();      
+      // ensure a macro name exists for each macro-id
+      QStringList macroIds = json_Load_MacroIds();
       bool modified = false;
 
-      for (int k = 0; k < macroIds.count()  ; ++k)  {        
+      for (int k = 0; k < macroIds.count() ; ++k)  {
 
          if ( (m_macroNames.count() <= k) || (m_macroNames.at(k).isEmpty()) )  {
             QString temp = "Macro Name " + QString::number(k+1);
             m_macroNames.append(temp);
 
             modified  = true;
-         }         
+         }
       }
 
       if (modified) {
@@ -358,6 +358,11 @@ bool MainWindow::json_Write(Option route, Config trail)
       // get existing json data
       QByteArray data = json_ReadFile();
 
+      if (data.isEmpty()) {
+         csError("Save Configuration", "Configuration data is empty, aborting update...");
+         return false;
+      }
+
       QJsonDocument doc  = QJsonDocument::fromJson(data);
       QJsonObject object = doc.object();
 
@@ -379,6 +384,8 @@ bool MainWindow::json_Write(Option route, Config trail)
             break;
 
          case CLOSE:
+            object.insert("color-text",  json_GetRGB(m_struct.colorText) );
+            object.insert("color-back",  json_GetRGB(m_struct.colorBack));
             object.insert("pos-x",       pos().x()  );
             object.insert("pos-y",       pos().y()  );
             object.insert("size-width",  size().width()  );
@@ -554,7 +561,7 @@ bool MainWindow::json_Write(Option route, Config trail)
                      // hard coded order
                      QStringList eventList;
                      eventList.append( QString::number(event->key()) );
-                     eventList.append( QString::number(event->modifiers()));
+                     eventList.append( QString::number(event->modifiers()) );
                      eventList.append( event->text() );
 
                      //
@@ -567,9 +574,9 @@ bool MainWindow::json_Write(Option route, Config trail)
                   QString macroName = object.value("macro-next").toString();
 
                   // next macro id number
-                  int id = macroName.right(1).toInt();
+                  int id = macroName.mid(9).toInt();
 
-                  if (id > MACRO_MAX)  {
+                  if (id > MACRO_MAX - 1)  {
 
                      QStringList macroIds = json_Load_MacroIds();
 
@@ -591,10 +598,10 @@ bool MainWindow::json_Write(Option route, Config trail)
 
                   } else   {
                      // save next macro name                    
-                     object.insert("macro-next", "macro" + QString::number(id + 1));
+                     object.insert("macro-next", "macro-id-" + QString::number(id + 1));
 
                      // save macro_names
-                     m_macroNames.append("Macro Name " + QString::number(id));
+                     m_macroNames.append("Macro Name " + QString::number(id + 1));
 
                      QJsonArray temp = QJsonArray::fromStringList(m_macroNames);
                      object.insert("macro-names", temp);
@@ -1163,15 +1170,12 @@ bool MainWindow::json_CreateNew()
    value = QJsonValue(QJsonArray());
    object.insert("replace-list", value);
 
-   // next macro name
-   value = QJsonValue(QString("macro1"));
-   object.insert("macro-next", value);   
-
+   // next macro
    value = QJsonValue(QJsonArray());
    object.insert("macro-names", value);
 
-   value = QJsonValue(QJsonArray());
-   object.insert("macro1", value);
+   value = QJsonValue(QString("macro-id-0"));
+   object.insert("macro-next", value);
 
    value = QJsonValue(QJsonArray());
    object.insert("recent-folders", value);
@@ -1410,6 +1414,27 @@ void MainWindow::move_ConfigFile()
 void MainWindow::save_ConfigFile()
 {
    json_Write(CLOSE);
+
+   // make a back up
+   bool isOk = true;
+
+   QString backName = QFileInfo(m_jsonFname).filePath() + ".bak";
+   QString tempName = QFileInfo(m_jsonFname).filePath() + ".xxx";
+
+   if (QFile::exists(backName)) {
+
+      QFile::remove(tempName);
+
+      if (! QFile::rename(backName, tempName)) {
+         isOk = false;
+         csError("Configuration File", "Unble to save backup configuration");
+      }
+   }
+
+   if (isOk) {
+      QFile::copy(m_jsonFname, backName);
+      QFile::remove(tempName);
+   }
 }
 
 // **
@@ -1418,7 +1443,7 @@ QStringList MainWindow::json_Load_MacroIds()
    // get existing json data
    QByteArray data = json_ReadFile();
 
-   QJsonDocument doc = QJsonDocument::fromJson(data);
+   QJsonDocument doc  = QJsonDocument::fromJson(data);
    QJsonObject object = doc.object();
 
    //
@@ -1428,7 +1453,7 @@ QStringList MainWindow::json_Load_MacroIds()
    for (int k = 0; k < keyList.count(); k++)  {
       QString key = keyList.at(k);
 
-      if (key.left(5) == "macro" && key != "macro-names" && key != "macro-next"  ) {
+      if (key.left(9) == "macro-id-") {
          macroList.append(key);
       }
    }

@@ -251,7 +251,8 @@ class MainWindow : public QMainWindow
       enum SaveFiles { SAVE_ONE, SAVE_ALL };
 
       void openDoc(QString path);
-      bool closeAll_Doc(bool isExit);
+      bool closeAll_Doc(bool isExit);      
+      void save_ConfigFile();
 
       void setScreenColors();
       void setSyntax();
@@ -508,9 +509,6 @@ class MainWindow : public QMainWindow
 
       CS_SLOT_1(Private, void move_ConfigFile())
       CS_SLOT_2(move_ConfigFile) 
-
-      CS_SLOT_1(Private, void save_ConfigFile())
-      CS_SLOT_2(save_ConfigFile) 
 
       CS_SLOT_1(Private, void tabNew())
       CS_SLOT_2(tabNew) 

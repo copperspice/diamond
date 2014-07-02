@@ -22,6 +22,9 @@
 #include "dialog_macro.h"
 #include "util.h"
 
+#include <QPushButton>
+#include <QDialog>
+#include <QLabel>
 #include <QTableView>
 #include <QSize>
 
@@ -159,7 +162,7 @@ void Dialog_Macro::View()
    QList<macroStruct> data;
    data = m_parent->json_View_Macro(macro);
 
-   QString msg;
+   QString msg = "<table style=margin-right:35>";
 
    for (int k = 0; k < data.size(); ++k) {
 
@@ -167,7 +170,7 @@ void Dialog_Macro::View()
       int modifier    = data.at(k).modifier;
       QString textAsc = data.at(k).text;
 
-      msg += "Modifier: ";
+      msg += "<tr><td width=150>Modifier: &nbsp;";
 
       switch (modifier)  {
 
@@ -191,9 +194,19 @@ void Dialog_Macro::View()
             msg += "Alt";
             break;
 
+         case Qt::KeypadModifier:
+            msg += "Key-Pad";
+            break;
+
+         case Qt::GroupSwitchModifier:
+            msg += "Group-Switch";
+            break;
+
          default:
-            msg += "  (modifier)" + QString::number(modifier);
+            msg += "(modifier)" + QString::number(modifier);
       }
+
+      msg += "</td> <td width=150>Key: &nbsp;";
 
       // part 2
       bool isKey = false;
@@ -201,12 +214,33 @@ void Dialog_Macro::View()
       switch (key)  {
 
          case Qt::Key_Tab:
-            msg += "\t Key: Tab";
+            msg += "Tab";
             isKey = true;
             break;
 
-         case Qt::Key_Space:
-            msg += "\t Key: Space";
+         case Qt::Key_Backtab:
+            msg += "Back-Tab";
+            isKey = true;
+            break;
+
+         case Qt::Key_Backspace:
+            msg += "Backspace";
+            isKey = true;
+            break;
+
+         case Qt::Key_Return:
+         case Qt::Key_Enter:
+            msg += "Return";
+            isKey = true;
+            break;
+
+         case Qt::Key_Insert:
+            msg += "Insert";
+            isKey = true;
+            break;
+
+         case Qt::Key_Delete:
+            msg += "Delete";
             isKey = true;
             break;
 
@@ -215,38 +249,107 @@ void Dialog_Macro::View()
             isKey = true;
             break;
 
+         case Qt::Key_Space:
+            msg += "Space";
+            isKey = true;
+            break;
+
+         case Qt::Key_Home:
+            msg += "Home";
+            isKey = true;
+            break;
+
+         case Qt::Key_End:
+            msg += "End";
+            isKey = true;
+            break;
+
+         case Qt::Key_Left:
+            msg += "Left";
+            isKey = true;
+            break;
+
+         case Qt::Key_Right:
+            msg += "Right";
+            isKey = true;
+            break;
+
          case Qt::Key_Up:
-            msg += "\t Key: Up";
+            msg += "Up";
             isKey = true;
             break;
 
          case Qt::Key_Down:
-            msg += "\t Key: Down";
+            msg += "Down";
+            isKey = true;
+            break;
+
+         case Qt::Key_PageUp:
+            msg += "Page-Up";
+            isKey = true;
+            break;
+
+         case Qt::Key_PageDown:
+            msg += "Page-Down";
             isKey = true;
             break;
 
          default:
             if (textAsc.isEmpty()) {
-               msg += "\t (key) " + QString::number(key);
+               msg += QString::number(key);
                isKey = true;
             }
             break;
-
       }
 
       // part 3
       if (! isKey) {
-         msg += "\t Text:" + textAsc;
+         int pos = msg.size();
+         msg = msg.left(pos-11) + "Text: &nbsp;" + textAsc;
       }
 
-      msg += "\n";
+      msg += "</td></tr>";
    }
 
+   // blank line
+   msg += "<tr></tr>";
+
+   QDialog msgB;
+   msgB.setWindowIcon(QIcon("://resources/diamond.png"));
+   msgB.setWindowTitle("View Macro - " + macro);      
+   msgB.setMinimumWidth(120);
+
    //
-   QMessageBox msgB;
-   msgB.setWindowTitle("View Macro - " + macro);
-   msgB.setMinimumWidth(100);
-   msgB.setText(msg);
+   QLabel *label = new QLabel;
+
+   QFont font = label->font();
+   font.setPointSize(10);
+   label->setFont(font);
+
+   label->setText(msg);
+
+   //
+   QPushButton *button = new QPushButton();
+
+   font = button->font();
+   font.setPointSize(10);
+   button->setFont(font);
+
+   button->setText("Ok");
+
+   QHBoxLayout *layoutButton = new QHBoxLayout();
+   layoutButton->addStretch();
+   layoutButton->addWidget(button);
+   layoutButton->addStretch();
+
+   QVBoxLayout *layoutMain = new QVBoxLayout();
+   layoutMain->addWidget(label);
+   layoutMain->addLayout(layoutButton);
+
+   msgB.setLayout(layoutMain);
+
+   QObject::connect(button, SIGNAL(clicked()), &msgB, SLOT(accept()));
+
    msgB.exec();
 }
 
