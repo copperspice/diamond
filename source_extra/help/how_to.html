@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.6"/>
-<title>Diamond Editor: Licensing</title>
+<title>Diamond Editor: How To</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -77,7 +77,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   </div>
 </div>
 <script type="text/javascript">
-$(document).ready(function(){initNavTree('license.html','');});
+$(document).ready(function(){initNavTree('how_to.html','');});
 </script>
 <div id="doc-content">
 <!-- window showing the filter options -->
@@ -96,29 +96,38 @@ $(document).ready(function(){initNavTree('license.html','');});
 
 <div class="header">
   <div class="headertitle">
-<div class="title">Licensing </div>  </div>
+<div class="title">How To </div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><p>Diamond is released under GPL version 3. The following is the license which will appear in all source files for Diamond.</p>
+<div class="textblock"><h3>Auto Load</h3>
+<p>When Diamond is started there are several parameters which can be passed to the program.</p>
+<ul>
+<li>&minus;&minus;help <br/>
+ Contains a list of the available options.</li>
+</ul>
+<ul>
+<li>&minus;&minus;no_autoload <br/>
+ When this option is specified on startup, Diamond will not preload any files which had been previously open when Diamond was last closed.</li>
+</ul>
+<ul>
+<li>&minus;&minus;no_saveconfig <br/>
+ Diamond will not save the configuration file. This is useful when Diamond is started with a passed list of filenames. In this case, the open file list (previously open) should usually not be updated.</li>
+</ul>
+<ul>
+<li>[filename] [filename] <code>...</code> <br/>
+ Passing a list of files names to Diamond will open these specific files. If 'autoload' is not turned off, then the previously open list of files will be opened in conjunction with the passed list of file names.</li>
+</ul>
+<h3>Drag &amp; Drop</h3>
+<p>When a file is dragged and dropped onto Diamond, a new tab will be opened.</p>
+<h3>Starting Diamond from Total Commander (Windows)</h3>
+<p>Total Commander has a feature to add buttons to the Button Bar. Once the new button is properly set up, highlighting one or more files and then clicking on the new Diamond button will launch the specified program and automatically open the tagged files.</p>
+<p>From the top menu in Total Commander click on 'Configuration' then select 'Button Bar'. Click on the Add button. Enter the following information in Total Commander. The 'command' value needs to indicate the full path when your copy of Diamond.exe is located.</p>
+<ul>
+<li>Command:&#160;&#160;&#160;&#160; yourpath\Diamond.exe </li>
+<li>Parameters:&#160;&#160; <code>%P%S &#160;&minus;&minus;no_autoload &#160;&minus;&minus;no_saveconfig</code></li>
+</ul>
 <p><br/>
- </p>
-<pre class="fragment">    Copyright (c) 2012-2014 Barbara Geller
-    All rights reserved.
-
-    This file is part of Diamond Editor.
-
-    Diamond Editor is free software: you can redistribute it and/or
-    modify it under the terms of the GNU General Public License version 3
-    as published by the Free Software Foundation.
-
-    Diamond Editor is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-    General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with Diamond Editor.  If not, see &lt;http://www.gnu.org/licenses/&gt;.
-</pre><p> <br/>
+ <br/>
  </p>
 </div></div><!-- contents -->
 </div><!-- doc-content -->

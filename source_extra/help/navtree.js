@@ -5,9 +5,11 @@ var NAVTREE =
     [ "Installing", "install.html", "install" ],
     [ "Building", "build.html", "build" ],
     [ "Features", "features.html", null ],
+    [ "How To", "how_to.html", null ],
     [ "Menus", "menus.html", "menus" ],
+    [ "CopperSpice", "copperspice.html", null ],
+    [ "FAQ", "faq.html", null ],
     [ "Licensing", "license.html", null ],
-    [ "CopperSpice Library", "copperspice.html", null ],
     [ "Release Notes", "release.html", null ],
     [ "Support", "^http://www.sourceforge.net/p/copperspice/discussion-diamond", null ]
   ] ]
