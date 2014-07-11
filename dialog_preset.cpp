@@ -90,6 +90,31 @@ Dialog_Preset::Dialog_Preset(MainWindow *from, QStringList data)
             m_ui->folder10->setCursorPosition(0);
             break;
 
+         case 11:
+            m_ui->folder11->setText(temp);
+            m_ui->folder11->setCursorPosition(0);
+            break;
+
+         case 12:
+            m_ui->folder12->setText(temp);
+            m_ui->folder12->setCursorPosition(0);
+            break;
+
+         case 13:
+            m_ui->folder13->setText(temp);
+            m_ui->folder13->setCursorPosition(0);
+            break;
+
+         case 14:
+            m_ui->folder14->setText(temp);
+            m_ui->folder14->setCursorPosition(0);
+            break;
+
+         case 15:
+            m_ui->folder15->setText(temp);
+            m_ui->folder15->setCursorPosition(0);
+            break;
+
          default:
             break;
        }
@@ -108,6 +133,11 @@ Dialog_Preset::Dialog_Preset(MainWindow *from, QStringList data)
    connect(m_ui->folder8,  &QLineEdit::editingFinished, this, [this](){ verify_Folder(m_ui->folder8);  } );
    connect(m_ui->folder9,  &QLineEdit::editingFinished, this, [this](){ verify_Folder(m_ui->folder9);  } );
    connect(m_ui->folder10, &QLineEdit::editingFinished, this, [this](){ verify_Folder(m_ui->folder10); } );
+   connect(m_ui->folder11, &QLineEdit::editingFinished, this, [this](){ verify_Folder(m_ui->folder11); } );
+   connect(m_ui->folder12, &QLineEdit::editingFinished, this, [this](){ verify_Folder(m_ui->folder12); } );
+   connect(m_ui->folder13, &QLineEdit::editingFinished, this, [this](){ verify_Folder(m_ui->folder13); } );
+   connect(m_ui->folder14, &QLineEdit::editingFinished, this, [this](){ verify_Folder(m_ui->folder14); } );
+   connect(m_ui->folder15, &QLineEdit::editingFinished, this, [this](){ verify_Folder(m_ui->folder15); } );
 
    connect(m_ui->folder1_TB,  &QPushButton::clicked, this, [this](){ pick_Folder("1",  m_ui->folder1);  } );
    connect(m_ui->folder2_TB,  &QPushButton::clicked, this, [this](){ pick_Folder("2",  m_ui->folder2);  } );
@@ -119,6 +149,11 @@ Dialog_Preset::Dialog_Preset(MainWindow *from, QStringList data)
    connect(m_ui->folder8_TB,  &QPushButton::clicked, this, [this](){ pick_Folder("8",  m_ui->folder8);  } );
    connect(m_ui->folder9_TB,  &QPushButton::clicked, this, [this](){ pick_Folder("9",  m_ui->folder9);  } );
    connect(m_ui->folder10_TB, &QPushButton::clicked, this, [this](){ pick_Folder("10", m_ui->folder10); } );
+   connect(m_ui->folder11_TB, &QPushButton::clicked, this, [this](){ pick_Folder("11", m_ui->folder11); } );
+   connect(m_ui->folder12_TB, &QPushButton::clicked, this, [this](){ pick_Folder("12", m_ui->folder12); } );
+   connect(m_ui->folder13_TB, &QPushButton::clicked, this, [this](){ pick_Folder("13", m_ui->folder13); } );
+   connect(m_ui->folder14_TB, &QPushButton::clicked, this, [this](){ pick_Folder("14", m_ui->folder14); } );
+   connect(m_ui->folder15_TB, &QPushButton::clicked, this, [this](){ pick_Folder("15", m_ui->folder15); } );
 
    connect(m_ui->save_PB,     SIGNAL(clicked()), this, SLOT(save()));
    connect(m_ui->cancel_PB,   SIGNAL(clicked()), this, SLOT(cancel()));
@@ -176,9 +211,6 @@ void Dialog_Preset::cancel()
 
 QStringList Dialog_Preset::getData()
 { 
-
-
-
    for (int k = 0; k < m_dataList.count(); k++)  {
       int index = k + 1;
 
@@ -221,6 +253,26 @@ QStringList Dialog_Preset::getData()
 
          case 10:
             m_dataList.replace(k, m_ui->folder10->text());
+            break;
+
+         case 11:
+            m_dataList.replace(k, m_ui->folder11->text());
+            break;
+
+         case 12:
+            m_dataList.replace(k, m_ui->folder12->text());
+            break;
+
+         case 13:
+            m_dataList.replace(k, m_ui->folder13->text());
+            break;
+
+         case 14:
+            m_dataList.replace(k, m_ui->folder14->text());
+            break;
+
+         case 15:
+            m_dataList.replace(k, m_ui->folder15->text());
             break;
 
          default:

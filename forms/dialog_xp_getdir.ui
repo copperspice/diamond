@@ -26,7 +26,7 @@
    <item row="2" column="0">
     <layout class="QHBoxLayout" name="horizontalLayout">
      <item>
-      <spacer name="horizontalSpacer">
+      <spacer name="horizontalSpacer_1">
        <property name="orientation">
         <enum>Qt::Horizontal</enum>
        </property>
@@ -39,9 +39,9 @@
       </spacer>
      </item>
      <item>
-      <widget class="QPushButton" name="ok_PB">
+      <widget class="QPushButton" name="network_PB">
        <property name="text">
-        <string>OK</string>
+        <string>Network Shares</string>
        </property>
       </widget>
      </item>
@@ -62,14 +62,40 @@
       </spacer>
      </item>
      <item>
-      <widget class="QPushButton" name="cancel_PB">
+      <widget class="QPushButton" name="ok_PB">
        <property name="text">
-        <string>Cancel</string>
+        <string>OK</string>
        </property>
       </widget>
      </item>
      <item>
       <spacer name="horizontalSpacer_3">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeType">
+        <enum>QSizePolicy::Fixed</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>8</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
+      <widget class="QPushButton" name="cancel_PB">
+       <property name="text">
+        <string>Cancel</string>
+       </property>
+       <property name="default">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <spacer name="horizontalSpacer_4">
        <property name="orientation">
         <enum>Qt::Horizontal</enum>
        </property>

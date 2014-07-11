@@ -27,7 +27,7 @@ if OSTYPE_DARWIN
    AM_CXXFLAGS+=-I/opt/local/include/hunspell
 endif
 
-if OSTYPE_WIN
+if OSTYPE_WIN 
    # path to hunspell
    hunspell_path=../hunspell_lib
 
@@ -131,6 +131,11 @@ VPATH = ../
 
 # linking
 Diamond_LDFLAGS=$(AM_LDFLAGS) $(patsubst %,-lCs%1,$(cslibs)) $(hunspell_la)
+
+if OSTYPE_WIN
+   # used by xp only
+   Diamond_LDFLAGS+=-lnetapi32 -lmpr
+endif
 
 Diamond_SOURCES = \
     about.cpp \

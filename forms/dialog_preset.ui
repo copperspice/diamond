@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>531</width>
-    <height>363</height>
+    <height>516</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -29,7 +29,7 @@
        <number>30</number>
       </property>
       <property name="topMargin">
-       <number>9</number>
+       <number>11</number>
       </property>
       <property name="rightMargin">
        <number>30</number>
@@ -37,202 +37,20 @@
       <property name="bottomMargin">
        <number>11</number>
       </property>
-      <property name="spacing">
+      <property name="horizontalSpacing">
        <number>6</number>
       </property>
-      <item row="0" column="6">
-       <widget class="QToolButton" name="folder1_TB">
-        <property name="text">
-         <string>►</string>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="0">
-       <widget class="QLabel" name="label_45">
-        <property name="text">
-         <string>Folder 3:</string>
-        </property>
-       </widget>
-      </item>
-      <item row="4" column="0">
-       <widget class="QLabel" name="label_47">
-        <property name="text">
-         <string>Folder 5:</string>
-        </property>
-       </widget>
-      </item>
-      <item row="5" column="0">
-       <widget class="QLabel" name="label_48">
-        <property name="text">
-         <string>Folder 6:</string>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="0">
-       <widget class="QLabel" name="label_43">
-        <property name="text">
-         <string>Folder 1:</string>
-        </property>
-       </widget>
-      </item>
-      <item row="6" column="6">
-       <widget class="QToolButton" name="folder7_TB">
-        <property name="text">
-         <string>►</string>
-        </property>
-       </widget>
-      </item>
-      <item row="3" column="0">
-       <widget class="QLabel" name="label_46">
-        <property name="text">
-         <string>Folder 4:</string>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="6">
-       <widget class="QToolButton" name="folder3_TB">
-        <property name="text">
-         <string>►</string>
-        </property>
-       </widget>
-      </item>
-      <item row="4" column="6">
-       <widget class="QToolButton" name="folder5_TB">
-        <property name="text">
-         <string>►</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="0">
-       <widget class="QLabel" name="label_44">
-        <property name="text">
-         <string>Folder 2:</string>
-        </property>
-       </widget>
-      </item>
-      <item row="9" column="0">
-       <widget class="QLabel" name="label_50">
-        <property name="text">
-         <string>Folder 8:</string>
-        </property>
-       </widget>
-      </item>
-      <item row="3" column="6">
-       <widget class="QToolButton" name="folder4_TB">
-        <property name="text">
-         <string>►</string>
-        </property>
-       </widget>
-      </item>
-      <item row="6" column="0">
-       <widget class="QLabel" name="label_49">
-        <property name="text">
-         <string>Folder 7:</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="6">
-       <widget class="QToolButton" name="folder2_TB">
-        <property name="text">
-         <string>►</string>
-        </property>
-       </widget>
-      </item>
-      <item row="5" column="6">
-       <widget class="QToolButton" name="folder6_TB">
-        <property name="text">
-         <string>►</string>
-        </property>
-       </widget>
-      </item>
-      <item row="9" column="6">
-       <widget class="QToolButton" name="folder8_TB">
-        <property name="text">
-         <string>►</string>
-        </property>
-       </widget>
-      </item>
-      <item row="10" column="6">
-       <widget class="QToolButton" name="folder9_TB">
-        <property name="text">
-         <string>►</string>
-        </property>
-       </widget>
-      </item>
+      <property name="verticalSpacing">
+       <number>7</number>
+      </property>
       <item row="11" column="0">
-       <widget class="QLabel" name="label_53">
+       <widget class="QLabel" name="label_50">
         <property name="text">
          <string>Folder 10:</string>
         </property>
        </widget>
       </item>
-      <item row="10" column="0">
-       <widget class="QLabel" name="label_51">
-        <property name="text">
-         <string>Folder 9:</string>
-        </property>
-       </widget>
-      </item>
-      <item row="11" column="6">
-       <widget class="QToolButton" name="folder10_TB">
-        <property name="text">
-         <string>►</string>
-        </property>
-       </widget>
-      </item>
-      <item row="11" column="1">
-       <widget class="QLineEdit" name="folder10">
-        <property name="minimumSize">
-         <size>
-          <width>350</width>
-          <height>0</height>
-         </size>
-        </property>
-        <property name="readOnly">
-         <bool>false</bool>
-        </property>
-       </widget>
-      </item>
-      <item row="10" column="1">
-       <widget class="QLineEdit" name="folder9">
-        <property name="minimumSize">
-         <size>
-          <width>350</width>
-          <height>0</height>
-         </size>
-        </property>
-        <property name="readOnly">
-         <bool>false</bool>
-        </property>
-       </widget>
-      </item>
-      <item row="9" column="1">
-       <widget class="QLineEdit" name="folder8">
-        <property name="minimumSize">
-         <size>
-          <width>350</width>
-          <height>0</height>
-         </size>
-        </property>
-        <property name="readOnly">
-         <bool>false</bool>
-        </property>
-       </widget>
-      </item>
-      <item row="6" column="1">
-       <widget class="QLineEdit" name="folder7">
-        <property name="minimumSize">
-         <size>
-          <width>350</width>
-          <height>0</height>
-         </size>
-        </property>
-        <property name="readOnly">
-         <bool>false</bool>
-        </property>
-       </widget>
-      </item>
-      <item row="5" column="1">
+      <item row="5" column="2">
        <widget class="QLineEdit" name="folder6">
         <property name="minimumSize">
          <size>
@@ -245,33 +63,63 @@
         </property>
        </widget>
       </item>
-      <item row="4" column="1">
-       <widget class="QLineEdit" name="folder5">
-        <property name="minimumSize">
-         <size>
-          <width>350</width>
-          <height>0</height>
-         </size>
-        </property>
-        <property name="readOnly">
-         <bool>false</bool>
+      <item row="10" column="6">
+       <widget class="QToolButton" name="folder9_TB">
+        <property name="text">
+         <string>►</string>
         </property>
        </widget>
       </item>
-      <item row="3" column="1">
-       <widget class="QLineEdit" name="folder4">
-        <property name="minimumSize">
-         <size>
-          <width>350</width>
-          <height>0</height>
-         </size>
-        </property>
-        <property name="readOnly">
-         <bool>false</bool>
+      <item row="1" column="6">
+       <widget class="QToolButton" name="folder2_TB">
+        <property name="text">
+         <string>►</string>
         </property>
        </widget>
       </item>
-      <item row="2" column="1">
+      <item row="2" column="0">
+       <widget class="QLabel" name="label_43">
+        <property name="text">
+         <string>Folder 3:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="0">
+       <widget class="QLabel" name="label_44">
+        <property name="text">
+         <string>Folder 4:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="12" column="6">
+       <widget class="QToolButton" name="folder11_TB">
+        <property name="text">
+         <string>►</string>
+        </property>
+       </widget>
+      </item>
+      <item row="6" column="6">
+       <widget class="QToolButton" name="folder7_TB">
+        <property name="text">
+         <string>►</string>
+        </property>
+       </widget>
+      </item>
+      <item row="10" column="0">
+       <widget class="QLabel" name="label_49">
+        <property name="text">
+         <string>Folder 9:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="12" column="0">
+       <widget class="QLabel" name="label_51">
+        <property name="text">
+         <string>Folder 11:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="2">
        <widget class="QLineEdit" name="folder3">
         <property name="minimumSize">
          <size>
@@ -284,7 +132,94 @@
         </property>
        </widget>
       </item>
-      <item row="1" column="1">
+      <item row="13" column="2">
+       <widget class="QLineEdit" name="folder12">
+        <property name="minimumSize">
+         <size>
+          <width>350</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="readOnly">
+         <bool>false</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="2">
+       <widget class="QLineEdit" name="folder1">
+        <property name="minimumSize">
+         <size>
+          <width>350</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="readOnly">
+         <bool>false</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="11" column="6">
+       <widget class="QToolButton" name="folder10_TB">
+        <property name="text">
+         <string>►</string>
+        </property>
+       </widget>
+      </item>
+      <item row="9" column="6">
+       <widget class="QToolButton" name="folder8_TB">
+        <property name="text">
+         <string>►</string>
+        </property>
+       </widget>
+      </item>
+      <item row="12" column="2">
+       <widget class="QLineEdit" name="folder11">
+        <property name="minimumSize">
+         <size>
+          <width>350</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="readOnly">
+         <bool>false</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="15" column="0">
+       <widget class="QLabel" name="label_54">
+        <property name="text">
+         <string>Folder 14:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="13" column="0">
+       <widget class="QLabel" name="label_52">
+        <property name="text">
+         <string>Folder 12:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="5" column="6">
+       <widget class="QToolButton" name="folder6_TB">
+        <property name="text">
+         <string>►</string>
+        </property>
+       </widget>
+      </item>
+      <item row="9" column="2">
+       <widget class="QLineEdit" name="folder8">
+        <property name="minimumSize">
+         <size>
+          <width>350</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="readOnly">
+         <bool>false</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="2">
        <widget class="QLineEdit" name="folder2">
         <property name="minimumSize">
          <size>
@@ -297,8 +232,15 @@
         </property>
        </widget>
       </item>
-      <item row="0" column="1">
-       <widget class="QLineEdit" name="folder1">
+      <item row="1" column="0">
+       <widget class="QLabel" name="label_42">
+        <property name="text">
+         <string>Folder 2:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="14" column="2">
+       <widget class="QLineEdit" name="folder13">
         <property name="minimumSize">
          <size>
           <width>350</width>
@@ -307,6 +249,202 @@
         </property>
         <property name="readOnly">
          <bool>false</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="13" column="6">
+       <widget class="QToolButton" name="folder12_TB">
+        <property name="text">
+         <string>►</string>
+        </property>
+       </widget>
+      </item>
+      <item row="15" column="6">
+       <widget class="QToolButton" name="folder14_TB">
+        <property name="text">
+         <string>►</string>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="2">
+       <widget class="QLineEdit" name="folder5">
+        <property name="minimumSize">
+         <size>
+          <width>350</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="readOnly">
+         <bool>false</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="14" column="0">
+       <widget class="QLabel" name="label_53">
+        <property name="text">
+         <string>Folder 13:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="15" column="2">
+       <widget class="QLineEdit" name="folder14">
+        <property name="minimumSize">
+         <size>
+          <width>350</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="readOnly">
+         <bool>false</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="2">
+       <widget class="QLineEdit" name="folder4">
+        <property name="minimumSize">
+         <size>
+          <width>350</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="readOnly">
+         <bool>false</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="6" column="0">
+       <widget class="QLabel" name="label_47">
+        <property name="text">
+         <string>Folder 7:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="14" column="6">
+       <widget class="QToolButton" name="folder13_TB">
+        <property name="text">
+         <string>►</string>
+        </property>
+       </widget>
+      </item>
+      <item row="9" column="0">
+       <widget class="QLabel" name="label_48">
+        <property name="text">
+         <string>Folder 8:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="6" column="2">
+       <widget class="QLineEdit" name="folder7">
+        <property name="minimumSize">
+         <size>
+          <width>350</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="readOnly">
+         <bool>false</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="6">
+       <widget class="QToolButton" name="folder4_TB">
+        <property name="text">
+         <string>►</string>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="0">
+       <widget class="QLabel" name="label_45">
+        <property name="text">
+         <string>Folder 5:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="10" column="2">
+       <widget class="QLineEdit" name="folder9">
+        <property name="minimumSize">
+         <size>
+          <width>350</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="readOnly">
+         <bool>false</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="6">
+       <widget class="QToolButton" name="folder5_TB">
+        <property name="text">
+         <string>►</string>
+        </property>
+       </widget>
+      </item>
+      <item row="11" column="2">
+       <widget class="QLineEdit" name="folder10">
+        <property name="minimumSize">
+         <size>
+          <width>350</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="readOnly">
+         <bool>false</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="5" column="0">
+       <widget class="QLabel" name="label_46">
+        <property name="text">
+         <string>Folder 6:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="6">
+       <widget class="QToolButton" name="folder3_TB">
+        <property name="text">
+         <string>►</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="0">
+       <widget class="QLabel" name="label_41">
+        <property name="text">
+         <string>Folder 1:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="6">
+       <widget class="QToolButton" name="folder1_TB">
+        <property name="text">
+         <string>►</string>
+        </property>
+       </widget>
+      </item>
+      <item row="16" column="2">
+       <widget class="QLineEdit" name="folder15">
+        <property name="minimumSize">
+         <size>
+          <width>350</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="readOnly">
+         <bool>false</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="16" column="6">
+       <widget class="QToolButton" name="folder15_TB">
+        <property name="text">
+         <string>►</string>
+        </property>
+       </widget>
+      </item>
+      <item row="16" column="0">
+       <widget class="QLabel" name="label_55">
+        <property name="text">
+         <string>Folder 15:</string>
         </property>
        </widget>
       </item>
@@ -323,8 +461,8 @@
      </property>
      <property name="sizeHint" stdset="0">
       <size>
-       <width>20</width>
-       <height>8</height>
+       <width>17</width>
+       <height>5</height>
       </size>
      </property>
     </spacer>
@@ -398,16 +536,36 @@
   </layout>
  </widget>
  <tabstops>
+  <tabstop>folder1</tabstop>
   <tabstop>folder1_TB</tabstop>
+  <tabstop>folder2</tabstop>
   <tabstop>folder2_TB</tabstop>
+  <tabstop>folder3</tabstop>
   <tabstop>folder3_TB</tabstop>
+  <tabstop>folder4</tabstop>
   <tabstop>folder4_TB</tabstop>
+  <tabstop>folder5</tabstop>
   <tabstop>folder5_TB</tabstop>
+  <tabstop>folder6</tabstop>
   <tabstop>folder6_TB</tabstop>
+  <tabstop>folder7</tabstop>
   <tabstop>folder7_TB</tabstop>
+  <tabstop>folder8</tabstop>
   <tabstop>folder8_TB</tabstop>
+  <tabstop>folder9</tabstop>
   <tabstop>folder9_TB</tabstop>
+  <tabstop>folder10</tabstop>
   <tabstop>folder10_TB</tabstop>
+  <tabstop>folder11</tabstop>
+  <tabstop>folder11_TB</tabstop>
+  <tabstop>folder12</tabstop>
+  <tabstop>folder12_TB</tabstop>
+  <tabstop>folder13</tabstop>
+  <tabstop>folder13_TB</tabstop>
+  <tabstop>folder14</tabstop>
+  <tabstop>folder14_TB</tabstop>
+  <tabstop>folder15</tabstop>
+  <tabstop>folder15_TB</tabstop>
   <tabstop>save_PB</tabstop>
   <tabstop>cancel_PB</tabstop>
  </tabstops>

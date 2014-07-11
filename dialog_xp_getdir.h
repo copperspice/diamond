@@ -29,6 +29,16 @@
 #include <QFileSystemModel>
 #include <QTreeWidgetItem>
 
+struct netServers {
+   QString serverName;   
+   bool isAvailable;
+};
+
+struct netShares {
+   QString serverName;
+   QString shareName;
+};
+
 class Dialog_XP_GetDir  : public QDialog
 {
    CS_OBJECT(Dialog_XP_GetDir)
@@ -44,21 +54,30 @@ class Dialog_XP_GetDir  : public QDialog
 
    private:
       Ui::Dialog_XP_GetDir *m_ui;      
-      QFileSystemModel *m_model_R;
+      QFileSystemModel  *m_model_R;
 
       QString m_path;
       QModelIndex m_index_R;
 
-      QString getDriveType(QString drive);
+      QList<netServers> m_netServers;
+      QList<netShares> m_netShares;
+
+      QString driveType(QString drive);
+
+      QList<netServers> getWin_NetServers();
+//    QList<netShares> getWin_NetShares();
 
       CS_SLOT_1(Private, void showDirectories(QTreeWidgetItem * current,QTreeWidgetItem * previous))
       CS_SLOT_2(showDirectories) 
 
-      CS_SLOT_1(Private, void Ok())
-      CS_SLOT_2(Ok) 
+      CS_SLOT_1(Private, void network())
+      CS_SLOT_2(network)
 
-      CS_SLOT_1(Private, void Cancel())
-      CS_SLOT_2(Cancel) 
+      CS_SLOT_1(Private, void ok())
+      CS_SLOT_2(ok)
+
+      CS_SLOT_1(Private, void cancel())
+      CS_SLOT_2(cancel)
 };
 
 #endif

@@ -167,6 +167,7 @@ QString MainWindow::get_DirPath(QString message, QString path)
 
    if (! path.isEmpty()) {
       // silly adjust for platform slash issue
+
       QDir temp(path + "/");
       retval = temp.canonicalPath() + "/";
    }
