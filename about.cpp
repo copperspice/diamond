@@ -32,8 +32,8 @@
 #include <QString>
 #include <QSize>
 #include <QMenu>
-#include <QWebSettings>
 #include <QVBoxLayout>
+#include <QWebSettings>
 
 About::About(QString route, QString file)
    : QWidget()

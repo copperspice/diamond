@@ -26,6 +26,7 @@
 #include <QKeySequence>
 #include <QLineEdit>
 #include <QString>
+
 #include <qglobal.h>
 
 Dialog_Options::Dialog_Options(MainWindow *from, struct Options data)

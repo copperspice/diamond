@@ -23,9 +23,9 @@
 #include "mainwindow.h"
 #include "util.h"
 
+#include <QAbstractItemView>
 #include <QDir>
 #include <QFileInfoList>
-#include <QAbstractItemView>
 
 #ifdef Q_OS_WIN
 #ifndef UNICODE

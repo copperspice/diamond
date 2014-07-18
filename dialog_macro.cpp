@@ -22,11 +22,11 @@
 #include "dialog_macro.h"
 #include "util.h"
 
-#include <QPushButton>
 #include <QDialog>
 #include <QLabel>
-#include <QTableView>
+#include <QPushButton>
 #include <QSize>
+#include <QTableView>
 
 Dialog_Macro::Dialog_Macro(MainWindow *from, MacroEnum enumValue, QStringList macroIds, QStringList macroNames )
    : m_ui(new Ui::Dialog_Macro)

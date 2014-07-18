@@ -23,13 +23,13 @@
 #include "syntax.h"
 #include "util.h"
 
+#include <QFileInfo>
 #include <QJsonArray>
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QJsonValue>
 #include <QString>
 #include <QTextBoundaryFinder>
-#include <QFileInfo>
 
 static const QRegExp DEFAULT_COMMENT = QRegExp("(?!E)E");
 

@@ -24,8 +24,8 @@
 
 #include "ui_dialog_fonts.h"
 
-#include <QDialog>
 #include <QFont>
+#include <QDialog>
 
 class Dialog_Fonts : public QDialog
 {     

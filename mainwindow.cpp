@@ -27,11 +27,13 @@
 
 #include <stdexcept>
 
-#include <QtGui>
 #include <QChar>
+#include <QFileDialog>
 #include <QFileInfo>
 #include <QFontMetrics>
 #include <QKeySequence>
+#include <QLabel>
+#include <QToolBar>
 
 MainWindow::MainWindow(QStringList fileList, QStringList flagList)
    : m_ui(new Ui::MainWindow)

@@ -24,8 +24,8 @@
 
 #include <QCheckBox>
 #include <QColorDialog>
-#include <QPalette>
 #include <QLineEdit>
+#include <QPalette>
 #include <QString>
 #include <QStringList>
 

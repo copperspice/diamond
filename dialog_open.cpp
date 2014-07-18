@@ -22,9 +22,9 @@
 #include "dialog_open.h"
 #include "util.h"
 
+#include <QListView>
 #include <QStringList>
 #include <QStringListModel>
-#include <QListView>
 
 Dialog_Open::Dialog_Open(QStringList data)
    : m_ui(new Ui::Dialog_Open)

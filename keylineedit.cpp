@@ -25,6 +25,7 @@
 #include <QKeyEvent>
 #include <QString>
 #include <Qt>
+
 #include <qglobal.h>
 
 KeyLineEdit::KeyLineEdit(QWidget *parent) :

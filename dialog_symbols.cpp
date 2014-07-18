@@ -22,9 +22,9 @@
 #include "dialog_symbols.h"
 #include "util.h"
 
+#include <QListView>
 #include <QStringList>
 #include <QStringListModel>
-#include <QListView>
 
 Dialog_Symbols::Dialog_Symbols(MainWindow *from)
    : m_ui(new Ui::Dialog_Symbols)
@@ -83,16 +83,16 @@ QStringList Dialog_Symbols::initData()
         << QChar(0x2122)      // "TM"
         << QChar(0x20AC)      // euro
         << QChar(0x00A3)      // pound
-        << QChar(0x00C4)      // Ä
-        << QChar(0x00CB)      // Ë
-        << QChar(0x00CF)      // Ï
-        << QChar(0x00D6)      // Ö
-        << QChar(0x00DC)      // Ü
-        << QChar(0x00E4)      // ä
-        << QChar(0x00EB)      // ë
-        << QChar(0x00EF)      // ï
-        << QChar(0x00F6)      // ö
-        << QChar(0x00FC)      // ü
+        << QChar(0x00C4)      // ï¿½
+        << QChar(0x00CB)      // ï¿½
+        << QChar(0x00CF)      // ï¿½
+        << QChar(0x00D6)      // ï¿½
+        << QChar(0x00DC)      // ï¿½
+        << QChar(0x00E4)      // ï¿½
+        << QChar(0x00EB)      // ï¿½
+        << QChar(0x00EF)      // ï¿½
+        << QChar(0x00F6)      // ï¿½
+        << QChar(0x00FC)      // ï¿½
         << QChar(0x00BF)      // upside down ?
         << QChar(0x00A1);     // upside down !
 

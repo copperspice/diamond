@@ -22,9 +22,9 @@
 #include "dialog_preset.h"
 #include "util.h"
 
-#include <QPalette>
 #include <QFileDialog>
 #include <QFileInfo>
+#include <QPalette>
 
 Dialog_Preset::Dialog_Preset(MainWindow *from, QStringList data)
    : QDialog(from), m_ui(new Ui::Dialog_Preset)

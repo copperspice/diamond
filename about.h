@@ -22,9 +22,9 @@
 #ifndef ABOUT_H
 #define ABOUT_H
 
-#include <QWidget>
 #include <QtWebKit>
 #include <QVector>
+#include <QWidget>
 
 class About : public QWidget
 {

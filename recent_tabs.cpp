@@ -22,8 +22,8 @@
 #include "mainwindow.h"
 #include "util.h"
 
-#include <QVariant>
 #include <QStringList>
+#include <QVariant>
 
 void MainWindow::openTab_CreateMenus()
 {

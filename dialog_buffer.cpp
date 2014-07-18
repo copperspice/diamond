@@ -22,9 +22,9 @@
 #include "dialog_buffer.h"
 #include "util.h"
 
+#include <QListView>
 #include <QStringList>
 #include <QStringListModel>
-#include <QListView>
 
 Dialog_Buffer::Dialog_Buffer(QList<QString> copyBuffer)
    : m_ui(new Ui::Dialog_Buffer)

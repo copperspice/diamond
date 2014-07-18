@@ -22,8 +22,10 @@
 #include "diamond_edit.h"
 #include "mainwindow.h"
 
-#include <QtGui>
+#include <QApplication>
+#include <QClipboard>
 #include <QLatin1Char>
+#include <QPainter>
 #include <QShortcutEvent>
 #include <Qt>
 
@@ -336,11 +338,6 @@ void DiamondTextEdit::removeColumnModeSpaces()
 void DiamondTextEdit::cut()
 {
    if (m_isColumnMode) {
-
-
-      qDebug("Cut me out!  AA");
-
-
 
       QString text;
       QList<QTextEdit::ExtraSelection> oldSelections = this->extraSelections();
