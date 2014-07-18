@@ -36,8 +36,6 @@
 #include <lm.h>
 #endif
 
-void DisplayStruct(int i, LPNETRESOURCE lpnrLocal);
-
 Dialog_XP_GetDir::Dialog_XP_GetDir(MainWindow *from, const QString title, const QString path, QFileDialog::Options options)
    : QDialog(from), m_ui(new Ui::Dialog_XP_GetDir)
 {
@@ -303,6 +301,7 @@ QList<netServers> Dialog_XP_GetDir::getWin_NetServers()
 {
    QList<netServers> retval;
 
+#ifdef Q_OS_WIN
    // local comptuer
    QString nameLocal;
 
@@ -343,6 +342,8 @@ QList<netServers> Dialog_XP_GetDir::getWin_NetServers()
          }
       }
    }
+
+#endif
 
    return retval;
 }

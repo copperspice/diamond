@@ -90,8 +90,8 @@ class DiamondTextEdit : public QPlainTextEdit
       bool event(QEvent *event);
       void keyPressEvent(QKeyEvent *event);
       void keyReleaseEvent(QKeyEvent *event);
-      void resizeEvent(QResizeEvent *event);      
-      // void mouseMoveEvent(QMouseEvent *event);
+      void resizeEvent(QResizeEvent *event);            
+      void mousePressEvent(QMouseEvent *event);
 
    private:
       MainWindow *m_mainWindow;
@@ -99,6 +99,9 @@ class DiamondTextEdit : public QPlainTextEdit
 
       // column mode
       bool m_isColumnMode;
+      int m_undoCount;
+      void removeColumnModeSpaces();
+
 
       bool m_showlineNum;
       bool m_colHighlight;

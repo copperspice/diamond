@@ -153,7 +153,7 @@ static void showVersion()
    msgB.setWindowIcon(QIcon("://resources/diamond.png"));
 
    msgB.setWindowTitle("About Diamond");
-   msgB.setText("<p style=margin-right:25><center><h5>Version: 1.0<br>Build # 05.21.2014</h5></center></p>");
+   msgB.setText("<p style=margin-right:25><center><h5>Version: 1.0<br>Build # 07.15.2014</h5></center></p>");
    msgB.setInformativeText(textBody);
 
    msgB.setStandardButtons(QMessageBox::Ok);
