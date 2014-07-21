@@ -1,5 +1,5 @@
 # project name, version, email
-AC_INIT([Diamond], 1.0, [barbara@copperspice.com])
+AC_INIT([Diamond], 1.1, [barbara@copperspice.com])
 
 # location of temp autotools files
 # note: space can not exist between ] and  )
