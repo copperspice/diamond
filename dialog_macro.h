@@ -37,7 +37,7 @@ class Dialog_Macro : public QDialog
    public:
       enum MacroEnum { MACRO_LOAD, MACRO_SAVE, MACRO_EDITNAMES };
 
-      Dialog_Macro(MainWindow *from, MacroEnum enumValue, QStringList macroIds, QStringList macroNames);
+      Dialog_Macro(MainWindow *parent, MacroEnum enumValue, QStringList macroIds, QStringList macroNames);
       ~Dialog_Macro();
       QString get_Macro();
 

@@ -33,7 +33,7 @@ class Dialog_AdvFind : public QDialog
    CS_OBJECT(Dialog_AdvFind)
 
    public:
-      Dialog_AdvFind(MainWindow *from, QString text, QString fileType, QString findFolder, bool searchFolders);
+      Dialog_AdvFind(MainWindow *parent, QString text, QString fileType, QString findFolder, bool searchFolders);
       ~Dialog_AdvFind();
 
       QString get_findText();      

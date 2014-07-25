@@ -34,8 +34,17 @@
 
 // * find
 void MainWindow::find()
-{
-   Dialog_Find *dw = new Dialog_Find(m_findText, m_findList);
+{   
+   QString saveText = m_findText;
+
+   QTextCursor cursor(m_textEdit->textCursor());
+   QString selectedText = cursor.selectedText();
+
+   if (! selectedText.isEmpty())  {
+      m_findText = selectedText;
+   }
+
+   Dialog_Find *dw = new Dialog_Find(this, m_findText, m_findList);
    int result = dw->exec();
 
    if (result == QDialog::Accepted) {
@@ -80,6 +89,7 @@ void MainWindow::find()
       }
 
    } else {
+      m_findText = saveText;
 
       bool upd_Find = dw->get_Upd_Find();
 
@@ -138,6 +148,15 @@ void MainWindow::findPrevious()
 // * advanced find
 void MainWindow::advFind()
 {
+   QString saveText = m_advFindText;
+
+   QTextCursor cursor(m_textEdit->textCursor());
+   QString selectedText = cursor.selectedText();
+
+   if (! selectedText.isEmpty())  {
+      m_advFindText = selectedText;
+   }
+
    m_dwAdvFind = new Dialog_AdvFind(this, m_advFindText, m_advFindFileType, m_advFindFolder, m_advFSearchFolders);
    int result = m_dwAdvFind->exec();
 
@@ -186,6 +205,10 @@ void MainWindow::advFind()
 
          }
       }
+
+   } else {
+      m_advFindText = saveText;
+
    }
 
    delete m_dwAdvFind;
@@ -457,7 +480,16 @@ void MainWindow::advFind_View(const QModelIndex &index)
 // * replace
 void MainWindow::replace()
 {
-   Dialog_Replace *dw = new Dialog_Replace(m_findText, m_findList, m_replaceText, m_replaceList);
+   QString saveText = m_findText;
+
+   QTextCursor cursor(m_textEdit->textCursor());
+   QString selectedText = cursor.selectedText();
+
+   if (! selectedText.isEmpty())  {
+      m_findText = selectedText;
+   }
+
+   Dialog_Replace *dw = new Dialog_Replace(this, m_findText, m_findList, m_replaceText, m_replaceList);
    int result = dw->exec();
 
    if (result >= QDialog::Accepted) {
@@ -514,6 +546,7 @@ void MainWindow::replace()
       }
 
    } else {
+      m_findText = saveText;
 
       bool upd_Find    = dw->get_Upd_Find();
       bool upd_Replace = dw->get_Upd_Replace();

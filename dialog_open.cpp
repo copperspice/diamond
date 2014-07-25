@@ -26,8 +26,8 @@
 #include <QStringList>
 #include <QStringListModel>
 
-Dialog_Open::Dialog_Open(QStringList data)
-   : m_ui(new Ui::Dialog_Open)
+Dialog_Open::Dialog_Open(MainWindow *parent, QStringList data)
+   : QDialog(parent), m_ui(new Ui::Dialog_Open)
 {
    m_list = data;
 

@@ -29,10 +29,10 @@
 
 #include <qglobal.h>
 
-Dialog_Options::Dialog_Options(MainWindow *from, struct Options data)
-   : QDialog(from), m_ui(new Ui::Dialog_Options)
+Dialog_Options::Dialog_Options(MainWindow *parent, struct Options data)
+   : QDialog(parent), m_ui(new Ui::Dialog_Options)
 {
-   m_parent   = from;
+   m_parent   = parent;
    m_options  = data;
 
    m_ui->setupUi(this);

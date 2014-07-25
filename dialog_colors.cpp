@@ -29,10 +29,10 @@
 #include <QString>
 #include <QStringList>
 
-Dialog_Colors::Dialog_Colors(MainWindow *from)
-   : m_ui(new Ui::Dialog_Colors)
+Dialog_Colors::Dialog_Colors(MainWindow *parent)
+   : QDialog(parent), m_ui(new Ui::Dialog_Colors)
 {
-   m_mainWindow   = from;   
+   m_mainWindow = parent;
 
    m_ui->setupUi(this);
    this->setWindowIcon(QIcon("://resources/diamond.png"));

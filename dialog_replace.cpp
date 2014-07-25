@@ -28,9 +28,9 @@
 #include <QMenu>
 #include <QTextCursor>
 
-Dialog_Replace::Dialog_Replace(QString findText, QStringList findList,
+Dialog_Replace::Dialog_Replace(MainWindow *parent, QString findText, QStringList findList,
                                QString replaceText, QStringList replaceList)
-   : m_ui(new Ui::Dialog_Replace)
+   : QDialog(parent), m_ui(new Ui::Dialog_Replace)
 {
    m_findList    = findList;
    m_replaceList = replaceList;

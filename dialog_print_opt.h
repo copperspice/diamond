@@ -34,7 +34,7 @@ class Dialog_PrintOptions: public QDialog
    CS_OBJECT(Dialog_PrintOptions)
 
    public:
-      Dialog_PrintOptions(MainWindow *from, struct PrintSettings data);
+      Dialog_PrintOptions(MainWindow *parent, struct PrintSettings data);
       ~Dialog_PrintOptions();
 
       struct PrintSettings get_Results();
@@ -49,9 +49,9 @@ class Dialog_PrintOptions: public QDialog
       void initData();
       void macroMenu(QToolButton *widget);
 
-   private :
       CS_SLOT_1(Private, void Save())
       CS_SLOT_2(Save) 
+
       CS_SLOT_1(Private, void Cancel())
       CS_SLOT_2(Cancel) 
 

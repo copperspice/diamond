@@ -9,7 +9,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>447</width>
+    <width>497</width>
     <height>257</height>
    </rect>
   </property>
@@ -210,7 +210,7 @@
       <widget class="QLineEdit" name="newName">
        <property name="minimumSize">
         <size>
-         <width>200</width>
+         <width>250</width>
          <height>20</height>
         </size>
        </property>
@@ -237,7 +237,7 @@
       <widget class="QLineEdit" name="currentName">
        <property name="minimumSize">
         <size>
-         <width>200</width>
+         <width>250</width>
          <height>0</height>
         </size>
        </property>

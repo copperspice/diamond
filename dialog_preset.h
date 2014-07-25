@@ -34,7 +34,7 @@ class Dialog_Preset : public QDialog
    CS_OBJECT(Dialog_Preset)
 
    public:
-      Dialog_Preset(MainWindow *from, QStringList data);
+      Dialog_Preset(MainWindow *parent, QStringList data);
       ~Dialog_Preset();
 
       QStringList getData();

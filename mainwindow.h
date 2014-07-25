@@ -44,6 +44,7 @@
 #include <QRectF>
 #include <QShortcut>
 #include <QStandardItemModel>
+#include <QStandardPaths>
 #include <QStringList>
 #include <QSplitter>
 #include <QStackedWidget>
@@ -284,7 +285,7 @@ class MainWindow : public QMainWindow
       QStringList json_Load_MacroIds();
       bool json_Load_Macro(QString macroName);
 
-      QString get_SyntaxPath();
+      QString get_SyntaxPath(QString syntaxPath);
       QString get_xxFile(QString title, QString fname, QString filter);
 
       QFont json_SetFont(QString value);

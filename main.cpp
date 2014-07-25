@@ -33,7 +33,7 @@ static void showVersion();
 int main(int argc, char *argv[])
 {
    QApplication app(argc, argv);
-   app.setOrganizationName("BG Consulting");
+   app.setOrganizationName("CS");
    app.setApplicationName("Diamond Editor");
 
    int retval   = 0;
@@ -71,16 +71,24 @@ int main(int argc, char *argv[])
 
          retval = app.exec();
 
-      } catch (std::exception &e) {        
-         QString errMsg = QString("Exception:  %1").arg(e.what());
+      } catch (std::exception &e) {
 
-         //
-         QMessageBox msgB;
-         msgB.setWindowTitle("Diamond Editor - Issue");
-         msgB.setIcon(QMessageBox::NoIcon);
+         const char *what = e.what();
 
-         msgB.setText(errMsg);
-         msgB.exec();
+         if (strcmp(what, "abort_no_message") == 0)  {
+            // do nothing
+
+         } else {
+            QString errMsg = "Exception: " + QString(what);
+
+            QMessageBox msgB;
+            msgB.setWindowTitle("Diamond / Issue");
+            msgB.setIcon(QMessageBox::NoIcon);
+            msgB.setMinimumWidth(100);
+
+            msgB.setText(errMsg);
+            msgB.exec();
+         }
       }
    }
 
@@ -153,7 +161,7 @@ static void showVersion()
    msgB.setWindowIcon(QIcon("://resources/diamond.png"));
 
    msgB.setWindowTitle("About Diamond");
-   msgB.setText("<p style=margin-right:25><center><h5>Version: 1.1<br>Build # 07.15.2014</h5></center></p>");
+   msgB.setText("<p style=margin-right:25><center><h5>Version: 1.1.1<br>Build # 07.24.2014</h5></center></p>");
    msgB.setInformativeText(textBody);
 
    msgB.setStandardButtons(QMessageBox::Ok);

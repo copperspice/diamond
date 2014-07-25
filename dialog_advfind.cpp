@@ -24,10 +24,10 @@
 #include <QDir>
 #include <QFileDialog>
 
-Dialog_AdvFind::Dialog_AdvFind(MainWindow *from, QString findText, QString fileType, QString findFolder, bool searchFolders)
-   : m_ui(new Ui::Dialog_AdvFind)
+Dialog_AdvFind::Dialog_AdvFind(MainWindow *parent, QString findText, QString fileType, QString findFolder, bool searchFolders)
+   : QDialog(parent), m_ui(new Ui::Dialog_AdvFind)
 {   
-   m_parent = from;
+   m_parent = parent;
 
    m_ui->setupUi(this);
    setWindowIcon(QIcon("://resources/diamond.png"));

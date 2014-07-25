@@ -34,7 +34,7 @@ class Dialog_Colors : public QDialog
    CS_OBJECT(Dialog_Colors)
 
    public:
-      Dialog_Colors(MainWindow *from);
+      Dialog_Colors(MainWindow *parent);
       ~Dialog_Colors();
       struct Settings get_Colors();
 
@@ -66,50 +66,70 @@ class Dialog_Colors : public QDialog
 
       CS_SLOT_1(Private, void key_TB())
       CS_SLOT_2(key_TB) 
+
       CS_SLOT_1(Private, void type_TB())
       CS_SLOT_2(type_TB) 
+
       CS_SLOT_1(Private, void class_TB())
       CS_SLOT_2(class_TB) 
+
       CS_SLOT_1(Private, void func_TB())
       CS_SLOT_2(func_TB) 
+
       CS_SLOT_1(Private, void quote_TB())
       CS_SLOT_2(quote_TB) 
+
       CS_SLOT_1(Private, void comment_TB())
       CS_SLOT_2(comment_TB) 
+
       CS_SLOT_1(Private, void mline_TB())
       CS_SLOT_2(mline_TB) 
 
       CS_SLOT_1(Private, void key_bold())
       CS_SLOT_2(key_bold) 
+
       CS_SLOT_1(Private, void key_italic())
       CS_SLOT_2(key_italic) 
+
       CS_SLOT_1(Private, void type_bold())
       CS_SLOT_2(type_bold) 
+
       CS_SLOT_1(Private, void type_italic())
       CS_SLOT_2(type_italic) 
+
       CS_SLOT_1(Private, void class_bold())
       CS_SLOT_2(class_bold) 
+
       CS_SLOT_1(Private, void class_italic())
       CS_SLOT_2(class_italic) 
+
       CS_SLOT_1(Private, void func_bold())
       CS_SLOT_2(func_bold) 
+
       CS_SLOT_1(Private, void func_italic())
       CS_SLOT_2(func_italic) 
+
       CS_SLOT_1(Private, void quote_bold())
       CS_SLOT_2(quote_bold) 
+
       CS_SLOT_1(Private, void quote_italic())
       CS_SLOT_2(quote_italic) 
+
       CS_SLOT_1(Private, void comment_bold())
       CS_SLOT_2(comment_bold) 
+
       CS_SLOT_1(Private, void comment_italic())
       CS_SLOT_2(comment_italic) 
+
       CS_SLOT_1(Private, void mline_bold())
       CS_SLOT_2(mline_bold) 
+
       CS_SLOT_1(Private, void mline_italic())
       CS_SLOT_2(mline_italic) 
 
       CS_SLOT_1(Private, void Save())
       CS_SLOT_2(Save) 
+
       CS_SLOT_1(Private, void Cancel())
       CS_SLOT_2(Cancel) 
 };

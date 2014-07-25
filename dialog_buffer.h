@@ -34,17 +34,17 @@ class Dialog_Buffer : public QDialog
    public:
       Dialog_Buffer(QList<QString> copyBuffer);
       ~Dialog_Buffer();
-      int get_Index();
-
-   private:
-      Ui::Dialog_Buffer *m_ui;
+      int get_Index();       
 
    protected:
       bool eventFilter(QObject *object, QEvent *event);
 
    private :     
+      Ui::Dialog_Buffer *m_ui;
+
       CS_SLOT_1(Private, void Select())
       CS_SLOT_2(Select) 
+
       CS_SLOT_1(Private, void Cancel())
       CS_SLOT_2(Cancel)      
 };

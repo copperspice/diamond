@@ -39,13 +39,15 @@ class Dialog_Config : public QDialog
    private:
       Ui::Dialog_Config *m_ui;
 
-   private :
       CS_SLOT_1(Private, void createNew())
       CS_SLOT_2(createNew) 
+
       CS_SLOT_1(Private, void select())
       CS_SLOT_2(select) 
+
       CS_SLOT_1(Private, void rename())
       CS_SLOT_2(rename) 
+
       CS_SLOT_1(Private, void cancel())
       CS_SLOT_2(cancel) 
 };

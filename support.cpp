@@ -42,8 +42,8 @@ void MainWindow::argLoad(QList<QString> argList)
       tempFile = QDir::fromNativeSeparators(tempFile);
 
       // expand for full path
-      QFileInfo xx(tempFile);
-      tempFile = xx.canonicalFilePath();
+      QFileInfo tempPath(tempFile);
+      tempFile = tempPath.canonicalFilePath();
 
       if (tempFile.isEmpty()) {
          // do nothing

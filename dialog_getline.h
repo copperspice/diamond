@@ -39,9 +39,9 @@ class Dialog_GetLine : public QDialog
    private:
       Ui::Dialog_GetLine *m_ui;
 
-   private :
       CS_SLOT_1(Private, void Ok())
       CS_SLOT_2(Ok) 
+
       CS_SLOT_1(Private, void Cancel())
       CS_SLOT_2(Cancel) 
 };

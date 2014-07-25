@@ -23,6 +23,7 @@
 #define DIALOG_REPLACE_H
 
 #include "ui_dialog_replace.h"
+#include "mainwindow.h"
 
 #include <QDialog>
 #include <QPoint>
@@ -34,7 +35,7 @@ class Dialog_Replace : public QDialog
    CS_OBJECT(Dialog_Replace)
 
    public:      
-      Dialog_Replace(QString findText, QStringList findList,
+      Dialog_Replace(MainWindow *parent, QString findText, QStringList findList,
                      QString replaceText, QStringList replaceList);
       ~Dialog_Replace();
 
@@ -56,7 +57,6 @@ class Dialog_Replace : public QDialog
       bool m_upd_Find;
       bool m_upd_Replace;
 
-   private :
       CS_SLOT_1(Private, void replace())
       CS_SLOT_2(replace) 
       CS_SLOT_1(Private, void replaceAll())

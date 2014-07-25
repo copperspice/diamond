@@ -28,10 +28,10 @@
 #include <QSize>
 #include <QTableView>
 
-Dialog_Macro::Dialog_Macro(MainWindow *from, MacroEnum enumValue, QStringList macroIds, QStringList macroNames )
-   : m_ui(new Ui::Dialog_Macro)
+Dialog_Macro::Dialog_Macro(MainWindow *parent, MacroEnum enumValue, QStringList macroIds, QStringList macroNames )
+   : QDialog(parent), m_ui(new Ui::Dialog_Macro)
 {
-   m_parent       = from;
+   m_parent       = parent;
    m_enum         = enumValue;
    m_macroIds_D   = macroIds;
    m_macroNames_D = macroNames;

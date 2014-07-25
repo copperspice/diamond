@@ -24,10 +24,10 @@
 
 #include <QFontDialog>
 
-Dialog_PrintOptions::Dialog_PrintOptions(MainWindow *from, struct PrintSettings data)
-   : m_ui(new Ui::Dialog_PrintOptions)
+Dialog_PrintOptions::Dialog_PrintOptions(MainWindow *parent, struct PrintSettings data)
+   : QDialog(parent), m_ui(new Ui::Dialog_PrintOptions)
 {
-   m_parent = from;
+   m_parent = parent;
    m_print  = data;
 
    m_ui->setupUi(this);

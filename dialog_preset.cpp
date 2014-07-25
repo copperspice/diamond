@@ -26,10 +26,10 @@
 #include <QFileInfo>
 #include <QPalette>
 
-Dialog_Preset::Dialog_Preset(MainWindow *from, QStringList data)
-   : QDialog(from), m_ui(new Ui::Dialog_Preset)
+Dialog_Preset::Dialog_Preset(MainWindow *parent, QStringList data)
+   : QDialog(parent), m_ui(new Ui::Dialog_Preset)
 {
-   m_parent   = from;
+   m_parent   = parent;
    m_dataList = data;
 
    m_ui->setupUi(this);

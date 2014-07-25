@@ -44,10 +44,10 @@ MainWindow::MainWindow(QStringList fileList, QStringList flagList)
    setIconSize(QSize(32,32));
    setWindowIcon(QIcon("://resources/diamond.png"));
 
-   if ( ! json_Read(CFG_STARTUP) ) {
+   if (! json_Read(CFG_STARTUP) ) {
       // do not start program
       csError(tr("Configuration File Missing"), tr("Unable to locate or open the Diamond Configuration file."));
-      throw std::runtime_error("");
+      throw std::runtime_error("abort_no_message");
    }
 
    // drag & drop
@@ -231,7 +231,7 @@ void MainWindow::open_RelatedFile()
 
       }  else {
          // display the full list of related files
-         Dialog_Open *dw = new Dialog_Open(list);
+         Dialog_Open *dw = new Dialog_Open(this, list);
          int result = dw->exec();
 
          if (result == QDialog::Accepted) {
@@ -1685,7 +1685,7 @@ void MainWindow::about()
    msgB.setWindowIcon(QIcon("://resources/diamond.png"));
 
    msgB.setWindowTitle(tr("About Diamond"));
-   msgB.setText(tr("<p style=margin-right:25><center><h5>Version: 1.1<br>Build # 7.15.2014</h5></center></p>"));
+   msgB.setText(tr("<p style=margin-right:25><center><h5>Version: 1.1.1<br>Build # 7.24.2014</h5></center></p>"));
    msgB.setInformativeText(textBody);
 
    msgB.setStandardButtons(QMessageBox::Ok);

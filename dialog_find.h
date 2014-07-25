@@ -23,6 +23,7 @@
 #define DIALOG_FIND_H
 
 #include "ui_dialog_find.h"
+#include "mainwindow.h"
 
 #include <QDialog>
 #include <QPoint>
@@ -34,7 +35,7 @@ class Dialog_Find : public QDialog
    CS_OBJECT(Dialog_Find)
 
    public:
-      Dialog_Find(QString text, QStringList findList);
+      Dialog_Find(MainWindow *parent, QString text, QStringList findList);
       ~Dialog_Find();
 
       QString get_findText();

@@ -57,7 +57,7 @@ void Dialog_Config::rename()
    QString name = m_ui->newName->text();
 
    if (name.isEmpty())  {
-      csError("Rename Configuration File", "New file name can not be blank." );
+      csError("Rename Configuration File", "New file name can not be blank.");
       return;
    }
 
@@ -73,5 +73,4 @@ QString Dialog_Config::get_newName()
 {
    return m_ui->newName->text();
 }
-
 

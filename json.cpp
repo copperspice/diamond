@@ -49,7 +49,7 @@ bool MainWindow::json_Read(Config trail)
    m_jsonFname = settings.value("configName").toString();
 
    if (m_jsonFname.isEmpty() || ! QFile::exists(m_jsonFname)) {
-      // get a new file name
+      // get a new file name or location
       json_getFileName();
 
       if (m_jsonFname.isEmpty()) {
@@ -712,7 +712,7 @@ void MainWindow::json_getFileName()
 
       return;
    }
-#endif
+#endif         
 
    QString selectedFilter;
    QFileDialog::Options options;
@@ -720,28 +720,44 @@ void MainWindow::json_getFileName()
    QMessageBox quest;
    quest.setWindowTitle(tr("Diamond Editor"));
    quest.setText(tr("Diamond configuration file is missing.\n\n"
-                    "Create a New configuration file or select an existing Diamond configuration file.\n"));
+                    "Selet an option to (a) create the configuration file in the system default location, "
+                    "(b) pick a folder location, or (c) select an existing Diamond Configuration file.\n"));
 
-   QPushButton *createNew    = quest.addButton("Create", QMessageBox::AcceptRole );
-   QPushButton *selectConfig = quest.addButton("Select", QMessageBox::AcceptRole );
+   QPushButton *createDefault  = quest.addButton("Default Location",     QMessageBox::AcceptRole );
+   QPushButton *createNew      = quest.addButton("Pick Folder Location", QMessageBox::AcceptRole );
+   QPushButton *selectExist    = quest.addButton("Select Existing File", QMessageBox::AcceptRole );
+
    quest.setStandardButtons(QMessageBox::Cancel);
    quest.setDefaultButton(QMessageBox::Cancel);
 
    quest.exec();
 
-   if (quest.clickedButton() == createNew) {
+   if (quest.clickedButton() == createDefault) {
+      m_jsonFname = m_appPath + "/config.json";
+
+#ifdef Q_OS_WIN
+      QString path = QStandardPaths::writableLocation(QStandardPaths::ConfigLocation);
+      m_jsonFname  = path + "/config.json";
+#endif
+
+   } else if (quest.clickedButton() == createNew) {
       QString fname = m_appPath + "/config.json";
 
       // force windows 7 and 8 to honor initial path
       options = QFileDialog::ForceInitialDir_Win7;
 
-      m_jsonFname = QFileDialog::getSaveFileName(this, tr("Create New Configuration File"),
-            fname, tr("Json Files (*.json)"), &selectedFilter, options);
+      m_jsonFname = QFileDialog::getSaveFileName(this, tr("Create new Configuration File"),
+            fname, tr("Json Files (*.json)"), &selectedFilter, options);                  
 
-   } else if (quest.clickedButton() == selectConfig) {
+   } else if (quest.clickedButton() == selectExist) {
 
-      m_jsonFname = QFileDialog::getOpenFileName(this, tr("Select Diamond Configuration File"),
+      m_jsonFname = QFileDialog::getOpenFileName(this, tr("Select Existing Diamond Configuration File"),
             "", tr("Json Files (*.json)"), &selectedFilter, options);
+
+   } else {
+      // user aborted
+      m_jsonFname = "";
+
    }
 }
 
@@ -751,7 +767,7 @@ QByteArray MainWindow::json_ReadFile()
 
    QFile file(m_jsonFname);
    if (! file.open(QFile::ReadWrite | QFile::Text)) {
-      const QString msg = tr("Unable to open Configurtion File: ") +  m_jsonFname + " : " + file.errorString();
+      const QString msg = tr("Unable to open Configuration File: ") +  m_jsonFname + " : " + file.errorString();
       csError(tr("Read Json"), msg);
       return data;
    }
@@ -765,9 +781,17 @@ QByteArray MainWindow::json_ReadFile()
 
 bool MainWindow::json_SaveFile(QByteArray data)
 {
+   QString path = pathName(m_jsonFname);
+   QDir directory(path);
+
+   if (! directory.exists()) {
+      directory.mkpath(path);
+   }
+
    QFile file(m_jsonFname);
+
    if (! file.open(QFile::ReadWrite | QFile::Truncate | QFile::Text)) {
-      const QString msg = tr("Unable to save Configurtion File: ") +  m_jsonFname + " : " + file.errorString();
+      const QString msg = tr("Unable to save Configuration File: ") +  m_jsonFname + " : " + file.errorString();
       csError(tr("Save Json"), msg);
       return false;
    }
@@ -900,22 +924,30 @@ bool MainWindow::json_CreateNew()
 
    if (! isAutoDetect) {
       // get syntax folder (1)
-      QString syntaxPath = get_SyntaxPath();
+      QString syntaxPath = m_appPath + "/syntax/";
+
+      if (! QFile::exists(syntaxPath + "syn_txt.json"))  {
+         syntaxPath = get_SyntaxPath(syntaxPath);
+      }
 
       value = QJsonValue(QString(syntaxPath));
       object.insert("pathSyntax", value);
 
       // get dictionary file location (2)
-      QString dictFile = get_xxFile("Dictionary File (*.dic)", "en_US.dic", "Dictionary Files (*.dic)" );
+      QString dictFile = m_appPath + "/dictionary/en_US.dic";
+
+      if (! QFile::exists(dictFile))  {
+         dictFile = get_xxFile("Dictionary File (*.dic)", "en_US.dic", "Dictionary Files (*.dic)" );
+      }
 
       value = QJsonValue(QString(dictFile));
       object.insert("dictMain", value);
 
-      // default dictionary to dictPath
+      // default dictionary to dictPath      
       dictFile = this->pathName(dictFile) + "/userDict.txt";
 
       if (! QFile::exists(dictFile) ) {
-
+         // add missing file
          QFile temp(dictFile);
          temp.open(QIODevice::WriteOnly);
          temp.close();
@@ -925,7 +957,12 @@ bool MainWindow::json_CreateNew()
       object.insert("dictUser", value);
 
       // get help file location (3)
-      QString indexPath = get_xxFile("Help File (index.html)", "index.html", "HTML Files (index.html)" );
+      QString indexPath = m_appPath + "/help/index.html";
+
+      if (! QFile::exists(indexPath) ) {
+         get_xxFile("Help File (index.html)", "index.html", "HTML Files (index.html)" );
+      }
+
       value = QJsonValue(QString(indexPath));
       object.insert("aboutUrl", value);
    }
@@ -1197,10 +1234,10 @@ bool MainWindow::json_CreateNew()
 
 
 // **
-QString MainWindow::get_SyntaxPath()
+QString MainWindow::get_SyntaxPath(QString syntaxPath)
 {
    QString msg  = tr("Select Diamond Syntax Folder");
-   QString path = this->get_DirPath(msg, m_appPath);
+   QString path = this->get_DirPath(msg, syntaxPath);
 
    return path;
 }
@@ -1397,6 +1434,14 @@ void MainWindow::move_ConfigFile()
             csError("Diamond Configuration", "New configuration file already exists, unable to rename.");
 
          } else  {
+
+            QString path = pathName(newName);
+            QDir directory(path);
+
+            if (! directory.exists()) {
+               directory.mkpath(path);
+            }
+
             if (QFile::rename(m_jsonFname, newName)) {
                m_jsonFname = newName;
                settings.setValue("configName", m_jsonFname);

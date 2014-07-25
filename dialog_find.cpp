@@ -28,8 +28,8 @@
 #include <QMenu>
 #include <QTextCursor>
 
-Dialog_Find::Dialog_Find(QString findText, QStringList findList)
-   : m_ui(new Ui::Dialog_Find)
+Dialog_Find::Dialog_Find(MainWindow *parent, QString findText, QStringList findList)
+   : QDialog(parent), m_ui(new Ui::Dialog_Find)
 {   
    m_findList = findList;
    m_upd_Find = false;

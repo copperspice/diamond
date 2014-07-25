@@ -26,18 +26,18 @@
 #include <QStringList>
 #include <QStringListModel>
 
-Dialog_Symbols::Dialog_Symbols(MainWindow *from)
-   : m_ui(new Ui::Dialog_Symbols)
+Dialog_Symbols::Dialog_Symbols(MainWindow *parent)
+   : QDialog(parent), m_ui(new Ui::Dialog_Symbols)
 {
-   m_parent = from;
+   m_parent = parent;
 
    m_ui->setupUi(this);   
    this->setWindowIcon(QIcon("://resources/diamond.png"));
 
    // alter the hightlight color
    QPalette temp = m_ui->sampleList->palette();
-   temp.setColor( QPalette::Highlight, QColor(206, 206, 206, 255));
-   temp.setColor( QPalette::HighlightedText, Qt::black);
+   temp.setColor(QPalette::Highlight, QColor(206, 206, 206, 255));
+   temp.setColor(QPalette::HighlightedText, Qt::black);
    m_ui->sampleList->setPalette(temp);
 
    QStringListModel *model = new QStringListModel(this);

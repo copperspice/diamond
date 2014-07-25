@@ -32,7 +32,7 @@ class Dialog_Open : public QDialog
    CS_OBJECT(Dialog_Open)
 
    public:
-      Dialog_Open(QStringList list);
+      Dialog_Open(MainWindow *parent, QStringList list);
       ~Dialog_Open();
       QString get_FileName();
 
@@ -40,9 +40,9 @@ class Dialog_Open : public QDialog
       Ui::Dialog_Open *m_ui;    
       QStringList m_list;
 
-   private :
       CS_SLOT_1(Private, void Open())
       CS_SLOT_2(Open) 
+
       CS_SLOT_1(Private, void Cancel())
       CS_SLOT_2(Cancel)      
 };
