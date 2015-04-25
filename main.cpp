@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright (c) 2012-2014 Barbara Geller
+* Copyright (c) 2012-2015 Barbara Geller
 * All rights reserved.
 *
 * This file is part of Diamond Editor.
@@ -153,7 +153,7 @@ static void showVersion()
                       "<tr><td style=padding-right:25><nobr>Developed by Ansel Sermersheim</nobr></td><td>ansel@copperspice.com</td></tr>"
                       "</table></font>"
                       "<br>"
-                      "<p><small>Copyright 2012-2014 BG Consulting, All rights reserved.<br>"
+                      "<p><small>Copyright 2012-2015 BG Consulting, All rights reserved.<br>"
                       "This program is provided AS IS with no warranty of any kind.<br></small></p>";
 
    QMessageBox msgB;
@@ -161,7 +161,7 @@ static void showVersion()
    msgB.setWindowIcon(QIcon("://resources/diamond.png"));
 
    msgB.setWindowTitle("About Diamond");
-   msgB.setText("<p style=margin-right:25><center><h5>Version: 1.1.1<br>Build # 07.24.2014</h5></center></p>");
+   msgB.setText("<p style=margin-right:25><center><h5>Version: 1.1.2<br>Build # 04.18.2015</h5></center></p>");
    msgB.setInformativeText(textBody);
 
    msgB.setStandardButtons(QMessageBox::Ok);

@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright (c) 2012-2014 Barbara Geller
+* Copyright (c) 2012-2015 Barbara Geller
 * All rights reserved.
 *
 * This file is part of Diamond Editor.
@@ -1109,7 +1109,8 @@ void MainWindow::setSynType(SyntaxTypes data)
    m_ui->actionSyn_C->setChecked(false);
    m_ui->actionSyn_Clipper->setChecked(false);
    m_ui->actionSyn_Css->setChecked(false);
-   m_ui->actionSyn_Doxygen->setChecked(false);
+   m_ui->actionSyn_Doxypress->setChecked(false);
+   m_ui->actionSyn_ErrorLog->setChecked(false);
    m_ui->actionSyn_Html->setChecked(false);
    m_ui->actionSyn_Java->setChecked(false);  
    m_ui->actionSyn_Javascript->setChecked(false);
@@ -1122,6 +1123,9 @@ void MainWindow::setSynType(SyntaxTypes data)
    m_ui->actionSyn_PHP->setChecked(false);
    m_ui->actionSyn_Python->setChecked(false);
    m_ui->actionSyn_None->setChecked(false); 
+
+   // m_ui->actionSyn_UnUsed1->setChecked(false);
+   // m_ui->actionSyn_UnUsed2->setChecked(false);
 
    switch (data)  {
       case SYN_C:
@@ -1137,7 +1141,11 @@ void MainWindow::setSynType(SyntaxTypes data)
          break;
 
       case SYN_DOX:
-         m_ui->actionSyn_Doxygen->setChecked(true);
+         m_ui->actionSyn_Doxypress->setChecked(true);
+         break;
+
+      case SYN_ERRLOG:
+         m_ui->actionSyn_ErrorLog->setChecked(true);
          break;
 
       case SYN_HTML:
@@ -1187,6 +1195,16 @@ void MainWindow::setSynType(SyntaxTypes data)
       case SYN_NONE:
          m_ui->actionSyn_None->setChecked(true);
          break;
+
+/*
+      case SYN_UNUSED1:
+         m_ui->actionSyn_UnUsed1->setChecked(true);
+         break;
+
+      case SYN_UNUSED2:
+         m_ui->actionSyn_UnUsed2->setChecked(true);
+         break;
+*/
    }
 }
 
@@ -1676,7 +1694,7 @@ void MainWindow::about()
                       "<tr><td style=padding-right:25><nobr>Developed by Ansel Sermersheim</nobr></td><td>ansel@copperspice.com</td></tr>"
                       "</table></font>"
                       "<br>"
-                      "<p><small>Copyright 2012-2014 BG Consulting, All rights reserved.<br>"
+                      "<p><small>Copyright 2012-2015 BG Consulting, All rights reserved.<br>"
                       "This program is provided AS IS with no warranty of any kind.<br></small></p>";
 
    //
@@ -1685,7 +1703,7 @@ void MainWindow::about()
    msgB.setWindowIcon(QIcon("://resources/diamond.png"));
 
    msgB.setWindowTitle(tr("About Diamond"));
-   msgB.setText(tr("<p style=margin-right:25><center><h5>Version: 1.1.1<br>Build # 7.24.2014</h5></center></p>"));
+   msgB.setText("<p style=margin-right:25><center><h5>Version: 1.1.2<br>Build # 04.18.2015</h5></center></p>");
    msgB.setInformativeText(textBody);
 
    msgB.setStandardButtons(QMessageBox::Ok);
@@ -1769,22 +1787,26 @@ void MainWindow::createConnections()
    connect(m_ui->actionDisplay_HTML,      SIGNAL(triggered()), this, SLOT(displayHTML()));
 
    // document
-   connect(m_ui->actionSyn_C,             &QAction::triggered, this, [this](bool){ forceSyntax(SYN_C);    } );
+   connect(m_ui->actionSyn_C,             &QAction::triggered, this, [this](bool){ forceSyntax(SYN_C);       } );
    connect(m_ui->actionSyn_Clipper,       &QAction::triggered, this, [this](bool){ forceSyntax(SYN_CLIPPER); } );
-   connect(m_ui->actionSyn_Css,           &QAction::triggered, this, [this](bool){ forceSyntax(SYN_CSS);  } );
-   connect(m_ui->actionSyn_Doxygen,       &QAction::triggered, this, [this](bool){ forceSyntax(SYN_DOX);  } );
-   connect(m_ui->actionSyn_Html,          &QAction::triggered, this, [this](bool){ forceSyntax(SYN_HTML); } );
-   connect(m_ui->actionSyn_Java,          &QAction::triggered, this, [this](bool){ forceSyntax(SYN_JAVA); } );
-   connect(m_ui->actionSyn_Javascript,    &QAction::triggered, this, [this](bool){ forceSyntax(SYN_JS);   } );
-   connect(m_ui->actionSyn_Json,          &QAction::triggered, this, [this](bool){ forceSyntax(SYN_JSON); } );
-   connect(m_ui->actionSyn_Makefile,      &QAction::triggered, this, [this](bool){ forceSyntax(SYN_MAKE); } );
-   connect(m_ui->actionSyn_Nsis,          &QAction::triggered, this, [this](bool){ forceSyntax(SYN_NSIS); } );
-   connect(m_ui->actionSyn_Text,          &QAction::triggered, this, [this](bool){ forceSyntax(SYN_TEXT); } );
-   connect(m_ui->actionSyn_Shell,         &QAction::triggered, this, [this](bool){ forceSyntax(SYN_SHELL);  } );
-   connect(m_ui->actionSyn_Perl,          &QAction::triggered, this, [this](bool){ forceSyntax(SYN_PERL);   } );
-   connect(m_ui->actionSyn_PHP,           &QAction::triggered, this, [this](bool){ forceSyntax(SYN_PHP);    } );
-   connect(m_ui->actionSyn_Python,        &QAction::triggered, this, [this](bool){ forceSyntax(SYN_PYTHON); } );
-   connect(m_ui->actionSyn_None,          &QAction::triggered, this, [this](bool){ forceSyntax(SYN_NONE);   } );
+   connect(m_ui->actionSyn_Css,           &QAction::triggered, this, [this](bool){ forceSyntax(SYN_CSS);     } );
+   connect(m_ui->actionSyn_Doxypress,     &QAction::triggered, this, [this](bool){ forceSyntax(SYN_DOX);     } );
+   connect(m_ui->actionSyn_ErrorLog,      &QAction::triggered, this, [this](bool){ forceSyntax(SYN_ERRLOG);  } );
+   connect(m_ui->actionSyn_Html,          &QAction::triggered, this, [this](bool){ forceSyntax(SYN_HTML);    } );
+   connect(m_ui->actionSyn_Java,          &QAction::triggered, this, [this](bool){ forceSyntax(SYN_JAVA);    } );
+   connect(m_ui->actionSyn_Javascript,    &QAction::triggered, this, [this](bool){ forceSyntax(SYN_JS);      } );
+   connect(m_ui->actionSyn_Json,          &QAction::triggered, this, [this](bool){ forceSyntax(SYN_JSON);    } );
+   connect(m_ui->actionSyn_Makefile,      &QAction::triggered, this, [this](bool){ forceSyntax(SYN_MAKE);    } );
+   connect(m_ui->actionSyn_Nsis,          &QAction::triggered, this, [this](bool){ forceSyntax(SYN_NSIS);    } );
+   connect(m_ui->actionSyn_Text,          &QAction::triggered, this, [this](bool){ forceSyntax(SYN_TEXT);    } );
+   connect(m_ui->actionSyn_Shell,         &QAction::triggered, this, [this](bool){ forceSyntax(SYN_SHELL);   } );
+   connect(m_ui->actionSyn_Perl,          &QAction::triggered, this, [this](bool){ forceSyntax(SYN_PERL);    } );
+   connect(m_ui->actionSyn_PHP,           &QAction::triggered, this, [this](bool){ forceSyntax(SYN_PHP);     } );
+   connect(m_ui->actionSyn_Python,        &QAction::triggered, this, [this](bool){ forceSyntax(SYN_PYTHON);  } );
+   connect(m_ui->actionSyn_None,          &QAction::triggered, this, [this](bool){ forceSyntax(SYN_NONE);    } );
+
+   // connect(m_ui->actionSyn_UNUSED1,       &QAction::triggered, this, [this](bool){ forceSyntax(SYN_UNUSED1); } );
+   // connect(m_ui->actionSyn_UNUSED2,       &QAction::triggered, this, [this](bool){ forceSyntax(SYN_UNUSED2); } );
 
    connect(m_ui->actionFormat_Unix,       SIGNAL(triggered()), this, SLOT(formatUnix()));
    connect(m_ui->actionFormat_Win,        SIGNAL(triggered()), this, SLOT(formatWin()));
@@ -1826,7 +1848,8 @@ void MainWindow::createToggles()
    m_ui->actionSyn_C->setCheckable(true);
    m_ui->actionSyn_Clipper->setCheckable(true);
    m_ui->actionSyn_Css->setCheckable(true);
-   m_ui->actionSyn_Doxygen->setCheckable(true);
+   m_ui->actionSyn_Doxypress->setCheckable(true);
+   m_ui->actionSyn_ErrorLog->setCheckable(true);
    m_ui->actionSyn_Html->setCheckable(true);
    m_ui->actionSyn_Java->setCheckable(true);
    m_ui->actionSyn_Javascript->setCheckable(true);
@@ -1839,6 +1862,9 @@ void MainWindow::createToggles()
    m_ui->actionSyn_PHP->setCheckable(true);
    m_ui->actionSyn_Python->setCheckable(true);
    m_ui->actionSyn_None->setCheckable(true);
+
+   // m_ui->actionSyn_Usused1->setCheckable(true);
+   // m_ui->actionSyn_Unused2->setCheckable(true);
 
    m_ui->actionLine_Highlight->setCheckable(true);
    m_ui->actionLine_Highlight->setChecked(m_struct.showLineHighlight);
@@ -2147,8 +2173,3 @@ void MainWindow::showNotDone(QString item)
 {
    csMsg( item + " - this feature has not been implemented.");
 }
-
-
-
-
-

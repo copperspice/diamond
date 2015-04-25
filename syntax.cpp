@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright (c) 2012-2014 Barbara Geller
+* Copyright (c) 2012-2015 Barbara Geller
 * All rights reserved.
 *
 * This file is part of Diamond Editor.
@@ -220,8 +220,8 @@ bool Syntax::processSyntax()
    m_spellCheckFormat.setUnderlineColor(QColor(Qt::red));
    m_spellCheckFormat.setUnderlineStyle(QTextCharFormat::SpellCheckUnderline);
 
-   // new data, redo the current document
-   this->rehighlight();
+   // redo the current document
+   rehighlight();
 
    return true;
 }

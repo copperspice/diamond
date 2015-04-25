@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright (c) 2012-2014 Barbara Geller
+* Copyright (c) 2012-2015 Barbara Geller
 * All rights reserved.
 *
 * This file is part of Diamond Editor.
@@ -83,10 +83,13 @@ void MainWindow::setSyntax()
          suffix = "cpp";
 
       } else if (suffix == "prg") {
-         suffix = "clipper";
+         suffix = "clipper";                 
 
-      } else if (suffix == "doxy" || suffix == "doxygen") {
+      } else if (suffix == "doxy" || suffix == "doxypress") {
          suffix = "dox";
+
+      } else if (suffix == "err" || suffix == "log") {
+         suffix = "errlog";
 
       } else if (suffix == "htm" || suffix == "shtml") {
          suffix = "html";
@@ -139,6 +142,9 @@ void MainWindow::setSyntax()
       } else if (suffix == "dox")  {
          m_syntaxEnum = SYN_DOX;
 
+      } else if (suffix == "errlog")  {
+         m_syntaxEnum = SYN_ERRLOG;
+
       } else if (suffix == "html")  {
          m_syntaxEnum = SYN_HTML;
 
@@ -172,6 +178,14 @@ void MainWindow::setSyntax()
       } else if (suffix == "py")  {
          m_syntaxEnum = SYN_PYTHON;
 
+/*
+      } else if (suffix == "unused1")  {
+         m_syntaxEnum = SYN_?;
+
+      } else if (suffix == "unused2")  {
+         m_syntaxEnum = SYN_?;
+*/
+
       }
 
       // save the menu enum
@@ -204,6 +218,10 @@ void MainWindow::forceSyntax(SyntaxTypes data)
 
       case SYN_DOX:
          synFName = m_struct.pathSyntax+ "syn_dox.json";
+         break;
+
+      case SYN_ERRLOG:
+         synFName = m_struct.pathSyntax+ "syn_errlog.json";
          break;
 
       case SYN_HTML:
@@ -253,6 +271,17 @@ void MainWindow::forceSyntax(SyntaxTypes data)
       case SYN_NONE:
          synFName = m_struct.pathSyntax + "syn_none.json";
          break;
+
+/*
+      case SYN_UNUSED1:
+         synFName = m_struct.pathSyntax + "syn_unused1.json";
+         break;
+
+      case SYN_UNUSED2:
+         synFName = m_struct.pathSyntax + "syn_unused2.json";
+         break;
+*/
+
    }
 
    if (! QFile::exists(synFName)) {   

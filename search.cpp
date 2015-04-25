@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright (c) 2012-2014 Barbara Geller
+* Copyright (c) 2012-2015 Barbara Geller
 * All rights reserved.
 *
 * This file is part of Diamond Editor.
@@ -84,7 +84,8 @@ void MainWindow::find()
          bool found = m_textEdit->find(m_findText, m_flags);
 
          if (! found)  {
-            csError("Find", "Not found: " + m_findText);
+            // text not found, query if the user wants to search from top of file
+            findNext();
          }
       }
 

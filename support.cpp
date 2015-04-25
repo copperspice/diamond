@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright (c) 2012-2014 Barbara Geller
+* Copyright (c) 2012-2015 Barbara Geller
 * All rights reserved.
 *
 * This file is part of Diamond Editor.
@@ -303,7 +303,17 @@ bool MainWindow::loadFile(const QString &fileName, bool addNewTab, bool isAuto)
 
 QString MainWindow::pathName(QString fileName) const
 {
-   return QFileInfo(fileName).path();
+   QString retval = "";
+
+   if (! fileName.isEmpty())  {      
+      QFileInfo temp(fileName);
+
+      if (temp.isAbsolute()) {
+         retval = temp.absolutePath();
+      }
+   }
+
+   return retval;
 }
 
 bool MainWindow::querySave()

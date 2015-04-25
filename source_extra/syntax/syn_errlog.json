@@ -1,0 +1,18 @@
+{
+   "classes": [
+      "^.*:\\d+:\\d+: error"
+   ],
+      "comment-multi-start": "(?!E)E",
+      "comment-multi-end": "(?!E)E",
+      "comment-single": "(?!E)E",
+   "functions": [
+      "operator==",
+      "operand of"
+   ],
+   "ignore-case" : true,
+   "keywords": [
+      "^make.+:"
+   ],
+   "types": [
+   ]
+}

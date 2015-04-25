@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright (c) 2012-2014 Barbara Geller
+* Copyright (c) 2012-2015 Barbara Geller
 * All rights reserved.
 *
 * This file is part of Diamond Editor.
@@ -23,6 +23,7 @@
 #include "util.h"
 
 #include <QComboBox>
+#include <QCompleter>
 #include <QCursor>
 #include <QLineEdit>
 #include <QMenu>
@@ -38,6 +39,8 @@ Dialog_Find::Dialog_Find(MainWindow *parent, QString findText, QStringList findL
    this->setWindowIcon(QIcon("://resources/diamond.png"));
 
    this->setUp();
+
+   m_ui->find_Combo->completer()->setCaseSensitivity(Qt::CaseSensitive);
 
    // display last edit value
    m_ui->find_Combo->lineEdit()->setText(findText);

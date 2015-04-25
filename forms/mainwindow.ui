@@ -171,7 +171,8 @@
      <addaction name="actionSyn_C"/>
      <addaction name="actionSyn_Clipper"/>
      <addaction name="actionSyn_Css"/>
-     <addaction name="actionSyn_Doxygen"/>
+     <addaction name="actionSyn_Doxypress"/>
+     <addaction name="actionSyn_ErrorLog"/>
      <addaction name="actionSyn_Html"/>
      <addaction name="actionSyn_Java"/>
      <addaction name="actionSyn_Javascript"/>
@@ -383,9 +384,9 @@
     <string>HTML</string>
    </property>
   </action>
-  <action name="actionSyn_Doxygen">
+  <action name="actionSyn_Doxypress">
    <property name="text">
-    <string>Doxygen</string>
+    <string>DoxyPress</string>
    </property>
   </action>
   <action name="actionSyn_Java">
@@ -405,7 +406,7 @@
   </action>
   <action name="actionSyn_Javascript">
    <property name="text">
-    <string>Javascript</string>
+    <string>JavaScript</string>
    </property>
   </action>
   <action name="actionClose_All">
@@ -790,6 +791,11 @@
   <action name="actionPresetFolders">
    <property name="text">
     <string>Preset Folders</string>
+   </property>
+  </action>
+  <action name="actionSyn_ErrorLog">
+   <property name="text">
+    <string>Error Log</string>
    </property>
   </action>
  </widget>
