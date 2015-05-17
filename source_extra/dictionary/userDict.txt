@@ -48,3 +48,5 @@ project_A
 Heesch
 plugins
 backends
+SQL
+copperspice

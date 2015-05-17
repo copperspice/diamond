@@ -45,7 +45,7 @@ void MainWindow::rf_CreateMenus()
       }
 
       rf_Actions[i] = new QAction(tName, this);
-      rf_Actions[i]->setData("recent-file");
+      rf_Actions[i]->setData(QString("recent-file"));
 
       fileMenu->insertAction(action, rf_Actions[i]);
 
@@ -206,7 +206,7 @@ void MainWindow::rfolder_CreateMenus()
       }
 
       rfolder_Actions[i] = new QAction(tName, this);
-      rfolder_Actions[i]->setData("recent-folder");
+      rfolder_Actions[i]->setData(QString("recent-folder"));
 
       menu->addAction(rfolder_Actions[i]);
 
@@ -351,7 +351,7 @@ void MainWindow::prefolder_CreateMenus()
       }
 
       prefolder_Actions[i] = new QAction(tName, this);
-      prefolder_Actions[i]->setData("preset-folder");
+      prefolder_Actions[i]->setData(QString("preset-folder"));
 
       menu->addAction(prefolder_Actions[i]);
       connect(prefolder_Actions[i], SIGNAL(triggered()), this, SLOT(prefolder_Open()));

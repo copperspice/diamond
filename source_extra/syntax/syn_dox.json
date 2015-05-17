@@ -33,8 +33,7 @@
       "\\\\p\\b",
       "\\\\addtogroup\\b",
       "\\\\anchor\\b",
-      "\\\\brief\\b",
-      "\\\\class\\b",
+      "\\\\brief\\b",      
       "\\\\code\\b",
       "\\\\copydoc\\b",
       "\\\\copyright\\b",
@@ -46,15 +45,12 @@
       "\\\\else\\b",
       "\\\\elseif\\b",
       "\\\\endif\\b",
-      "\\\\em\\b",
-      "\\\\enum\\b",
+      "\\\\em\\b",      
       "\\\\endcode\\b",
       "\\\\enddot\\b",
       "\\\\endverbatim\\b",
       "\\\\example\\b",
-      "\\\\exception\\b",
-      "\\\\file\\b",
-      "\\\\group\\b",
+      "\\\\exception\\b",            
       "\\\\htmlinclude\\b",
       "\\\\if\\b",
       "\\\\ifnot\\b",
@@ -66,8 +62,7 @@
       "\\\\ingroup\\b",
       "\\\\mainpage\\b",
       "\\\\name\\b",
-      "\\\\note\\b",
-      "\\\\page\\b",
+      "\\\\note\\b",     
       "\\\\package\\b",
       "\\\\par\\b",
       "\\\\ref\\b",
@@ -92,8 +87,17 @@
    ],
    "ignore-case" : true,
    "keywords": [
-      "\\&[^;]+;"
+      "\\&[^; \t]+;"     
    ],
    "types": [
+      "\\\\class\\b",
+      "\\\\enum\\b",
+      "\\\\file\\b",
+      "\\\\group\\b",
+      "\\\\fn\\b",
+      "\\\\page\\b",
+      "\\\\property\\b",
+      "\\\\typedef\\b",
+      "\\\\var\\b"
    ]
 }

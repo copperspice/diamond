@@ -67,7 +67,9 @@ void MainWindow::openTab_CreateMenus()
       }
 
       openTab_Actions[k] = new QAction(tName, this);
-      openTab_Actions[k]->setData("select-tab");
+
+//    openTab_Actions[k]->setData("select-tab");
+      openTab_Actions[k]->setData(QString("select-tab"));
 
       windowMenu->addAction(openTab_Actions[k]);
 
