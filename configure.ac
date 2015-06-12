@@ -11,7 +11,7 @@ AC_CANONICAL_HOST
 AC_CANONICAL_TARGET
 
 # name of one source file
-AC_CONFIG_SRCDIR([main.cpp])
+AC_CONFIG_SRCDIR([src/main.cpp])
 
 # not a gnu project
 AM_INIT_AUTOMAKE( [foreign] )

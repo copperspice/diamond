@@ -13,7 +13,7 @@ gcclibs=libgcc_s_sjlj-1  libstdc++-6  libwinpthread-1
 cslibs=Core Gui Network WebKit
 
 # location of includes
-AM_CXXFLAGS+=-I..
+AM_CXXFLAGS+=-I../src
 
 if OSTYPE_LINUX
    hunspell_la=`pkg-config hunspell --libs`
@@ -138,64 +138,64 @@ if OSTYPE_WIN
 endif
 
 Diamond_SOURCES = \
-    about.cpp \
-    dialog_advfind.cpp \
-    dialog_buffer.cpp \
-    dialog_colors.cpp \
-    dialog_config.cpp \
-    dialog_find.cpp \
-    dialog_fonts.cpp\
-    dialog_getline.cpp \
-    dialog_macro.cpp \
-    dialog_open.cpp \
-    dialog_options.cpp \
-    dialog_preset.cpp \
-    dialog_print_opt.cpp \
-    dialog_replace.cpp \
-    dialog_symbols.cpp \
-    dialog_xp_getdir.cpp \
-    diamond_edit.cpp \
-    json.cpp \
-    keylineedit.cpp \
-    main.cpp \
-    mainwindow.cpp \
-    options.cpp \
-    print.cpp \
-    recent_files.cpp \
-    recent_tabs.cpp \
-    search.cpp \
-    spell.cpp \
-    spellcheck.cpp \
-    split_window.cpp \
-    syntax.cpp  \
-    support.cpp \
-    util.cpp
+    src/about.cpp \
+    src/dialog_advfind.cpp \
+    src/dialog_buffer.cpp \
+    src/dialog_colors.cpp \
+    src/dialog_config.cpp \
+    src/dialog_find.cpp \
+    src/dialog_fonts.cpp\
+    src/dialog_getline.cpp \
+    src/dialog_macro.cpp \
+    src/dialog_open.cpp \
+    src/dialog_options.cpp \
+    src/dialog_preset.cpp \
+    src/dialog_print_opt.cpp \
+    src/dialog_replace.cpp \
+    src/dialog_symbols.cpp \
+    src/dialog_xp_getdir.cpp \
+    src/diamond_edit.cpp \
+    src/json.cpp \
+    src/keylineedit.cpp \
+    src/main.cpp \
+    src/mainwindow.cpp \
+    src/options.cpp \
+    src/print.cpp \
+    src/recent_files.cpp \
+    src/recent_tabs.cpp \
+    src/search.cpp \
+    src/spell.cpp \
+    src/spellcheck.cpp \
+    src/split_window.cpp \
+    src/syntax.cpp  \
+    src/support.cpp \
+    src/util.cpp
 
 noinst_HEADERS = \
-    about.h \
-    dialog_advfind.h \
-    dialog_buffer.h \
-    dialog_colors.h \
-    dialog_config.h\
-    dialog_find.h \
-    dialog_fonts.h\
-    dialog_getline.h  \
-    dialog_macro.h \
-    dialog_options.h \
-    dialog_open.h \
-    dialog_preset.h \
-    dialog_print_opt.h  \
-    dialog_replace.h  \
-    dialog_symbols.h \
-    dialog_xp_getdir.h \
-    diamond_edit.h \
-    keylineedit.h \
-    mainwindow.h  \
-    search.h \
-    settings.h \
-    spellcheck.h \
-    syntax.h \
-    util.h
+    src/about.h \
+    src/dialog_advfind.h \
+    src/dialog_buffer.h \
+    src/dialog_colors.h \
+    src/dialog_config.h\
+    src/dialog_find.h \
+    src/dialog_fonts.h\
+    src/dialog_getline.h  \
+    src/dialog_macro.h \
+    src/dialog_options.h \
+    src/dialog_open.h \
+    src/dialog_preset.h \
+    src/dialog_print_opt.h  \
+    src/dialog_replace.h  \
+    src/dialog_symbols.h \
+    src/dialog_xp_getdir.h \
+    src/diamond_edit.h \
+    src/keylineedit.h \
+    src/mainwindow.h  \
+    src/search.h \
+    src/settings.h \
+    src/spellcheck.h \
+    src/syntax.h \
+    src/util.h
 
 FORMS = \
     forms/dialog_advfind.ui \

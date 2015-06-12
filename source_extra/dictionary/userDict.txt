@@ -50,3 +50,6 @@ plugins
 backends
 SQL
 copperspice
+scriptable
+enum
+html
