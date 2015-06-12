@@ -11,7 +11,7 @@ var NAVTREE =
     [ "FAQ", "faq.html", null ],
     [ "Licensing", "license.html", null ],
     [ "Timeline", "timeline.html", null ],
-    [ "Support", "^http://www.sourceforge.net/p/copperspice/discussion-diamond", null ]
+    [ "Support", "^http://forum.copperspice.com/viewforum.php?f=5", null ]
   ] ]
 ];
 
