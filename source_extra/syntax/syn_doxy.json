@@ -95,6 +95,7 @@
       "\\\\file\\b",
       "\\\\group\\b",
       "\\\\fn\\b",
+      "\\\\namespace\\b",
       "\\\\page\\b",
       "\\\\property\\b",
       "\\\\typedef\\b",
