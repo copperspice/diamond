@@ -1,13 +1,13 @@
 include copperspice.am
 
+# dist
+distdir_custom=source_dist/dist/Diamond-$(VERSION)
+
 # path to gcc retrieved from configure (windows)
 gccpath=$(dir $(shell which $(word 1,$(CC))))
 
 # list of gcc libraries (windows)  sjlj  or seh
 gcclibs=libgcc_s_*-1  libstdc++-6  libwinpthread-1
-
-# dist
-distdir_custom=source_dist/dist/Diamond-$(VERSION)
 
 # list of CopperSpice libraries
 cslibs=Core Gui Network WebKit
