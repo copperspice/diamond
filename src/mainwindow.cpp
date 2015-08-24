@@ -964,7 +964,7 @@ void MainWindow::moveBar()
    selection.format.setForeground(textColor);
    selection.format.setBackground(backColor);
    selection.format.setProperty(QTextFormat::FullWidthSelection, true);
-   selection.format.setProperty(QTextFormat::UserProperty, "highlightbar");
+   selection.format.setProperty(QTextFormat::UserProperty, QString("highlightbar"));
 
    selection.cursor = m_textEdit->textCursor();
    selection.cursor.clearSelection();
@@ -1109,7 +1109,7 @@ void MainWindow::setSynType(SyntaxTypes data)
    m_ui->actionSyn_C->setChecked(false);
    m_ui->actionSyn_Clipper->setChecked(false);
    m_ui->actionSyn_Css->setChecked(false);
-   m_ui->actionSyn_Doxypress->setChecked(false);
+   m_ui->actionSyn_Doxy->setChecked(false);
    m_ui->actionSyn_ErrorLog->setChecked(false);
    m_ui->actionSyn_Html->setChecked(false);
    m_ui->actionSyn_Java->setChecked(false);  
@@ -1141,7 +1141,7 @@ void MainWindow::setSynType(SyntaxTypes data)
          break;
 
       case SYN_DOXY:
-         m_ui->actionSyn_Doxypress->setChecked(true);
+         m_ui->actionSyn_Doxy->setChecked(true);
          break;
 
       case SYN_ERRLOG:
@@ -1703,7 +1703,7 @@ void MainWindow::about()
    msgB.setWindowIcon(QIcon("://resources/diamond.png"));
 
    msgB.setWindowTitle(tr("About Diamond"));
-   msgB.setText("<p style=margin-right:25><center><h5>Version: 1.1.2<br>Build # 05.19.2015</h5></center></p>");
+   msgB.setText("<p style=margin-right:25><center><h5>Version: 1.2.0<br>Build # 08.15.2015</h5></center></p>");
    msgB.setInformativeText(textBody);
 
    msgB.setStandardButtons(QMessageBox::Ok);
@@ -1790,7 +1790,7 @@ void MainWindow::createConnections()
    connect(m_ui->actionSyn_C,             &QAction::triggered, this, [this](bool){ forceSyntax(SYN_C);       } );
    connect(m_ui->actionSyn_Clipper,       &QAction::triggered, this, [this](bool){ forceSyntax(SYN_CLIPPER); } );
    connect(m_ui->actionSyn_Css,           &QAction::triggered, this, [this](bool){ forceSyntax(SYN_CSS);     } );
-   connect(m_ui->actionSyn_Doxypress,     &QAction::triggered, this, [this](bool){ forceSyntax(SYN_DOXY);    } );
+   connect(m_ui->actionSyn_Doxy,          &QAction::triggered, this, [this](bool){ forceSyntax(SYN_DOXY);    } );
    connect(m_ui->actionSyn_ErrorLog,      &QAction::triggered, this, [this](bool){ forceSyntax(SYN_ERRLOG);  } );
    connect(m_ui->actionSyn_Html,          &QAction::triggered, this, [this](bool){ forceSyntax(SYN_HTML);    } );
    connect(m_ui->actionSyn_Java,          &QAction::triggered, this, [this](bool){ forceSyntax(SYN_JAVA);    } );
@@ -1848,7 +1848,7 @@ void MainWindow::createToggles()
    m_ui->actionSyn_C->setCheckable(true);
    m_ui->actionSyn_Clipper->setCheckable(true);
    m_ui->actionSyn_Css->setCheckable(true);
-   m_ui->actionSyn_Doxypress->setCheckable(true);
+   m_ui->actionSyn_Doxy->setCheckable(true);
    m_ui->actionSyn_ErrorLog->setCheckable(true);
    m_ui->actionSyn_Html->setCheckable(true);
    m_ui->actionSyn_Java->setCheckable(true);

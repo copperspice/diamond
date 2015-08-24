@@ -160,7 +160,7 @@ void DiamondTextEdit::contextMenuEvent(QContextMenuEvent *event)
 
       for (int k = 0; k < oldSelections.size(); ++k) {
 
-         if (oldSelections[k].format.property(QTextFormat::UserProperty) != "highlightbar") {
+         if (oldSelections[k].format.property(QTextFormat::UserProperty).toString() != "highlightbar") {
             isSelected = true;
             break;
          }
@@ -345,7 +345,7 @@ void DiamondTextEdit::cut()
       // obtain text
       for (int k = 0; k < oldSelections.size(); ++k) {
 
-         if (oldSelections[k].format.property(QTextFormat::UserProperty) != "highlightbar") {
+         if (oldSelections[k].format.property(QTextFormat::UserProperty).toString() != "highlightbar") {
             text += oldSelections[k].cursor.selectedText() + "\n";
          }
       }
@@ -378,7 +378,7 @@ void DiamondTextEdit::cut()
 
          for (int k = 0; k < oldSelections.size(); ++k) {
 
-            if (oldSelections[k].format.property(QTextFormat::UserProperty) != "highlightbar") {
+            if (oldSelections[k].format.property(QTextFormat::UserProperty).toString() != "highlightbar") {
                oldSelections[k].cursor.removeSelectedText();
             }
          }
@@ -402,7 +402,7 @@ void DiamondTextEdit::copy()
       // obtain text
       for (int k = 0; k < oldSelections.count(); ++k) {
 
-         if (oldSelections[k].format.property(QTextFormat::UserProperty) != "highlightbar") {
+         if (oldSelections[k].format.property(QTextFormat::UserProperty).toString() != "highlightbar") {
             text += oldSelections[k].cursor.selectedText() + "\n";
          }
       }
@@ -570,7 +570,7 @@ bool DiamondTextEdit::event(QEvent *event)
             QList<QTextEdit::ExtraSelection> oldSelections = this->extraSelections();
 
             for (int k=0; k < oldSelections.size(); ++k) {
-               if (oldSelections[k].format.property(QTextFormat::UserProperty) == "highlightbar") {
+               if (oldSelections[k].format.property(QTextFormat::UserProperty).toString() == "highlightbar") {
                   extraSelections.append(oldSelections[k]);
                   break;
                }

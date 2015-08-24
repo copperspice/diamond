@@ -60,8 +60,6 @@ QStringList MainWindow::spell_getMaybe(QString word)
    }
 }
 
-
-//*
 void MainWindow::setSyntax()
 {
    if (m_syntaxParser) {
@@ -85,7 +83,7 @@ void MainWindow::setSyntax()
       } else if (suffix == "prg") {
          suffix = "clipper";                 
 
-      } else if (suffix == "dox" || suffix == "doxypress") {
+      } else if (suffix == "dox" || suffix == "doxypress"  || suffix == "l") {
          suffix = "doxy";
 
       } else if (suffix == "err" || suffix == "log") {
@@ -116,7 +114,7 @@ void MainWindow::setSyntax()
 
    if (! QFile::exists(synFName)) {
       // use default
-      suffix = "txt";
+      suffix   = "txt";
       synFName = m_struct.pathSyntax + "syn_txt.json";
    }
 
@@ -139,7 +137,7 @@ void MainWindow::setSyntax()
       } else if (suffix == "css")  {
          m_syntaxEnum = SYN_CSS;
 
-      } else if (suffix == "dox")  {
+      } else if (suffix == "doxy")  {
          m_syntaxEnum = SYN_DOXY;
 
       } else if (suffix == "errlog")  {
@@ -217,11 +215,11 @@ void MainWindow::forceSyntax(SyntaxTypes data)
          break;
 
       case SYN_DOXY:
-         synFName = m_struct.pathSyntax+ "syn_doxy.json";
+         synFName = m_struct.pathSyntax + "syn_doxy.json";
          break;
 
       case SYN_ERRLOG:
-         synFName = m_struct.pathSyntax+ "syn_errlog.json";
+         synFName = m_struct.pathSyntax + "syn_errlog.json";
          break;
 
       case SYN_HTML:

@@ -171,7 +171,7 @@
      <addaction name="actionSyn_C"/>
      <addaction name="actionSyn_Clipper"/>
      <addaction name="actionSyn_Css"/>
-     <addaction name="actionSyn_Doxypress"/>
+     <addaction name="actionSyn_Doxy"/>
      <addaction name="actionSyn_ErrorLog"/>
      <addaction name="actionSyn_Html"/>
      <addaction name="actionSyn_Java"/>
@@ -384,7 +384,7 @@
     <string>HTML</string>
    </property>
   </action>
-  <action name="actionSyn_Doxypress">
+  <action name="actionSyn_Doxy">
    <property name="text">
     <string>DoxyPress</string>
    </property>
