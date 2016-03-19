@@ -1,7 +1,13 @@
-/* Standard CSS for DoxyPress 1.1.0 */
+/* Standard CSS for DoxyPress 1.2.0 */
 
 body, table, div, p, dl {
    font: 400 14px/22px Roboto,sans-serif;
+}
+
+body {
+   background-color: white;
+   color: black;
+   margin: 0;
 }
 
 .title {
@@ -17,12 +23,6 @@ caption {
 
 .caption {
    font-weight: bold;
-}
-
-body {
-   background-color: white;
-   color: black;
-   margin: 0;
 }
 
 h1.groupheader {
@@ -211,6 +211,11 @@ div.line {
    transition-duration: 0.5s;
 }
 
+div.line:after {
+   content:"\000A";
+   white-space: pre;
+}
+
 div.line.glow {
    background-color: cyan;
    box-shadow: 0 0 10px cyan;
@@ -226,7 +231,7 @@ span.lineno {
    text-align: right;
    border-right: 2px solid #0F0;
    background-color: #E8E8E8;
-        white-space: pre;
+   white-space: pre;
 }
 span.lineno a {
    background-color: #D8D8D8;
@@ -234,6 +239,15 @@ span.lineno a {
 
 span.lineno a:hover {
    background-color: #C8C8C8;
+}
+
+div.classindex ul {
+   list-style: none;
+   padding-left: 0;
+}
+
+div.classindex span.ai {
+   display: inline-block;
 }
 
 div.ah, span.ah {
@@ -251,7 +265,7 @@ div.ah, span.ah {
    -webkit-box-shadow: 2px 2px 3px #999;
    -moz-box-shadow: rgba(0, 0, 0, 0.15) 2px 2px 2px;
    background-image: -webkit-gradient(linear, left top, left bottom, from(#eee), to(#000),color-stop(0.3, #444));
-   background-image: -moz-linear-gradient(center top, #eee 0%, #444 40%, #000);
+   background-image: -moz-linear-gradient(center top, #eee 0%, #444 40%, #000 110%);
 }
 
 div.groupHeader {
@@ -757,8 +771,7 @@ div.directory .levels span {
     margin-left: 4px;
     margin-right: 4px;
     display: inline-block;
-    color: white;
-    vertical-align: top;
+    color: white;   
     position: relative;
     top: -3px;
 }
@@ -852,6 +865,10 @@ address {
    color: #2a3d61;
 }
 
+table.doxtable caption {
+   caption-side: top;
+}
+
 table.doxtable {
    border-collapse:collapse;
    margin-top: 4px;
@@ -933,6 +950,17 @@ table.fieldtable {
    border-bottom: 1px solid #a8b8d9;
 }
 
+table.classindex
+{
+   margin: 10px;
+   white-space: nowrap;
+   margin-left: 3%;
+   margin-right: 3%;
+   width: 94%;
+   border: 0;
+   border-spacing: 0; 
+   padding: 0;
+}
 
 .tabsearch {
    top: 0px;
@@ -1202,9 +1230,9 @@ dl.citelist {
 
 dl.citelist dt {
    color:#334975;
-   float:left;
-   font-weight:bold;
-   margin-right:10px;
+   float: left;
+   font-weight: bold;
+   margin-right: 10px;
    padding:5px;
 }
 
@@ -1220,7 +1248,7 @@ div.toc {
    border-radius: 7px 7px 7px 7px;
    float: right;
    height: auto;
-   margin: 0 20px 10px 10px;
+   margin: 0 8px 10px 10px;
    width: 200px;
 }
 
@@ -1432,12 +1460,14 @@ tr.heading h2 {
 #powerTip.e:after, #powerTip.e:before {
    left: 100%;
 }
+
 #powerTip.e:after {
    border-left-color: #ffffff;
    border-width: 10px;
    top: 50%;
    margin-top: -10px;
 }
+
 #powerTip.e:before {
    border-left-color: #808080;
    border-width: 11px;

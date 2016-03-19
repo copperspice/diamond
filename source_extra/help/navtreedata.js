@@ -1,7 +1,6 @@
 var NAVTREE =
 [
   [ "Diamond Editor", "index.html", [
-    [ "Introduction", "index.html", null ],
     [ "Installing", "install.html", "install" ],
     [ "Building", "build.html", "build" ],
     [ "Features", "features.html", null ],
