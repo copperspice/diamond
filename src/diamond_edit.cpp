@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright (c) 2012-2015 Barbara Geller
+* Copyright (c) 2012-2016 Barbara Geller
 * All rights reserved.
 *
 * This file is part of Diamond Editor.
@@ -59,8 +59,8 @@ DiamondTextEdit::DiamondTextEdit(MainWindow *from, struct Settings settings, Spe
    m_isSpellCheck = settings.isSpellCheck;
 
    // line highlight bar
-   connect(this, SIGNAL(blockCountChanged(int)), this, SLOT(update_LineNumWidth(int)));
-   connect(this, SIGNAL(updateRequest(const QRect &,int)), this, SLOT(update_LineNumArea(const QRect &,int)));
+   connect(this, &DiamondTextEdit::blockCountChanged, this, &DiamondTextEdit::update_LineNumWidth);
+   connect(this, &DiamondTextEdit::updateRequest,     this, &DiamondTextEdit::update_LineNumArea);
 }
 
 DiamondTextEdit::~DiamondTextEdit()
@@ -185,7 +185,7 @@ void DiamondTextEdit::contextMenuEvent(QContextMenuEvent *event)
       if (cnt > 0)  {              
 
          for (int k = 0; k < cnt; ++k)  {
-            menu->addAction(m_maybeList[k],  m_mainWindow, SLOT(spell_replaceWord())  );
+            menu->addAction(m_maybeList[k], m_mainWindow, SLOT(spell_replaceWord())  );
          }
 
          menu->addAction("Add to User Dictionary", m_mainWindow, SLOT(spell_addUserDict()) );

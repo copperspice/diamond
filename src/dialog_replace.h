@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright (c) 2012-2015 Barbara Geller
+* Copyright (c) 2012-2016 Barbara Geller
 * All rights reserved.
 *
 * This file is part of Diamond Editor.
@@ -57,24 +57,23 @@ class Dialog_Replace : public QDialog
       bool m_upd_Find;
       bool m_upd_Replace;
 
-      CS_SLOT_1(Private, void replace())
-      CS_SLOT_2(replace) 
-      CS_SLOT_1(Private, void replaceAll())
-      CS_SLOT_2(replaceAll) 
-      CS_SLOT_1(Private, void cancel())
-      CS_SLOT_2(cancel) 
+      void replace();
+      void replaceAll();
+      void cancel();
 
-      CS_SLOT_1(Private, void combo_ContextMenu_F(const QPoint & pt))
-      CS_SLOT_2(combo_ContextMenu_F) 
+      void combo_ContextMenu_F(const QPoint & pt);
+
       CS_SLOT_1(Private, void menu_clearList_F())
       CS_SLOT_2(menu_clearList_F) 
+
       CS_SLOT_1(Private, void menu_deleteEntry_F())
       CS_SLOT_2(menu_deleteEntry_F) 
 
-      CS_SLOT_1(Private, void combo_ContextMenu_R(const QPoint & pt))
-      CS_SLOT_2(combo_ContextMenu_R) 
+      void combo_ContextMenu_R(const QPoint & pt);
+
       CS_SLOT_1(Private, void menu_clearList_R())
       CS_SLOT_2(menu_clearList_R) 
+
       CS_SLOT_1(Private, void menu_deleteEntry_R())
       CS_SLOT_2(menu_deleteEntry_R) 
 };

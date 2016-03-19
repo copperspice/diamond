@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright (c) 2012-2015 Barbara Geller
+* Copyright (c) 2012-2016 Barbara Geller
 * All rights reserved.
 *
 * This file is part of Diamond Editor.
@@ -28,6 +28,7 @@
 #include <QPalette>
 #include <QString>
 #include <QStringList>
+#include <QToolButton>
 
 Dialog_Colors::Dialog_Colors(MainWindow *parent)
    : QDialog(parent), m_ui(new Ui::Dialog_Colors)
@@ -46,36 +47,36 @@ Dialog_Colors::Dialog_Colors(MainWindow *parent)
    //
    initData();
 
-   connect(m_ui->text_TB,     SIGNAL(clicked()), this, SLOT(text_TB())     );
-   connect(m_ui->back_TB,     SIGNAL(clicked()), this, SLOT(back_TB())     );
-   connect(m_ui->highText_TB, SIGNAL(clicked()), this, SLOT(highText_TB()) );
-   connect(m_ui->highBack_TB, SIGNAL(clicked()), this, SLOT(highBack_TB()) );   
+   connect(m_ui->text_TB,           &QToolButton::clicked, this, &Dialog_Colors::text_TB     );
+   connect(m_ui->back_TB,           &QToolButton::clicked, this, &Dialog_Colors::back_TB     );
+   connect(m_ui->highText_TB,       &QToolButton::clicked, this, &Dialog_Colors::highText_TB );
+   connect(m_ui->highBack_TB,       &QToolButton::clicked, this, &Dialog_Colors::highBack_TB );
 
-   connect(m_ui->key_TB,      SIGNAL(clicked()), this, SLOT(key_TB())      );
-   connect(m_ui->type_TB,     SIGNAL(clicked()), this, SLOT(type_TB())     );
-   connect(m_ui->class_TB,    SIGNAL(clicked()), this, SLOT(class_TB())    );
-   connect(m_ui->func_TB,     SIGNAL(clicked()), this, SLOT(func_TB())     );
-   connect(m_ui->quote_TB,    SIGNAL(clicked()), this, SLOT(quote_TB())    );
-   connect(m_ui->comment_TB,  SIGNAL(clicked()), this, SLOT(comment_TB())  );
-   connect(m_ui->mline_TB,    SIGNAL(clicked()), this, SLOT(mline_TB())    );
+   connect(m_ui->key_TB,            &QToolButton::clicked, this, &Dialog_Colors::key_TB      );
+   connect(m_ui->type_TB,           &QToolButton::clicked, this, &Dialog_Colors::type_TB     );
+   connect(m_ui->class_TB,          &QToolButton::clicked, this, &Dialog_Colors::class_TB    );
+   connect(m_ui->func_TB,           &QToolButton::clicked, this, &Dialog_Colors::func_TB     );
+   connect(m_ui->quote_TB,          &QToolButton::clicked, this, &Dialog_Colors::quote_TB    );
+   connect(m_ui->comment_TB,        &QToolButton::clicked, this, &Dialog_Colors::comment_TB  );
+   connect(m_ui->mline_TB,          &QToolButton::clicked, this, &Dialog_Colors::mline_TB    );
 
-   connect(m_ui->key_Bold_CB,       SIGNAL(clicked()), this, SLOT(key_bold())      );
-   connect(m_ui->key_Italic_CB,     SIGNAL(clicked()), this, SLOT(key_italic())    );
-   connect(m_ui->type_Bold_CB,      SIGNAL(clicked()), this, SLOT(type_bold())     );
-   connect(m_ui->type_Italic_CB,    SIGNAL(clicked()), this, SLOT(type_italic())   );
-   connect(m_ui->class_Bold_CB,     SIGNAL(clicked()), this, SLOT(class_bold())    );
-   connect(m_ui->class_Italic_CB,   SIGNAL(clicked()), this, SLOT(class_italic())  );
-   connect(m_ui->func_Bold_CB,      SIGNAL(clicked()), this, SLOT(func_bold())     );
-   connect(m_ui->func_Italic_CB,    SIGNAL(clicked()), this, SLOT(func_italic())   );
-   connect(m_ui->quote_Bold_CB,     SIGNAL(clicked()), this, SLOT(quote_bold())    );
-   connect(m_ui->quote_Italic_CB,   SIGNAL(clicked()), this, SLOT(quote_italic())  );
-   connect(m_ui->comment_Bold_CB,   SIGNAL(clicked()), this, SLOT(comment_bold())  );
-   connect(m_ui->comment_Italic_CB, SIGNAL(clicked()), this, SLOT(comment_italic()));
-   connect(m_ui->mline_Bold_CB,     SIGNAL(clicked()), this, SLOT(mline_bold())    );
-   connect(m_ui->mline_Italic_CB,   SIGNAL(clicked()), this, SLOT(mline_italic())  );
+   connect(m_ui->key_Bold_CB,       &QCheckBox::clicked,   this, &Dialog_Colors::key_bold       );
+   connect(m_ui->key_Italic_CB,     &QCheckBox::clicked,   this, &Dialog_Colors::key_italic     );
+   connect(m_ui->type_Bold_CB,      &QCheckBox::clicked,   this, &Dialog_Colors::type_bold      );
+   connect(m_ui->type_Italic_CB,    &QCheckBox::clicked,   this, &Dialog_Colors::type_italic    );
+   connect(m_ui->class_Bold_CB,     &QCheckBox::clicked,   this, &Dialog_Colors::class_bold     );
+   connect(m_ui->class_Italic_CB,   &QCheckBox::clicked,   this, &Dialog_Colors::class_italic   );
+   connect(m_ui->func_Bold_CB,      &QCheckBox::clicked,   this, &Dialog_Colors::func_bold      );
+   connect(m_ui->func_Italic_CB,    &QCheckBox::clicked,   this, &Dialog_Colors::func_italic    );
+   connect(m_ui->quote_Bold_CB,     &QCheckBox::clicked,   this, &Dialog_Colors::quote_bold     );
+   connect(m_ui->quote_Italic_CB,   &QCheckBox::clicked,   this, &Dialog_Colors::quote_italic   );
+   connect(m_ui->comment_Bold_CB,   &QCheckBox::clicked,   this, &Dialog_Colors::comment_bold   );
+   connect(m_ui->comment_Italic_CB, &QCheckBox::clicked,   this, &Dialog_Colors::comment_italic );
+   connect(m_ui->mline_Bold_CB,     &QCheckBox::clicked,   this, &Dialog_Colors::mline_bold     );
+   connect(m_ui->mline_Italic_CB,   &QCheckBox::clicked,   this, &Dialog_Colors::mline_italic   );
 
-   connect(m_ui->save_PB,           SIGNAL(clicked()), this, SLOT(Save()));
-   connect(m_ui->cancel_PB,         SIGNAL(clicked()), this, SLOT(Cancel()));  
+   connect(m_ui->save_PB,           &QPushButton::clicked, this, &Dialog_Colors::save);
+   connect(m_ui->cancel_PB,         &QPushButton::clicked, this, &Dialog_Colors::cancel);
 }
 
 Dialog_Colors::~Dialog_Colors()
@@ -477,14 +478,12 @@ void Dialog_Colors::mline_italic()
    updateParser(true);
 }
 
-
-//
-void Dialog_Colors::Save()
+void Dialog_Colors::save()
 {
    this->done(QDialog::Accepted);
 }
 
-void Dialog_Colors::Cancel()
+void Dialog_Colors::cancel()
 {
    this->done(QDialog::Rejected);
 }

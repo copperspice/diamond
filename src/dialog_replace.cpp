@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright (c) 2012-2015 Barbara Geller
+* Copyright (c) 2012-2016 Barbara Geller
 * All rights reserved.
 *
 * This file is part of Diamond Editor.
@@ -50,9 +50,9 @@ Dialog_Replace::Dialog_Replace(MainWindow *parent, QString findText, QStringList
    m_ui->find_Combo->lineEdit()->selectAll();
    m_ui->replace_Combo->lineEdit()->selectAll();
 
-   connect(m_ui->replace_PB,     SIGNAL(clicked()),this, SLOT(replace()));
-   connect(m_ui->replaceAll_PB,  SIGNAL(clicked()),this, SLOT(replaceAll()));
-   connect(m_ui->cancel_PB,      SIGNAL(clicked()),this, SLOT(cancel()));
+   connect(m_ui->replace_PB,     &QPushButton::clicked, this, &Dialog_Replace::replace);
+   connect(m_ui->replaceAll_PB,  &QPushButton::clicked, this, &Dialog_Replace::replaceAll);
+   connect(m_ui->cancel_PB,      &QPushButton::clicked, this, &Dialog_Replace::cancel);
 }
 
 Dialog_Replace::~Dialog_Replace()
@@ -70,11 +70,10 @@ void Dialog_Replace::setUp()
 
    // add a context menu
    m_ui->find_Combo->setContextMenuPolicy(Qt::CustomContextMenu);
-   connect(m_ui->find_Combo, SIGNAL(customContextMenuRequested(const QPoint &)), this, SLOT(combo_ContextMenu_F(const QPoint &)));
+   connect(m_ui->find_Combo,    &QComboBox::customContextMenuRequested, this, &Dialog_Replace::combo_ContextMenu_F);
 
    m_ui->replace_Combo->setContextMenuPolicy(Qt::CustomContextMenu);
-   connect(m_ui->replace_Combo, SIGNAL(customContextMenuRequested(const QPoint &)), this, SLOT(combo_ContextMenu_R(const QPoint &)));
-
+   connect(m_ui->replace_Combo, &QComboBox::customContextMenuRequested, this, &Dialog_Replace::combo_ContextMenu_R);
 }
 
 void Dialog_Replace::combo_ContextMenu_F(const QPoint &pt)
@@ -86,8 +85,8 @@ void Dialog_Replace::combo_ContextMenu_F(const QPoint &pt)
    menu->addAction("Delete Find Entry", this, SLOT(menu_deleteEntry_F()) );
    menu->popup(QCursor::pos());
 
-   // takes care of deleting the menu after displayed, avoids a memory leak
-   connect(menu, SIGNAL(aboutToHide()), menu, SLOT(deleteLater()));
+   // deletes menu after displayed
+   connect(menu, &QMenu::aboutToHide, menu, &QMenu::deleteLater);
 }
 
 void Dialog_Replace::combo_ContextMenu_R(const QPoint &pt)
@@ -99,8 +98,8 @@ void Dialog_Replace::combo_ContextMenu_R(const QPoint &pt)
    menu->addAction("Delete Replace Entry", this, SLOT(menu_deleteEntry_R()) );
    menu->popup(QCursor::pos());
 
-   // takes care of deleting the menu after displayed, avoids a memory leak
-   connect(menu, SIGNAL(aboutToHide()), menu, SLOT(deleteLater()));
+   // deletes menu after displayed
+   connect(menu, &QMenu::aboutToHide, menu, &QMenu::deleteLater);
 }
 
 void Dialog_Replace::menu_clearList_F()
@@ -192,7 +191,4 @@ bool Dialog_Replace::get_Upd_Replace()
 {
    return m_upd_Replace;
 }
-
-
-
 

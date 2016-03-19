@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright (c) 2012-2015 Barbara Geller
+* Copyright (c) 2012-2016 Barbara Geller
 * All rights reserved.
 *
 * This file is part of Diamond Editor.
@@ -48,8 +48,8 @@ Dialog_Symbols::Dialog_Symbols(MainWindow *parent)
 
    m_ui->sampleList->setFocus();
 
-   connect(m_ui->insert_PB, SIGNAL(clicked()),this, SLOT(Insert()));
-   connect(m_ui->cancel_PB, SIGNAL(clicked()),this, SLOT(Cancel()));  
+   connect(m_ui->insert_PB, &QPushButton::clicked, this, &Dialog_Symbols::insert);
+   connect(m_ui->cancel_PB, &QPushButton::clicked, this, &Dialog_Symbols::cancel);
 }
 
 Dialog_Symbols::~Dialog_Symbols()
@@ -99,12 +99,12 @@ QStringList Dialog_Symbols::initData()
    return data;
 }
 
-void Dialog_Symbols::Insert()
+void Dialog_Symbols::insert()
 {
    this->done(QDialog::Accepted);
 }
 
-void Dialog_Symbols::Cancel()
+void Dialog_Symbols::cancel()
 {
    this->done(QDialog::Rejected);
 }

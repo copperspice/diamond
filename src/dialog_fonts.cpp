@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright (c) 2012-2015 Barbara Geller
+* Copyright (c) 2012-2016 Barbara Geller
 * All rights reserved.
 *
 * This file is part of Diamond Editor.
@@ -23,6 +23,7 @@
 #include "util.h"
 
 #include <QFontDialog>
+#include <QToolButton>
 
 Dialog_Fonts::Dialog_Fonts(QFont normal, QFont column)
    : m_ui(new Ui::Dialog_Fonts)
@@ -36,11 +37,10 @@ Dialog_Fonts::Dialog_Fonts(QFont normal, QFont column)
    m_ui->fontNormal->setText(m_fontNormal.toString());
    m_ui->fontColumn->setText(m_fontColumn.toString());
 
-   connect(m_ui->fontNormal_TB,  SIGNAL(clicked()), this, SLOT(fontNormal()));
-   connect(m_ui->fontColumn_TB,  SIGNAL(clicked()), this, SLOT(fontColumn()));
-
-   connect(m_ui->save_PB,        SIGNAL(clicked()), this, SLOT(save()));
-   connect(m_ui->cancel_PB,      SIGNAL(clicked()), this, SLOT(cancel()));
+   connect(m_ui->fontNormal_TB,  &QToolButton::clicked, this, &Dialog_Fonts::fontNormal);
+   connect(m_ui->fontColumn_TB,  &QToolButton::clicked, this, &Dialog_Fonts::fontColumn);
+   connect(m_ui->save_PB,        &QPushButton::clicked, this, &Dialog_Fonts::save);
+   connect(m_ui->cancel_PB,      &QPushButton::clicked, this, &Dialog_Fonts::cancel);
 }
 
 Dialog_Fonts::~Dialog_Fonts()

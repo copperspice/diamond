@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright (c) 2012-2015 Barbara Geller
+* Copyright (c) 2012-2016 Barbara Geller
 * All rights reserved.
 *
 * This file is part of Diamond Editor.
@@ -428,9 +428,8 @@ void MainWindow::advFind_ShowFiles(QList<advFindStruct> foundList)
    m_splitter->setOrientation(Qt::Vertical);
    m_splitter->addWidget(m_findWidget);
 
-   // signal
-   connect(view, SIGNAL(clicked(const QModelIndex &)),this, SLOT(advFind_View(const QModelIndex &)));
-   connect(closeButton, SIGNAL(clicked()), this, SLOT(advFind_Close()));
+   connect(view,        &QTableView::clicked,  this, &MainWindow::advFind_View);
+   connect(closeButton, &QPushButton::clicked, this, &MainWindow::advFind_Close);
 }
 
 void MainWindow::advFind_Close()

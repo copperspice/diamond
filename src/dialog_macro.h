@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright (c) 2012-2015 Barbara Geller
+* Copyright (c) 2012-2016 Barbara Geller
 * All rights reserved.
 *
 * This file is part of Diamond Editor.
@@ -57,17 +57,10 @@ class Dialog_Macro : public QDialog
       MacroEnum m_enum;
       QStringList m_macroList;
 
-      CS_SLOT_1(Private, void Select())
-      CS_SLOT_2(Select) 
-
-      CS_SLOT_1(Private, void View())
-      CS_SLOT_2(View) 
-
-      CS_SLOT_1(Private, void Cancel())
-      CS_SLOT_2(Cancel)
-
-      CS_SLOT_1(Private, void tableDataChanged(const QModelIndex & topLeft,const QModelIndex & bottomRight))
-      CS_SLOT_2(tableDataChanged) 
+      void select();   
+      void view();    
+      void cancel();    
+      void tableDataChanged(const QModelIndex & topLeft,const QModelIndex & bottomRight);      
 };
 
 #endif

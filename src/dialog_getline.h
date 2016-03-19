@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright (c) 2012-2015 Barbara Geller
+* Copyright (c) 2012-2016 Barbara Geller
 * All rights reserved.
 *
 * This file is part of Diamond Editor.
@@ -39,11 +39,8 @@ class Dialog_GetLine : public QDialog
    private:
       Ui::Dialog_GetLine *m_ui;
 
-      CS_SLOT_1(Private, void Ok())
-      CS_SLOT_2(Ok) 
-
-      CS_SLOT_1(Private, void Cancel())
-      CS_SLOT_2(Cancel) 
+      void ok();
+      void cancel();
 };
 
 #endif

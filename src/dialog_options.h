@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright (c) 2012-2015 Barbara Geller
+* Copyright (c) 2012-2016 Barbara Geller
 * All rights reserved.
 *
 * This file is part of Diamond Editor.
@@ -46,26 +46,13 @@ class Dialog_Options : public QDialog
       struct Options m_options;
       void initData();
 
-      CS_SLOT_1(Private, void pick_Main())
-      CS_SLOT_2(pick_Main) 
-
-      CS_SLOT_1(Private, void pick_User())
-      CS_SLOT_2(pick_User) 
-
-      CS_SLOT_1(Private, void pick_Syntax())
-      CS_SLOT_2(pick_Syntax) 
-
-      CS_SLOT_1(Private, void pick_About())
-      CS_SLOT_2(pick_About) 
-
-      CS_SLOT_1(Private, void reset_StandardKey())
-      CS_SLOT_2(reset_StandardKey) 
-
-      CS_SLOT_1(Private, void Save())
-      CS_SLOT_2(Save) 
-
-      CS_SLOT_1(Private, void Cancel())
-      CS_SLOT_2(Cancel) 
+      void pick_Main();
+      void pick_User();
+      void pick_Syntax();
+      void pick_About();
+      void reset_StandardKey();
+      void save();
+      void cancel(); 
 };
 
 #endif

@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright (c) 2012-2015 Barbara Geller
+* Copyright (c) 2012-2016 Barbara Geller
 * All rights reserved.
 *
 * This file is part of Diamond Editor.
@@ -23,6 +23,7 @@
 
 #include <QDir>
 #include <QFileDialog>
+#include <QToolButton>
 
 Dialog_AdvFind::Dialog_AdvFind(MainWindow *parent, QString findText, QString fileType, QString findFolder, bool searchFolders)
    : QDialog(parent), m_ui(new Ui::Dialog_AdvFind)
@@ -40,9 +41,9 @@ Dialog_AdvFind::Dialog_AdvFind(MainWindow *parent, QString findText, QString fil
       m_ui->searchSubFolders_CKB->setChecked(true);
    }
 
-   connect(m_ui->folder_TB, SIGNAL(clicked()),this, SLOT(pick_Folder()));
-   connect(m_ui->find_PB,   SIGNAL(clicked()),this, SLOT(Find()));
-   connect(m_ui->cancel_PB, SIGNAL(clicked()),this, SLOT(Cancel()));
+   connect(m_ui->folder_TB, &QToolButton::clicked, this, &Dialog_AdvFind::pick_Folder);
+   connect(m_ui->find_PB,   &QPushButton::clicked, this, &Dialog_AdvFind::find);
+   connect(m_ui->cancel_PB, &QPushButton::clicked, this, &Dialog_AdvFind::cancel);
 }
 
 Dialog_AdvFind::~Dialog_AdvFind()
@@ -91,12 +92,12 @@ void Dialog_AdvFind::showBusyMsg()
 }
 
 
-void Dialog_AdvFind::Cancel()
+void Dialog_AdvFind::cancel()
 {
    this->done(0);
 }
 
-void Dialog_AdvFind::Find()
+void Dialog_AdvFind::find()
 {
    this->done(1);
 }

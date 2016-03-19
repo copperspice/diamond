@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright (c) 2012-2015 Barbara Geller
+* Copyright (c) 2012-2016 Barbara Geller
 * All rights reserved.
 *
 * This file is part of Diamond Editor.
@@ -48,8 +48,8 @@ Dialog_Find::Dialog_Find(MainWindow *parent, QString findText, QStringList findL
    // any key deletes first, right arrow to continue typing
    m_ui->find_Combo->lineEdit()->selectAll();
 
-   connect(m_ui->find_PB,   SIGNAL(clicked()),this, SLOT(Find()));
-   connect(m_ui->cancel_PB, SIGNAL(clicked()),this, SLOT(Cancel()));
+   connect(m_ui->find_PB,   &QPushButton::clicked, this, &Dialog_Find::find);
+   connect(m_ui->cancel_PB, &QPushButton::clicked, this, &Dialog_Find::cancel);
 }
 
 Dialog_Find::~Dialog_Find()
@@ -61,13 +61,12 @@ void Dialog_Find::setUp()
 {
    m_ui->down_RB->setChecked(true);
 
-   //
    m_ui->find_Combo->setEditable(true);
    m_ui->find_Combo->addItems(m_findList);
 
    // add a context menu
    m_ui->find_Combo->setContextMenuPolicy(Qt::CustomContextMenu);
-   connect(m_ui->find_Combo, SIGNAL(customContextMenuRequested(const QPoint &)), this, SLOT(combo_ContextMenu(const QPoint &)));
+   connect(m_ui->find_Combo, &QComboBox::customContextMenuRequested, this, &Dialog_Find::combo_ContextMenu);
 }
 
 void Dialog_Find::combo_ContextMenu(const QPoint &pt)
@@ -75,12 +74,12 @@ void Dialog_Find::combo_ContextMenu(const QPoint &pt)
    QMenu *menu = m_ui->find_Combo->lineEdit()->createStandardContextMenu();
 
    menu->addSeparator();
-   menu->addAction("Clear Find List",   this, SLOT(menu_clearList()) );
+   menu->addAction("Clear Find List",   this, SLOT(menu_clearList())   );
    menu->addAction("Delete Find Entry", this, SLOT(menu_deleteEntry()) );
    menu->popup(QCursor::pos());
 
    // takes care of deleting the menu after displayed, avoids a memory leak
-   connect(menu, SIGNAL(aboutToHide()), menu, SLOT(deleteLater()));
+   connect(menu, &QMenu::aboutToHide, menu, &Dialog_Find::deleteLater);
 }
 
 void Dialog_Find::menu_clearList()
@@ -102,12 +101,12 @@ void Dialog_Find::menu_deleteEntry()
    m_upd_Find = true;
 }
 
-void Dialog_Find::Find()
+void Dialog_Find::find()
 {
    this->done(1);
 }
 
-void Dialog_Find::Cancel()
+void Dialog_Find::cancel()
 {  
    this->done(0);
 }

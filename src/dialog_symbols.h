@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright (c) 2012-2015 Barbara Geller
+* Copyright (c) 2012-2016 Barbara Geller
 * All rights reserved.
 *
 * This file is part of Diamond Editor.
@@ -41,11 +41,8 @@ class Dialog_Symbols : public QDialog
       MainWindow *m_parent;
       QStringList initData();
 
-      CS_SLOT_1(Private, void Insert())
-      CS_SLOT_2(Insert) 
-
-      CS_SLOT_1(Private, void Cancel())
-      CS_SLOT_2(Cancel)      
+      void insert();
+      void cancel();
 };
 
 #endif

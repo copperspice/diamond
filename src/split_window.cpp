@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright (c) 2012-2015 Barbara Geller
+* Copyright (c) 2012-2016 Barbara Geller
 * All rights reserved.
 *
 * This file is part of Diamond Editor.
@@ -92,7 +92,7 @@ void MainWindow::split_Horizontal()
 
    m_splitWidget->setLayout(layout);
 
-   m_splitter->setOrientation(Qt::Horizontal);        // Difference Here
+   m_splitter->setOrientation(Qt::Horizontal);        // difference Here
    m_splitter->addWidget(m_splitWidget);
 
    //
@@ -101,18 +101,19 @@ void MainWindow::split_Horizontal()
 
    moveBar();
 
-   connect(m_splitName_CB,   SIGNAL(currentIndexChanged(int)), this, SLOT(split_NameChanged(int)));
-   connect(m_splitClose_PB,  SIGNAL(clicked()),                this, SLOT(split_CloseButton()));
+   connect(m_splitName_CB,   static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged),
+               this, &MainWindow::split_NameChanged);
 
-   connect(m_split_textEdit->document(), SIGNAL(contentsChanged()), this, SLOT(set_splitCombo()));
+   connect(m_splitClose_PB,  &QPushButton::clicked, this, &MainWindow::split_CloseButton);
 
-   connect(m_split_textEdit, SIGNAL(cursorPositionChanged()), this, SLOT(moveBar()));
-   connect(m_split_textEdit, SIGNAL(cursorPositionChanged()), this, SLOT(setStatus_LineCol()));
+   connect(m_split_textEdit->document(), &QTextDocument::contentsChanged, this, &MainWindow::set_splitCombo);
+   connect(m_split_textEdit, &DiamondTextEdit::cursorPositionChanged,     this, &MainWindow::moveBar);
+   connect(m_split_textEdit, &DiamondTextEdit::cursorPositionChanged,     this, &MainWindow::setStatus_LineCol);
 
-   connect(m_split_textEdit, SIGNAL(undoAvailable(bool)), m_ui->actionUndo, SLOT(setEnabled(bool)));
-   connect(m_split_textEdit, SIGNAL(redoAvailable(bool)), m_ui->actionRedo, SLOT(setEnabled(bool)));
-   connect(m_split_textEdit, SIGNAL(copyAvailable(bool)), m_ui->actionCut,  SLOT(setEnabled(bool)));
-   connect(m_split_textEdit, SIGNAL(copyAvailable(bool)), m_ui->actionCopy, SLOT(setEnabled(bool)));   
+   connect(m_split_textEdit, &DiamondTextEdit::undoAvailable, m_ui->actionUndo, &QAction::setEnabled);
+   connect(m_split_textEdit, &DiamondTextEdit::redoAvailable, m_ui->actionRedo, &QAction::setEnabled);
+   connect(m_split_textEdit, &DiamondTextEdit::copyAvailable, m_ui->actionCut,  &QAction::setEnabled);
+   connect(m_split_textEdit, &DiamondTextEdit::copyAvailable, m_ui->actionCopy, &QAction::setEnabled);
 }
 
 void MainWindow::split_Vertical()
@@ -151,8 +152,7 @@ void MainWindow::split_Vertical()
    m_splitName_CB = new QComboBox();
    m_splitName_CB->setMinimumWidth(175);
 
-   QFont font2 = m_splitName_CB->font();
-   font2.setPointSize(11);
+   QFont font2 = m_splitName_CB->font();   font2.setPointSize(11);
    m_splitName_CB->setFont(font2);
 
    for (int k = 0; k < m_openedFiles.size(); ++k) {
@@ -189,18 +189,19 @@ void MainWindow::split_Vertical()
 
    moveBar();
 
-   connect(m_splitName_CB,   SIGNAL(currentIndexChanged(int)), this, SLOT(split_NameChanged(int)));
-   connect(m_splitClose_PB,  SIGNAL(clicked()),                this, SLOT(split_CloseButton()));
+   connect(m_splitName_CB,   static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged),
+               this, &MainWindow::split_NameChanged);
 
-   connect(m_split_textEdit->document(), SIGNAL(contentsChanged()), this, SLOT(set_splitCombo()));
+   connect(m_splitClose_PB,  &QPushButton::clicked, this, &MainWindow::split_CloseButton);
 
-   connect(m_split_textEdit, SIGNAL(cursorPositionChanged()), this, SLOT(moveBar()));
-   connect(m_split_textEdit, SIGNAL(cursorPositionChanged()), this, SLOT(setStatus_LineCol()));
+   connect(m_split_textEdit->document(), &QTextDocument::contentsChanged, this, &MainWindow::set_splitCombo);
+   connect(m_split_textEdit, &DiamondTextEdit::cursorPositionChanged,     this, &MainWindow::moveBar);
+   connect(m_split_textEdit, &DiamondTextEdit::cursorPositionChanged,     this, &MainWindow::setStatus_LineCol);
 
-   connect(m_split_textEdit, SIGNAL(undoAvailable(bool)), m_ui->actionUndo, SLOT(setEnabled(bool)));
-   connect(m_split_textEdit, SIGNAL(redoAvailable(bool)), m_ui->actionRedo, SLOT(setEnabled(bool)));
-   connect(m_split_textEdit, SIGNAL(copyAvailable(bool)), m_ui->actionCut,  SLOT(setEnabled(bool)));
-   connect(m_split_textEdit, SIGNAL(copyAvailable(bool)), m_ui->actionCopy, SLOT(setEnabled(bool)));  
+   connect(m_split_textEdit, &DiamondTextEdit::undoAvailable, m_ui->actionUndo, &QAction::setEnabled);
+   connect(m_split_textEdit, &DiamondTextEdit::redoAvailable, m_ui->actionRedo, &QAction::setEnabled);
+   connect(m_split_textEdit, &DiamondTextEdit::copyAvailable, m_ui->actionCut,  &QAction::setEnabled);
+   connect(m_split_textEdit, &DiamondTextEdit::copyAvailable, m_ui->actionCopy, &QAction::setEnabled);
 }
 
 void MainWindow::set_splitCombo()
@@ -276,7 +277,8 @@ void MainWindow::split_NameChanged(int data)
    if (m_splitFileName != newName)  {
 
       // old doc
-      disconnect(m_split_textEdit->document(), SIGNAL(contentsChanged()), this, SLOT(set_splitCombo()));
+      disconnect(m_split_textEdit->document(), &QTextDocument::contentsChanged,
+                     this, &MainWindow::set_splitCombo);
 
       // new doc
       m_splitFileName = newName;
@@ -336,7 +338,8 @@ void MainWindow::split_NameChanged(int data)
          show_Spaces();
          show_Breaks();
 
-         connect(m_split_textEdit->document(), SIGNAL(contentsChanged()), this, SLOT(set_splitCombo()));
+         connect(m_split_textEdit->document(), &QTextDocument::contentsChanged,
+                     this, &MainWindow::set_splitCombo);
 
       } else {
          // close the split
@@ -352,21 +355,21 @@ void MainWindow::split_CloseButton()
    QWidget *temp = m_tabWidget->currentWidget();
    temp->setFocus();
 
-   //
    m_isSplit = false;
 
-   disconnect(m_splitName_CB,   SIGNAL(currentIndexChanged(int)), this, SLOT(split_NameChanged(int)));
-   disconnect(m_splitClose_PB,  SIGNAL(clicked()),                this, SLOT(split_CloseButton()));
+   disconnect(m_splitName_CB,   static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged),
+               this, &MainWindow::split_NameChanged);
 
-   disconnect(m_split_textEdit->document(), SIGNAL(contentsChanged()), this, SLOT(set_splitCombo()));
+   disconnect(m_splitClose_PB,  &QPushButton::clicked, this, &MainWindow::split_CloseButton);
 
-   disconnect(m_split_textEdit, SIGNAL(cursorPositionChanged()), this, SLOT(moveBar()));
-   disconnect(m_split_textEdit, SIGNAL(cursorPositionChanged()), this, SLOT(setStatus_LineCol()));
+   disconnect(m_split_textEdit->document(), &QTextDocument::contentsChanged, this, &MainWindow::set_splitCombo);
+   disconnect(m_split_textEdit, &DiamondTextEdit::cursorPositionChanged,     this, &MainWindow::moveBar);
+   disconnect(m_split_textEdit, &DiamondTextEdit::cursorPositionChanged,     this, &MainWindow::setStatus_LineCol);
 
-   disconnect(m_split_textEdit, SIGNAL(undoAvailable(bool)), m_ui->actionUndo, SLOT(setEnabled(bool)));
-   disconnect(m_split_textEdit, SIGNAL(redoAvailable(bool)), m_ui->actionRedo, SLOT(setEnabled(bool)));
-   disconnect(m_split_textEdit, SIGNAL(copyAvailable(bool)), m_ui->actionCut,  SLOT(setEnabled(bool)));
-   disconnect(m_split_textEdit, SIGNAL(copyAvailable(bool)), m_ui->actionCopy, SLOT(setEnabled(bool)));   
+   disconnect(m_split_textEdit, &DiamondTextEdit::undoAvailable, m_ui->actionUndo, &QAction::setEnabled);
+   disconnect(m_split_textEdit, &DiamondTextEdit::redoAvailable, m_ui->actionRedo, &QAction::setEnabled);
+   disconnect(m_split_textEdit, &DiamondTextEdit::copyAvailable, m_ui->actionCut,  &QAction::setEnabled);
+   disconnect(m_split_textEdit, &DiamondTextEdit::copyAvailable, m_ui->actionCopy, &QAction::setEnabled);
 
    m_splitName_CB->clear();
    m_split_textEdit = 0;

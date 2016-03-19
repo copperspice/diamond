@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright (c) 2012-2015 Barbara Geller
+* Copyright (c) 2012-2016 Barbara Geller
 * All rights reserved.
 *
 * This file is part of Diamond Editor.
@@ -123,21 +123,21 @@ Dialog_Preset::Dialog_Preset(MainWindow *parent, QStringList data)
    // save for later
    m_editPalette = m_ui->folder1->palette();
 
-   connect(m_ui->folder1,  &QLineEdit::editingFinished, this, [this](){ verify_Folder(m_ui->folder1);  } );
-   connect(m_ui->folder2,  &QLineEdit::editingFinished, this, [this](){ verify_Folder(m_ui->folder2);  } );
-   connect(m_ui->folder3,  &QLineEdit::editingFinished, this, [this](){ verify_Folder(m_ui->folder3);  } );
-   connect(m_ui->folder4,  &QLineEdit::editingFinished, this, [this](){ verify_Folder(m_ui->folder4);  } );
-   connect(m_ui->folder5,  &QLineEdit::editingFinished, this, [this](){ verify_Folder(m_ui->folder5);  } );
-   connect(m_ui->folder6,  &QLineEdit::editingFinished, this, [this](){ verify_Folder(m_ui->folder6);  } );
-   connect(m_ui->folder7,  &QLineEdit::editingFinished, this, [this](){ verify_Folder(m_ui->folder7);  } );
-   connect(m_ui->folder8,  &QLineEdit::editingFinished, this, [this](){ verify_Folder(m_ui->folder8);  } );
-   connect(m_ui->folder9,  &QLineEdit::editingFinished, this, [this](){ verify_Folder(m_ui->folder9);  } );
-   connect(m_ui->folder10, &QLineEdit::editingFinished, this, [this](){ verify_Folder(m_ui->folder10); } );
-   connect(m_ui->folder11, &QLineEdit::editingFinished, this, [this](){ verify_Folder(m_ui->folder11); } );
-   connect(m_ui->folder12, &QLineEdit::editingFinished, this, [this](){ verify_Folder(m_ui->folder12); } );
-   connect(m_ui->folder13, &QLineEdit::editingFinished, this, [this](){ verify_Folder(m_ui->folder13); } );
-   connect(m_ui->folder14, &QLineEdit::editingFinished, this, [this](){ verify_Folder(m_ui->folder14); } );
-   connect(m_ui->folder15, &QLineEdit::editingFinished, this, [this](){ verify_Folder(m_ui->folder15); } );
+   connect(m_ui->folder1,     &QLineEdit::editingFinished, this, [this](){ verify_Folder(m_ui->folder1);  } );
+   connect(m_ui->folder2,     &QLineEdit::editingFinished, this, [this](){ verify_Folder(m_ui->folder2);  } );
+   connect(m_ui->folder3,     &QLineEdit::editingFinished, this, [this](){ verify_Folder(m_ui->folder3);  } );
+   connect(m_ui->folder4,     &QLineEdit::editingFinished, this, [this](){ verify_Folder(m_ui->folder4);  } );
+   connect(m_ui->folder5,     &QLineEdit::editingFinished, this, [this](){ verify_Folder(m_ui->folder5);  } );
+   connect(m_ui->folder6,     &QLineEdit::editingFinished, this, [this](){ verify_Folder(m_ui->folder6);  } );
+   connect(m_ui->folder7,     &QLineEdit::editingFinished, this, [this](){ verify_Folder(m_ui->folder7);  } );
+   connect(m_ui->folder8,     &QLineEdit::editingFinished, this, [this](){ verify_Folder(m_ui->folder8);  } );
+   connect(m_ui->folder9,     &QLineEdit::editingFinished, this, [this](){ verify_Folder(m_ui->folder9);  } );
+   connect(m_ui->folder10,    &QLineEdit::editingFinished, this, [this](){ verify_Folder(m_ui->folder10); } );
+   connect(m_ui->folder11,    &QLineEdit::editingFinished, this, [this](){ verify_Folder(m_ui->folder11); } );
+   connect(m_ui->folder12,    &QLineEdit::editingFinished, this, [this](){ verify_Folder(m_ui->folder12); } );
+   connect(m_ui->folder13,    &QLineEdit::editingFinished, this, [this](){ verify_Folder(m_ui->folder13); } );
+   connect(m_ui->folder14,    &QLineEdit::editingFinished, this, [this](){ verify_Folder(m_ui->folder14); } );
+   connect(m_ui->folder15,    &QLineEdit::editingFinished, this, [this](){ verify_Folder(m_ui->folder15); } );
 
    connect(m_ui->folder1_TB,  &QPushButton::clicked, this, [this](){ pick_Folder("1",  m_ui->folder1);  } );
    connect(m_ui->folder2_TB,  &QPushButton::clicked, this, [this](){ pick_Folder("2",  m_ui->folder2);  } );
@@ -155,8 +155,8 @@ Dialog_Preset::Dialog_Preset(MainWindow *parent, QStringList data)
    connect(m_ui->folder14_TB, &QPushButton::clicked, this, [this](){ pick_Folder("14", m_ui->folder14); } );
    connect(m_ui->folder15_TB, &QPushButton::clicked, this, [this](){ pick_Folder("15", m_ui->folder15); } );
 
-   connect(m_ui->save_PB,     SIGNAL(clicked()), this, SLOT(save()));
-   connect(m_ui->cancel_PB,   SIGNAL(clicked()), this, SLOT(cancel()));
+   connect(m_ui->save_PB,     &QPushButton::clicked, this, &Dialog_Preset::save);
+   connect(m_ui->cancel_PB,   &QPushButton::clicked, this, &Dialog_Preset::cancel);
 }
 
 Dialog_Preset::~Dialog_Preset()

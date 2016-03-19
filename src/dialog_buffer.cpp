@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright (c) 2012-2015 Barbara Geller
+* Copyright (c) 2012-2016 Barbara Geller
 * All rights reserved.
 *
 * This file is part of Diamond Editor.
@@ -56,8 +56,8 @@ Dialog_Buffer::Dialog_Buffer(QList<QString> copyBuffer)
 
    m_ui->bufferTable->installEventFilter(this);
 
-   connect(m_ui->select_PB, SIGNAL(clicked()),this, SLOT(Select()));
-   connect(m_ui->cancel_PB, SIGNAL(clicked()),this, SLOT(Cancel()));  
+   connect(m_ui->select_PB, &QPushButton::clicked, this, &Dialog_Buffer::select);
+   connect(m_ui->cancel_PB, &QPushButton::clicked, this, &Dialog_Buffer::cancel);
 }
 
 Dialog_Buffer::~Dialog_Buffer()
@@ -93,12 +93,12 @@ bool Dialog_Buffer::eventFilter(QObject *object, QEvent *event)
    return false;
 }
 
-void Dialog_Buffer::Select()
+void Dialog_Buffer::select()
 {
    this->done(QDialog::Accepted);
 }
 
-void Dialog_Buffer::Cancel()
+void Dialog_Buffer::cancel()
 {
    this->done(QDialog::Rejected);
 }

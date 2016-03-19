@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright (c) 2012-2015 Barbara Geller
+* Copyright (c) 2012-2016 Barbara Geller
 * All rights reserved.
 *
 * This file is part of Diamond Editor.
@@ -67,7 +67,7 @@ MainWindow::MainWindow(QStringList fileList, QStringList flagList)
    m_splitter->addWidget(m_tabWidget);
    setCentralWidget(m_splitter);
 
-   connect(qApp, SIGNAL(focusChanged(QWidget *, QWidget *)), this, SLOT(focusChanged(QWidget *, QWidget *)));
+   connect(qApp, &QApplication::focusChanged, this, &MainWindow::focusChanged);
 
    m_split_textEdit = 0;
    m_isSplit = false;
@@ -77,7 +77,7 @@ MainWindow::MainWindow(QStringList fileList, QStringList flagList)
 
    // copy buffer   
    m_actionCopyBuffer = new QShortcut(this);
-   connect(m_actionCopyBuffer, SIGNAL(activated()), this, SLOT(showCopyBuffer()));
+   connect(m_actionCopyBuffer, &QShortcut::activated, this, &MainWindow::showCopyBuffer);
 
    // screen setup
    createShortCuts(true);
@@ -101,15 +101,15 @@ MainWindow::MainWindow(QStringList fileList, QStringList flagList)
    // recent folders, context menu
    QMenu *menuFolder_R = m_ui->actionOpen_RecentFolder->menu();
    menuFolder_R->setContextMenuPolicy(Qt::CustomContextMenu);
-   connect(menuFolder_R, SIGNAL(customContextMenuRequested(const QPoint &)), this, SLOT(showContext_RecentFolder(const QPoint &)));
+   connect(menuFolder_R, &QMenu::customContextMenuRequested,     this, &MainWindow::showContext_RecentFolder);
 
    // recent files, context menu
    m_ui->menuFile->setContextMenuPolicy(Qt::CustomContextMenu);
-   connect(m_ui->menuFile, SIGNAL(customContextMenuRequested(const QPoint &)),   this, SLOT(showContext_Files(const QPoint &)));
+   connect(m_ui->menuFile, &QMenu::customContextMenuRequested,   this, &MainWindow::showContext_Files);
 
    // window tab, context menu
    m_ui->menuWindow->setContextMenuPolicy(Qt::CustomContextMenu);
-   connect(m_ui->menuWindow, SIGNAL(customContextMenuRequested(const QPoint &)), this, SLOT(showContext_Tabs(const QPoint &)));
+   connect(m_ui->menuWindow, &QMenu::customContextMenuRequested, this, &MainWindow::showContext_Tabs);
 
    // set flags after reading config and before autoload
    if (flagList.contains("--no_autoload", Qt::CaseInsensitive)) {
@@ -1518,16 +1518,16 @@ void MainWindow::tabNew()
 
    m_textEdit->setFocus();
 
-   // connect(m_textEdit, SIGNAL(fileDropped(const QString &)),  this, SLOT(fileDropped(const QString &)));
-   connect(m_textEdit->document(), SIGNAL(contentsChanged()), this, SLOT(documentWasModified()));
+   // connect(m_textEdit, SIGNAL(fileDropped(const QString &)), this, SLOT(fileDropped(const QString &)));
+   connect(m_textEdit->document(), &QTextDocument::contentsChanged, this, &MainWindow::documentWasModified);
 
-   connect(m_textEdit, SIGNAL(cursorPositionChanged()), this, SLOT(moveBar()));
-   connect(m_textEdit, SIGNAL(cursorPositionChanged()), this, SLOT(setStatus_LineCol()));
+   connect(m_textEdit, &DiamondTextEdit::cursorPositionChanged,     this, &MainWindow::moveBar);
+   connect(m_textEdit, &DiamondTextEdit::cursorPositionChanged,     this, &MainWindow::setStatus_LineCol);
 
-   connect(m_textEdit, SIGNAL(undoAvailable(bool)), m_ui->actionUndo, SLOT(setEnabled(bool)));
-   connect(m_textEdit, SIGNAL(redoAvailable(bool)), m_ui->actionRedo, SLOT(setEnabled(bool)));
-   connect(m_textEdit, SIGNAL(copyAvailable(bool)), m_ui->actionCut,  SLOT(setEnabled(bool)));
-   connect(m_textEdit, SIGNAL(copyAvailable(bool)), m_ui->actionCopy, SLOT(setEnabled(bool)));
+   connect(m_textEdit, &DiamondTextEdit::undoAvailable, m_ui->actionUndo, &QAction::setEnabled);
+   connect(m_textEdit, &DiamondTextEdit::redoAvailable, m_ui->actionRedo, &QAction::setEnabled);
+   connect(m_textEdit, &DiamondTextEdit::copyAvailable, m_ui->actionCut,  &QAction::setEnabled);
+   connect(m_textEdit, &DiamondTextEdit::copyAvailable, m_ui->actionCopy, &QAction::setEnabled);
 }
 
 void MainWindow::mw_tabClose()
@@ -1690,12 +1690,14 @@ void MainWindow::about()
    // change mainwindow.cpp & main.cpp
 
    QString textBody = "<font color='#000080'><table style=margin-right:25>"
-                      "<tr><td><nobr>Developed by Barbara Geller</nobr></td><td>barbara@copperspice.com</td></tr>"
-                      "<tr><td style=padding-right:25><nobr>Developed by Ansel Sermersheim</nobr></td><td>ansel@copperspice.com</td></tr>"
-                      "</table></font>"
-                      "<br>"
-                      "<p><small>Copyright 2012-2015 BG Consulting, All rights reserved.<br>"
-                      "This program is provided AS IS with no warranty of any kind.<br></small></p>";
+                  "<tr><td><nobr>Developed by Barbara Geller</nobr></td>"
+                      "<td>barbara@copperspice.com</td></tr>"
+                  "<tr><td style=padding-right:25><nobr>Developed by Ansel Sermersheim</nobr></td>"
+                      "<td>ansel@copperspice.com</td></tr>"
+                  "</table></font>"
+                  "<br>"
+                  "<p><small>Copyright 2012-2016 BG Consulting, All rights reserved.<br>"
+                  "This program is provided AS IS with no warranty of any kind.<br></small></p>";
 
    //
    QMessageBox msgB;
@@ -1703,7 +1705,7 @@ void MainWindow::about()
    msgB.setWindowIcon(QIcon("://resources/diamond.png"));
 
    msgB.setWindowTitle(tr("About Diamond"));
-   msgB.setText("<p style=margin-right:25><center><h5>Version: 1.2.0<br>Build # 08.15.2015</h5></center></p>");
+   msgB.setText("<p style=margin-right:25><center><h5>Version: 1.2.1<br>Build # 03.15.2016</h5></center></p>");
    msgB.setInformativeText(textBody);
 
    msgB.setStandardButtons(QMessageBox::Ok);
@@ -1726,65 +1728,65 @@ void MainWindow::setScreenColors()
 void MainWindow::createConnections()
 {
    // file
-   connect(m_ui->actionNew,               SIGNAL(triggered()), this, SLOT(newFile()));
+   connect(m_ui->actionNew,               &QAction::triggered, this, &MainWindow::newFile);
    connect(m_ui->actionOpen,              &QAction::triggered, this, [this](bool){ openDoc(m_struct.pathPrior); } );
-   connect(m_ui->actionOpen_RelatedFile,  SIGNAL(triggered()), this, SLOT(open_RelatedFile()));
-   connect(m_ui->actionClose,             SIGNAL(triggered()), this, SLOT(close_Doc()));
+   connect(m_ui->actionOpen_RelatedFile,  &QAction::triggered, this, &MainWindow::open_RelatedFile);
+   connect(m_ui->actionClose,             &QAction::triggered, this, [this](bool){ close_Doc(); } );
    connect(m_ui->actionClose_All,         &QAction::triggered, this, [this](bool){ closeAll_Doc(false); } );
-   connect(m_ui->actionReload,            SIGNAL(triggered()), this, SLOT(reload()));
+   connect(m_ui->actionReload,            &QAction::triggered, this, &MainWindow::reload);
 
-   connect(m_ui->actionSave,              SIGNAL(triggered()), this, SLOT(save()));
+   connect(m_ui->actionSave,              &QAction::triggered, this, [this](bool){ save(); } );
    connect(m_ui->actionSave_As,           &QAction::triggered, this, [this](bool){ saveAs(SAVE_ONE); } );
-   connect(m_ui->actionSave_All,          SIGNAL(triggered()), this, SLOT(saveAll()));
+   connect(m_ui->actionSave_All,          &QAction::triggered, this, &MainWindow::saveAll);
 
-   connect(m_ui->actionPrint,             SIGNAL(triggered()), this, SLOT(print()));
-   connect(m_ui->actionPrint_Preview,     SIGNAL(triggered()), this, SLOT(printPreview()));
-   connect(m_ui->actionPrint_Pdf,         SIGNAL(triggered()), this, SLOT(printPdf()));
-   connect(m_ui->actionExit,              SIGNAL(triggered()), this, SLOT(close()));
+   connect(m_ui->actionPrint,             &QAction::triggered, this, &MainWindow::print);
+   connect(m_ui->actionPrint_Preview,     &QAction::triggered, this, &MainWindow::printPreview);
+   connect(m_ui->actionPrint_Pdf,         &QAction::triggered, this, &MainWindow::printPdf);
+   connect(m_ui->actionExit,              &QAction::triggered, this, [this](bool){ close(); } );
 
    // edit
-   connect(m_ui->actionUndo,              SIGNAL(triggered()), this, SLOT(mw_undo()));
-   connect(m_ui->actionRedo,              SIGNAL(triggered()), this, SLOT(mw_redo()));
-   connect(m_ui->actionCut,               SIGNAL(triggered()), this, SLOT(mw_cut()));
-   connect(m_ui->actionCopy,              SIGNAL(triggered()), this, SLOT(mw_copy()));
-   connect(m_ui->actionPaste,             SIGNAL(triggered()), this, SLOT(mw_paste()));
+   connect(m_ui->actionUndo,              &QAction::triggered, this, &MainWindow::mw_undo);
+   connect(m_ui->actionRedo,              &QAction::triggered, this, &MainWindow::mw_redo);
+   connect(m_ui->actionCut,               &QAction::triggered, this, &MainWindow::mw_cut);
+   connect(m_ui->actionCopy,              &QAction::triggered, this, &MainWindow::mw_copy);
+   connect(m_ui->actionPaste,             &QAction::triggered, this, &MainWindow::mw_paste);
 
-   connect(m_ui->actionSelect_All,        SIGNAL(triggered()), this, SLOT(selectAll()));
-   connect(m_ui->actionSelect_Block,      SIGNAL(triggered()), this, SLOT(selectBlock()));
-   connect(m_ui->actionSelect_Line,       SIGNAL(triggered()), this, SLOT(selectLine()));
-   connect(m_ui->actionSelect_Word,       SIGNAL(triggered()), this, SLOT(selectWord()));
-   connect(m_ui->actionCase_Upper,        SIGNAL(triggered()), this, SLOT(caseUpper()));
-   connect(m_ui->actionCase_Lower,        SIGNAL(triggered()), this, SLOT(caseLower()));
-   connect(m_ui->actionCase_Cap,          SIGNAL(triggered()), this, SLOT(caseCap()));
+   connect(m_ui->actionSelect_All,        &QAction::triggered, this, &MainWindow::selectAll);
+   connect(m_ui->actionSelect_Block,      &QAction::triggered, this, &MainWindow::selectBlock);
+   connect(m_ui->actionSelect_Line,       &QAction::triggered, this, &MainWindow::selectLine);
+   connect(m_ui->actionSelect_Word,       &QAction::triggered, this, &MainWindow::selectWord);
+   connect(m_ui->actionCase_Upper,        &QAction::triggered, this, &MainWindow::caseUpper);
+   connect(m_ui->actionCase_Lower,        &QAction::triggered, this, &MainWindow::caseLower);
+   connect(m_ui->actionCase_Cap,          &QAction::triggered, this, &MainWindow::caseCap);
 
-   connect(m_ui->actionIndent_Incr,       &QAction::triggered, this, [this](bool){ indentIncr("indent"); } );
+   connect(m_ui->actionIndent_Incr,       &QAction::triggered, this, [this](bool){ indentIncr("indent");   } );
    connect(m_ui->actionIndent_Decr,       &QAction::triggered, this, [this](bool){ indentDecr("unindent"); } );
-   connect(m_ui->actionDelete_Line,       SIGNAL(triggered()), this, SLOT(deleteLine()));
-   connect(m_ui->actionDelete_EOL,        SIGNAL(triggered()), this, SLOT(deleteEOL()));
+   connect(m_ui->actionDelete_Line,       &QAction::triggered, this, &MainWindow::deleteLine);
+   connect(m_ui->actionDelete_EOL,        &QAction::triggered, this, &MainWindow::deleteEOL);
 
-   connect(m_ui->actionInsert_Date,       SIGNAL(triggered()), this, SLOT(insertDate()));
-   connect(m_ui->actionInsert_Time,       SIGNAL(triggered()), this, SLOT(insertTime()));
-   connect(m_ui->actionInsert_Symbol,     SIGNAL(triggered()), this, SLOT(insertSymbol()));
-   connect(m_ui->actionColumn_Mode,       SIGNAL(triggered()), this, SLOT(columnMode()));
+   connect(m_ui->actionInsert_Date,       &QAction::triggered, this, &MainWindow::insertDate);
+   connect(m_ui->actionInsert_Time,       &QAction::triggered, this, &MainWindow::insertTime);
+   connect(m_ui->actionInsert_Symbol,     &QAction::triggered, this, &MainWindow::insertSymbol);
+   connect(m_ui->actionColumn_Mode,       &QAction::triggered, this, &MainWindow::columnMode);
 
    // search
-   connect(m_ui->actionFind,              SIGNAL(triggered()), this, SLOT(find()));
-   connect(m_ui->actionReplace,           SIGNAL(triggered()), this, SLOT(replace()));
-   connect(m_ui->actionFind_Next,         SIGNAL(triggered()), this, SLOT(findNext()));
-   connect(m_ui->actionFind_Prev,         SIGNAL(triggered()), this, SLOT(findPrevious()));
-   connect(m_ui->actionAdv_Find,          SIGNAL(triggered()), this, SLOT(advFind()));
-   connect(m_ui->actionGo_Line,           SIGNAL(triggered()), this, SLOT(goLine()));
-   connect(m_ui->actionGo_Column,         SIGNAL(triggered()), this, SLOT(goColumn()));
-   connect(m_ui->actionGo_Top,            SIGNAL(triggered()), this, SLOT(goTop()));
-   connect(m_ui->actionGo_Bottom,         SIGNAL(triggered()), this, SLOT(goBottom()));
+   connect(m_ui->actionFind,              &QAction::triggered, this, &MainWindow::find);
+   connect(m_ui->actionReplace,           &QAction::triggered, this, &MainWindow::replace);
+   connect(m_ui->actionFind_Next,         &QAction::triggered, this, &MainWindow::findNext);
+   connect(m_ui->actionFind_Prev,         &QAction::triggered, this, &MainWindow::findPrevious);
+   connect(m_ui->actionAdv_Find,          &QAction::triggered, this, &MainWindow::advFind);
+   connect(m_ui->actionGo_Line,           &QAction::triggered, this, &MainWindow::goLine);
+   connect(m_ui->actionGo_Column,         &QAction::triggered, this, &MainWindow::goColumn);
+   connect(m_ui->actionGo_Top,            &QAction::triggered, this, &MainWindow::goTop);
+   connect(m_ui->actionGo_Bottom,         &QAction::triggered, this, &MainWindow::goBottom);
 
    // view
-   connect(m_ui->actionLine_Highlight,    SIGNAL(triggered()), this, SLOT(lineHighlight()));
-   connect(m_ui->actionLine_Numbers,      SIGNAL(triggered()), this, SLOT(lineNumbers()));
-   connect(m_ui->actionWord_Wrap,         SIGNAL(triggered()), this, SLOT(wordWrap()));
-   connect(m_ui->actionShow_Spaces,       SIGNAL(triggered()), this, SLOT(show_Spaces()));
-   connect(m_ui->actionShow_Breaks,       SIGNAL(triggered()), this, SLOT(show_Breaks()));
-   connect(m_ui->actionDisplay_HTML,      SIGNAL(triggered()), this, SLOT(displayHTML()));
+   connect(m_ui->actionLine_Highlight,    &QAction::triggered, this, &MainWindow::lineHighlight);
+   connect(m_ui->actionLine_Numbers,      &QAction::triggered, this, &MainWindow::lineNumbers);
+   connect(m_ui->actionWord_Wrap,         &QAction::triggered, this, &MainWindow::wordWrap);
+   connect(m_ui->actionShow_Spaces,       &QAction::triggered, this, &MainWindow::show_Spaces);
+   connect(m_ui->actionShow_Breaks,       &QAction::triggered, this, &MainWindow::show_Breaks);
+   connect(m_ui->actionDisplay_HTML,      &QAction::triggered, this, &MainWindow::displayHTML);
 
    // document
    connect(m_ui->actionSyn_C,             &QAction::triggered, this, [this](bool){ forceSyntax(SYN_C);       } );
@@ -1805,42 +1807,42 @@ void MainWindow::createConnections()
    connect(m_ui->actionSyn_Python,        &QAction::triggered, this, [this](bool){ forceSyntax(SYN_PYTHON);  } );
    connect(m_ui->actionSyn_None,          &QAction::triggered, this, [this](bool){ forceSyntax(SYN_NONE);    } );
 
-   // connect(m_ui->actionSyn_UNUSED1,       &QAction::triggered, this, [this](bool){ forceSyntax(SYN_UNUSED1); } );
-   // connect(m_ui->actionSyn_UNUSED2,       &QAction::triggered, this, [this](bool){ forceSyntax(SYN_UNUSED2); } );
+   // connect(m_ui->actionSyn_UNUSED1,    &QAction::triggered, this, [this](bool){ forceSyntax(SYN_UNUSED1); } );
+   // connect(m_ui->actionSyn_UNUSED2,    &QAction::triggered, this, [this](bool){ forceSyntax(SYN_UNUSED2); } );
 
-   connect(m_ui->actionFormat_Unix,       SIGNAL(triggered()), this, SLOT(formatUnix()));
-   connect(m_ui->actionFormat_Win,        SIGNAL(triggered()), this, SLOT(formatWin()));
+   connect(m_ui->actionFormat_Unix,       &QAction::triggered, this, &MainWindow::formatUnix);
+   connect(m_ui->actionFormat_Win,        &QAction::triggered, this, &MainWindow::formatWin);
 
-   connect(m_ui->actionFix_Tab_Spaces,    SIGNAL(triggered()), this, SLOT(fixTab_Spaces()));  
-   connect(m_ui->actionFix_Spaces_Tab,    SIGNAL(triggered()), this, SLOT(fixSpaces_Tab()));
-   connect(m_ui->actionDeleteEOL_Spaces,  SIGNAL(triggered()), this, SLOT(deleteEOL_Spaces()));
+   connect(m_ui->actionFix_Tab_Spaces,    &QAction::triggered, this, &MainWindow::fixTab_Spaces);
+   connect(m_ui->actionFix_Spaces_Tab,    &QAction::triggered, this, &MainWindow::fixSpaces_Tab);
+   connect(m_ui->actionDeleteEOL_Spaces,  &QAction::triggered, this, &MainWindow::deleteEOL_Spaces);
 
    // tools
-   connect(m_ui->actionMacro_Start,       SIGNAL(triggered()), this, SLOT(mw_macroStart()));
-   connect(m_ui->actionMacro_Stop,        SIGNAL(triggered()), this, SLOT(mw_macroStop()));
-   connect(m_ui->actionMacro_Play,        SIGNAL(triggered()), this, SLOT(macroPlay()));
-   connect(m_ui->actionMacro_Load,        SIGNAL(triggered()), this, SLOT(macroLoad()));
-   connect(m_ui->actionMacro_EditNames,   SIGNAL(triggered()), this, SLOT(macroEditNames()));
-   connect(m_ui->actionSpell_Check,       SIGNAL(triggered()), this, SLOT(spellCheck()));
+   connect(m_ui->actionMacro_Start,       &QAction::triggered, this, &MainWindow::mw_macroStart);
+   connect(m_ui->actionMacro_Stop,        &QAction::triggered, this, &MainWindow::mw_macroStop);
+   connect(m_ui->actionMacro_Play,        &QAction::triggered, this, &MainWindow::macroPlay);
+   connect(m_ui->actionMacro_Load,        &QAction::triggered, this, &MainWindow::macroLoad);
+   connect(m_ui->actionMacro_EditNames,   &QAction::triggered, this, &MainWindow::macroEditNames);
+   connect(m_ui->actionSpell_Check,       &QAction::triggered, this, &MainWindow::spellCheck);
 
    // settings
-   connect(m_ui->actionColors,            SIGNAL(triggered()), this, SLOT(setColors()));
-   connect(m_ui->actionFonts,             SIGNAL(triggered()), this, SLOT(setFont()));  
-   connect(m_ui->actionOptions,           SIGNAL(triggered()), this, SLOT(setOptions()));
-   connect(m_ui->actionPresetFolders,     SIGNAL(triggered()), this, SLOT(setPresetFolders()));
-   connect(m_ui->actionPrintOptions,      SIGNAL(triggered()), this, SLOT(setPrintOptions()));
-   connect(m_ui->actionMove_ConfigFile,   SIGNAL(triggered()), this, SLOT(move_ConfigFile()));
+   connect(m_ui->actionColors,            &QAction::triggered, this, &MainWindow::setColors);
+   connect(m_ui->actionFonts,             &QAction::triggered, this, &MainWindow::setFont);
+   connect(m_ui->actionOptions,           &QAction::triggered, this, &MainWindow::setOptions);
+   connect(m_ui->actionPresetFolders,     &QAction::triggered, this, &MainWindow::setPresetFolders);
+   connect(m_ui->actionPrintOptions,      &QAction::triggered, this, &MainWindow::setPrintOptions);
+   connect(m_ui->actionMove_ConfigFile,   &QAction::triggered, this, &MainWindow::move_ConfigFile);
    connect(m_ui->actionSave_ConfigFile,   &QAction::triggered, this, [this](bool){ save_ConfigFile(); } );
 
    // window
-   connect(m_ui->actionTab_New,           SIGNAL(triggered()), this, SLOT(tabNew()));
-   connect(m_ui->actionTab_Close,         SIGNAL(triggered()), this, SLOT(mw_tabClose()));
-   connect(m_ui->actionSplit_Horizontal,  SIGNAL(triggered()), this, SLOT(split_Horizontal()));
-   connect(m_ui->actionSplit_Vertical,    SIGNAL(triggered()), this, SLOT(split_Vertical()));
+   connect(m_ui->actionTab_New,           &QAction::triggered, this, &MainWindow::tabNew);
+   connect(m_ui->actionTab_Close,         &QAction::triggered, this, &MainWindow::mw_tabClose);
+   connect(m_ui->actionSplit_Horizontal,  &QAction::triggered, this, &MainWindow::split_Horizontal);
+   connect(m_ui->actionSplit_Vertical,    &QAction::triggered, this, &MainWindow::split_Vertical);
 
    // help menu
-   connect(m_ui->actionDiamond_Help,      SIGNAL(triggered()), this, SLOT(diamondHelp()));
-   connect(m_ui->actionAbout,             SIGNAL(triggered()), this, SLOT(about()));
+   connect(m_ui->actionDiamond_Help,      &QAction::triggered, this, &MainWindow::diamondHelp);
+   connect(m_ui->actionAbout,             &QAction::triggered, this, &MainWindow::about);
 }
 
 void MainWindow::createToggles()
@@ -1892,8 +1894,8 @@ void MainWindow::createToggles()
    m_ui->actionCut->setEnabled(false);
    m_ui->actionCopy->setEnabled(false);
 
-   connect(m_tabWidget, SIGNAL(currentChanged(int)),    this, SLOT(tabChanged(int)));
-   connect(m_tabWidget, SIGNAL(tabCloseRequested(int)), this, SLOT(tabClose(int)));
+   connect(m_tabWidget, &QTabWidget::currentChanged,    this, &MainWindow::tabChanged);
+   connect(m_tabWidget, &QTabWidget::tabCloseRequested, this, &MainWindow::tabClose);
 }
 
 void MainWindow::createShortCuts(bool setupAll)

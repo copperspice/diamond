@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright (c) 2012-2015 Barbara Geller
+* Copyright (c) 2012-2016 Barbara Geller
 * All rights reserved.
 *
 * This file is part of Diamond Editor.
@@ -39,17 +39,10 @@ class Dialog_Config : public QDialog
    private:
       Ui::Dialog_Config *m_ui;
 
-      CS_SLOT_1(Private, void createNew())
-      CS_SLOT_2(createNew) 
-
-      CS_SLOT_1(Private, void select())
-      CS_SLOT_2(select) 
-
-      CS_SLOT_1(Private, void rename())
-      CS_SLOT_2(rename) 
-
-      CS_SLOT_1(Private, void cancel())
-      CS_SLOT_2(cancel) 
+      void createNew();
+      void select();
+      void rename();
+      void cancel();
 };
 
 #endif

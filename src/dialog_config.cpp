@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright (c) 2012-2015 Barbara Geller
+* Copyright (c) 2012-2016 Barbara Geller
 * All rights reserved.
 *
 * This file is part of Diamond Editor.
@@ -31,10 +31,10 @@ Dialog_Config::Dialog_Config(QString fileName)
    m_ui->currentName->setText(fileName);
    m_ui->newName->setText(fileName);
 
-   connect(m_ui->create_PB, SIGNAL(clicked()),this, SLOT(createNew()));
-   connect(m_ui->select_PB, SIGNAL(clicked()),this, SLOT(select()));
-   connect(m_ui->rename_PB, SIGNAL(clicked()),this, SLOT(rename()));
-   connect(m_ui->cancel_PB, SIGNAL(clicked()),this, SLOT(cancel()));
+   connect(m_ui->create_PB, &QPushButton::clicked, this, &Dialog_Config::createNew);
+   connect(m_ui->select_PB, &QPushButton::clicked, this, &Dialog_Config::select);
+   connect(m_ui->rename_PB, &QPushButton::clicked, this, &Dialog_Config::rename);
+   connect(m_ui->cancel_PB, &QPushButton::clicked, this, &Dialog_Config::cancel);
 }
 
 Dialog_Config::~Dialog_Config()

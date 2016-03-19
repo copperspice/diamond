@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright (c) 2012-2015 Barbara Geller
+* Copyright (c) 2012-2016 Barbara Geller
 * All rights reserved.
 *
 * This file is part of Diamond Editor.
@@ -40,11 +40,8 @@ class Dialog_Open : public QDialog
       Ui::Dialog_Open *m_ui;    
       QStringList m_list;
 
-      CS_SLOT_1(Private, void Open())
-      CS_SLOT_2(Open) 
-
-      CS_SLOT_1(Private, void Cancel())
-      CS_SLOT_2(Cancel)      
+      void open();
+      void cancel();
 };
 
 #endif

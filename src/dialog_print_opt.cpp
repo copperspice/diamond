@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright (c) 2012-2015 Barbara Geller
+* Copyright (c) 2012-2016 Barbara Geller
 * All rights reserved.
 *
 * This file is part of Diamond Editor.
@@ -23,6 +23,7 @@
 #include "util.h"
 
 #include <QFontDialog>
+#include <QToolButton>
 
 Dialog_PrintOptions::Dialog_PrintOptions(MainWindow *parent, struct PrintSettings data)
    : QDialog(parent), m_ui(new Ui::Dialog_PrintOptions)
@@ -35,19 +36,19 @@ Dialog_PrintOptions::Dialog_PrintOptions(MainWindow *parent, struct PrintSetting
 
    initData();
 
-   connect(m_ui->headerLeft_TB,   SIGNAL(clicked()), this, SLOT(headerLeft()));
-   connect(m_ui->headerCenter_TB, SIGNAL(clicked()), this, SLOT(headerCenter()));
-   connect(m_ui->headerRight_TB,  SIGNAL(clicked()), this, SLOT(headerRight()));
-   connect(m_ui->footerLeft_TB,   SIGNAL(clicked()), this, SLOT(footerLeft()));
-   connect(m_ui->footerCenter_TB, SIGNAL(clicked()), this, SLOT(footerCenter()));
-   connect(m_ui->footerRight_TB,  SIGNAL(clicked()), this, SLOT(footerRight()));
+   connect(m_ui->headerLeft_TB,   &QToolButton::clicked, this, &Dialog_PrintOptions::headerLeft);
+   connect(m_ui->headerCenter_TB, &QToolButton::clicked, this, &Dialog_PrintOptions::headerCenter);
+   connect(m_ui->headerRight_TB,  &QToolButton::clicked, this, &Dialog_PrintOptions::headerRight);
+   connect(m_ui->footerLeft_TB,   &QToolButton::clicked, this, &Dialog_PrintOptions::footerLeft);
+   connect(m_ui->footerCenter_TB, &QToolButton::clicked, this, &Dialog_PrintOptions::footerCenter);
+   connect(m_ui->footerRight_TB,  &QToolButton::clicked, this, &Dialog_PrintOptions::footerRight);
 
-   connect(m_ui->fontHeader_TB,   SIGNAL(clicked()), this, SLOT(fontHeader()));
-   connect(m_ui->fontFooter_TB,   SIGNAL(clicked()), this, SLOT(fontFooter()));
-   connect(m_ui->fontText_TB,     SIGNAL(clicked()), this, SLOT(fontText()));
+   connect(m_ui->fontHeader_TB,   &QToolButton::clicked, this, &Dialog_PrintOptions::fontHeader);
+   connect(m_ui->fontFooter_TB,   &QToolButton::clicked, this, &Dialog_PrintOptions::fontFooter);
+   connect(m_ui->fontText_TB,     &QToolButton::clicked, this, &Dialog_PrintOptions::fontText);
 
-   connect(m_ui->save_PB,    SIGNAL(clicked()), this, SLOT(Save()));
-   connect(m_ui->cancel_PB,  SIGNAL(clicked()), this, SLOT(Cancel()));
+   connect(m_ui->save_PB,         &QPushButton::clicked, this, &Dialog_PrintOptions::save);
+   connect(m_ui->cancel_PB,       &QPushButton::clicked, this, &Dialog_PrintOptions::cancel);
 }
 
 Dialog_PrintOptions::~Dialog_PrintOptions()
@@ -82,12 +83,12 @@ void Dialog_PrintOptions::initData()
    m_ui->fontText->setText(m_print.fontText.toString());
 }
 
-void Dialog_PrintOptions::Save()
+void Dialog_PrintOptions::save()
 {
    this->done(QDialog::Accepted);
 }
 
-void Dialog_PrintOptions::Cancel()
+void Dialog_PrintOptions::cancel()
 {
    this->done(QDialog::Rejected);
 }
@@ -240,8 +241,6 @@ void Dialog_PrintOptions::fontText()
    }
 }
 
-
-// menu slots
 void Dialog_PrintOptions::fileName()
 {
    m_menuText = "$(FileName)";

@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright (c) 2012-2015 Barbara Geller
+* Copyright (c) 2012-2016 Barbara Geller
 * All rights reserved.
 *
 * This file is part of Diamond Editor.
@@ -51,20 +51,16 @@ class Dialog_Find : public QDialog
       void setUp();    
       bool m_upd_Find;
 
-      CS_SLOT_1(Private, void Find())
-      CS_SLOT_2(Find) 
+      void find(); 
+      void cancel();
 
-      CS_SLOT_1(Private, void Cancel())
-      CS_SLOT_2(Cancel) 
-
-      CS_SLOT_1(Private, void combo_ContextMenu(const QPoint & pt))      
-      CS_SLOT_2(combo_ContextMenu) 
+      void combo_ContextMenu(const QPoint & pt);
 
       CS_SLOT_1(Private, void menu_clearList())
-      CS_SLOT_2(menu_clearList) 
+      CS_SLOT_2(menu_clearList)
 
       CS_SLOT_1(Private, void menu_deleteEntry())
-      CS_SLOT_2(menu_deleteEntry) 
+      CS_SLOT_2(menu_deleteEntry)
 };
 
 #endif

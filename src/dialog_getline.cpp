@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright (c) 2012-2015 Barbara Geller
+* Copyright (c) 2012-2016 Barbara Geller
 * All rights reserved.
 *
 * This file is part of Diamond Editor.
@@ -32,8 +32,8 @@ Dialog_GetLine::Dialog_GetLine()
    // any key deletes first, right arrow to continue typing
    m_ui->value->selectAll();
 
-   connect(m_ui->ok_PB,     SIGNAL(clicked()),this, SLOT(Ok()));
-   connect(m_ui->cancel_PB, SIGNAL(clicked()),this, SLOT(Cancel()));
+   connect(m_ui->ok_PB,     &QPushButton::clicked, this, &Dialog_GetLine::ok);
+   connect(m_ui->cancel_PB, &QPushButton::clicked, this, &Dialog_GetLine::cancel);
 }
 
 Dialog_GetLine::~Dialog_GetLine()
@@ -41,12 +41,12 @@ Dialog_GetLine::~Dialog_GetLine()
    delete m_ui;
 }
 
-void Dialog_GetLine::Ok()
+void Dialog_GetLine::ok()
 {
    this->done(1);
 }
 
-void Dialog_GetLine::Cancel()
+void Dialog_GetLine::cancel()
 {
    this->done(0);
 }
@@ -61,5 +61,4 @@ void Dialog_GetLine::set_ColNo()
    setWindowTitle("Go to Column");
    m_ui->label->setText("Column Number:");
 }
-
 

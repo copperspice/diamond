@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright (c) 2012-2015 Barbara Geller
+* Copyright (c) 2012-2016 Barbara Geller
 * All rights reserved.
 *
 * This file is part of Diamond Editor.
@@ -122,33 +122,32 @@ About::About(QString route, QString file)
    // shortcuts
    QAction *action1 = new QAction(tr("Zoom In"), this);
    action1->setShortcuts(QKeySequence::ZoomIn);
-   connect(action1, SIGNAL(triggered()), this, SLOT(zoomIn()));
+   connect(action1, &QAction::triggered, this, &About::zoomIn);
 
    QAction *action2 = new QAction(tr("Zoom Out"), this );
    action2->setShortcuts(QKeySequence::ZoomOut);
-   connect(action2, SIGNAL(triggered()), this, SLOT(zoomOut()));
+   connect(action2, &QAction::triggered, this, &About::zoomOut);
 
    m_viewer->addAction(action1);
    m_viewer->addAction(action2);
 
    // set up custom context menu
    m_viewer->setContextMenuPolicy(Qt::CustomContextMenu);
-   connect(m_viewer, SIGNAL(customContextMenuRequested(const QPoint &)), this,
-                 SLOT(setCustomContextMenu(const QPoint &)) );
+   connect(m_viewer, &QWebView::customContextMenuRequested, this, &About::setCustomContextMenu);                
 
-   // signals   
    if (route == "Help") {
-      connect(homePB,   SIGNAL(clicked()), this, SLOT(actionHome()) );
+      connect(homePB, &QPushButton::clicked, this, &About::home);
    }
-   connect(closePB,  SIGNAL(clicked()), this, SLOT(actionClose()) );
+
+   connect(closePB,  &QPushButton::clicked, this, &About::close);
 }
 
-void About::actionHome()
+void About::home()
 {
    m_viewer->setUrl(m_url);
 }
 
-void About::actionClose()
+void About::close()
 {
    this->close();
 }
@@ -161,8 +160,8 @@ void About::setCustomContextMenu(const QPoint &pos)
    menu->addAction(m_viewer->pageAction(QWebPage::Copy));
    menu->addSeparator();
 
-   menu->addAction(tr("Zoom In"),  this, SLOT(zoomIn()),  QKeySequence::ZoomIn  );
-   menu->addAction(tr("Zoom Out"), this, SLOT(zoomOut()), QKeySequence::ZoomOut );
+   menu->addAction(tr("Zoom In"),  this, SLOT(zoomIn()),  QKeySequence::ZoomIn );
+   menu->addAction(tr("Zoom Out"), this, SLOT(zoomOut()), QKeySequence::ZoomOut);
 
    menu->exec(mapToGlobal(pos));
 }

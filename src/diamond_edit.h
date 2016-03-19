@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright (c) 2012-2015 Barbara Geller
+* Copyright (c) 2012-2016 Barbara Geller
 * All rights reserved.
 *
 * This file is part of Diamond Editor.
@@ -101,7 +101,6 @@ class DiamondTextEdit : public QPlainTextEdit
       bool m_isColumnMode;
       int m_undoCount;
       void removeColumnModeSpaces();
-
 
       bool m_showlineNum;
       bool m_colHighlight;

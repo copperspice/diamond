@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright (c) 2012-2015 Barbara Geller
+* Copyright (c) 2012-2016 Barbara Geller
 * All rights reserved.
 *
 * This file is part of Diamond Editor.
@@ -55,9 +55,9 @@ Dialog_Macro::Dialog_Macro(MainWindow *parent, MacroEnum enumValue, QStringList 
    // resize the dialog widget after the text has been displayed
    adjustSize();
 
-   connect(m_ui->select_PB, SIGNAL(clicked()),this, SLOT(Select()));
-   connect(m_ui->view_PB,   SIGNAL(clicked()),this, SLOT(View()));
-   connect(m_ui->cancel_PB, SIGNAL(clicked()),this, SLOT(Cancel()));
+   connect(m_ui->select_PB, &QPushButton::clicked, this, &Dialog_Macro::select);
+   connect(m_ui->view_PB,   &QPushButton::clicked, this, &Dialog_Macro::view);
+   connect(m_ui->cancel_PB, &QPushButton::clicked, this, &Dialog_Macro::cancel);
 }
 
 Dialog_Macro::~Dialog_Macro()
@@ -121,9 +121,7 @@ void Dialog_Macro::setUpView()
 
    m_ui->tableView->setEditTriggers(QAbstractItemView::DoubleClicked);
 
-   // signal
-   connect(m_model, SIGNAL(dataChanged(const QModelIndex &, const QModelIndex &)), this,
-            SLOT(tableDataChanged(const QModelIndex &, const QModelIndex &)));
+   connect(m_model, &QStandardItemModel::dataChanged, this, &Dialog_Macro::tableDataChanged);
 }
 
 void Dialog_Macro::tableDataChanged(const QModelIndex & topLeft, const QModelIndex & bottomRight)
@@ -131,7 +129,7 @@ void Dialog_Macro::tableDataChanged(const QModelIndex & topLeft, const QModelInd
    m_updateNames = true;
 }
 
-void Dialog_Macro::Select()
+void Dialog_Macro::select()
 {   
    if (m_updateNames) {
 
@@ -148,13 +146,13 @@ void Dialog_Macro::Select()
    this->done(QDialog::Accepted);
 }
 
-void Dialog_Macro::Cancel()
+void Dialog_Macro::cancel()
 {
    this->done(QDialog::Rejected);
 }
 
 //
-void Dialog_Macro::View()
+void Dialog_Macro::view()
 {
    QString macro = this->get_Macro();
 
@@ -348,7 +346,7 @@ void Dialog_Macro::View()
 
    msgB.setLayout(layoutMain);
 
-   QObject::connect(button, SIGNAL(clicked()), &msgB, SLOT(accept()));
+   QObject::connect(button, &QPushButton::clicked, &msgB, &QDialog::accept);
 
    msgB.exec();
 }

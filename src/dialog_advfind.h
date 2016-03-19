@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright (c) 2012-2015 Barbara Geller
+* Copyright (c) 2012-2016 Barbara Geller
 * All rights reserved.
 *
 * This file is part of Diamond Editor.
@@ -49,14 +49,9 @@ class Dialog_AdvFind : public QDialog
       Ui::Dialog_AdvFind *m_ui;
       MainWindow *m_parent;
 
-      CS_SLOT_1(Private, void pick_Folder())
-      CS_SLOT_2(pick_Folder) 
-
-      CS_SLOT_1(Private, void Find())
-      CS_SLOT_2(Find) 
-
-      CS_SLOT_1(Private, void Cancel())
-      CS_SLOT_2(Cancel) 
+      void pick_Folder();
+      void find();
+      void cancel();
 };
 
 #endif

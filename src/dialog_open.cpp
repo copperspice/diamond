@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright (c) 2012-2015 Barbara Geller
+* Copyright (c) 2012-2016 Barbara Geller
 * All rights reserved.
 *
 * This file is part of Diamond Editor.
@@ -48,8 +48,8 @@ Dialog_Open::Dialog_Open(MainWindow *parent, QStringList data)
 
    m_ui->openList->setFocus();
 
-   connect(m_ui->open_PB, SIGNAL(clicked()),this, SLOT(Open()));
-   connect(m_ui->cancel_PB, SIGNAL(clicked()),this, SLOT(Cancel()));  
+   connect(m_ui->open_PB,   &QPushButton::clicked, this, &Dialog_Open::open);
+   connect(m_ui->cancel_PB, &QPushButton::clicked, this, &Dialog_Open::cancel);  
 }
 
 Dialog_Open::~Dialog_Open()
@@ -57,12 +57,12 @@ Dialog_Open::~Dialog_Open()
    delete m_ui;
 }
 
-void Dialog_Open::Open()
+void Dialog_Open::open()
 {
    this->done(QDialog::Accepted);
 }
 
-void Dialog_Open::Cancel()
+void Dialog_Open::cancel()
 {
    this->done(QDialog::Rejected);
 }

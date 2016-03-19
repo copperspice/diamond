@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright (c) 2012-2015 Barbara Geller
+* Copyright (c) 2012-2016 Barbara Geller
 * All rights reserved.
 *
 * This file is part of Diamond Editor.
@@ -42,20 +42,15 @@ class About : public QWidget
 
       QSize sizeHint() const;
 
-      CS_SLOT_1(Private, void setCustomContextMenu(const QPoint & pos))
-      CS_SLOT_2(setCustomContextMenu) 
+      void setCustomContextMenu(const QPoint & pos);
+      void home();
+      void close();
 
       CS_SLOT_1(Private, void zoomIn())
-      CS_SLOT_2(zoomIn) 
+      CS_SLOT_2(zoomIn)
 
       CS_SLOT_1(Private, void zoomOut())
-      CS_SLOT_2(zoomOut) 
-
-      CS_SLOT_1(Private, void actionClose())
-      CS_SLOT_2(actionClose) 
-
-      CS_SLOT_1(Private, void actionHome())
-      CS_SLOT_2(actionHome) 
+      CS_SLOT_2(zoomOut)
 };
 
 #endif

@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright (c) 2012-2015 Barbara Geller
+* Copyright (c) 2012-2016 Barbara Geller
 * All rights reserved.
 *
 * This file is part of Diamond Editor.
@@ -113,7 +113,6 @@ static void showHelp()
 
    QDialog msgB;
    msgB.setWindowIcon(QIcon("://resources/diamond.png"));
-
    msgB.setWindowTitle("Diamond Editor Help");
 
    QLabel *label = new QLabel;
@@ -138,7 +137,7 @@ static void showHelp()
 
    msgB.setLayout(layoutMain);
 
-   QObject::connect(button, SIGNAL(clicked()), &msgB, SLOT(accept()));
+   QObject::connect(button, &QPushButton::clicked, &msgB, &QDialog::accept);
 
    msgB.exec();
 }
@@ -149,19 +148,22 @@ static void showVersion()
    // change mainwindow.cpp & main.cpp
 
    QString textBody = "<font color='#000080'><table style=margin-right:25>"
-                      "<tr><td><nobr>Developed by Barbara Geller</nobr></td><td>barbara@copperspice.com</td></tr>"
-                      "<tr><td style=padding-right:25><nobr>Developed by Ansel Sermersheim</nobr></td><td>ansel@copperspice.com</td></tr>"
-                      "</table></font>"
-                      "<br>"
-                      "<p><small>Copyright 2012-2015 BG Consulting, All rights reserved.<br>"
-                      "This program is provided AS IS with no warranty of any kind.<br></small></p>";
+                  "<tr><td><nobr>Developed by Barbara Geller</nobr></td>"
+                      "<td>barbara@copperspice.com</td></tr>"
+                  "<tr><td style=padding-right:25><nobr>Developed by Ansel Sermersheim</nobr></td>"
+                      "<td>ansel@copperspice.com</td></tr>"
+                  "</table></font>"
+                  "<br>"
+                  "<p><small>Copyright 2012-2016 BG Consulting, All rights reserved.<br>"
+                  "This program is provided AS IS with no warranty of any kind.<br></small></p>";
+
 
    QMessageBox msgB;
    msgB.setIcon(QMessageBox::NoIcon);
    msgB.setWindowIcon(QIcon("://resources/diamond.png"));
 
    msgB.setWindowTitle("About Diamond");
-   msgB.setText("<p style=margin-right:25><center><h5>Version: 1.2.0<br>Build # 08.15.2015</h5></center></p>");
+   msgB.setText("<p style=margin-right:25><center><h5>Version: 1.2.1<br>Build # 03.15.2016</h5></center></p>");
    msgB.setInformativeText(textBody);
 
    msgB.setStandardButtons(QMessageBox::Ok);

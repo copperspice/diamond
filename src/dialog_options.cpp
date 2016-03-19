@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright (c) 2012-2015 Barbara Geller
+* Copyright (c) 2012-2016 Barbara Geller
 * All rights reserved.
 *
 * This file is part of Diamond Editor.
@@ -26,6 +26,7 @@
 #include <QKeySequence>
 #include <QLineEdit>
 #include <QString>
+#include <QToolButton>
 
 #include <qglobal.h>
 
@@ -40,14 +41,14 @@ Dialog_Options::Dialog_Options(MainWindow *parent, struct Options data)
 
    initData();
 
-   connect(m_ui->dictMain_TB, SIGNAL(clicked()), this, SLOT(pick_Main()));
-   connect(m_ui->dictUser_TB, SIGNAL(clicked()), this, SLOT(pick_User()));
-   connect(m_ui->syntax_TB,   SIGNAL(clicked()), this, SLOT(pick_Syntax()));
-   connect(m_ui->about_TB,    SIGNAL(clicked()), this, SLOT(pick_About()));
+   connect(m_ui->dictMain_TB, &QToolButton::clicked, this, &Dialog_Options::pick_Main);
+   connect(m_ui->dictUser_TB, &QToolButton::clicked, this, &Dialog_Options::pick_User);
+   connect(m_ui->syntax_TB,   &QToolButton::clicked, this, &Dialog_Options::pick_Syntax);
+   connect(m_ui->about_TB,    &QToolButton::clicked, this, &Dialog_Options::pick_About);
 
-   connect(m_ui->reset_PB,    SIGNAL(clicked()), this, SLOT(reset_StandardKey()));
-   connect(m_ui->save_PB,     SIGNAL(clicked()), this, SLOT(Save()));
-   connect(m_ui->cancel_PB,   SIGNAL(clicked()), this, SLOT(Cancel()));
+   connect(m_ui->reset_PB,    &QPushButton::clicked, this, &Dialog_Options::reset_StandardKey);
+   connect(m_ui->save_PB,     &QPushButton::clicked, this, &Dialog_Options::save);
+   connect(m_ui->cancel_PB,   &QPushButton::clicked, this, &Dialog_Options::cancel);
 }
 
 Dialog_Options::~Dialog_Options()
@@ -152,12 +153,12 @@ void Dialog_Options::initData()
    m_ui->key_copyBuffer->setText(m_options.key_copyBuffer);
 }
 
-void Dialog_Options::Save()
+void Dialog_Options::save()
 {
    this->done(QDialog::Accepted);
 }
 
-void Dialog_Options::Cancel()
+void Dialog_Options::cancel()
 {
    this->done(QDialog::Rejected);
 }

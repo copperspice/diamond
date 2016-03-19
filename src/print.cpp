@@ -1,6 +1,6 @@
  /**************************************************************************
 *
-* Copyright (c) 2012-2015 Barbara Geller
+* Copyright (c) 2012-2016 Barbara Geller
 * All rights reserved.
 *
 * This file is part of Diamond Editor.
@@ -66,7 +66,7 @@ void MainWindow::printPreview()
    QPrintPreviewDialog preview(&printer, this);
    preview.setWindowTitle(m_curFile);
 
-   connect(&preview, SIGNAL(paintRequested(QPrinter *)), this, SLOT(printOut(QPrinter *)));
+   connect(&preview, &QPrintPreviewDialog::paintRequested, this, &MainWindow::printOut);
    preview.exec();
 }
 

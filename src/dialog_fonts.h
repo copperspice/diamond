@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright (c) 2012-2015 Barbara Geller
+* Copyright (c) 2012-2016 Barbara Geller
 * All rights reserved.
 *
 * This file is part of Diamond Editor.
@@ -43,17 +43,10 @@ class Dialog_Fonts : public QDialog
       QFont m_fontNormal;
       QFont m_fontColumn;
 
-      CS_SLOT_1(Private, void save())
-      CS_SLOT_2(save) 
-
-      CS_SLOT_1(Private, void cancel())
-      CS_SLOT_2(cancel) 
-
-      CS_SLOT_1(Private, void fontNormal())
-      CS_SLOT_2(fontNormal) 
-
-      CS_SLOT_1(Private, void fontColumn())
-      CS_SLOT_2(fontColumn)      
+      void save();
+      void cancel();
+      void fontNormal();
+      void fontColumn();
 };
 
 #endif

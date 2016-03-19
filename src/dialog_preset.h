@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright (c) 2012-2015 Barbara Geller
+* Copyright (c) 2012-2016 Barbara Geller
 * All rights reserved.
 *
 * This file is part of Diamond Editor.
@@ -49,12 +49,8 @@ class Dialog_Preset : public QDialog
       void verify_Folder(QLineEdit *field);
       void pick_Folder(QString number, QLineEdit *field);
 
-      CS_SLOT_1(Private, void save())
-      CS_SLOT_2(save)
-
-      CS_SLOT_1(Private, void cancel())
-      CS_SLOT_2(cancel)
-
+      void save();
+      void cancel();
 };
 
 #endif

@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright (c) 2012-2015 Barbara Geller
+* Copyright (c) 2012-2016 Barbara Geller
 * All rights reserved.
 *
 * This file is part of Diamond Editor.
@@ -139,16 +139,6 @@ void MainWindow::rf_RemoveFName()
          // update actions
          rf_UpdateActions();
       }
-   }
-}
-
-void MainWindow::rf_DeleteName()
-{
-   QAction *action;
-   action = (QAction *)sender();
-
-   if (action) {
-      csMsg( "File name " + action->whatsThis() );
    }
 }
 

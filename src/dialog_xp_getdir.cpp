@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright (c) 2012-2015 Barbara Geller
+* Copyright (c) 2012-2016 Barbara Geller
 * All rights reserved.
 *
 * This file is part of Diamond Editor.
@@ -120,20 +120,17 @@ Dialog_XP_GetDir::Dialog_XP_GetDir(MainWindow *from, const QString title, const 
    m_index_R = m_model_R->index(m_path);
    m_ui->folders_TV->setCurrentIndex(m_index_R);
 
-   // tree view triggers
-   connect(m_ui->drives_TV, SIGNAL(currentItemChanged(QTreeWidgetItem *, QTreeWidgetItem *)),
-           this, SLOT(showDirectories(QTreeWidgetItem *, QTreeWidgetItem *))); 
+   connect(m_ui->drives_TV,  &QTreeWidget::currentItemChanged, this, &Dialog_XP_GetDir::showDirectories);
 
-   connect(m_ui->network_PB, SIGNAL(clicked()),this, SLOT(network()));
-   connect(m_ui->ok_PB,      SIGNAL(clicked()),this, SLOT(ok()));
-   connect(m_ui->cancel_PB,  SIGNAL(clicked()),this, SLOT(cancel()));
+   connect(m_ui->network_PB, &QPushButton::clicked, this, &Dialog_XP_GetDir::network);
+   connect(m_ui->ok_PB,      &QPushButton::clicked, this, &Dialog_XP_GetDir::ok);
+   connect(m_ui->cancel_PB,  &QPushButton::clicked, this, &Dialog_XP_GetDir::cancel);
 
    // force call to sizeHint()
    adjustSize();
 
    // update right treeview
    connect(m_model_R, &QFileSystemModel::directoryLoaded, this, &Dialog_XP_GetDir::showMe);
-
    m_ui->drives_TV->setFocus();
 }
 
