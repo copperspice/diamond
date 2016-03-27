@@ -35,6 +35,12 @@ void MainWindow::argLoad(QList<QString> argList)
 {
    int argCnt = argList.count();
 
+   QStringList t_openedFiles = m_openedFiles;
+
+   if (m_args.flag_noAutoLoad) {
+      t_openedFiles.clear();
+   }
+
    for (int k = 1; k < argCnt; k++) {
       QString tempFile = argList.at(k);
 
@@ -48,11 +54,13 @@ void MainWindow::argLoad(QList<QString> argList)
       if (tempFile.isEmpty()) {
          // do nothing
 
-      } else if (m_openedFiles.contains(tempFile, Qt::CaseInsensitive) ) {
+      } else if (t_openedFiles.contains(tempFile, Qt::CaseInsensitive) ) {
          // file is already open
 
       } else if ( QFile::exists(tempFile) ) {
-         loadFile(tempFile, true, true);
+         if (loadFile(tempFile, true, true)) {
+            t_openedFiles.append(tempFile);
+         }
       }
    }
 }

@@ -122,7 +122,7 @@ MainWindow::MainWindow(QStringList fileList, QStringList flagList)
 
    if (m_struct.autoLoad && ! m_args.flag_noAutoLoad ) {      
       autoLoad();
-   }   
+   }
 
    // user requested files on the command line
    if (fileList.count() > 1 ) {
@@ -1705,7 +1705,7 @@ void MainWindow::about()
    msgB.setWindowIcon(QIcon("://resources/diamond.png"));
 
    msgB.setWindowTitle(tr("About Diamond"));
-   msgB.setText("<p style=margin-right:25><center><h5>Version: 1.2.1<br>Build # 03.15.2016</h5></center></p>");
+   msgB.setText("<p style=margin-right:25><center><h5>Version: 1.2.1<br>Build # 03.27.2016</h5></center></p>");
    msgB.setInformativeText(textBody);
 
    msgB.setStandardButtons(QMessageBox::Ok);

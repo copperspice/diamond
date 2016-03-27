@@ -27,7 +27,7 @@ if OSTYPE_DARWIN
    AM_CXXFLAGS+=-I/opt/local/include/hunspell
 endif
 
-if OSTYPE_WIN 
+if OSTYPE_WIN
    # path to hunspell
    hunspell_path=../hunspell_lib
 
