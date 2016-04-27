@@ -77,13 +77,15 @@ void MainWindow::setSyntax()
       fname  = strippedName(m_curFile).toLower();
       suffix = suffixName();
 
-      if (suffix == "h" || suffix == "c" || suffix == "cpp" || suffix == "m" || suffix == "mm") {
+      const QList<QString> cppList = {"h", "hh", "hpp", "c", "cc", "c++", "cpp", "l", "m", "mm" };
+
+      if (cppList.contains(suffix)) {
          suffix = "cpp";
 
       } else if (suffix == "prg") {
          suffix = "clipper";                 
 
-      } else if (suffix == "dox" || suffix == "doxypress"  || suffix == "l") {
+      } else if (suffix == "dox" || suffix == "doxypress") {
          suffix = "doxy";
 
       } else if (suffix == "err" || suffix == "log") {

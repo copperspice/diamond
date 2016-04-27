@@ -1705,7 +1705,7 @@ void MainWindow::about()
    msgB.setWindowIcon(QIcon("://resources/diamond.png"));
 
    msgB.setWindowTitle(tr("About Diamond"));
-   msgB.setText("<p style=margin-right:25><center><h5>Version: 1.2.1<br>Build # 03.27.2016</h5></center></p>");
+   msgB.setText("<p style=margin-right:25><center><h5>Version: 1.2.1<br>Build # 04.27.2016</h5></center></p>");
    msgB.setInformativeText(textBody);
 
    msgB.setStandardButtons(QMessageBox::Ok);
