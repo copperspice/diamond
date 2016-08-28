@@ -3,10 +3,8 @@
 * Copyright (c) 2012-2016 Barbara Geller
 * All rights reserved.
 *
-* This file is part of Diamond Editor.
-*
 * Diamond Editor is free software: you can redistribute it and/or
-* modify it under the terms of the GNU General Public License version 3
+* modify it under the terms of the GNU General Public License version 2
 * as published by the Free Software Foundation.
 *
 * Diamond Editor is distributed in the hope that it will be useful,
