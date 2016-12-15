@@ -195,9 +195,9 @@ int MainWindow::get_line_col(const QString route)
    }
 
    int result = dw->exec();
-   int col = 1;
+   int col    = -1;
 
-   if ( result == QDialog::Accepted) {
+   if (result == QDialog::Accepted) {
       col = dw->get_Value().toInt();
    }
 

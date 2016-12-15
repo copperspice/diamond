@@ -11,6 +11,7 @@ gcclibs=libgcc_s_*-1  libstdc++-6  libwinpthread-1
 
 # list of CopperSpice libraries
 cslibs=Core Gui Network WebKit
+csver=1.3
 
 # location of includes
 AM_CXXFLAGS+=-I../src
@@ -56,7 +57,7 @@ deploy : all
 
 	$(LIBTOOL) --mode=install cp $(bin_PROGRAMS) $(deploydir)
 
-	rsync -W -a $(patsubst %,$(CS_HOME)/lib/libCs%1.so*,$(cslibs)) $(deploydir)
+	rsync -W -a $(patsubst %,$(CS_HOME)/lib/libCs%$(csver).so*,$(cslibs)) $(deploydir)
 	rsync -W -a $(top_srcdir)/source_extra/{dictionary,help,syntax} $(deploydir)
 	rsync -W -a $(top_srcdir)/resources/diamond.png $(deploydir)
 endif
@@ -90,18 +91,18 @@ deploy : all
 	cp -r $(top_srcdir)/source_extra/help        $(deployapp)/Resources
 	cp -r $(top_srcdir)/source_extra/syntax      $(deployapp)/Resources
 
-	rsync -W -a /opt/local/lib/libhunspell-1.3.0.dylib  $(deployapp)/Frameworks
+	rsync -W -a /opt/local/lib/libhunspell-1.3.dylib  $(deployapp)/Frameworks
 	install_name_tool -change /opt/local/lib/libhunspell-1.3.0.dylib \
 	@executable_path/../Frameworks/libhunspell-1.3.0.dylib  $(deployapp)/MacOS/$(bin_PROGRAMS)
 
-	rsync -W -a $(patsubst %,$(CS_HOME)/lib/libCs%1.0.dylib,$(cslibs)) $(deployapp)/Frameworks
+	rsync -W -a $(patsubst %,$(CS_HOME)/lib/libCs%$(csver).dylib,$(cslibs)) $(deployapp)/Frameworks
 
-	for libname in $(patsubst %,libCs%1.0.dylib,$(cslibs)) ; do \
+	for libname in $(patsubst %,libCs%$(csver).dylib,$(cslibs)) ; do \
 	\
 	install_name_tool -change $(CS_HOME)/lib/$$libname \
 	@executable_path/../Frameworks/$$libname  $(deployapp)/MacOS/$(bin_PROGRAMS); \
 	\
-	for templib in $(patsubst %,libCs%1.0.dylib,$(cslibs)) ; do \
+	for templib in $(patsubst %,libCs%$(csver).dylib,$(cslibs)) ; do \
 	install_name_tool -change $(CS_HOME)/lib/$$templib \
 	@executable_path/../Frameworks/$$templib  $(deployapp)/Frameworks/$$libname \
 	; done \
@@ -122,7 +123,7 @@ deploy : all
 	rsync -W -a --modify-window=2  $(top_srcdir)/resources/diamond.ico $(deploydir)
 
 	rsync -W -a --modify-window=2  $(patsubst %,$(gccpath)%.dll,$(gcclibs))  $(deploydir)
-	rsync -W -a --modify-window=2  $(patsubst %,$(CS_HOME)/bin/libCs%1-0.dll,$(cslibs))  $(deploydir)
+	rsync -W -a --modify-window=2  $(patsubst %,$(CS_HOME)/bin/libCs%$(csver).dll,$(cslibs))  $(deploydir)
 	rsync -W -a --modify-window=2  $(hunspell_dll)  $(deploydir)
 endif
 
@@ -130,7 +131,7 @@ endif
 VPATH = ../
 
 # linking
-Diamond_LDFLAGS=$(AM_LDFLAGS) $(patsubst %,-lCs%1,$(cslibs)) $(hunspell_la)
+Diamond_LDFLAGS=$(AM_LDFLAGS) $(patsubst %,-lCs%$(csver),$(cslibs)) $(hunspell_la)
 
 if OSTYPE_WIN
    # used by xp only
@@ -268,7 +269,7 @@ install-exec-hook:
 	rsync -W -a --modify-window=2  $(top_srcdir)/resources/diamond.ico $(bindir)
 
 	rsync -W -a --modify-window=2  $(patsubst %,$(gccpath)%.dll,$(gcclibs))  $(bindir)
-	rsync -W -a --modify-window=2  $(patsubst %,$(CS_HOME)/bin/libCs%1-0.dll,$(cslibs))  $(bindir)
+	rsync -W -a --modify-window=2  $(patsubst %,$(CS_HOME)/bin/libCs%$(csver).dll,$(cslibs))  $(bindir)
 	rsync -W -a --modify-window=2  $(hunspell_dll)  $(bindir)
 endif
 

@@ -891,11 +891,13 @@ void MainWindow::goLine()
 {
    int line = get_line_col("line");
 
-   QTextCursor cursor(m_textEdit->textCursor());
-   cursor.movePosition(QTextCursor::Start);
+   if (line > 0) {
+      QTextCursor cursor(m_textEdit->textCursor());
+      cursor.movePosition(QTextCursor::Start);
 
-   cursor.movePosition(QTextCursor::NextBlock, QTextCursor::MoveAnchor, line - 1);
-   m_textEdit->setTextCursor(cursor);
+      cursor.movePosition(QTextCursor::NextBlock, QTextCursor::MoveAnchor, line - 1);
+      m_textEdit->setTextCursor(cursor);
+   }
 }
 
 void MainWindow::goColumn()
