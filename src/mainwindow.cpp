@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright (c) 2012-2016 Barbara Geller
+* Copyright (c) 2012-2017 Barbara Geller
 * All rights reserved.
 *
 * Diamond Editor is free software: you can redistribute it and/or
@@ -1021,7 +1021,7 @@ void MainWindow::show_Spaces()
       m_struct.show_Spaces = true;
 
       if (m_struct.show_Breaks) {
-       textOpt.setFlags(QTextOption::ShowTabsAndSpaces | QTextOption::ShowLineAndParagraphSeparators);
+        textOpt.setFlags(QTextOption::ShowTabsAndSpaces | QTextOption::ShowLineAndParagraphSeparators);
 
       } else {
         textOpt.setFlags(QTextOption::ShowTabsAndSpaces);
@@ -1696,7 +1696,7 @@ void MainWindow::about()
                       "<td>ansel@copperspice.com</td></tr>"
                   "</table></font>"
                   "<br>"
-                  "<p><small>Copyright 2012-2016 BG Consulting, All rights reserved.<br>"
+                  "<p><small>Copyright 2012-2017 BG Consulting, All rights reserved.<br>"
                   "This program is provided AS IS with no warranty of any kind.<br></small></p>";
 
    //
@@ -1705,7 +1705,7 @@ void MainWindow::about()
    msgB.setWindowIcon(QIcon("://resources/diamond.png"));
 
    msgB.setWindowTitle(tr("About Diamond"));
-   msgB.setText("<p style=margin-right:25><center><h5>Version: 1.2.1<br>Build # 04.27.2016</h5></center></p>");
+   msgB.setText("<p style=margin-right:25><center><h5>Version: 1.2.2<br>Build # 01.01.2017</h5></center></p>");
    msgB.setInformativeText(textBody);
 
    msgB.setStandardButtons(QMessageBox::Ok);

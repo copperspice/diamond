@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright (c) 2012-2016 Barbara Geller
+* Copyright (c) 2012-2017 Barbara Geller
 * All rights reserved.
 *
 * Diamond Editor is free software: you can redistribute it and/or
@@ -26,7 +26,8 @@
 Dialog_AdvFind::Dialog_AdvFind(MainWindow *parent, QString findText, QString fileType, QString findFolder, bool searchFolders)
    : QDialog(parent), m_ui(new Ui::Dialog_AdvFind)
 {   
-   m_parent = parent;
+   m_parent  = parent;
+   m_busyMsg = nullptr;
 
    m_ui->setupUi(this);
    setWindowIcon(QIcon("://resources/diamond.png"));
@@ -69,26 +70,40 @@ void Dialog_AdvFind::showBusyMsg()
    m_ui->find_PB->setVisible(false);
    m_ui->horizontalSpacer_32->changeSize(0,0);
    m_ui->cancel_PB->setVisible(false);
-   m_ui->horizontalSpacer_33->changeSize(0,0);
 
-   QLabel *msg = new QLabel();
-   msg->setText("Preparing list of files, this process may take a minute...");
+   if (m_busyMsg == nullptr)   {
+      m_busyMsg = new QLabel();
+      m_busyMsg->setText("Preparing list of files, this process may take a minute...");
 
-   QFont font = msg->font();
-   font.setPointSize(10);
-   msg->setFont(font);
+      QFont font = m_busyMsg->font();
+      font.setPointSize(10);
+      m_busyMsg->setFont(font);
 
-   QPalette palette = msg->palette();
-   palette.setColor(QPalette::WindowText, QColor{0,0,255} );
-   msg->setPalette(palette);
+      QPalette palette = m_busyMsg->palette();
+      palette.setColor(QPalette::WindowText, QColor{0,0,255} );
+      m_busyMsg->setPalette(palette);
 
-   m_ui->layout_buttons->addWidget(msg);
-   m_ui->layout_buttons->addStretch();
+      m_ui->layout_buttons->insertWidget(2, m_busyMsg);
+
+   } else {
+      m_busyMsg->setVisible(true);
+
+   }
 
    show();
    QApplication::processEvents();
 }
 
+void Dialog_AdvFind::showNotBusyMsg()
+{
+   m_busyMsg->setVisible(false);
+
+   m_ui->find_PB->setVisible(true);
+   m_ui->horizontalSpacer_32->changeSize(8,25);
+   m_ui->cancel_PB->setVisible(true);
+
+   QApplication::processEvents();
+}
 
 void Dialog_AdvFind::cancel()
 {

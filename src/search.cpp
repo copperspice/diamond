@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright (c) 2012-2016 Barbara Geller
+* Copyright (c) 2012-2017 Barbara Geller
 * All rights reserved.
 *
 * Diamond Editor is free software: you can redistribute it and/or
@@ -157,57 +157,60 @@ void MainWindow::advFind()
    }
 
    m_dwAdvFind = new Dialog_AdvFind(this, m_advFindText, m_advFindFileType, m_advFindFolder, m_advFSearchFolders);
-   int result = m_dwAdvFind->exec();
 
-   if (result == QDialog::Accepted) {
+   while (true) {
+      int result = m_dwAdvFind->exec();
 
-      m_advFindText     = m_dwAdvFind->get_findText();
-      m_advFindFileType = m_dwAdvFind->get_findType();
-      m_advFindFolder   = m_dwAdvFind->get_findFolder();
+      if (result == QDialog::Accepted) {
 
-      // get the flags
-      m_advFCase          = m_dwAdvFind->get_Case();
-      m_advFWholeWords    = m_dwAdvFind->get_WholeWords();
-      m_advFSearchFolders = m_dwAdvFind->get_SearchSubFolders();
+         m_advFindText     = m_dwAdvFind->get_findText();
+         m_advFindFileType = m_dwAdvFind->get_findType();
+         m_advFindFolder   = m_dwAdvFind->get_findFolder();
 
-      json_Write(ADVFIND);
+         // get the flags
+         m_advFCase          = m_dwAdvFind->get_Case();
+         m_advFWholeWords    = m_dwAdvFind->get_WholeWords();
+         m_advFSearchFolders = m_dwAdvFind->get_SearchSubFolders();
 
-      if (! m_advFindText.isEmpty())  {
+         json_Write(ADVFIND);
 
-         if (m_advFindFileType.isEmpty()) {
-            m_advFindFileType = "*";
-         }
+         if (! m_advFindText.isEmpty())  {
 
-         if (m_advFindFolder.isEmpty()) {
-            m_advFindFolder = QDir::currentPath();
-         }
-
-         //
-         bool aborted = false;
-         QList<advFindStruct> foundList = this->advFind_getResults(aborted);
-
-         if (aborted)  {
-            // do nothing
-
-         } else if (foundList.isEmpty())  {
-            csError("Advanced Find", "Not found: " + m_advFindText);
-
-            // close the search box
-            int index = m_splitter->indexOf(m_findWidget);
-
-            if (index > 0) {
-               m_findWidget->deleteLater();
+            if (m_advFindFileType.isEmpty()) {
+               m_advFindFileType = "*";
             }
 
-         } else   {
-            this->advFind_ShowFiles(foundList);
+            if (m_advFindFolder.isEmpty()) {
+               m_advFindFolder = QDir::currentPath();
+            }
 
+            //
+            bool aborted = false;
+            QList<advFindStruct> foundList = this->advFind_getResults(aborted);
+
+            if (aborted)  {
+               // do nothing
+
+            } else if (foundList.isEmpty())  {
+               csError("Advanced Find", "Not found: " + m_advFindText);
+
+               // allow user to search again
+               m_dwAdvFind->showNotBusyMsg();
+               continue;
+
+            } else   {
+               this->advFind_ShowFiles(foundList);
+
+            }
          }
+
+      } else {
+         m_advFindText = saveText;
+
       }
 
-   } else {
-      m_advFindText = saveText;
-
+      // exit while loop
+      break;
    }
 
    delete m_dwAdvFind;
@@ -323,7 +326,7 @@ QList<advFindStruct> MainWindow::advFind_getResults(bool &aborted)
       }
 
       file.close();
-   }
+   }   
 
    return foundList;
 }

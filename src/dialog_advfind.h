@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright (c) 2012-2016 Barbara Geller
+* Copyright (c) 2012-2017 Barbara Geller
 * All rights reserved.
 *
 * Diamond Editor is free software: you can redistribute it and/or
@@ -42,10 +42,12 @@ class Dialog_AdvFind : public QDialog
       bool get_WholeWords();
       bool get_SearchSubFolders();
       void showBusyMsg();
+      void showNotBusyMsg();
 
    private:
       Ui::Dialog_AdvFind *m_ui;
       MainWindow *m_parent;
+      QLabel *m_busyMsg;
 
       void pick_Folder();
       void find();
