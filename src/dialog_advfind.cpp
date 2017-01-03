@@ -96,6 +96,11 @@ void Dialog_AdvFind::showBusyMsg()
 
 void Dialog_AdvFind::showNotBusyMsg()
 {
+   if (m_busyMsg == nullptr)   {
+      // prior search failed, nothing to undo
+      return;
+   }
+
    m_busyMsg->setVisible(false);
 
    m_ui->find_PB->setVisible(true);

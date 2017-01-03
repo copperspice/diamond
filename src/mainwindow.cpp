@@ -31,6 +31,7 @@
 #include <QFontMetrics>
 #include <QKeySequence>
 #include <QLabel>
+#include <QScrollBar>
 #include <QToolBar>
 
 MainWindow::MainWindow(QStringList fileList, QStringList flagList)
@@ -891,12 +892,15 @@ void MainWindow::goLine()
 {
    int line = get_line_col("line");
 
-   if (line > 0) {
-      QTextCursor cursor(m_textEdit->textCursor());
-      cursor.movePosition(QTextCursor::Start);
+   if (line > 0) {     
+      // save original position
+      // int pos = m_textEdit->verticalScrollBar()->value();
 
-      cursor.movePosition(QTextCursor::NextBlock, QTextCursor::MoveAnchor, line - 1);
+      QTextCursor cursor(m_textEdit->document()->findBlockByNumber(line - 1));
       m_textEdit->setTextCursor(cursor);
+
+      // set to original postion - following does not work
+      // m_textEdit->verticalScrollBar()->setValue(pos);
    }
 }
 
