@@ -190,6 +190,7 @@ noinst_HEADERS = \
     src/dialog_symbols.h \
     src/dialog_xp_getdir.h \
     src/diamond_edit.h \
+    src/diamond_build_info.h \
     src/keylineedit.h \
     src/mainwindow.h  \
     src/search.h \

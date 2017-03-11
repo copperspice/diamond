@@ -24,6 +24,7 @@
 
 #include <QFileInfo>
 #include <QFileDialog>
+#include <QFSFileEngine>
 #include <QDragEnterEvent>
 #include <QMimeData>
 #include <QSysInfo>
@@ -210,30 +211,38 @@ bool MainWindow::loadFile(const QString &fileName, bool addNewTab, bool isAuto)
 {
    // part 1
    if (addNewTab)  {
-      // test if file is open in another tab
-      int pos = m_openedFiles.indexOf(fileName);
+      // test if fileName is open in another tab
+      QFSFileEngine engine(fileName);
 
-      if (pos >= 0) {
-         int count = m_tabWidget->count();
 
-         QWidget *temp;
-         DiamondTextEdit *textEdit;
+      int count = m_tabWidget->count();
 
-         for (int k = 0; k < count; ++k) {
+      QWidget *temp;
+      DiamondTextEdit *textEdit;
 
-            temp = m_tabWidget->widget(k);
-            textEdit = dynamic_cast<DiamondTextEdit *>(temp);
+      for (int k = 0; k < count; ++k) {
 
-            if (textEdit) {
-               QString t_Fname = m_tabWidget->tabWhatsThis(k);
+         temp = m_tabWidget->widget(k);
+         textEdit = dynamic_cast<DiamondTextEdit *>(temp);
 
-               if (t_Fname == fileName) {
-                  // file is alredy open, select the tab
+         if (textEdit) {
+            QString t_Fname = m_tabWidget->tabWhatsThis(k);
+            bool found      = false;
 
-                  m_textEdit = textEdit;
-                  m_tabWidget->setCurrentIndex(k);
-                  return true;
-               }
+            if (engine.caseSensitive()) {
+               found = (fileName == t_Fname);
+
+            } else {
+               // usually only windows
+               found = fileName.compare(t_Fname, Qt::CaseInsensitive) == 0;
+
+            }
+
+            if (found) {
+               // file is alredy open, select the tab
+               m_textEdit = textEdit;
+               m_tabWidget->setCurrentIndex(k);
+               return true;
             }
          }
       }

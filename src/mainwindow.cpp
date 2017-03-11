@@ -21,6 +21,7 @@
 #include "dialog_macro.h"
 #include "dialog_open.h"
 #include "dialog_symbols.h"
+#include "diamond_build_info.h"
 #include "mainwindow.h"
 
 #include <stdexcept>
@@ -1709,7 +1710,7 @@ void MainWindow::about()
    msgB.setWindowIcon(QIcon("://resources/diamond.png"));
 
    msgB.setWindowTitle(tr("About Diamond"));
-   msgB.setText("<p style=margin-right:25><center><h5>Version: 1.2.2<br>Build # 01.01.2017</h5></center></p>");
+   msgB.setText(tr("<p style=margin-right:25><center><h5>Version: %1<br>Build # %2</h5></center></p>").arg(versionString).arg(buildDate));
    msgB.setInformativeText(textBody);
 
    msgB.setStandardButtons(QMessageBox::Ok);

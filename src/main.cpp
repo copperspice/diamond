@@ -17,6 +17,7 @@
 *
 **************************************************************************/
 
+#include "diamond_build_info.h"
 #include "mainwindow.h"
 #include "util.h"
 
@@ -161,7 +162,7 @@ static void showVersion()
    msgB.setWindowIcon(QIcon("://resources/diamond.png"));
 
    msgB.setWindowTitle("About Diamond");
-   msgB.setText("<p style=margin-right:25><center><h5>Version: 1.2.2<br>Build # 01.01.2017</h5></center></p>");
+   msgB.setText(QString("<p style=margin-right:25><center><h5>Version: %1<br>Build # %2</h5></center></p>").arg(versionString).arg(buildDate));
    msgB.setInformativeText(textBody);
 
    msgB.setStandardButtons(QMessageBox::Ok);
