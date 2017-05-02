@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['tools',['Tools',['../menu-tools.html',1,'menus']]],
-  ['timeline',['Timeline',['../timeline.html',1,'']]]
+  ['search',['Search',['../menu-search.html',1,'menus']]],
+  ['settings',['Settings',['../menu-settings.html',1,'menus']]]
 ];

@@ -31,3 +31,5 @@ Diamond.creator.user*
 /install/
 /source_extra/*.tar.bz2
 /source_extra/*.zip
+
+src/diamond_build_info.h

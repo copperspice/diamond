@@ -12,7 +12,7 @@ var NAVTREE =
       [ "Building for X11", "build-x11.html", null ]
     ] ],
     [ "Features", "features.html", null ],
-    [ "How To", "how_to.html", null ],
+    [ "Getting Started", "how_to.html", null ],
     [ "Menus", "menus.html", [
       [ "Document", "menu-document.html", null ],
       [ "Edit", "menu-edit.html", null ],
