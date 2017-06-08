@@ -54,7 +54,7 @@ void MainWindow::setColors()
       font.setPointSize(11);
       label->setFont(font);
 
-      QBoxLayout *layout = new QVBoxLayout();      
+      QBoxLayout *layout = new QVBoxLayout();
       layout->addWidget(label);
       layout->setContentsMargins(9,9,9,20);
       layout->itemAt(0)->setAlignment(Qt::AlignVCenter);
@@ -101,7 +101,7 @@ void MainWindow::setColors()
          temp     = m_tabWidget->widget(k);
          textEdit = dynamic_cast<DiamondTextEdit *>(temp);
 
-         if (textEdit) {        
+         if (textEdit) {
             m_textEdit = textEdit;
 
             // get saved value
@@ -116,7 +116,7 @@ void MainWindow::setColors()
       m_textEdit = cur_textEdit;
 
       // for this tab only, it is updated every tab change
-      moveBar();   
+      moveBar();
 
       // all done
       tDialog.close();
@@ -145,15 +145,17 @@ void MainWindow::setFont()
 void MainWindow::setOptions()
 {
    struct Options options;
-   options.useSpaces    = m_struct.useSpaces;
-   options.tabSpacing   = m_struct.tabSpacing;
+
    options.formatDate   = m_struct.formatDate;
    options.formatTime   = m_struct.formatTime;
+   options.tabSpacing   = m_struct.tabSpacing;
+   options.useSpaces    = m_struct.useSpaces;
+   options.removeSpace  = m_struct.removeSpace;
+   options.autoLoad     = m_struct.autoLoad;
    options.dictMain     = m_struct.dictMain;
    options.dictUser     = m_struct.dictUser;
    options.pathSyntax   = m_struct.pathSyntax;
    options.aboutUrl     = m_struct.aboutUrl;
-   options.autoLoad     = m_struct.autoLoad;
 
    // tab 2
    options.key_open        = m_struct.key_open;
@@ -202,6 +204,16 @@ void MainWindow::setOptions()
       options = dw->get_Results();
 
       //
+      if ( m_struct.formatDate != options.formatDate)  {
+         m_struct.formatDate = options.formatDate;
+         json_Write(FORMAT_DATE);
+      }
+
+      if ( m_struct.formatTime != options.formatTime)  {
+         m_struct.formatTime = options.formatTime;
+         json_Write(FORMAT_TIME);
+      }
+
       if ( m_struct.tabSpacing != options.tabSpacing)  {
          m_struct.tabSpacing = options.tabSpacing;
          json_Write(TAB_SPACING);
@@ -210,21 +222,21 @@ void MainWindow::setOptions()
          this->setUpTabStops();
       }
 
+      //
       if ( m_struct.useSpaces != options.useSpaces)  {
          m_struct.useSpaces = options.useSpaces;
          json_Write(USESPACES);
       }
 
-      //
-      if ( m_struct.formatDate != options.formatDate)  {
-         m_struct.formatDate = options.formatDate;
-         json_Write(FORMAT_DATE);
+      if (m_struct.removeSpace != options.removeSpace ) {
+         m_struct.removeSpace = options.removeSpace;
+         json_Write(REMOVE_SPACE);
       }
 
       //
-      if ( m_struct.formatTime != options.formatTime)  {
-         m_struct.formatTime = options.formatTime;
-         json_Write(FORMAT_TIME);
+      if (m_struct.autoLoad != options.autoLoad ) {
+         m_struct.autoLoad = options.autoLoad;
+         json_Write(AUTOLOAD);
       }
 
       //
@@ -233,28 +245,19 @@ void MainWindow::setOptions()
          json_Write(DICT_MAIN);
       }
 
-      //
       if (m_struct.dictUser != options.dictUser ) {
          m_struct.dictUser = options.dictUser;
          json_Write(DICT_USER);
       }
 
-      //
       if (m_struct.pathSyntax != options.pathSyntax ) {
          m_struct.pathSyntax = options.pathSyntax;
          json_Write(PATH_SYNTAX);
       }
 
-      //
       if (m_struct.aboutUrl != options.aboutUrl ) {
          m_struct.aboutUrl = options.aboutUrl;
          json_Write(ABOUTURL);
-      }
-
-      //
-      if (m_struct.autoLoad != options.autoLoad ) {
-         m_struct.autoLoad = options.autoLoad;
-         json_Write(AUTOLOAD);
       }
 
       // keys 2
@@ -326,7 +329,7 @@ void MainWindow::setPresetFolders()
 
 void MainWindow::setPrintOptions()
 {
-   struct PrintSettings options;   
+   struct PrintSettings options;
    options.lineNumbers   = m_printer.lineNumbers;
    options.printHeader   = m_printer.printHeader;
    options.printFooter   = m_printer.printFooter;

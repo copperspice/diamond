@@ -68,7 +68,7 @@ bool MainWindow::json_Read(Config trail)
       QJsonDocument doc = QJsonDocument::fromJson(data);
 
       QJsonObject object = doc.object();
-      QJsonValue value;            
+      QJsonValue value;
       QJsonArray list;
 
       int cnt;
@@ -81,7 +81,7 @@ bool MainWindow::json_Read(Config trail)
       int y = value.toDouble();
 
       QPoint pos = QPoint(x, y);
-      move(pos);      
+      move(pos);
 
       //
       value = object.value("size-width");
@@ -94,18 +94,19 @@ bool MainWindow::json_Read(Config trail)
       resize(size);
 
       //
-      m_struct.useSpaces = object.value("useSpaces").toBool();
-
       value = object.value("tabSpacing");
       m_struct.tabSpacing = value.toDouble();
 
       m_struct.showLineHighlight = object.value("showLineHighlight").toBool();
       m_struct.showLineNumbers   = object.value("showLineNumbers").toBool();
-      m_struct.isWordWrap        = object.value("word-wrap").toBool();      
+      m_struct.isWordWrap        = object.value("word-wrap").toBool();
       m_struct.show_Spaces       = object.value("showSpaces").toBool();
       m_struct.show_Breaks       = object.value("showBreaks").toBool();
-      m_struct.isColumnMode      = object.value("column-mode").toBool();      
+      m_struct.isColumnMode      = object.value("column-mode").toBool();
       m_struct.isSpellCheck      = object.value("spellcheck").toBool();
+
+      m_struct.useSpaces         = object.value("useSpaces").toBool();
+      m_struct.removeSpace       = object.value("removeSpace").toBool();
       m_struct.autoLoad          = object.value("autoLoad").toBool();
 
       //
@@ -118,7 +119,7 @@ bool MainWindow::json_Read(Config trail)
       m_struct.dictUser        = object.value("dictUser").toString();
       m_struct.aboutUrl        = object.value("aboutUrl").toString();
 
-      // printer options      
+      // printer options
       m_printer.lineNumbers    = object.value("prt-lineNumbers").toBool();
       m_printer.printHeader    = object.value("prt-pritnHeader").toBool();
       m_printer.printFooter    = object.value("prt-printFooter").toBool();
@@ -203,7 +204,7 @@ bool MainWindow::json_Read(Config trail)
       list = object.value("syntax-key").toArray();
       m_struct.syn_KeyWeight  = list.at(0).toDouble();
       m_struct.syn_KeyItalic  = list.at(1).toBool();
-      m_struct.syn_KeyText    = json_SetColor(list.at(2).toString());       
+      m_struct.syn_KeyText    = json_SetColor(list.at(2).toString());
 
       list = object.value("syntax-type").toArray();
       m_struct.syn_TypeWeight = list.at(0).toDouble();
@@ -330,7 +331,7 @@ bool MainWindow::json_Read(Config trail)
 }
 
 bool MainWindow::json_Write(Option route, Config trail)
-{   
+{
    if (trail == CFG_STARTUP) {
       // fall thru
 
@@ -364,7 +365,7 @@ bool MainWindow::json_Write(Option route, Config trail)
       QJsonDocument doc  = QJsonDocument::fromJson(data);
       QJsonObject object = doc.object();
 
-      switch (route)  {        
+      switch (route)  {
 
          case ABOUTURL:
             object.insert("aboutUrl", m_struct.aboutUrl);
@@ -422,9 +423,9 @@ bool MainWindow::json_Write(Option route, Config trail)
          case FIND_LIST:
             {
                QJsonArray temp = QJsonArray::fromStringList(m_findList);
-               object.insert("find-list", temp);              
+               object.insert("find-list", temp);
                break;
-            }                       
+            }
 
          case FIND_REPLACE:
             {
@@ -436,7 +437,7 @@ bool MainWindow::json_Write(Option route, Config trail)
                break;
             }
 
-         case FONT:           
+         case FONT:
             {
                QString temp = m_struct.fontNormal.toString();
                object.insert("font-normal", temp);
@@ -452,7 +453,7 @@ bool MainWindow::json_Write(Option route, Config trail)
 
          case FORMAT_TIME:
             object.insert("formatTime", m_struct.formatTime);
-            break;                        
+            break;
 
          case KEYS:
             // standard keys
@@ -584,7 +585,7 @@ bool MainWindow::json_Write(Option route, Config trail)
 
                      if (result == QDialog::Accepted) {
                         // over write
-                        QString text = dw->get_Macro();                                             
+                        QString text = dw->get_Macro();
                         macroName = text;
 
                      } else {
@@ -595,7 +596,7 @@ bool MainWindow::json_Write(Option route, Config trail)
                      delete dw;
 
                   } else   {
-                     // save next macro name                    
+                     // save next macro name
                      object.insert("macro-next", "macro-id-" + QString::number(id + 1));
 
                      // save macro_names
@@ -616,14 +617,14 @@ bool MainWindow::json_Write(Option route, Config trail)
             }
 
          case MACRO_NAMES:
-            {           
+            {
                QJsonArray temp = QJsonArray::fromStringList(m_macroNames);
                object.insert("macro-names", temp);
                break;
             }
 
          case PRESET_FOLDER:
-            {                       
+            {
                QJsonArray temp = QJsonArray::fromStringList(m_prefolder_List);
                object.insert("preset-folders", temp);
                break;
@@ -642,6 +643,10 @@ bool MainWindow::json_Write(Option route, Config trail)
                object.insert("recent-files", temp);
                break;
             }
+
+         case REMOVE_SPACE:
+            object.insert("removeSpace", m_struct.removeSpace);
+            break;
 
          case SHOW_LINEHIGHLIGHT:
             object.insert("showLineHighlight", m_struct.showLineHighlight);
@@ -673,7 +678,7 @@ bool MainWindow::json_Write(Option route, Config trail)
 
          case WORDWRAP:
             object.insert("word-wrap", m_struct.isWordWrap);
-            break;  
+            break;
       }
 
       // save the new data
@@ -687,7 +692,7 @@ bool MainWindow::json_Write(Option route, Config trail)
 }
 
 void MainWindow::json_getFileName()
-{   
+{
 
 #if defined(Q_OS_UNIX) && ! defined(Q_OS_MAC)
 
@@ -702,7 +707,7 @@ void MainWindow::json_getFileName()
 
 #elif defined(Q_OS_MAC)
    if (m_appPath.contains(".app/Contents/MacOS")) {
-      QString homePath = QDir::homePath();      
+      QString homePath = QDir::homePath();
       m_jsonFname = homePath + "/Library/Diamond/config.json";
 
       QDir(homePath + "/Library").mkdir("Diamond");
@@ -710,7 +715,7 @@ void MainWindow::json_getFileName()
 
       return;
    }
-#endif         
+#endif
 
    QString selectedFilter;
    QFileDialog::Options options;
@@ -745,7 +750,7 @@ void MainWindow::json_getFileName()
       options = QFileDialog::ForceInitialDir_Win7;
 
       m_jsonFname = QFileDialog::getSaveFileName(this, tr("Create new Configuration File"),
-            fname, tr("Json Files (*.json)"), &selectedFilter, options);                  
+            fname, tr("Json Files (*.json)"), &selectedFilter, options);
 
    } else if (quest.clickedButton() == selectExist) {
 
@@ -760,7 +765,7 @@ void MainWindow::json_getFileName()
 }
 
 QByteArray MainWindow::json_ReadFile()
-{        
+{
    QByteArray data;
 
    QFile file(m_jsonFname);
@@ -941,7 +946,7 @@ bool MainWindow::json_CreateNew()
       value = QJsonValue(QString(dictFile));
       object.insert("dictMain", value);
 
-      // default dictionary to dictPath      
+      // default dictionary to dictPath
       dictFile = this->pathName(dictFile) + "/userDict.txt";
 
       if (! QFile::exists(dictFile) ) {
@@ -1310,8 +1315,8 @@ QJsonObject MainWindow::json_SaveSyntax(QJsonObject object)
 
    list.replace(0, m_struct.syn_KeyWeight );
    list.replace(1, m_struct.syn_KeyItalic );
-   list.replace(2, json_GetRGB(m_struct.syn_KeyText));   
-   object.insert("syntax-key", list);         
+   list.replace(2, json_GetRGB(m_struct.syn_KeyText));
+   object.insert("syntax-key", list);
 
    list.replace(0, m_struct.syn_TypeWeight );
    list.replace(1, m_struct.syn_TypeItalic );
@@ -1520,7 +1525,7 @@ bool MainWindow::json_Load_Macro(QString macroName)
    list = object.value(macroName).toArray();
    int cnt = list.count();
 
-   m_textEdit->macroStart();   
+   m_textEdit->macroStart();
    m_macroList.clear();
 
    for (int k = 0; k < cnt; k++)  {

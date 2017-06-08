@@ -94,6 +94,10 @@ void Dialog_Options::initData()
       m_ui->useSpaces_CKB->setChecked(true);
    }
 
+   if (m_options.removeSpace)  {
+      m_ui->removeSpace_CKB->setChecked(true);
+   }
+
    if (m_options.autoLoad)  {
       m_ui->autoLoad_CKB->setChecked(true);
    }
@@ -224,18 +228,19 @@ void Dialog_Options::pick_About()
 struct Options Dialog_Options::get_Results()
 {
    // ** tab 1
-   m_options.formatDate = m_ui->dateFormat_CB->currentText();
-   m_options.formatTime = m_ui->timeFormat_CB->currentText();
-   m_options.dictMain   = m_ui->dictMain->text();
-   m_options.dictUser   = m_ui->dictUser->text();
-   m_options.pathSyntax = m_ui->syntax->text();
-   m_options.aboutUrl   = m_ui->about->text();
+   m_options.formatDate  = m_ui->dateFormat_CB->currentText();
+   m_options.formatTime  = m_ui->timeFormat_CB->currentText();
+   m_options.dictMain    = m_ui->dictMain->text();
+   m_options.dictUser    = m_ui->dictUser->text();
+   m_options.pathSyntax  = m_ui->syntax->text();
+   m_options.aboutUrl    = m_ui->about->text();
 
    QString value = m_ui->tabSpacing_CB->currentText();
-   m_options.tabSpacing = value.toInt();
-   m_options.useSpaces  = m_ui->useSpaces_CKB->isChecked();
+   m_options.tabSpacing  = value.toInt();
 
-   m_options.autoLoad   = m_ui->autoLoad_CKB->isChecked();
+   m_options.useSpaces   = m_ui->useSpaces_CKB->isChecked();
+   m_options.removeSpace = m_ui->removeSpace_CKB->isChecked();
+   m_options.autoLoad    = m_ui->autoLoad_CKB->isChecked();
 
    // ** tab 2
    m_options.key_open         = m_ui->key_open->text();

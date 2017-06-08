@@ -26,15 +26,18 @@
 
 struct Settings {
    int     tabSpacing;
-   bool    useSpaces;
    bool    showLineHighlight;
    bool    showLineNumbers;
    bool    isColumnMode;
    bool    isSpellCheck;
-   bool    isWordWrap;  
+   bool    isWordWrap;
    bool    show_Spaces;
    bool    show_Breaks;
+
+   bool    useSpaces;
+   bool    removeSpace;
    bool    autoLoad;
+
    QString pathSyntax;
    QString pathPrior;
    QString formatDate;
@@ -51,7 +54,7 @@ struct Settings {
    QColor  colorHighBack;
 
    QString key_open;
-   QString key_close;   
+   QString key_close;
    QString key_save;
    QString key_saveAs;
    QString key_print;
@@ -66,7 +69,7 @@ struct Settings {
    QString key_findNext;
    QString key_findPrev;
    QString key_goTop;
-   QString key_goBottom;  
+   QString key_goBottom;
    QString key_newTab;
 
    QString key_printPreview;
@@ -75,7 +78,7 @@ struct Settings {
    QString key_selectWord;
    QString key_selectBlock;
    QString key_upper;
-   QString key_lower; 
+   QString key_lower;
    QString key_indentIncr;
    QString key_indentDecr;
    QString key_deleteLine;
@@ -113,17 +116,19 @@ struct Settings {
 
 struct Options {
    int     tabSpacing;
-   bool    useSpaces;   
+   bool    useSpaces;
+   bool    removeSpace;
    bool    autoLoad;
+
    QString formatDate;
    QString formatTime;
    QString dictMain;
    QString dictUser;
    QString pathSyntax;
-   QString aboutUrl;   
+   QString aboutUrl;
 
    QString key_open;
-   QString key_close;   
+   QString key_close;
    QString key_save;
    QString key_saveAs;
    QString key_print;
@@ -161,7 +166,7 @@ struct Options {
    QString key_copyBuffer;
 };
 
-struct PrintSettings {   
+struct PrintSettings {
    bool    lineNumbers;
    bool    printHeader;
    bool    printFooter;
@@ -178,7 +183,7 @@ struct PrintSettings {
    double marTop;
    double marRight;
    double marBottom;
-   double hdrGap;    
+   double hdrGap;
 
    QFont fontHeader;
    QFont fontFooter;
@@ -190,7 +195,7 @@ struct Arugments{
    bool flag_noSaveConfig = false;
 };
 
-enum SyntaxTypes {SYN_C, SYN_CLIPPER, SYN_CSS, SYN_DOXY, SYN_ERRLOG, SYN_HTML,
+enum SyntaxTypes {SYN_C, SYN_CLIPPER, SYN_CMAKE, SYN_CSS, SYN_DOXY, SYN_ERRLOG, SYN_HTML,
                   SYN_JAVA, SYN_JS, SYN_JSON, SYN_MAKE, SYN_NSIS, SYN_TEXT,
                   SYN_SHELL, SYN_PERL, SYN_PHP, SYN_PYTHON,
                   SYN_NONE, SYN_UNUSED1, SYN_UNUSED2 };

@@ -75,7 +75,7 @@ MainWindow::MainWindow(QStringList fileList, QStringList flagList)
    // macros
    m_record = false;
 
-   // copy buffer   
+   // copy buffer
    m_actionCopyBuffer = new QShortcut(this);
    connect(m_actionCopyBuffer, &QShortcut::activated, this, &MainWindow::showCopyBuffer);
 
@@ -93,7 +93,7 @@ MainWindow::MainWindow(QStringList fileList, QStringList flagList)
    prefolder_CreateMenus();
 
    // recent files
-   rf_CreateMenus(); 
+   rf_CreateMenus();
 
    // spell check
    createSpellCheck();
@@ -120,7 +120,7 @@ MainWindow::MainWindow(QStringList fileList, QStringList flagList)
       m_args.flag_noSaveConfig = true;
    }
 
-   if (m_struct.autoLoad && ! m_args.flag_noAutoLoad ) {      
+   if (m_struct.autoLoad && ! m_args.flag_noAutoLoad ) {
       autoLoad();
    }
 
@@ -148,7 +148,7 @@ MainWindow::MainWindow(QStringList fileList, QStringList flagList)
    }
 
    setStatus_ColMode();
-   setStatusBar(tr("Ready"), 0);   
+   setStatusBar(tr("Ready"), 0);
    setUnifiedTitleAndToolBarOnMac(true);
 }
 
@@ -165,7 +165,7 @@ void MainWindow::newFile()
 
 void MainWindow::open_RelatedFile()
 {
-   QFileInfo temp(m_curFile);      
+   QFileInfo temp(m_curFile);
    QString ext = temp.suffix();
 
    if (ext == "cpp" || ext == "h") {
@@ -249,7 +249,7 @@ void MainWindow::open_RelatedFile()
 }
 
 void MainWindow::openDoc(QString path)
-{       
+{
    QString selectedFilter;
    QFileDialog::Options options;
 
@@ -289,7 +289,7 @@ bool MainWindow::close_Doc()
       openTab_Delete();
 
       m_textEdit->clear();
-      setCurrentTitle("");      
+      setCurrentTitle("");
    }
 
    return okClose;
@@ -318,7 +318,7 @@ bool MainWindow::closeAll_Doc(bool isExit)
          m_textEdit = textEdit;
          m_curFile  = this->get_curFileName(whichTab);
 
-         bool okClose = querySave();                              
+         bool okClose = querySave();
 
          if (okClose)  {
 
@@ -339,7 +339,7 @@ bool MainWindow::closeAll_Doc(bool isExit)
 
             }
 
-         } else  {           
+         } else  {
             // modified file not closed, move over one tab
             ++whichTab;
 
@@ -362,7 +362,7 @@ bool MainWindow::closeAll_Doc(bool isExit)
       if (m_isSplit) {
          // close the split tab
          split_CloseButton();
-      }            
+      }
 
       // update open tab list
       openTab_UpdateActions();
@@ -374,7 +374,7 @@ bool MainWindow::closeAll_Doc(bool isExit)
 }
 
 void MainWindow::reload()
-{   
+{
    if (m_curFile.isEmpty()) {
       csError(tr("Reload"), tr("Unable to reload a file which was not saved."));
 
@@ -408,7 +408,7 @@ bool MainWindow::save()
    } else {
      return saveFile(m_curFile, SAVE_ONE);
 
-   }      
+   }
 }
 
 bool MainWindow::saveAs(SaveFiles saveType)
@@ -441,7 +441,7 @@ bool MainWindow::saveAs(SaveFiles saveType)
    } else {
       retval = saveFile(fileName, saveType);
 
-      if (retval) {         
+      if (retval) {
          // update open tab list
          openTab_Delete();
 
@@ -483,7 +483,7 @@ void MainWindow::saveAll()
       textEdit = dynamic_cast<DiamondTextEdit *>(temp);
 
       if (textEdit) {
-         m_textEdit = textEdit;         
+         m_textEdit = textEdit;
          fileName   = m_tabWidget->tabWhatsThis(k);
 
          if (m_textEdit->document()->isModified())  {
@@ -500,7 +500,7 @@ void MainWindow::saveAll()
       }
    }
 
-   // reload the current textEdit again   
+   // reload the current textEdit again
    m_textEdit = hold_textEdit;
 
    if (m_tabWidget->currentIndex() == hold_index) {
@@ -521,7 +521,7 @@ void MainWindow::saveAll()
    }
 
    if (! m_textEdit->document()->isModified())  {
-      setWindowModified(false);      
+      setWindowModified(false);
    }
 
    if (m_isSplit) {
@@ -587,7 +587,7 @@ void MainWindow::selectWord()
 
 void MainWindow::caseUpper()
 {
-   QTextCursor cursor(m_textEdit->textCursor());   
+   QTextCursor cursor(m_textEdit->textCursor());
    QString text = cursor.selectedText();
 
    if (text.isEmpty())  {
@@ -601,7 +601,7 @@ void MainWindow::caseUpper()
 
 void MainWindow::caseLower()
 {
-   QTextCursor cursor(m_textEdit->textCursor()); 
+   QTextCursor cursor(m_textEdit->textCursor());
    QString text = cursor.selectedText();
 
    if (text.isEmpty())  {
@@ -631,7 +631,7 @@ void MainWindow::caseCap()
 }
 
 void MainWindow::insertDate()
-{   
+{
    QDate date   = QDate::currentDate();
    QString temp = date.toString(m_struct.formatDate);
 
@@ -670,7 +670,7 @@ void MainWindow::insertSymbol()
 
 void MainWindow::indentIncr(QString route)
 {
-   const QString tabLen = QString(m_struct.tabSpacing, ' ');      
+   const QString tabLen = QString(m_struct.tabSpacing, ' ');
    QTextCursor cursor(m_textEdit->textCursor());
 
    cursor.beginEditBlock();
@@ -696,7 +696,7 @@ void MainWindow::indentIncr(QString route)
             cursor.insertText(tabLen);
             posEnd += m_struct.tabSpacing;
 
-         } else {           
+         } else {
             cursor.insertText(QChar('\t'));
             posEnd += 1;
 
@@ -882,7 +882,7 @@ void MainWindow::columnMode()
 
    }
 
-   json_Write(COLUMN_MODE);  
+   json_Write(COLUMN_MODE);
    setStatus_ColMode();
 }
 
@@ -893,7 +893,7 @@ void MainWindow::goLine()
 {
    int line = get_line_col("line");
 
-   if (line > 0) {     
+   if (line > 0) {
       // save original position
       // int pos = m_textEdit->verticalScrollBar()->value();
 
@@ -933,17 +933,17 @@ void MainWindow::goBottom()
 
 // **view
 void MainWindow::lineHighlight()
-{   
+{
    if (m_ui->actionLine_Highlight->isChecked()) {
-      // on     
-      m_struct.showLineHighlight = true;      
+      // on
+      m_struct.showLineHighlight = true;
 
    } else  {
       // off
       m_struct.showLineHighlight = false;
    }
 
-   json_Write(SHOW_LINEHIGHLIGHT);   
+   json_Write(SHOW_LINEHIGHLIGHT);
    moveBar();
 }
 
@@ -974,12 +974,12 @@ void MainWindow::moveBar()
    selection.cursor = m_textEdit->textCursor();
    selection.cursor.clearSelection();
 
-   extraSelections.append(selection);   
+   extraSelections.append(selection);
    m_textEdit->setExtraSelections(extraSelections);
 }
 
 void MainWindow::lineNumbers()
-{   
+{
    if (m_ui->actionLine_Numbers->isChecked()) {
       //on
       m_struct.showLineNumbers = true;
@@ -1015,7 +1015,7 @@ void MainWindow::wordWrap()
 }
 
 void MainWindow::show_Spaces()
-{   
+{
    QTextDocument *td   = m_textEdit->document();
    QTextOption textOpt = td->defaultTextOption();
 
@@ -1097,7 +1097,7 @@ void MainWindow::show_Breaks()
 }
 
 void MainWindow::displayHTML()
-{  
+{
    try {
       About *dw = new About("Display", m_curFile);
       dw->show();
@@ -1118,7 +1118,7 @@ void MainWindow::setSynType(SyntaxTypes data)
    m_ui->actionSyn_Doxy->setChecked(false);
    m_ui->actionSyn_ErrorLog->setChecked(false);
    m_ui->actionSyn_Html->setChecked(false);
-   m_ui->actionSyn_Java->setChecked(false);  
+   m_ui->actionSyn_Java->setChecked(false);
    m_ui->actionSyn_Javascript->setChecked(false);
    m_ui->actionSyn_Json->setChecked(false);
    m_ui->actionSyn_Makefile->setChecked(false);
@@ -1128,7 +1128,7 @@ void MainWindow::setSynType(SyntaxTypes data)
    m_ui->actionSyn_Perl->setChecked(false);
    m_ui->actionSyn_PHP->setChecked(false);
    m_ui->actionSyn_Python->setChecked(false);
-   m_ui->actionSyn_None->setChecked(false); 
+   m_ui->actionSyn_None->setChecked(false);
 
    // m_ui->actionSyn_UnUsed1->setChecked(false);
    // m_ui->actionSyn_UnUsed2->setChecked(false);
@@ -1192,7 +1192,7 @@ void MainWindow::setSynType(SyntaxTypes data)
 
       case SYN_PERL:
          m_ui->actionSyn_Perl->setChecked(true);
-         break;            
+         break;
 
       case SYN_PHP:
          m_ui->actionSyn_PHP->setChecked(true);
@@ -1229,7 +1229,7 @@ void MainWindow::formatWin()
 }
 
 void MainWindow::fixTab_Spaces()
-{   
+{
    QTextCursor cursor(m_textEdit->textCursor());
 
    // save starting position
@@ -1273,7 +1273,7 @@ void MainWindow::fixTab_Spaces()
 }
 
 void MainWindow::fixSpaces_Tab()
-{        
+{
    QTextCursor cursor(m_textEdit->textCursor());
 
    // save starting position
@@ -1295,14 +1295,14 @@ void MainWindow::fixSpaces_Tab()
    const QString findText = QString(2, ' ');
    const QString newText  = QString(QChar(9));
 
-   while (true) {      
+   while (true) {
       bool found = m_textEdit->find(findText);
 
       // reset
       int pass = 1;
 
-      if (found)  {         
-         cursor = m_textEdit->textCursor();                 
+      if (found)  {
+         cursor = m_textEdit->textCursor();
 
          while (true) {
             temp = cursor.selectedText().trimmed();
@@ -1339,7 +1339,7 @@ void MainWindow::fixSpaces_Tab()
          // all done
          break;
 
-      }      
+      }
    }
 
    cursor.endEditBlock();
@@ -1349,14 +1349,14 @@ void MainWindow::fixSpaces_Tab()
 }
 
 void MainWindow::deleteEOL_Spaces()
-{ 
+{
    QTextCursor cursor(m_textEdit->textCursor());
 
    // position to start of document
-   cursor.movePosition(QTextCursor::Start);   
+   cursor.movePosition(QTextCursor::Start);
 
    // set for undo stack
-   cursor.beginEditBlock();  
+   cursor.beginEditBlock();
 
    QString temp;
 
@@ -1380,7 +1380,7 @@ void MainWindow::deleteEOL_Spaces()
       }
    }
 
-   cursor.endEditBlock();  
+   cursor.endEditBlock();
 }
 
 
@@ -1420,7 +1420,7 @@ void MainWindow::macroPlay()
    if (m_record) {
       csError("Macro Playback", "Unable to play back a macro while recording");
 
-   }  else {    
+   }  else {
       int cnt = m_macroList.count();
 
       if (cnt == 0) {
@@ -1506,13 +1506,13 @@ void MainWindow::spellCheck()
          // save new values & reHighlight
          textEdit->set_Spell(m_struct.isSpellCheck);
       }
-   }     
+   }
 }
 
 
 // **window, tabs
 void MainWindow::tabNew()
-{   
+{
    m_textEdit = new DiamondTextEdit(this, m_struct, m_spellCheck, "tab");
 
    // keep reference
@@ -1541,7 +1541,7 @@ void MainWindow::tabNew()
 }
 
 void MainWindow::mw_tabClose()
-{     
+{
    int index = m_tabWidget->currentIndex();
    tabClose(index);
 }
@@ -1549,7 +1549,7 @@ void MainWindow::mw_tabClose()
 void MainWindow::tabClose(int index)
 {
    m_tabWidget->setCurrentIndex(index);
-   QWidget *temp = m_tabWidget->widget(index);   
+   QWidget *temp = m_tabWidget->widget(index);
 
    DiamondTextEdit *t_textEdit;
    t_textEdit = dynamic_cast<DiamondTextEdit *>(temp);
@@ -1583,7 +1583,7 @@ void MainWindow::tabChanged(int index)
       m_textEdit = textEdit;
 
       // keep reference
-      m_noSplit_textEdit = m_textEdit;           
+      m_noSplit_textEdit = m_textEdit;
 
       m_curFile = this->get_curFileName(index);
       this->setCurrentTitle(m_curFile, true);
@@ -1609,10 +1609,10 @@ void MainWindow::tabChanged(int index)
 }
 
 void MainWindow::focusChanged(QWidget *prior, QWidget *current)
-{   
+{
    if (! current) {
       return;
-   }  
+   }
 
    DiamondTextEdit *t_textEdit;
    t_textEdit = dynamic_cast<DiamondTextEdit *>(current);
@@ -1685,7 +1685,7 @@ void MainWindow::focusChanged(QWidget *prior, QWidget *current)
 
 // **help
 void MainWindow::diamondHelp()
-{   
+{
    try {
       About *dw = new About("Help" ,m_struct.aboutUrl);
       dw->show();
@@ -1726,7 +1726,7 @@ void MainWindow::about()
 
 // connections, displays, toolbar
 void MainWindow::setScreenColors()
-{     
+{
    changeFont();
 
    QPalette temp = m_textEdit->palette();
@@ -1802,7 +1802,7 @@ void MainWindow::createConnections()
    connect(m_ui->actionSyn_C,             &QAction::triggered, this, [this](bool){ forceSyntax(SYN_C);       } );
    connect(m_ui->actionSyn_Clipper,       &QAction::triggered, this, [this](bool){ forceSyntax(SYN_CLIPPER); } );
    connect(m_ui->actionSyn_CMake,         &QAction::triggered, this, [this](bool){ forceSyntax(SYN_CMAKE);   } );
-   connect(m_ui->actionSyn_Css,           &QAction::triggered, this, [this](bool){ forceSyntax(SYN_CSS);     } );   
+   connect(m_ui->actionSyn_Css,           &QAction::triggered, this, [this](bool){ forceSyntax(SYN_CSS);     } );
    connect(m_ui->actionSyn_Doxy,          &QAction::triggered, this, [this](bool){ forceSyntax(SYN_DOXY);    } );
    connect(m_ui->actionSyn_ErrorLog,      &QAction::triggered, this, [this](bool){ forceSyntax(SYN_ERRLOG);  } );
    connect(m_ui->actionSyn_Html,          &QAction::triggered, this, [this](bool){ forceSyntax(SYN_HTML);    } );
@@ -1857,7 +1857,7 @@ void MainWindow::createConnections()
 }
 
 void MainWindow::createToggles()
-{    
+{
    m_ui->actionSyn_C->setCheckable(true);
    m_ui->actionSyn_Clipper->setCheckable(true);
    m_ui->actionSyn_CMake->setCheckable(true);
@@ -1884,7 +1884,7 @@ void MainWindow::createToggles()
    m_ui->actionLine_Highlight->setChecked(m_struct.showLineHighlight);
 
    m_ui->actionLine_Numbers->setCheckable(true);
-   m_ui->actionLine_Numbers->setChecked(m_struct.showLineNumbers);  
+   m_ui->actionLine_Numbers->setChecked(m_struct.showLineNumbers);
 
    m_ui->actionWord_Wrap->setCheckable(true);
    m_ui->actionWord_Wrap->setChecked(m_struct.isWordWrap);
@@ -1896,10 +1896,10 @@ void MainWindow::createToggles()
    m_ui->actionShow_Breaks->setChecked(m_struct.show_Breaks);
 
    m_ui->actionColumn_Mode->setCheckable(true);
-   m_ui->actionColumn_Mode->setChecked(m_struct.isColumnMode);  
+   m_ui->actionColumn_Mode->setChecked(m_struct.isColumnMode);
 
    m_ui->actionSpell_Check->setCheckable(true);
-   m_ui->actionSpell_Check->setChecked(m_struct.isSpellCheck);     
+   m_ui->actionSpell_Check->setChecked(m_struct.isSpellCheck);
 
    m_ui->actionUndo->setEnabled(false);
    m_ui->actionRedo->setEnabled(false);
@@ -1958,7 +1958,7 @@ void MainWindow::createShortCuts(bool setupAll)
    struct_temp.key_close        = this->adjustKey(struct_temp.key_close);
    struct_temp.key_save         = this->adjustKey(struct_temp.key_save);
    struct_temp.key_saveAs       = this->adjustKey(struct_temp.key_saveAs);
-   struct_temp.key_print        = this->adjustKey(struct_temp.key_print);   
+   struct_temp.key_print        = this->adjustKey(struct_temp.key_print);
    struct_temp.key_undo         = this->adjustKey(struct_temp.key_undo);
    struct_temp.key_redo         = this->adjustKey(struct_temp.key_redo);
    struct_temp.key_cut	        = this->adjustKey(struct_temp.key_cut);
@@ -2106,7 +2106,7 @@ void MainWindow::createToolBars()
    m_ui->actionSpell_Check->setIcon(QIcon(":/resources/spellcheck.png"));
 
    //
-   fileToolBar = addToolBar(tr("File")); 
+   fileToolBar = addToolBar(tr("File"));
    fileToolBar->addAction(m_ui->actionOpen);
    fileToolBar->addAction(m_ui->actionClose);
    fileToolBar->addAction(m_ui->actionSave);
@@ -2163,19 +2163,19 @@ void MainWindow::createToolBars()
 }
 
 void MainWindow::createStatusBar()
-{   
+{
    m_statusLine = new QLabel("", this);
-   //m_statusLine->setFrameStyle(QFrame::Panel| QFrame::Sunken);   
+   //m_statusLine->setFrameStyle(QFrame::Panel| QFrame::Sunken);
 
    m_statusMode = new QLabel("", this);
-   //m_statusMode->setFrameStyle(QFrame::Panel | QFrame::Sunken);   
+   //m_statusMode->setFrameStyle(QFrame::Panel | QFrame::Sunken);
 
    m_statusName = new QLabel("", this);
    //m_statusName->setFrameStyle(QFrame::Panel | QFrame::Sunken);
 
    statusBar()->addPermanentWidget(m_statusLine, 0);
    statusBar()->addPermanentWidget(m_statusMode, 0);
-   statusBar()->addPermanentWidget(m_statusName, 0);    
+   statusBar()->addPermanentWidget(m_statusName, 0);
 }
 
 void MainWindow::setStatusBar(QString msg, int timeOut)

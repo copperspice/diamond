@@ -107,7 +107,7 @@ void MainWindow::changeFont()
 }
 
 void MainWindow::documentWasModified()
-{    
+{
    bool isModified;
 
    if (m_isSplit) {
@@ -271,7 +271,7 @@ bool MainWindow::loadFile(const QString &fileName, bool addNewTab, bool isAuto)
    QApplication::setOverrideCursor(Qt::WaitCursor);
 
    file.seek(0);
-   QByteArray temp = file.readAll();  
+   QByteArray temp = file.readAll();
 
    if (addNewTab) {
       tabNew();
@@ -283,8 +283,8 @@ bool MainWindow::loadFile(const QString &fileName, bool addNewTab, bool isAuto)
       }
    }
 
-   QString fileData = QString::fromUtf8(temp);      
-   m_textEdit->setPlainText(fileData);   
+   QString fileData = QString::fromUtf8(temp);
+   m_textEdit->setPlainText(fileData);
    QApplication::restoreOverrideCursor();
 
    if (m_textEdit->m_owner == "tab") {
@@ -303,7 +303,7 @@ bool MainWindow::loadFile(const QString &fileName, bool addNewTab, bool isAuto)
 
    if ( addNewTab && (! isAuto) )  {
       // update open tab list
-      openTab_Add();   
+      openTab_Add();
 
       int index = m_openedFiles.indexOf(fileName);
       if (index != -1)  {
@@ -320,7 +320,7 @@ QString MainWindow::pathName(QString fileName) const
 {
    QString retval = "";
 
-   if (! fileName.isEmpty())  {      
+   if (! fileName.isEmpty())  {
       QFileInfo temp(fileName);
 
       if (temp.isAbsolute()) {
@@ -333,7 +333,7 @@ QString MainWindow::pathName(QString fileName) const
 
 bool MainWindow::querySave()
 {
-   if (m_textEdit->document()->isModified()) {     
+   if (m_textEdit->document()->isModified()) {
 
       QString fileName = m_curFile;
 
@@ -382,7 +382,11 @@ bool MainWindow::saveFile(const QString &fileName, SaveFiles saveType)
       return false;
    }
 
-   QApplication::setOverrideCursor(Qt::WaitCursor);     
+   if (m_struct.removeSpace)  {
+      deleteEOL_Spaces();
+   }
+
+   QApplication::setOverrideCursor(Qt::WaitCursor);
    file.write(m_textEdit->toPlainText().toUtf8());
    QApplication::restoreOverrideCursor();
 
@@ -399,7 +403,7 @@ bool MainWindow::saveFile(const QString &fileName, SaveFiles saveType)
    }
 
    if (saveType == SAVE_ONE) {
-      setWindowModified(false);     
+      setWindowModified(false);
       setDiamondTitle(fileName);
 
       setStatusBar(tr("File saved"), 2000);
@@ -457,7 +461,7 @@ void MainWindow::setCurrentTitle(const QString &fileName, bool tabChange)
       m_tabWidget->setTabWhatsThis(index, m_curFile);
 
       if (! m_rf_List.contains(m_curFile) ) {
-         rf_Update();         
+         rf_Update();
       }
 
       if (! tabChange)  {
@@ -469,7 +473,7 @@ void MainWindow::setCurrentTitle(const QString &fileName, bool tabChange)
 }
 
 void MainWindow::setDiamondTitle(const QString title)
-{   
+{
    // displays as: Diamond Editor --  File Name[*]
    QString temp = QChar(0x02014);
    setWindowTitle("Diamond Editor " + temp + " " + title + " [*]" );
@@ -489,10 +493,10 @@ void MainWindow::setStatus_LineCol()
 void MainWindow::setStatus_ColMode()
 {
    if (m_struct.isColumnMode) {
-      m_statusMode->setText(" Column Mode  ");    
+      m_statusMode->setText(" Column Mode  ");
 
    } else {
-      m_statusMode->setText(" Line Mode  ");      
+      m_statusMode->setText(" Line Mode  ");
    }
 
    m_textEdit->set_ColumnMode(m_struct.isColumnMode);
@@ -560,7 +564,7 @@ void MainWindow::dropEvent(QDropEvent *event)
          loadFile(fileName, true, false);
       }
 
-   } else if (mimeData->hasText()) {     
+   } else if (mimeData->hasText()) {
       QTextCursor cursor(m_textEdit->textCursor());
 
       // set for undo stack
