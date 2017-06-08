@@ -83,6 +83,9 @@ void MainWindow::setSyntax()
       } else if (suffix == "prg") {
          suffix = "clipper";                 
 
+      } else if (fname == "cmakelists.txt" || suffix == "cmake") {
+         suffix = "cmake";
+
       } else if (suffix == "dox" || suffix == "doxypress") {
          suffix = "doxy";
 
@@ -133,6 +136,9 @@ void MainWindow::setSyntax()
 
       } else if (suffix == "clipper")  {
          m_syntaxEnum = SYN_CLIPPER;
+
+      } else if (suffix == "cmake")  {
+         m_syntaxEnum = SYN_CMAKE;
 
       } else if (suffix == "css")  {
          m_syntaxEnum = SYN_CSS;
@@ -208,6 +214,10 @@ void MainWindow::forceSyntax(SyntaxTypes data)
 
       case SYN_CLIPPER:
          synFName = m_struct.pathSyntax + "syn_clipper.json";
+         break;
+
+      case SYN_CMAKE:
+         synFName = m_struct.pathSyntax + "syn_cmake.json";
          break;
 
       case SYN_CSS:

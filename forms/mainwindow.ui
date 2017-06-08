@@ -26,7 +26,7 @@
      <x>0</x>
      <y>0</y>
      <width>800</width>
-     <height>28</height>
+     <height>29</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -169,6 +169,7 @@
      </property>
      <addaction name="separator"/>
      <addaction name="actionSyn_C"/>
+     <addaction name="actionSyn_CMake"/>
      <addaction name="actionSyn_Clipper"/>
      <addaction name="actionSyn_Css"/>
      <addaction name="actionSyn_Doxy"/>
@@ -796,6 +797,11 @@
   <action name="actionSyn_ErrorLog">
    <property name="text">
     <string>Error Log</string>
+   </property>
+  </action>
+  <action name="actionSyn_CMake">
+   <property name="text">
+    <string>CMake</string>
    </property>
   </action>
  </widget>

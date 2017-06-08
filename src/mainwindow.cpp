@@ -1113,6 +1113,7 @@ void MainWindow::setSynType(SyntaxTypes data)
 {
    m_ui->actionSyn_C->setChecked(false);
    m_ui->actionSyn_Clipper->setChecked(false);
+   m_ui->actionSyn_CMake->setChecked(false);
    m_ui->actionSyn_Css->setChecked(false);
    m_ui->actionSyn_Doxy->setChecked(false);
    m_ui->actionSyn_ErrorLog->setChecked(false);
@@ -1139,6 +1140,10 @@ void MainWindow::setSynType(SyntaxTypes data)
 
       case SYN_CLIPPER:
          m_ui->actionSyn_Clipper->setChecked(true);
+         break;
+
+      case SYN_CMAKE:
+         m_ui->actionSyn_CMake->setChecked(true);
          break;
 
       case SYN_CSS:
@@ -1796,7 +1801,8 @@ void MainWindow::createConnections()
    // document
    connect(m_ui->actionSyn_C,             &QAction::triggered, this, [this](bool){ forceSyntax(SYN_C);       } );
    connect(m_ui->actionSyn_Clipper,       &QAction::triggered, this, [this](bool){ forceSyntax(SYN_CLIPPER); } );
-   connect(m_ui->actionSyn_Css,           &QAction::triggered, this, [this](bool){ forceSyntax(SYN_CSS);     } );
+   connect(m_ui->actionSyn_CMake,         &QAction::triggered, this, [this](bool){ forceSyntax(SYN_CMAKE);   } );
+   connect(m_ui->actionSyn_Css,           &QAction::triggered, this, [this](bool){ forceSyntax(SYN_CSS);     } );   
    connect(m_ui->actionSyn_Doxy,          &QAction::triggered, this, [this](bool){ forceSyntax(SYN_DOXY);    } );
    connect(m_ui->actionSyn_ErrorLog,      &QAction::triggered, this, [this](bool){ forceSyntax(SYN_ERRLOG);  } );
    connect(m_ui->actionSyn_Html,          &QAction::triggered, this, [this](bool){ forceSyntax(SYN_HTML);    } );
@@ -1854,6 +1860,7 @@ void MainWindow::createToggles()
 {    
    m_ui->actionSyn_C->setCheckable(true);
    m_ui->actionSyn_Clipper->setCheckable(true);
+   m_ui->actionSyn_CMake->setCheckable(true);
    m_ui->actionSyn_Css->setCheckable(true);
    m_ui->actionSyn_Doxy->setCheckable(true);
    m_ui->actionSyn_ErrorLog->setCheckable(true);

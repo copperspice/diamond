@@ -1,0 +1,17 @@
+{
+   "classes": [   
+      "\\$\\{[^}]+\\}"
+   ],
+      "comment-multi-start": "(?!E)E",
+      "comment-multi-end": "(?!E)E",
+      "comment-single": "#[^\n]*",
+   "functions": [
+      "\\b[A-Za-z0-9_]+(?=\\()"
+   ],
+   "ignore-case" : true,
+   "keywords": [
+      
+   ],
+   "types": [      
+   ]
+}
