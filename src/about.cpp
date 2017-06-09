@@ -17,177 +17,62 @@
 *
 **************************************************************************/
 
-#include "about.h"
 #include "util.h"
 
 #include <stdexcept>
 
-#include <QAction>
+#include <QDesktopServices>
 #include <QFileInfo>
-#include <QHBoxLayout>
-#include <QKeySequence>
-#include <QPushButton>
 #include <QString>
-#include <QSize>
-#include <QMenu>
-#include <QVBoxLayout>
-#include <QWebSettings>
+#include <QUrl>
 
-About::About(QString route, QString file)
-   : QWidget()
-{   
-   if (route == "Help") {
-      m_url = file;
+void showHtml(QString route, QString file)
+{
+   QString m_url = file;
+   QFileInfo fileInfo(m_url);
 
-      QFileInfo temp(m_url);
+   if (route == "docs") {
 
-      if (m_url.isEmpty())  {
-         csError("Help", "No file was specified for Diamond Help.");
-         throw std::runtime_error("");
-
-      } else if (! temp.exists() )  {
-         csError("Help", "Help file was not found:\n" +  m_url + "\n\n"
-                 "To specify the location of the Diamond Help file, select 'Settings' from the main Menu. "
+      if (! fileInfo.exists() )  {
+         csError("Diamond Documentation", "Help file was not found:\n" +  m_url + "\n\n"
+                 "To specify the location of the Diamond Documentation, select 'Settings' from the main Menu. "
                  "Then select 'General Options' and click on the Options tab.\n");
-
-         throw std::runtime_error("");
+         return;
       }
 
-      m_url = "file:///" + m_url;
-      setWindowTitle("Diamond Help");
+      // display html help file using the clients browser
+
+      QString indexUrl = "file:///" + fileInfo.absoluteFilePath();
+      bool ok = QDesktopServices::openUrl(QUrl(indexUrl));
+
+      if (! ok)  {
+         csError("Diamond Documentation", "Unable to display Diamond Documentation\n" + indexUrl );
+      }
 
    } else {
-      m_url = file;
-
-      QFileInfo temp(m_url);
 
       if (m_url.isEmpty())  {
          csError("Html Viewer", "No file was specified.");
-         throw std::runtime_error("");
+         return;
 
-      } else if (! temp.exists() )  {
+      } else if (! fileInfo.exists() )  {
          csError("Html Viewer", "Specified file does not exist\n" + m_url);
-         throw std::runtime_error("");
+         return;
+
+      } else if (fileInfo.suffix().isEmpty())  {
+         csError("Html Viewer", "Specified file does not have an extension, unable to display as HTML.");
+         return;
+
       }
 
-      m_url = "file:///" + m_url;
-      setWindowTitle("Html Viewer - " + file);
+      // display html help file using the clients browser
+
+      QString indexUrl = "file:///" + fileInfo.absoluteFilePath();
+      bool ok = QDesktopServices::openUrl(QUrl(indexUrl));
+
+      if (! ok)  {
+         csError("Display HTML", "Unable to display file as HTML\n" + indexUrl );
+      }
    }
-
-   //
-   m_viewer = new QWebView;
-   m_viewer->setUrl(m_url);
-
-   setWindowIcon(QIcon("://resources/diamond.png"));
-
-   m_currentZoom = 100;
-   m_viewer->setZoomFactor(static_cast<qreal>(m_currentZoom)/100.0);
-
-   QPushButton *homePB = nullptr;
-
-   if (route == "Help") {
-      homePB = new QPushButton;
-      homePB->setText("Home");
-   }
-
-   QPushButton *closePB = new QPushButton;
-   closePB->setText("Close");
-
-   //
-   QHBoxLayout *buttonLayout = new QHBoxLayout;
-   buttonLayout->addStretch();
-
-   if (route == "Help") {
-      buttonLayout->addWidget(homePB);
-      buttonLayout->addSpacing(10);
-   }
-
-   buttonLayout->addWidget(closePB);
-   buttonLayout->addStretch();
-
-   QVBoxLayout *mainLayout = new QVBoxLayout;
-   mainLayout->addWidget(m_viewer);
-   mainLayout->addSpacing(10);
-   mainLayout->addLayout(buttonLayout);
-   setLayout(mainLayout);
-
-   mainLayout->setContentsMargins(0, 0, 0, 15);
-
-   //
-   m_zoomLevels << 30 << 50 << 67 << 80 << 90 << 100;
-   m_zoomLevels << 110 << 120 << 133 << 150 << 170 << 200 << 240 << 300;
-
-   // shortcuts
-   QAction *action1 = new QAction(tr("Zoom In"), this);
-   action1->setShortcuts(QKeySequence::ZoomIn);
-   connect(action1, &QAction::triggered, this, &About::zoomIn);
-
-   QAction *action2 = new QAction(tr("Zoom Out"), this );
-   action2->setShortcuts(QKeySequence::ZoomOut);
-   connect(action2, &QAction::triggered, this, &About::zoomOut);
-
-   m_viewer->addAction(action1);
-   m_viewer->addAction(action2);
-
-   // set up custom context menu
-   m_viewer->setContextMenuPolicy(Qt::CustomContextMenu);
-   connect(m_viewer, &QWebView::customContextMenuRequested, this, &About::setCustomContextMenu);                
-
-   if (route == "Help") {
-      connect(homePB, &QPushButton::clicked, this, &About::home);
-   }
-
-   connect(closePB,  &QPushButton::clicked, this, &About::close);
-}
-
-void About::home()
-{
-   m_viewer->setUrl(m_url);
-}
-
-void About::close()
-{
-   this->close();
-}
-
-//  context menu
-void About::setCustomContextMenu(const QPoint &pos)
-{
-   QMenu *menu = new QMenu(this);
-
-   menu->addAction(m_viewer->pageAction(QWebPage::Copy));
-   menu->addSeparator();
-
-   menu->addAction(tr("Zoom In"),  this, SLOT(zoomIn()),  QKeySequence::ZoomIn );
-   menu->addAction(tr("Zoom Out"), this, SLOT(zoomOut()), QKeySequence::ZoomOut);
-
-   menu->exec(mapToGlobal(pos));
-}
-
-QSize About::sizeHint() const
-{
-   return QSize(1050,650);
-}
-
-void About::zoomIn()
-{
-   int i = m_zoomLevels.indexOf(m_currentZoom);
-
-   if (i < m_zoomLevels.count() - 1) {
-      m_currentZoom = m_zoomLevels[i + 1];
-   }
-
-   m_viewer->setZoomFactor(static_cast<qreal>(m_currentZoom)/100.0);
-}
-
-void About::zoomOut()
-{
-   int i = m_zoomLevels.indexOf(m_currentZoom);
-
-   if (i > 0)  {
-      m_currentZoom = m_zoomLevels[i - 1];
-   }
-
-   m_viewer->setZoomFactor(static_cast<qreal>(m_currentZoom)/100.0);
 }
 

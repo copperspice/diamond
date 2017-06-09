@@ -17,7 +17,6 @@
 *
 **************************************************************************/
 
-#include "about.h"
 #include "dialog_macro.h"
 #include "dialog_open.h"
 #include "dialog_symbols.h"
@@ -27,12 +26,14 @@
 #include <stdexcept>
 
 #include <QChar>
+#include <QDate>
 #include <QFileDialog>
 #include <QFileInfo>
 #include <QFontMetrics>
 #include <QKeySequence>
 #include <QLabel>
 #include <QScrollBar>
+#include <QTime>
 #include <QToolBar>
 
 MainWindow::MainWindow(QStringList fileList, QStringList flagList)
@@ -1099,8 +1100,7 @@ void MainWindow::show_Breaks()
 void MainWindow::displayHTML()
 {
    try {
-      About *dw = new About("Display", m_curFile);
-      dw->show();
+      showHtml("display", m_curFile);
 
    } catch (std::exception &e) {
       // do nothing for now
@@ -1687,8 +1687,7 @@ void MainWindow::focusChanged(QWidget *prior, QWidget *current)
 void MainWindow::diamondHelp()
 {
    try {
-      About *dw = new About("Help" ,m_struct.aboutUrl);
-      dw->show();
+      showHtml("docs", m_struct.aboutUrl);
 
    } catch (std::exception &e) {
       // do nothing for now

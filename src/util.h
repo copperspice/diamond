@@ -21,11 +21,14 @@
 #define UTIL_H
 
 #include <QMessageBox>
+#include <QString>
 
 void csMsg(const QString &msg);
 void csMsg(QString msg, int value);
 void csMsg(QWidget *parent, const QString &title, const QString &msg);
 void csError(QString title, QString msg);
 void showDialog(QDialog &t_Dialog);
+
+void showHtml(QString route, QString file);
 
 #endif

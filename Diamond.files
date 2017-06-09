@@ -32,7 +32,6 @@ forms/mainwindow.ui
 
 diamond.qrc
 
-src/about.h
 src/about.cpp
 src/diamond_edit.cpp
 src/diamond_edit.h

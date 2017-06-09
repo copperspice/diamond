@@ -98,17 +98,16 @@ static void showHelp()
 {
    QString textBody;
    textBody = "<table style=margin-right:25>"
+      "<tr><td width=200>&minus;&minus;help</td><td width=240>Displays this message</td></tr>"
+      "<tr><td width=200>&minus;&minus;version</td><td width=240>Displays the current version</td></tr>"
 
-              "<tr><td width=200>&minus;&minus;help</td><td width=240>Displays this message</td></tr>"
-              "<tr><td width=200>&minus;&minus;version</td><td width=240>Displays the current version</td></tr>"
+      "<tr></tr>"
 
-              "<tr></tr>"
+      "<tr><td width=200>&minus;&minus;no_autoload</td><td width=240>Force no auto load of previously open files</td></tr>"
+      "<tr><td>&minus;&minus;no_saveconfig</td><td>Do not save config file</td></tr>"
+      "<tr></tr>"
 
-              "<tr><td width=200>&minus;&minus;no_autoload</td><td width=240>Force no auto load of previously open files</td></tr>"
-              "<tr><td>&minus;&minus;no_saveconfig</td><td>Do not save config file</td></tr>"
-              "<tr></tr>"
-
-              "<tr><td>[fileName] [fileName] ...</td><td>Files to open when starting Diamond</td></tr></table><br>";
+      "<tr><td>[fileName] [fileName] ...</td><td>Files to open when starting Diamond</td></tr></table><br>";
 
    QDialog msgB;
    msgB.setWindowIcon(QIcon("://resources/diamond.png"));
@@ -141,21 +140,19 @@ static void showHelp()
    msgB.exec();
 }
 
-
 static void showVersion()
 {
    // change mainwindow.cpp & main.cpp
 
    QString textBody = "<font color='#000080'><table style=margin-right:25>"
-                  "<tr><td><nobr>Developed by Barbara Geller</nobr></td>"
-                      "<td>barbara@copperspice.com</td></tr>"
-                  "<tr><td style=padding-right:25><nobr>Developed by Ansel Sermersheim</nobr></td>"
-                      "<td>ansel@copperspice.com</td></tr>"
-                  "</table></font>"
-                  "<br>"
-                  "<p><small>Copyright 2012-2017 BG Consulting, All rights reserved.<br>"
-                  "This program is provided AS IS with no warranty of any kind.<br></small></p>";
-
+      "<tr><td><nobr>Developed by Barbara Geller</nobr></td>"
+          "<td>barbara@copperspice.com</td></tr>"
+      "<tr><td style=padding-right:25><nobr>Developed by Ansel Sermersheim</nobr></td>"
+          "<td>ansel@copperspice.com</td></tr>"
+      "</table></font>"
+      "<br>"
+      "<p><small>Copyright 2012-2017 BG Consulting, All rights reserved.<br>"
+      "This program is provided AS IS with no warranty of any kind.<br></small></p>";
 
    QMessageBox msgB;
    msgB.setIcon(QMessageBox::NoIcon);

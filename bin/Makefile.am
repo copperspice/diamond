@@ -10,7 +10,7 @@ gccpath=$(dir $(shell which $(word 1,$(CC))))
 gcclibs=libgcc_s_*-1  libstdc++-6  libwinpthread-1
 
 # list of CopperSpice libraries
-cslibs=Core Gui Network WebKit
+cslibs=Core Gui Network
 csver=1.4
 
 # location of includes
@@ -173,7 +173,6 @@ Diamond_SOURCES = \
     src/util.cpp
 
 noinst_HEADERS = \
-    src/about.h \
     src/dialog_advfind.h \
     src/dialog_buffer.h \
     src/dialog_colors.h \
