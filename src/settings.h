@@ -25,18 +25,20 @@
 #include <QString>
 
 struct Settings {
-   int     tabSpacing;
-   bool    showLineHighlight;
-   bool    showLineNumbers;
-   bool    isColumnMode;
-   bool    isSpellCheck;
-   bool    isWordWrap;
-   bool    show_Spaces;
-   bool    show_Breaks;
+   int   rewrapColumn;
+   int   tabSpacing;
 
-   bool    useSpaces;
-   bool    removeSpace;
-   bool    autoLoad;
+   bool  showLineHighlight;
+   bool  showLineNumbers;
+   bool  isColumnMode;
+   bool  isSpellCheck;
+   bool  isWordWrap;
+   bool  show_Spaces;
+   bool  show_Breaks;
+
+   bool  useSpaces;
+   bool  removeSpace;
+   bool  autoLoad;
 
    QString pathSyntax;
    QString pathPrior;
@@ -115,10 +117,12 @@ struct Settings {
 };
 
 struct Options {
-   int     tabSpacing;
-   bool    useSpaces;
-   bool    removeSpace;
-   bool    autoLoad;
+   int   rewrapColumn;
+   int   tabSpacing;
+
+   bool  useSpaces;
+   bool  removeSpace;
+   bool  autoLoad;
 
    QString formatDate;
    QString formatTime;

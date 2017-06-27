@@ -166,14 +166,14 @@ void MainWindow::newFile()
 
 void MainWindow::open_RelatedFile()
 {
-   QFileInfo temp(m_curFile);
-   QString ext = temp.suffix();
+   QFileInfo tmp(m_curFile);
+   QString ext = tmp.suffix();
 
    if (ext == "cpp" || ext == "h") {
       QStringList list;
 
       QString tFile;
-      QString baseName = temp.canonicalPath() + "/" +  temp.completeBaseName();
+      QString baseName = tmp.canonicalPath() + "/" +  tmp.completeBaseName();
 
       if (ext == "cpp") {
          tFile = baseName + ".h";
@@ -236,8 +236,8 @@ void MainWindow::open_RelatedFile()
          int result = dw->exec();
 
          if (result == QDialog::Accepted) {
-            QString tempF = dw->get_FileName();
-            this->loadFile(tempF, true, false);
+            QString tmpF = dw->get_FileName();
+            this->loadFile(tmpF, true, false);
          }
 
          delete dw;
@@ -300,7 +300,7 @@ bool MainWindow::closeAll_Doc(bool isExit)
 {
    bool allClosed = true;
 
-   QWidget *temp;
+   QWidget *tmp;
    DiamondTextEdit *textEdit;
 
    int count = m_tabWidget->count();
@@ -312,8 +312,8 @@ bool MainWindow::closeAll_Doc(bool isExit)
 
    for (int k = 0; k < count; ++k) {
 
-      temp = m_tabWidget->widget(whichTab);
-      textEdit = dynamic_cast<DiamondTextEdit *>(temp);
+      tmp = m_tabWidget->widget(whichTab);
+      textEdit = dynamic_cast<DiamondTextEdit *>(tmp);
 
       if (textEdit) {
          m_textEdit = textEdit;
@@ -473,15 +473,15 @@ void MainWindow::saveAll()
 
    QString fileName;
 
-   QWidget *temp;
+   QWidget *tmp;
    DiamondTextEdit *textEdit;
 
    int count = m_tabWidget->count();
 
    for (int k = 0; k < count; ++k) {
 
-      temp = m_tabWidget->widget(k);
-      textEdit = dynamic_cast<DiamondTextEdit *>(temp);
+      tmp = m_tabWidget->widget(k);
+      textEdit = dynamic_cast<DiamondTextEdit *>(tmp);
 
       if (textEdit) {
          m_textEdit = textEdit;
@@ -633,18 +633,18 @@ void MainWindow::caseCap()
 
 void MainWindow::insertDate()
 {
-   QDate date   = QDate::currentDate();
-   QString temp = date.toString(m_struct.formatDate);
+   QDate date  = QDate::currentDate();
+   QString tmp = date.toString(m_struct.formatDate);
 
-   m_textEdit->insertPlainText(temp);
+   m_textEdit->insertPlainText(tmp);
 }
 
 void MainWindow::insertTime()
 {
-   QTime time   = QTime::currentTime();
-   QString temp = time.toString(m_struct.formatTime);
+   QTime time  = QTime::currentTime();
+   QString tmp = time.toString(m_struct.formatTime);
 
-   m_textEdit->insertPlainText(temp);
+   m_textEdit->insertPlainText(tmp);
 }
 
 void MainWindow::insertSymbol()
@@ -757,7 +757,7 @@ void MainWindow::indentDecr(QString route)
       cursor.movePosition(QTextCursor::StartOfLine);
       posStart = cursor.position();
 
-      QString temp;
+      QString tmp;
 
       while (true) {
          cursor.movePosition(QTextCursor::StartOfLine);
@@ -772,8 +772,8 @@ void MainWindow::indentDecr(QString route)
                break;
             }
 
-            temp = cursor.selectedText().trimmed();
-            if (! temp.isEmpty())  {
+            tmp = cursor.selectedText().trimmed();
+            if (! tmp.isEmpty())  {
                break;
             }
 
@@ -814,14 +814,14 @@ void MainWindow::indentDecr(QString route)
          cursor.movePosition(QTextCursor::StartOfLine);
       }
 
-      QString temp;
+      QString tmp;
 
       for (int k=0; k < m_struct.tabSpacing; ++k) {
 
          cursor.movePosition(QTextCursor::NextCharacter, QTextCursor::KeepAnchor, 1);
-         temp = cursor.selectedText().trimmed();
+         tmp = cursor.selectedText().trimmed();
 
-         if (! temp.isEmpty())  {
+         if (! tmp.isEmpty())  {
             break;
          }
 
@@ -866,6 +866,150 @@ void MainWindow::deleteEOL()
    cursor.movePosition(QTextCursor::EndOfLine, QTextCursor::KeepAnchor);
    cursor.removeSelectedText();
    m_textEdit->setTextCursor(cursor);
+
+   cursor.endEditBlock();
+}
+
+void MainWindow::rewrapParagraph()
+{
+   QTextCursor cursor(m_textEdit->textCursor());
+   cursor.beginEditBlock();
+
+   if (m_struct.rewrapColumn == 0) {
+      m_struct.rewrapColumn = 120;
+   }
+
+   if (cursor.hasSelection()) {
+      int posStart = cursor.selectionStart();
+      int posEnd   = cursor.selectionEnd();
+
+      // reset posEnd to the end to the last selected line
+      cursor.setPosition(posEnd);
+      cursor.movePosition(QTextCursor::EndOfLine);
+      posEnd = cursor.position();
+
+      // reset posStart to the beginning of the first selected line
+      cursor.setPosition(posStart);
+      cursor.movePosition(QTextCursor::StartOfLine);
+      posStart = cursor.position();
+
+      // select all of the text
+      cursor.setPosition(posEnd, QTextCursor::KeepAnchor);
+
+      QString tmp = cursor.selectedText();
+      tmp.replace('\n', ' ');             // line feed
+      tmp.replace(QChar(0x2029), " ");    // paragraph
+
+      QString tmpSave = tmp.simplified();
+
+      //
+      QStringList lines;
+
+      while (! tmp.isEmpty()) {
+         lines.append(tmp.left(m_struct.rewrapColumn));
+         tmp.remove(0, m_struct.rewrapColumn);
+      }
+
+      QString hold;
+
+      for (QString &str : lines)  {
+         str.prepend(hold);
+         hold = "";
+
+         if (str.isEmpty()) {
+            // ignore this case for now
+
+         } else {
+
+            while (true) {
+               int len    = str.size();
+               QChar last = str[len - 1];
+
+               while (len >=  m_struct.rewrapColumn) {
+                 // line is too long
+                 hold.prepend(last);
+                 str.chop(1);
+
+                 --len;
+                 last = str[len - 1];
+               }
+
+               if (last.isSpace()) {
+                  str.chop(1);
+                  break;
+
+               } else {
+                 // keep the chars which are moving down
+                 hold.prepend(last);
+                 str.chop(1);
+
+               }
+            }
+         }
+      }
+
+      if (! hold.isEmpty()) {
+         // retrieve the last line
+         QString lastLine = lines.takeLast() + " " + hold;
+         hold = "";
+
+         // is this line too long now
+         int len    = lastLine.size();
+         QChar last = lastLine[len - 1];
+
+         while (len >=  m_struct.rewrapColumn) {
+            // line is too long
+           hold.prepend(last);
+           lastLine.chop(1);
+
+           --len;
+           last = lastLine[len - 1];
+         }
+
+         if (! hold.isEmpty()) {
+            while (true) {
+               len  = lastLine.size();
+               last = lastLine[len - 1];
+
+               if (last.isSpace()) {
+                  lastLine.chop(1);
+                  break;
+
+               } else {
+                 // keep the chars which are moving down
+                 hold.prepend(last);
+                 lastLine.chop(1);
+
+               }
+            }
+         }
+
+         // update
+         lines.append(lastLine);
+
+         if (! hold.isEmpty()) {
+            lines.append(hold);
+         }
+      }
+
+      tmp = lines.join("\n");
+
+      if (tmpSave == tmp.simplified())  {
+         // remove the selected text
+         cursor.removeSelectedText();
+
+         // insert new text
+         cursor.insertText(tmp);
+
+      } else {
+         csMsg("Warning: New text for rewrapParagrah is not the same as the input, rewrap aborted");
+
+      }
+
+   } else {
+      csMsg("No text or paragraph was selected to rewrap");
+
+   }
 
    cursor.endEditBlock();
 }
@@ -1290,7 +1434,7 @@ void MainWindow::fixSpaces_Tab()
    int pos;
    int tabLen = m_struct.tabSpacing;
 
-   QString temp;
+   QString tmp;
 
    const QString findText = QString(2, ' ');
    const QString newText  = QString(QChar(9));
@@ -1305,13 +1449,13 @@ void MainWindow::fixSpaces_Tab()
          cursor = m_textEdit->textCursor();
 
          while (true) {
-            temp = cursor.selectedText().trimmed();
+            tmp = cursor.selectedText().trimmed();
             pos  = cursor.positionInBlock();
 
             if ( m_tabStops.contains(pos)  ) {
                // this a tap stop
 
-               if (temp.isEmpty()) {
+               if (tmp.isEmpty()) {
                   // replace spaces with tab
                   cursor.insertText(newText);
 
@@ -1326,7 +1470,7 @@ void MainWindow::fixSpaces_Tab()
                break;
             }
 
-            if (! temp.isEmpty() || pass == tabLen)  {
+            if (! tmp.isEmpty() || pass == tabLen)  {
                break;
             }
 
@@ -1358,16 +1502,16 @@ void MainWindow::deleteEOL_Spaces()
    // set for undo stack
    cursor.beginEditBlock();
 
-   QString temp;
+   QString tmp;
 
    while (true) {
       cursor.movePosition(QTextCursor::EndOfBlock);
 
       while (true) {
          cursor.movePosition(QTextCursor::PreviousCharacter, QTextCursor::KeepAnchor, 1);
-         temp = cursor.selectedText();
+         tmp = cursor.selectedText();
 
-         if (temp != " ") {
+         if (tmp != " ") {
             cursor.movePosition(QTextCursor::NextCharacter);
             break;
          }
@@ -1494,13 +1638,13 @@ void MainWindow::spellCheck()
    // run for every tab
    int count = m_tabWidget->count();
 
-   QWidget *temp;
+   QWidget *tmp;
    DiamondTextEdit *textEdit;
 
    for (int k = 0; k < count; ++k)  {
 
-      temp     = m_tabWidget->widget(k);
-      textEdit = dynamic_cast<DiamondTextEdit *>(temp);
+      tmp      = m_tabWidget->widget(k);
+      textEdit = dynamic_cast<DiamondTextEdit *>(tmp);
 
       if (textEdit) {
          // save new values & reHighlight
@@ -1523,8 +1667,8 @@ void MainWindow::tabNew()
    m_tabWidget->setCurrentIndex(index);
 
    setScreenColors();
-   int temp = m_textEdit->fontMetrics().width(" ");
-   m_textEdit->setTabStopWidth(temp * m_struct.tabSpacing);
+   int tmp = m_textEdit->fontMetrics().width(" ");
+   m_textEdit->setTabStopWidth(tmp * m_struct.tabSpacing);
 
    m_textEdit->setFocus();
 
@@ -1549,10 +1693,10 @@ void MainWindow::mw_tabClose()
 void MainWindow::tabClose(int index)
 {
    m_tabWidget->setCurrentIndex(index);
-   QWidget *temp = m_tabWidget->widget(index);
+   QWidget *tmp = m_tabWidget->widget(index);
 
    DiamondTextEdit *t_textEdit;
-   t_textEdit = dynamic_cast<DiamondTextEdit *>(temp);
+   t_textEdit = dynamic_cast<DiamondTextEdit *>(tmp);
 
    if (t_textEdit) {
       m_textEdit = t_textEdit;
@@ -1574,10 +1718,10 @@ void MainWindow::tabClose(int index)
 
 void MainWindow::tabChanged(int index)
 {
-   QWidget *temp = m_tabWidget->widget(index);
+   QWidget *tmp = m_tabWidget->widget(index);
 
    DiamondTextEdit *textEdit;
-   textEdit = dynamic_cast<DiamondTextEdit *>(temp);
+   textEdit = dynamic_cast<DiamondTextEdit *>(tmp);
 
    if (textEdit) {
       m_textEdit = textEdit;
@@ -1728,10 +1872,10 @@ void MainWindow::setScreenColors()
 {
    changeFont();
 
-   QPalette temp = m_textEdit->palette();
-   temp.setColor(QPalette::Text, m_struct.colorText);
-   temp.setColor(QPalette::Base, m_struct.colorBack);
-   m_textEdit->setPalette(temp);
+   QPalette tmp = m_textEdit->palette();
+   tmp.setColor(QPalette::Text, m_struct.colorText);
+   tmp.setColor(QPalette::Base, m_struct.colorBack);
+   m_textEdit->setPalette(tmp);
 }
 
 void MainWindow::createConnections()
@@ -1911,7 +2055,7 @@ void MainWindow::createToggles()
 
 void MainWindow::createShortCuts(bool setupAll)
 {
-   // assign to temp value
+   // assign to tmp value
    struct Options struct_temp;
 
    struct_temp.key_open         = m_struct.key_open;

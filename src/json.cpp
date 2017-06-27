@@ -97,6 +97,9 @@ bool MainWindow::json_Read(Config trail)
       value = object.value("tabSpacing");
       m_struct.tabSpacing = value.toDouble();
 
+      value = object.value("rewrapColumn");
+      m_struct.rewrapColumn = value.toInt();
+
       m_struct.showLineHighlight = object.value("showLineHighlight").toBool();
       m_struct.showLineNumbers   = object.value("showLineNumbers").toBool();
       m_struct.isWordWrap        = object.value("word-wrap").toBool();
@@ -648,6 +651,10 @@ bool MainWindow::json_Write(Option route, Config trail)
             object.insert("removeSpace", m_struct.removeSpace);
             break;
 
+         case REWRAP_COLUMN:
+            object.insert("rewrapColumn", m_struct.rewrapColumn);
+            break;
+
          case SHOW_LINEHIGHLIGHT:
             object.insert("showLineHighlight", m_struct.showLineHighlight);
             break;
@@ -812,13 +819,15 @@ bool MainWindow::json_CreateNew()
    QJsonValue value;
    QJsonArray list;
 
-   object.insert("pos-x",       400);
-   object.insert("pos-y",       200);
-   object.insert("size-width",  800);
-   object.insert("size-height", 600);
+   object.insert("pos-x",        400);
+   object.insert("pos-y",        200);
+   object.insert("size-width",   800);
+   object.insert("size-height",  600);
 
-   object.insert("useSpaces",   true);
-   object.insert("tabSpacing",  4);
+   object.insert("rewrapColumn", 120);
+
+   object.insert("useSpaces",    true);
+   object.insert("tabSpacing",   4);
 
    object.insert("showLineNumbers",   true);
    object.insert("showLineHighlight", true);

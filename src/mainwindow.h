@@ -240,10 +240,11 @@ class MainWindow : public QMainWindow
       QLabel *m_statusMode;
       QLabel *m_statusName;                
 
-      enum Option { ABOUTURL, ADVFIND, AUTOLOAD, CLOSE, COLORS, COLUMN_MODE, DICT_MAIN, DICT_USER, FIND_LIST, FIND_REPLACE,
-                    FONT, FORMAT_DATE, FORMAT_TIME, KEYS, MACRO, MACRO_NAMES, PATH_SYNTAX, PATH_PRIOR, PRESET_FOLDER,
-                    PRINT_OPTIONS, RECENTFOLDER, RECENTFILE, REMOVE_SPACE, SHOW_LINEHIGHLIGHT, SHOW_LINENUMBERS,
-                    SHOW_SPACES, SHOW_BREAKS, SPELLCHECK, TAB_SPACING, USESPACES, WORDWRAP};
+      enum Option { ABOUTURL, ADVFIND, AUTOLOAD, CLOSE, COLORS, COLUMN_MODE, DICT_MAIN, DICT_USER, FIND_LIST,
+                    FIND_REPLACE, FONT, FORMAT_DATE, FORMAT_TIME, KEYS, MACRO, MACRO_NAMES, PATH_SYNTAX,
+                    PATH_PRIOR, PRESET_FOLDER, PRINT_OPTIONS, RECENTFOLDER, RECENTFILE, REMOVE_SPACE,
+                    REWRAP_COLUMN, SHOW_LINEHIGHLIGHT, SHOW_LINENUMBERS, SHOW_SPACES, SHOW_BREAKS, SPELLCHECK,
+                    TAB_SPACING, USESPACES, WORDWRAP};
 
       enum Config { CFG_STARTUP, CFG_DEFAULT };
 
@@ -367,6 +368,9 @@ class MainWindow : public QMainWindow
 
       CS_SLOT_1(Private, void insertTime())
       CS_SLOT_2(insertTime)
+
+      CS_SLOT_1(Private, void rewrapParagraph())
+      CS_SLOT_2(rewrapParagraph)
 
       void insertSymbol();
       void columnMode();
