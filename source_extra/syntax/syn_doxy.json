@@ -20,8 +20,8 @@
       "</?li[^>]*>",
       "</?ul[^>]*>"
    ],
-   "comment-multi-start": "(?!E)E",
-   "comment-multi-end": "(?!E)E",
+   "comment-multi-start": "/\\*(?![*!])",
+   "comment-multi-end": "\\*/",
    "comment-single": "(?!E)E",
    "functions": [
       "\\\\a\\b",
@@ -74,7 +74,7 @@
       "\\\\return\\b",
       "\\\\retval\\b",
       "\\\\section\\b",
-      "\\\\see\\b",     
+      "\\\\see\\b",
       "\\\\snippet\\b",
       "\\\\sortid\\b",
       "\\\\subpage\\b",
@@ -89,7 +89,9 @@
    ],
    "ignore-case" : true,
    "keywords": [
-      "\\&[^; \t]+;"
+      "\\&[^; \t]+;",
+      "^#ifdef never",
+      "^#endif"
    ],
    "types": [
       "\\\\class\\b",

@@ -31,7 +31,7 @@ void MainWindow::split_Horizontal()
    }
 
    m_split_textEdit = new DiamondTextEdit(this, m_struct, m_spellCheck, "split");
-   m_splitFileName  = m_curFile;   
+   m_splitFileName  = m_curFile;
 
    // sync documents
    m_split_textEdit->setDocument(m_textEdit->document());
@@ -63,15 +63,15 @@ void MainWindow::split_Horizontal()
    font2.setPointSize(11);
    m_splitName_CB->setFont(font2);
 
-   for (int k = 0; k < m_openedFiles.size(); ++k) {   
+   for (int k = 0; k < m_openedFiles.size(); ++k) {
 
       QString fullName = m_openedFiles[k];
       add_splitCombo(fullName);
 
       if ( m_openedModified[k] ) {
         update_splitCombo(fullName, true);
-      }      
-   }   
+      }
+   }
 
    //
    m_splitClose_PB = new QPushButton();
@@ -84,7 +84,7 @@ void MainWindow::split_Horizontal()
    topbar_Layout->addStretch(2);
 
    //
-   QBoxLayout *layout = new QVBoxLayout();  
+   QBoxLayout *layout = new QVBoxLayout();
    layout->addLayout(topbar_Layout);
    layout->addWidget(m_split_textEdit);
 
@@ -160,7 +160,7 @@ void MainWindow::split_Vertical()
       if ( m_openedModified[k] ) {
         update_splitCombo(fullName, true);
       }
-   }     
+   }
 
    //
    m_splitClose_PB = new QPushButton();
@@ -172,7 +172,7 @@ void MainWindow::split_Vertical()
    topbar_Layout->addWidget(m_splitClose_PB);
    topbar_Layout->addStretch(2);
 
-   QBoxLayout *layout = new QVBoxLayout();  
+   QBoxLayout *layout = new QVBoxLayout();
    layout->addLayout(topbar_Layout);
    layout->addWidget(m_split_textEdit);
 
@@ -269,7 +269,7 @@ void MainWindow::rm_splitCombo(QString fullName)
 }
 
 void MainWindow::split_NameChanged(int data)
-{  
+{
    QString newName = m_splitName_CB->itemData(data).toString();
 
    if (m_splitFileName != newName)  {
