@@ -916,36 +916,31 @@ void MainWindow::rewrapParagraph()
          str.prepend(hold);
          hold = "";
 
-         if (str.isEmpty()) {
-            // ignore this case for now
+         while (! str.isEmpty()) {
+            int len    = str.size();
+            QChar last = str[len - 1];
 
-         } else {
+            while (len >= m_struct.rewrapColumn) {
+              // line is too long
+              hold.prepend(last);
+              str.chop(1);
 
-            while (true) {
-               int len    = str.size();
-               QChar last = str[len - 1];
+              --len;
+              last = str[len - 1];
+            }
 
-               while (len >=  m_struct.rewrapColumn) {
-                 // line is too long
-                 hold.prepend(last);
-                 str.chop(1);
+            if (last.isSpace()) {
+               str.chop(1);
+               break;
 
-                 --len;
-                 last = str[len - 1];
-               }
+            } else {
+              // keep the chars which are moving down
+              hold.prepend(last);
+              str.chop(1);
 
-               if (last.isSpace()) {
-                  str.chop(1);
-                  break;
-
-               } else {
-                 // keep the chars which are moving down
-                 hold.prepend(last);
-                 str.chop(1);
-
-               }
             }
          }
+
       }
 
       if (! hold.isEmpty()) {

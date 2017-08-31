@@ -143,6 +143,7 @@
       "\\bwchar_t\\b",
       "\\bqint32\\b",
       "\\bquint32\\b",
+      "\\bqintptr\\b",
       "\\bqint64\\b",
       "\\bquint64\\b",
       "\\bquintptr\\b",
