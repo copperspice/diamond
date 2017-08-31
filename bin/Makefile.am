@@ -22,6 +22,12 @@ if OSTYPE_LINUX
    AM_CXXFLAGS+=`pkg-config hunspell --cflags`
 endif
 
+if OSTYPE_BSD
+   hunspell_la=`pkg-config hunspell --libs`
+
+   AM_CXXFLAGS+=`pkg-config hunspell --cflags`
+endif
+
 if OSTYPE_DARWIN
    hunspell_la=/opt/local/lib/libhunspell-1.3.la
 

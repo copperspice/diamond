@@ -24,22 +24,28 @@ AC_PROG_CC_C99
 AC_PROG_CC_C_O
 AC_PROG_CXX
 
-# set flags for c+11
+# set flags for c++14
 AC_LANG([C++])
-AX_CXX_COMPILE_STDCXX_11([noext])
+AX_CXX_COMPILE_STDCXX(14,[noext])
 
 case "$target" in
 *-*-mingw*)
    prefix=`pwd`/install
    OSTYPE=WIN ;;
+
 *-*-linux-*)
    OSTYPE=LINUX ;;
+
+*-*-*bsd*)
+   OSTYPE=BSD ;;
+
 *-*-darwin*)
    OSTYPE=DARWIN ;;
 esac
 
 AM_CONDITIONAL(OSTYPE_WIN, test "$OSTYPE" == WIN)
 AM_CONDITIONAL(OSTYPE_LINUX, test "$OSTYPE" == LINUX)
+AM_CONDITIONAL(OSTYPE_BSD, test "$OSTYPE" == BSD)
 AM_CONDITIONAL(OSTYPE_DARWIN, test "$OSTYPE" == DARWIN)
 
 # display 32-bit or 64-bit
