@@ -97,12 +97,15 @@ deploy : all
 	cp -r $(top_srcdir)/source_extra/help        $(deployapp)/Resources
 	cp -r $(top_srcdir)/source_extra/syntax      $(deployapp)/Resources
 
-	rsync -W -a /opt/local/lib/libhunspell-1.3.dylib  $(deployapp)/Frameworks
+   # hunspell
+	rsync -W -a /opt/local/lib/libhunspell-1.3.dylib    $(deployapp)/Frameworks
+	rsync -W -a /opt/local/lib/libhunspell-1.3.0.dylib  $(deployapp)/Frameworks
 	install_name_tool -change /opt/local/lib/libhunspell-1.3.0.dylib \
 	@executable_path/../Frameworks/libhunspell-1.3.0.dylib  $(deployapp)/MacOS/$(bin_PROGRAMS)
 
 	rsync -W -a $(patsubst %,$(CS_HOME)/lib/libCs%$(csver).dylib,$(cslibs)) $(deployapp)/Frameworks
 
+   # alter the path to the copperspice libraries
 	for libname in $(patsubst %,libCs%$(csver).dylib,$(cslibs)) ; do \
 	\
 	install_name_tool -change $(CS_HOME)/lib/$$libname \
@@ -113,7 +116,7 @@ deploy : all
 	@executable_path/../Frameworks/$$templib  $(deployapp)/Frameworks/$$libname \
 	; done \
 	\
-	; done
+	; doneNo
 
    # generate dmg	
 	hdiutil create -ov -srcfolder $(deploydir) -format UDBZ -volname $(bin_PROGRAMS) ../$(bin_PROGRAMS)-$(VERSION).dmg
