@@ -29,9 +29,9 @@ if OSTYPE_BSD
 endif
 
 if OSTYPE_DARWIN
-   hunspell_la=/opt/local/lib/libhunspell-1.3.la
+   hunspell_la=`pkg-config hunspell --libs`
 
-   AM_CXXFLAGS+=-I/opt/local/include/hunspell
+   AM_CXXFLAGS+=`pkg-config hunspell --cflags`
 endif
 
 if OSTYPE_WIN
@@ -55,6 +55,20 @@ bin_PROGRAMS = Diamond
 .PHONY: deploy
 
 if OSTYPE_LINUX
+deploy : all
+	mkdir -p $(deploydir)
+	mkdir -p $(deploydir)/dictionary
+	mkdir -p $(deploydir)/help
+	mkdir -p $(deploydir)/syntax
+
+	$(LIBTOOL) --mode=install cp $(bin_PROGRAMS) $(deploydir)
+
+	rsync -W -a $(patsubst %,$(CS_HOME)/lib/libCs%$(csver).so*,$(cslibs)) $(deploydir)
+	rsync -W -a $(top_srcdir)/source_extra/{dictionary,help,syntax} $(deploydir)
+	rsync -W -a $(top_srcdir)/resources/diamond.png $(deploydir)
+endif
+
+if OSTYPE_BSD
 deploy : all
 	mkdir -p $(deploydir)
 	mkdir -p $(deploydir)/dictionary
@@ -98,10 +112,10 @@ deploy : all
 	cp -r $(top_srcdir)/source_extra/syntax      $(deployapp)/Resources
 
    # hunspell
-	rsync -W -a /opt/local/lib/libhunspell-1.3.dylib    $(deployapp)/Frameworks
-	rsync -W -a /opt/local/lib/libhunspell-1.3.0.dylib  $(deployapp)/Frameworks
-	install_name_tool -change /opt/local/lib/libhunspell-1.3.0.dylib \
-	@executable_path/../Frameworks/libhunspell-1.3.0.dylib  $(deployapp)/MacOS/$(bin_PROGRAMS)
+	rsync -W -a /usr/local/lib/libhunspell-1.6.dylib    $(deployapp)/Frameworks
+	rsync -W -a /usr/local/lib/libhunspell-1.6.0.dylib  $(deployapp)/Frameworks
+	install_name_tool -change /usr/local/lib/libhunspell-1.6.0.dylib \
+	@executable_path/../Frameworks/libhunspell-1.6.0.dylib  $(deployapp)/MacOS/$(bin_PROGRAMS)
 
 	rsync -W -a $(patsubst %,$(CS_HOME)/lib/libCs%$(csver).dylib,$(cslibs)) $(deployapp)/Frameworks
 
@@ -116,7 +130,7 @@ deploy : all
 	@executable_path/../Frameworks/$$templib  $(deployapp)/Frameworks/$$libname \
 	; done \
 	\
-	; doneNo
+	; done
 
    # generate dmg	
 	hdiutil create -ov -srcfolder $(deploydir) -format UDBZ -volname $(bin_PROGRAMS) ../$(bin_PROGRAMS)-$(VERSION).dmg
