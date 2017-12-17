@@ -141,11 +141,15 @@
       "\\bvalue_type\\b",
       "\\bvolatile\\b",
       "\\bwchar_t\\b",
+      "\\bqint8\\b",
+      "\\bquint8\\b",
+      "\\bqint16\\b",
+      "\\bquint16\\b",
       "\\bqint32\\b",
       "\\bquint32\\b",
-      "\\bqintptr\\b",
       "\\bqint64\\b",
       "\\bquint64\\b",
+      "\\bqintptr\\b",
       "\\bquintptr\\b",
       "\\bqreal\\b"
    ]
