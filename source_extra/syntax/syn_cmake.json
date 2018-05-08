@@ -1,5 +1,5 @@
 {
-   "classes": [   
+   "classes": [
       "\\$\\{[^}]+\\}"
    ],
       "comment-multi-start": "(?!E)E",
@@ -10,8 +10,8 @@
    ],
    "ignore-case" : true,
    "keywords": [
-      
+
    ],
-   "types": [      
+   "types": [
    ]
 }

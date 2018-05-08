@@ -1,17 +1,24 @@
 {
    "classes": [
-      "^.*:\\d+:\\d+: error"
+      "\\bQ[A-Za-z0-9]+\\b(?!/)",
+      "\\bCS[A-Za-z0-9]+\\b"
    ],
       "comment-multi-start": "(?!E)E",
       "comment-multi-end": "(?!E)E",
       "comment-single": "(?!E)E",
    "functions": [
+      "^.*:\\d+:\\d+: note",
       "operator==",
       "operand of"
    ],
-   "ignore-case" : true,
+   "ignore-case" : false,
    "keywords": [
-      "^make.+:"
+      "^make.+:",
+      "^.*:\\d+:\\d+: error",
+      "\\bclass\\b",
+      "\\bconst\\b",
+      "\\btypename\\b",
+      "\\busing\\b"
    ],
    "types": [
    ]
