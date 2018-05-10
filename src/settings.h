@@ -201,7 +201,7 @@ struct Arugments{
 
 enum SyntaxTypes {SYN_C, SYN_CLIPPER, SYN_CMAKE, SYN_CSS, SYN_DOXY, SYN_ERRLOG, SYN_HTML,
                   SYN_JAVA, SYN_JS, SYN_JSON, SYN_MAKE, SYN_NSIS, SYN_TEXT,
-                  SYN_SHELL, SYN_PERL, SYN_PHP, SYN_PYTHON,
+                  SYN_SHELL, SYN_PERL, SYN_PHP, SYN_PYTHON, SYN_XML,
                   SYN_NONE, SYN_UNUSED1, SYN_UNUSED2 };
 
 #endif

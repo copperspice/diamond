@@ -26,7 +26,7 @@
      <x>0</x>
      <y>0</y>
      <width>800</width>
-     <height>29</height>
+     <height>28</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -185,6 +185,7 @@
      <addaction name="actionSyn_Perl"/>
      <addaction name="actionSyn_PHP"/>
      <addaction name="actionSyn_Python"/>
+     <addaction name="actionSyn_Xml"/>
      <addaction name="separator"/>
      <addaction name="actionSyn_None"/>
     </widget>
@@ -802,6 +803,11 @@
   <action name="actionSyn_CMake">
    <property name="text">
     <string>CMake</string>
+   </property>
+  </action>
+  <action name="actionSyn_Xml">
+   <property name="text">
+    <string>XML</string>
    </property>
   </action>
  </widget>

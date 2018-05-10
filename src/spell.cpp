@@ -107,8 +107,11 @@ void MainWindow::setSyntax()
       } else if (suffix == "perl" || suffix == "pm") {
          suffix = "pl";
 
-      } else if (suffix == "php3" || suffix == "php4") {
+      } else if (suffix == "php3" || suffix == "php4" || suffix == "php5") {
          suffix = "php";
+
+      } else if (suffix == "xml" || suffix == "ts") {
+         suffix = "xml";
 
       }
    }
@@ -182,13 +185,8 @@ void MainWindow::setSyntax()
       } else if (suffix == "py")  {
          m_syntaxEnum = SYN_PYTHON;
 
-/*
-      } else if (suffix == "unused1")  {
-         m_syntaxEnum = SYN_?;
-
-      } else if (suffix == "unused2")  {
-         m_syntaxEnum = SYN_?;
-*/
+      } else if (suffix == "xml")  {
+         m_syntaxEnum = SYN_XML;
 
       }
 
@@ -274,6 +272,10 @@ void MainWindow::forceSyntax(SyntaxTypes data)
 
       case SYN_PYTHON:
          synFName = m_struct.pathSyntax + "syn_py.json";
+         break;
+
+      case SYN_XML:
+         synFName = m_struct.pathSyntax + "syn_xml.json";
          break;
 
       case SYN_NONE:

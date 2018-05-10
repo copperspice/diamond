@@ -1267,6 +1267,7 @@ void MainWindow::setSynType(SyntaxTypes data)
    m_ui->actionSyn_Perl->setChecked(false);
    m_ui->actionSyn_PHP->setChecked(false);
    m_ui->actionSyn_Python->setChecked(false);
+   m_ui->actionSyn_Xml->setChecked(false);
    m_ui->actionSyn_None->setChecked(false);
 
    // m_ui->actionSyn_UnUsed1->setChecked(false);
@@ -1339,6 +1340,10 @@ void MainWindow::setSynType(SyntaxTypes data)
 
       case SYN_PYTHON:
          m_ui->actionSyn_Python->setChecked(true);
+         break;
+
+      case SYN_XML:
+         m_ui->actionSyn_Xml->setChecked(true);
          break;
 
       case SYN_NONE:
@@ -1954,6 +1959,7 @@ void MainWindow::createConnections()
    connect(m_ui->actionSyn_Perl,          &QAction::triggered, this, [this](bool){ forceSyntax(SYN_PERL);    } );
    connect(m_ui->actionSyn_PHP,           &QAction::triggered, this, [this](bool){ forceSyntax(SYN_PHP);     } );
    connect(m_ui->actionSyn_Python,        &QAction::triggered, this, [this](bool){ forceSyntax(SYN_PYTHON);  } );
+   connect(m_ui->actionSyn_Xml,           &QAction::triggered, this, [this](bool){ forceSyntax(SYN_XML);     } );
    connect(m_ui->actionSyn_None,          &QAction::triggered, this, [this](bool){ forceSyntax(SYN_NONE);    } );
 
    // connect(m_ui->actionSyn_UNUSED1,    &QAction::triggered, this, [this](bool){ forceSyntax(SYN_UNUSED1); } );
@@ -2013,6 +2019,7 @@ void MainWindow::createToggles()
    m_ui->actionSyn_Perl->setCheckable(true);
    m_ui->actionSyn_PHP->setCheckable(true);
    m_ui->actionSyn_Python->setCheckable(true);
+   m_ui->actionSyn_Xml->setCheckable(true);
    m_ui->actionSyn_None->setCheckable(true);
 
    // m_ui->actionSyn_Usused1->setCheckable(true);
