@@ -9,8 +9,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>407</width>
-    <height>194</height>
+    <width>399</width>
+    <height>185</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -142,7 +142,7 @@
        <property name="minimumSize">
         <size>
          <width>0</width>
-         <height>20</height>
+         <height>0</height>
         </size>
        </property>
        <property name="font">
@@ -157,10 +157,16 @@
      </item>
      <item>
       <widget class="QComboBox" name="find_Combo">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
        <property name="minimumSize">
         <size>
          <width>350</width>
-         <height>20</height>
+         <height>0</height>
         </size>
        </property>
        <property name="font">
