@@ -29,7 +29,7 @@ Dialog_Symbols::Dialog_Symbols(MainWindow *parent)
 {
    m_parent = parent;
 
-   m_ui->setupUi(this);   
+   m_ui->setupUi(this);
    this->setWindowIcon(QIcon("://resources/diamond.png"));
 
    // alter the hightlight color
@@ -41,7 +41,7 @@ Dialog_Symbols::Dialog_Symbols(MainWindow *parent)
    QStringListModel *model = new QStringListModel(this);
    model->setStringList( initData() );
 
-   m_ui->sampleList->setModel(model);  
+   m_ui->sampleList->setModel(model);
    m_ui->sampleList->setCurrentIndex(model->index(0));
 
    m_ui->sampleList->setFocus();
@@ -75,24 +75,32 @@ QStringList Dialog_Symbols::initData()
         << QChar(0x02154)     // "2/3"
         << QChar(0x0215C)     // "3/8"
         << QChar(0x0215D)     // "5/8"
-        << QChar(0x0215E)     // "7/8"      
+        << QChar(0x0215E)     // "7/8"
         << QChar(0x00AE)      // "R"
         << QChar(0x00A9)      // "C"
         << QChar(0x2122)      // "TM"
         << QChar(0x20AC)      // euro
         << QChar(0x00A3)      // pound
-        << QChar(0x00C4)      // �
-        << QChar(0x00CB)      // �
-        << QChar(0x00CF)      // �
-        << QChar(0x00D6)      // �
-        << QChar(0x00DC)      // �
-        << QChar(0x00E4)      // �
-        << QChar(0x00EB)      // �
-        << QChar(0x00EF)      // �
-        << QChar(0x00F6)      // �
-        << QChar(0x00FC)      // �
         << QChar(0x00BF)      // upside down ?
-        << QChar(0x00A1);     // upside down !
+        << QChar(0x00A1)      // upside down !
+
+        << QChar(0x00C4)      // �  upper case A ..
+        << QChar(0x00CB)      // �  upper case E
+        << QChar(0x00CF)      // �  upper case E
+        << QChar(0x00D6)      // �  upper case O
+        << QChar(0x00DC)      // �  upper case U
+
+        << QChar(0x00E4)      // �  lower case a ..
+        << QChar(0x00EB)      // �  lower case e ..
+        << QChar(0x00EF)      // �  lower case i ..
+
+        << QChar(0x00F2)      //     lower case o accent
+        << QChar(0x00F3)      //     lower case o accent
+        << QChar(0x00F4)      //     lower case o hat
+        << QChar(0x00F5)      //     lower case o tilde
+        << QChar(0x00F6)      // �  lower case o ..
+
+        << QChar(0x00FC);     // �  lower case u
 
    return data;
 }
