@@ -22,7 +22,6 @@
 
 #include <QApplication>
 #include <QClipboard>
-#include <QLatin1Char>
 #include <QPainter>
 #include <QShortcutEvent>
 #include <Qt>
@@ -193,12 +192,10 @@ void DiamondTextEdit::contextMenuEvent(QContextMenuEvent *event)
 
    QAction *tempAction;
 
-#ifdef CS_EXPERIMENTAL
    if (isSelected) {
       menu->addAction("Rewrap Paragraph",  m_mainWindow, SLOT(rewrapParagraph()) );
       menu->addSeparator();
    }
-#endif
 
    tempAction = menu->addAction("Undo", this, SLOT(undo()) );
    if (! document()->isUndoAvailable() ) {
