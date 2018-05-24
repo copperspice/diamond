@@ -236,7 +236,7 @@ struct Options Dialog_Options::get_Results()
    m_options.aboutUrl    = m_ui->about->text();
 
    QString value = m_ui->tabSpacing_CB->currentText();
-   m_options.tabSpacing  = value.toInt();
+   m_options.tabSpacing  = value.toInteger<int>();
 
    m_options.useSpaces   = m_ui->useSpaces_CKB->isChecked();
    m_options.removeSpace = m_ui->removeSpace_CKB->isChecked();

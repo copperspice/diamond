@@ -27,6 +27,7 @@
 #include <QPlainTextEdit>
 #include <QSyntaxHighlighter>
 #include <QTextCharFormat>
+#include <QRegularExpression>
 #include <QVector>
 
 class Syntax : public QSyntaxHighlighter
@@ -52,8 +53,8 @@ class Syntax : public QSyntaxHighlighter
       SpellCheck *m_spellCheck;
       bool m_isSpellCheck;
 
-      QRegExp m_commentStartExpression;
-      QRegExp m_commentEndExpression;
+      QRegularExpression m_commentStartExpression;
+      QRegularExpression m_commentEndExpression;
 
       QTextCharFormat m_multiLineCommentFormat;
       QTextCharFormat m_spellCheckFormat;
@@ -63,7 +64,7 @@ class Syntax : public QSyntaxHighlighter
       //
       struct HighlightingRule
       {
-         QRegExp pattern;
+         QRegularExpression pattern;
          QTextCharFormat format;
       };
 

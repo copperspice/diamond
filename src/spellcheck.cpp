@@ -37,11 +37,7 @@ SpellCheck::SpellCheck(const QString &dictMain, const QString &dictUser)
    QString dicFname  = base + ".dic";
    QString affFName  = base + ".aff";
 
-   //
-   QByteArray affixFilePathBA = affFName.toLocal8Bit();
-   QByteArray dictFilePathBA  = dicFname.toLocal8Bit();
-
-   m_hunspell = new Hunspell(affixFilePathBA.constData(), dictFilePathBA.constData() );
+   m_hunspell = new Hunspell(affFName .constData(), dicFname.constData() );
 
    // encode as SET option in the affix file
    m_encoding = "ISO8859-1";
@@ -53,7 +49,7 @@ SpellCheck::SpellCheck(const QString &dictMain, const QString &dictUser)
       QFile file(m_userFname);
 
       if (! file.open(QFile::ReadOnly)) {
-         QString error = QObject::tr("Unable to read file %1:\n%2.").arg(m_userFname).arg(file.errorString());
+         QString error = QObject::tr("Unable to read file %1:\n%2.").formatArgs(m_userFname, file.errorString());
          csError("Spell Check", error);
          return;
       }
@@ -137,7 +133,7 @@ void SpellCheck::addToUserDict(const QString &word)
       QFile file(m_userFname);
 
       if (! file.open(QFile::Append)) {
-         QString error = QObject::tr("Unable to read file %1:\n%2.").arg(m_userFname).arg(file.errorString());
+         QString error = QObject::tr("Unable to read file %1:\n%2.").formatArgs(m_userFname, file.errorString());
          csError("Spell Check", error);
          return;
       }

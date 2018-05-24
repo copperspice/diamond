@@ -17,6 +17,9 @@
 *
 **************************************************************************/
 
+#define protected public
+
+
 #include "dialog_macro.h"
 #include "dialog_open.h"
 #include "dialog_symbols.h"
@@ -260,11 +263,7 @@ void MainWindow::openDoc(QString path)
    QStringList fileList = QFileDialog::getOpenFileNames(this, tr("Select File"),
          path, tr("All Files (*)"), &selectedFilter, options);
 
-   int cnt = fileList.count();
-
-   for (int k = 0; k < cnt; ++k )  {
-      QString fileName = fileList.at(k);
-
+   for (const QString &fileName : fileList)  {
       if (! fileName.isEmpty()) {
          loadFile(fileName, true, false);
       }
@@ -624,8 +623,8 @@ void MainWindow::caseCap()
       text = cursor.selectedText();
    }
 
-   text    = text.toLower();
-   text[0] = text[0].toUpper();
+   text = text.toLower();
+   text.replace(0, 1, text[0].toUpper());
 
    cursor.removeSelectedText();
    cursor.insertText(text);
@@ -1858,7 +1857,8 @@ void MainWindow::about()
    msgB.setWindowIcon(QIcon("://resources/diamond.png"));
 
    msgB.setWindowTitle(tr("About Diamond"));
-   msgB.setText(tr("<p style=margin-right:25><center><h5>Version: %1<br>Build # %2</h5></center></p>").arg(versionString).arg(buildDate));
+   msgB.setText(tr("<p style=margin-right:25><center><h5>Version: %1<br>Build # %2</h5></center></p>")
+         .formatArgs(QString::fromLatin1(versionString), QString::fromLatin1(buildDate)));
    msgB.setInformativeText(textBody);
 
    msgB.setStandardButtons(QMessageBox::Ok);

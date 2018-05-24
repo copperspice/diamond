@@ -43,7 +43,7 @@ int main(int argc, char *argv[])
    QStringList flagList;
 
    for (int k = 0; k < argc; ++k)   {
-      QString value = argv[k];
+      QString value = QString::fromUtf8(argv[k]);
 
       if (value.left(2) == "--") {
          flagList.append(value);
@@ -71,14 +71,13 @@ int main(int argc, char *argv[])
          retval = app.exec();
 
       } catch (std::exception &e) {
+         const QString what = QString::fromUtf8(e.what());
 
-         const char *what = e.what();
-
-         if (strcmp(what, "abort_no_message") == 0)  {
+         if (what == "abort_no_message")  {
             // do nothing
 
          } else {
-            QString errMsg = "Exception: " + QString(what);
+            QString errMsg = "Exception: " + what;
 
             QMessageBox msgB;
             msgB.setWindowTitle("Diamond / Issue");
@@ -159,7 +158,8 @@ static void showVersion()
    msgB.setWindowIcon(QIcon("://resources/diamond.png"));
 
    msgB.setWindowTitle("About Diamond");
-   msgB.setText(QString("<p style=margin-right:25><center><h5>Version: %1<br>Build # %2</h5></center></p>").arg(versionString).arg(buildDate));
+   msgB.setText(QString("<p style=margin-right:25><center><h5>Version: %1<br>Build # %2</h5></center></p>")
+            .formatArgs(QString::fromLatin1(versionString), QString::fromLatin1(buildDate)));
    msgB.setInformativeText(textBody);
 
    msgB.setStandardButtons(QMessageBox::Ok);

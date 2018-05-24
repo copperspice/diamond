@@ -576,7 +576,7 @@ bool MainWindow::json_Write(Option route, Config trail)
                   QString macroName = object.value("macro-next").toString();
 
                   // next macro id number
-                  int id = macroName.mid(9).toInt();
+                  int id = macroName.mid(9).toInteger<int>();
 
                   if (id > MACRO_MAX - 1)  {
 
@@ -1287,9 +1287,9 @@ QColor MainWindow::json_SetColor(QString values)
    int blue  = 255;
 
    if (list.count() > 2 ) {
-      red   = list[0].toInt();
-      green = list[1].toInt();
-      blue  = list[2].toInt();
+      red   = list[0].toInteger<int>();
+      green = list[1].toInteger<int>();
+      blue  = list[2].toInteger<int>();
    }
 
    QColor color(red,green,blue);
@@ -1542,8 +1542,8 @@ bool MainWindow::json_Load_Macro(QString macroName)
       QJsonArray element = list.at(k).toArray();
 
       // hard coded order
-      int key      = element.at(0).toString().toInt();
-      Qt::KeyboardModifier modifier = Qt::KeyboardModifier( element.at(1).toString().toInt() );
+      int key      = element.at(0).toString().toInteger<int>();
+      Qt::KeyboardModifier modifier = Qt::KeyboardModifier( element.at(1).toString().toInteger<int>() );
       QString text = element.at(2).toString();
 
       QKeyEvent *event = new QKeyEvent(QEvent::KeyPress, key, modifier, text);
@@ -1576,8 +1576,8 @@ QList<macroStruct> MainWindow::json_View_Macro(QString macroName)
       QJsonArray element = list.at(k).toArray();
 
       // hard coded order
-      int key      = element.at(0).toString().toInt();
-      Qt::KeyboardModifier modifier = Qt::KeyboardModifier( element.at(1).toString().toInt() );
+      int key      = element.at(0).toString().toInteger<int>();
+      Qt::KeyboardModifier modifier = Qt::KeyboardModifier( element.at(1).toString().toInteger<int>() );
       QString text = element.at(2).toString();
 
       struct macroStruct temp;

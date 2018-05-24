@@ -29,7 +29,7 @@
 #include <QString>
 #include <QTextBoundaryFinder>
 
-static const QRegExp DEFAULT_COMMENT = QRegExp("(?!E)E");
+static const QRegularExpression DEFAULT_COMMENT = QRegularExpression("(?!E)E");
 
 Syntax::Syntax(QTextDocument *document, QString synFName, const struct Settings &settings, SpellCheck *spell)
    : QSyntaxHighlighter(document)
@@ -111,11 +111,10 @@ bool Syntax::processSyntax()
       type_Patterns.append(list.at(k).toString());
    }
 
-
-   // *
+   //
    HighlightingRule rule;
 
-   foreach (const QString &pattern, key_Patterns) {
+   for (const QString &pattern : key_Patterns) {
       if (pattern.trimmed().isEmpty()) {
          continue;
       }
@@ -124,16 +123,15 @@ bool Syntax::processSyntax()
       rule.format.setFontWeight(m_settings.syn_KeyWeight);
       rule.format.setFontItalic(m_settings.syn_KeyItalic);
       rule.format.setForeground(m_settings.syn_KeyText);
-      rule.pattern = QRegExp(pattern);
+      rule.pattern = QRegularExpression(pattern);
 
       if (ignoreCase) {
-         rule.pattern.setCaseSensitivity(Qt::CaseInsensitive);
+         rule.pattern.setPatternOptions(QPatternOption::CaseInsensitiveOption);
       }
-
       highlightingRules.append(rule);
    }
 
-   foreach (const QString &pattern, class_Patterns) {
+   for (const QString &pattern : class_Patterns) {
       if (pattern.trimmed().isEmpty()) {
          continue;
       }
@@ -142,16 +140,16 @@ bool Syntax::processSyntax()
       rule.format.setFontWeight(m_settings.syn_ClassWeight);
       rule.format.setFontItalic(m_settings.syn_ClassItalic);
       rule.format.setForeground(m_settings.syn_ClassText);
-      rule.pattern = QRegExp(pattern);
+      rule.pattern = QRegularExpression(pattern);
 
       if (ignoreCase) {
-         rule.pattern.setCaseSensitivity(Qt::CaseInsensitive);
+         rule.pattern.setPatternOptions(QPatternOption::CaseInsensitiveOption);
       }
 
       highlightingRules.append(rule);
    }
 
-   foreach (const QString &pattern, func_Patterns) {
+   for (const QString &pattern : func_Patterns) {
       if (pattern.trimmed().isEmpty()) {
          continue;
       }
@@ -160,16 +158,16 @@ bool Syntax::processSyntax()
       rule.format.setFontWeight(m_settings.syn_FuncWeight);
       rule.format.setFontItalic(m_settings.syn_FuncItalic);
       rule.format.setForeground(m_settings.syn_FuncText);
-      rule.pattern = QRegExp(pattern);
+      rule.pattern = QRegularExpression(pattern);
 
       if (ignoreCase) {
-         rule.pattern.setCaseSensitivity(Qt::CaseInsensitive);
+         rule.pattern.setPatternOptions(QPatternOption::CaseInsensitiveOption);
       }
 
       highlightingRules.append(rule);
    }
 
-   foreach (const QString &pattern, type_Patterns) {
+   for (const QString &pattern : type_Patterns) {
       if (pattern.trimmed().isEmpty()) {
          continue;
       }
@@ -178,12 +176,11 @@ bool Syntax::processSyntax()
       rule.format.setFontWeight(m_settings.syn_TypeWeight);
       rule.format.setFontItalic(m_settings.syn_TypeItalic);
       rule.format.setForeground(m_settings.syn_TypeText);
-      rule.pattern = QRegExp(pattern);
+      rule.pattern = QRegularExpression(pattern);
 
       if (ignoreCase) {
-         rule.pattern.setCaseSensitivity(Qt::CaseInsensitive);
+         rule.pattern.setPatternOptions(QPatternOption::CaseInsensitiveOption);
       }
-
       highlightingRules.append(rule);
    }
 
@@ -191,8 +188,7 @@ bool Syntax::processSyntax()
    rule.format.setFontWeight(m_settings.syn_QuoteWeight);
    rule.format.setFontItalic(m_settings.syn_QuoteItalic);
    rule.format.setForeground(m_settings.syn_QuoteText);
-   rule.pattern = QRegExp("\".*\"");
-   rule.pattern.setMinimal(true);
+   rule.pattern = QRegularExpression("\".*?\"");
    highlightingRules.append(rule);
 
    // single line comment
@@ -201,7 +197,7 @@ bool Syntax::processSyntax()
    rule.format.setFontWeight(m_settings.syn_CommentWeight);
    rule.format.setFontItalic(m_settings.syn_CommentItalic);
    rule.format.setForeground(m_settings.syn_CommentText);
-   rule.pattern = QRegExp(commentSingle);
+   rule.pattern = QRegularExpression(commentSingle);
    highlightingRules.append(rule);
 
    // multi line comment
@@ -211,8 +207,8 @@ bool Syntax::processSyntax()
    m_multiLineCommentFormat.setFontWeight(m_settings.syn_MLineWeight);
    m_multiLineCommentFormat.setFontItalic(m_settings.syn_MLineItalic);
    m_multiLineCommentFormat.setForeground(m_settings.syn_MLineText);
-   m_commentStartExpression = QRegExp(commentStart);
-   m_commentEndExpression   = QRegExp(commentEnd);
+   m_commentStartExpression = QRegularExpression(commentStart);
+   m_commentEndExpression   = QRegularExpression(commentEnd);
 
    // spell check   
    m_spellCheckFormat.setUnderlineColor(QColor(Qt::red));
@@ -262,14 +258,19 @@ void Syntax::set_Spell(bool value)
 
 void Syntax::highlightBlock(const QString &text)
 {
-   foreach (const HighlightingRule &rule, highlightingRules) {
-      QRegExp expression(rule.pattern);
-      int index = expression.indexIn(text);
+   QRegularExpressionMatch match;
 
-      while (index >= 0) {
-         int length = expression.matchedLength();
+   for (auto &rule : highlightingRules) {
+      match = rule.pattern.match(text);
+
+      while (match.hasMatch()) {
+         int index  = match.capturedStart(0) - text.begin();
+         int length = match.capturedLength();
+
          setFormat(index, length, rule.format);
-         index = expression.indexIn(text, index + length);
+
+         // get new match
+         match = rule.pattern.match(text, match.capturedEnd(0));
       }
    }
 
@@ -278,37 +279,38 @@ void Syntax::highlightBlock(const QString &text)
 
    int startIndex = 0;
 
-   if (m_commentStartExpression.isEmpty()) {
+   if (m_commentStartExpression.pattern().isEmpty()) {
       m_commentStartExpression = DEFAULT_COMMENT;
    }
 
-   if (m_commentEndExpression.isEmpty()) {
+   if (m_commentEndExpression.pattern().isEmpty()) {
       m_commentEndExpression = DEFAULT_COMMENT;
    }
 
-   //
    if (previousBlockState() != 1) {
-      startIndex = m_commentStartExpression.indexIn(text);
+      startIndex = text.indexOf(m_commentStartExpression);
    }
 
    while (startIndex >= 0) {
-      int endIndex = m_commentEndExpression.indexIn(text, startIndex);
       int commentLength;
+      match = m_commentEndExpression.match(text, text.begin() + startIndex);
 
-      if (endIndex == -1) {
-         setCurrentBlockState(1);
-         commentLength = text.length() - startIndex;
+      if (match.hasMatch()) {
+         int endIndex  = match.capturedStart(0) - text.begin();
+         commentLength = endIndex - startIndex + match.capturedLength();
 
       } else {
-         commentLength = endIndex - startIndex + m_commentEndExpression.matchedLength();
+         setCurrentBlockState(1);
+         commentLength = text.length() - startIndex;
 
       }
 
       setFormat(startIndex, commentLength, m_multiLineCommentFormat);
-      startIndex = m_commentStartExpression.indexIn(text, startIndex + commentLength);
+      startIndex = text.indexOf(m_commentStartExpression, startIndex + commentLength);
    }
 
    // spell check
+
    if (m_spellCheck && m_isSpellCheck)  {
       QTextBoundaryFinder wordFinder(QTextBoundaryFinder::Word, text);
 
@@ -331,6 +333,8 @@ void Syntax::highlightBlock(const QString &text)
             setFormat(wordStart, wordLength, m_spellCheckFormat);
          }
       }
+
    }
+
 }
 

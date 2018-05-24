@@ -199,7 +199,7 @@ int MainWindow::get_line_col(const QString route)
    int col    = -1;
 
    if (result == QDialog::Accepted) {
-      col = dw->get_Value().toInt();
+      col = dw->get_Value().toInteger<int>();
    }
 
    delete dw;
@@ -256,12 +256,12 @@ bool MainWindow::loadFile(const QString &fileName, bool addNewTab, bool isAuto)
       if (! isAuto) {
          // do not show this message
 
-         QString temp = fileName;
-         if (temp.isEmpty()) {
-            temp = "(No file name available)";
+         QString tmp = fileName;
+         if (tmp.isEmpty()) {
+            tmp = "(No file name available)";
          }
 
-         QString error = tr("Unable to open/read file:  %1\n%2.").arg(temp).arg(file.errorString());
+         QString error = tr("Unable to open/read file:  %1\n%2.").formatArgs(tmp, file.errorString());
          csError(tr("Open/Read File"), error);
          return false;
       }
@@ -372,12 +372,12 @@ bool MainWindow::saveFile(const QString &fileName, SaveFiles saveType)
 
    if (! file.open(QFile::WriteOnly | QFile::Text)) {
 
-      QString temp = fileName;
-      if (temp.isEmpty()) {
-         temp = tr("(No file name available)");
+      QString tmp = fileName;
+      if (tmp.isEmpty()) {
+         tmp = tr("(No file name available)");
       }
 
-      QString error = tr("Unable to save/write file %1:\n%2.").arg(temp).arg(file.errorString());
+      QString error = tr("Unable to save/write file %1:\n%2.").formatArgs(tmp, file.errorString());
       csError(tr("Save/Write File"), error);
       return false;
    }

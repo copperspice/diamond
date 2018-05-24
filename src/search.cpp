@@ -32,7 +32,7 @@
 
 // * find
 void MainWindow::find()
-{   
+{
    QString saveText = m_findText;
 
    QTextCursor cursor(m_textEdit->textCursor());
@@ -50,7 +50,7 @@ void MainWindow::find()
       m_findText = dw->get_findText();
       m_findList = dw->get_findList();
 
-      // add to list if not found
+      // add to combo list if not already there
       int index = m_findList.indexOf(m_findText);
 
       if (index == -1) {
@@ -107,14 +107,14 @@ void MainWindow::findNext()
    // broom: may want to modify m_FindText for html
 
    QTextDocument::FindFlags flags = QTextDocument::FindFlags(~QTextDocument::FindBackward & m_flags);
-   bool found = m_textEdit->find(m_findText, flags);   
+   bool found = m_textEdit->find(m_findText, flags);
 
    if (! found)  {
       QString msg = "Not found: " + m_findText + "\n\n";
       msg += "Search from the beginning of this document?\n";
 
       QMessageBox msgFindNext(this);
-      msgFindNext.setWindowTitle("Find");          
+      msgFindNext.setWindowTitle("Find");
       msgFindNext.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
       msgFindNext.setDefaultButton(QMessageBox::Yes);
       msgFindNext.setText(msg);
@@ -217,7 +217,7 @@ void MainWindow::advFind()
 }
 
 QList<advFindStruct> MainWindow::advFind_getResults(bool &aborted)
-{   
+{
    aborted = false;
 
    // part 1
@@ -235,10 +235,10 @@ QList<advFindStruct> MainWindow::advFind_getResults(bool &aborted)
       searchList = currentDir.entryList(QStringList(m_advFindFileType), QDir::Files | QDir::NoSymLinks);
    }
 
-   QProgressDialog progressDialog(this);      
+   QProgressDialog progressDialog(this);
 
    progressDialog.setMinimumDuration(1500);
-   progressDialog.setMinimumWidth(275);   
+   progressDialog.setMinimumWidth(275);
    progressDialog.setRange(0, searchList.size());
    progressDialog.setWindowTitle(tr("Advanced File Search"));
 
@@ -259,13 +259,14 @@ QList<advFindStruct> MainWindow::advFind_getResults(bool &aborted)
    QString name;
 
    enum Qt::CaseSensitivity caseFlag;
+   QRegularExpression regExp = QRegularExpression("\\b" + m_advFindText + "\\b");
 
    if (m_advFCase) {
       caseFlag = Qt::CaseSensitive;
 
    }  else {
-      // default
       caseFlag = Qt::CaseInsensitive;
+      regExp.setPatternOptions(QPatternOption::CaseInsensitiveOption);
 
    }
 
@@ -273,7 +274,7 @@ QList<advFindStruct> MainWindow::advFind_getResults(bool &aborted)
    for (int k = 0; k < searchList.size(); ++k) {
 
       progressDialog.setValue(k);
-      progressDialog.setLabelText(tr("Searching file %1 of %2").arg(k).arg(searchList.size()));
+      progressDialog.setLabelText(tr("Searching file %1 of %2").formatArg(k).formatArg(searchList.size()));
       qApp->processEvents();
 
       if (progressDialog.wasCanceled()) {
@@ -290,7 +291,6 @@ QList<advFindStruct> MainWindow::advFind_getResults(bool &aborted)
       }
 
       QFile file(name);
-      QRegExp regexp = QRegExp("\\b" + m_advFindText + "\\b", caseFlag);
 
       if (file.open(QIODevice::ReadOnly)) {
          QString line;
@@ -305,7 +305,7 @@ QList<advFindStruct> MainWindow::advFind_getResults(bool &aborted)
             lineNumber++;
 
             if (m_advFWholeWords)  {
-               position = line.indexOf(regexp, 0);
+               position = line.indexOf(regExp);
 
             } else  {
                position = line.indexOf(m_advFindText, 0, caseFlag);
@@ -317,7 +317,7 @@ QList<advFindStruct> MainWindow::advFind_getResults(bool &aborted)
                advFindStruct temp;
 
                temp.fileName   = name;
-               temp.lineNumber = lineNumber;               
+               temp.lineNumber = lineNumber;
                temp.text       = line.trimmed();
 
                foundList.append(temp);
@@ -326,7 +326,7 @@ QList<advFindStruct> MainWindow::advFind_getResults(bool &aborted)
       }
 
       file.close();
-   }   
+   }
 
    return foundList;
 }
@@ -357,7 +357,7 @@ void MainWindow::findRecursive(const QString &path, bool isFirstLoop)
 
          }
       }
-   }   
+   }
 }
 
 void MainWindow::advFind_ShowFiles(QList<advFindStruct> foundList)
@@ -533,7 +533,7 @@ void MainWindow::replace()
       m_fWholeWords = dw->get_WholeWords();
       if (m_fWholeWords){
          m_flags |= QTextDocument::FindWholeWords;
-      }  
+      }
 
       if (! m_findText.isEmpty() && ! m_replaceText.isEmpty())  {
 
@@ -582,7 +582,7 @@ void MainWindow::replaceQuery()
    while (true) {
       found = m_textEdit->find(m_findText, m_flags);
 
-      if (found) {         
+      if (found) {
 
          if (isFirst) {
             isFirst = false;
@@ -604,13 +604,13 @@ void MainWindow::replaceQuery()
 
          int key = dw->getKey();
 
-         if (key == Qt::Key_unknown) {            
+         if (key == Qt::Key_unknown) {
             continue;
 
          }  else if (key == Qt::Key_A)  {
             replaceAll();
 
-         } else if (key == Qt::Key_N)  {            
+         } else if (key == Qt::Key_N)  {
             continue;
 
          } else if (key == Qt::Key_O)  {
@@ -622,7 +622,7 @@ void MainWindow::replaceQuery()
          } else if (key == Qt::Key_S)  {
             break;
 
-         } else if (key == Qt::Key_Y)  {            
+         } else if (key == Qt::Key_Y)  {
             cursor  = m_textEdit->textCursor();
             cursor.insertText(m_replaceText);
 

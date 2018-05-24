@@ -419,34 +419,33 @@ QString MainWindow::macroExpand(QString data)
 QString MainWindow::convertBlockToHTML(const QString &plain) const
 {
    int col = 0;
-
    QString retval;
 
-   for (int i = 0; i < plain.length(); ++i) {
+   for (QChar c : plain) {
 
-      if (plain[i] == QLatin1Char('\t'))  {
-         retval += QChar(0x00a0U);
+      if (c == '\t')  {
+         retval.append(QChar(0x00A0));
          ++col;
 
          while (col % m_struct.tabSpacing) {
-            retval += QChar(0x00a0U);
+            retval.append(QChar(0x00A0));
             ++col;
          }
 
-      } else if (plain[i].isSpace()) {
-         retval += QChar(0x00a0U);
+      } else if (c.isSpace()) {
+         retval.append(QChar(0x00A0));
 
-      } else if (plain[i] == QLatin1Char('<')) {
-         retval += QLatin1String("&lt;");
+      } else if (c == '<') {
+         retval.append("&lt;");
 
-      } else if (plain[i] == QLatin1Char('>'))  {
-         retval += QLatin1String("&gt;");
+      } else if (c == '>')  {
+         retval.append("&gt;");
 
-      } else if (plain[i] == QLatin1Char('&'))  {
-         retval += QLatin1String("&amp;");
+      } else if (c == '&')  {
+         retval.append("&amp;");
 
       } else  {
-         retval += plain[i];
+         retval.append(c);
 
       }
 

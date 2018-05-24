@@ -354,7 +354,7 @@ QString Dialog_Macro::get_Macro()
    QModelIndex index = m_ui->tableView->currentIndex();
 
    if (! index.isValid()) {
-      return "";
+      return QString("");
    }
 
    // return the macro id
