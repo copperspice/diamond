@@ -183,6 +183,7 @@ Diamond_SOURCES = \
     src/keylineedit.cpp \
     src/main.cpp \
     src/mainwindow.cpp \
+    src/menu_action.cpp \
     src/options.cpp \
     src/print.cpp \
     src/recent_files.cpp \
