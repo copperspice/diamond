@@ -207,13 +207,12 @@ int MainWindow::get_line_col(const QString route)
    return col;
 }
 
-bool MainWindow::loadFile(const QString &fileName, bool addNewTab, bool isAuto)
+bool MainWindow::loadFile(const QString &fileName, bool addNewTab, bool isAuto, bool isReload)
 {
    // part 1
    if (addNewTab)  {
       // test if fileName is open in another tab
       QFSFileEngine engine(fileName);
-
 
       int count = m_tabWidget->count();
 
@@ -267,7 +266,7 @@ bool MainWindow::loadFile(const QString &fileName, bool addNewTab, bool isAuto)
       }
    }
 
-   setStatusBar(tr("Loading File..."),0);
+   setStatusBar(tr("Loading File..."), 0);
    QApplication::setOverrideCursor(Qt::WaitCursor);
 
    file.seek(0);
@@ -288,7 +287,7 @@ bool MainWindow::loadFile(const QString &fileName, bool addNewTab, bool isAuto)
    QApplication::restoreOverrideCursor();
 
    if (m_textEdit->m_owner == "tab") {
-      setCurrentTitle(fileName);
+      setCurrentTitle(fileName, false, isReload);
    }
 
    if (m_isSplit) {
@@ -424,7 +423,7 @@ QString MainWindow::suffixName() const
 
 
 // title & status bar
-void MainWindow::setCurrentTitle(const QString &fileName, bool tabChange)
+void MainWindow::setCurrentTitle(const QString &fileName, bool tabChange, bool isReload)
 {
    QString showName;
 
@@ -464,7 +463,7 @@ void MainWindow::setCurrentTitle(const QString &fileName, bool tabChange)
          rf_Update();
       }
 
-      if (! tabChange)  {
+      if (! tabChange && ! isReload)  {
          setSyntax();
       }
    }

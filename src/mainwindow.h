@@ -94,7 +94,7 @@ class MainWindow : public QMainWindow
 
       // support
       QString get_DirPath(QString message, QString path);
-      bool loadFile(const QString &fileName, bool newTab, bool isAuto);
+      bool loadFile(const QString &fileName, bool newTab, bool isAuto, bool isReload = false);
 
    protected:
       void closeEvent(QCloseEvent *event);
