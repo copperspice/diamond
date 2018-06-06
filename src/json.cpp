@@ -29,6 +29,7 @@
 #include <QFileDialog>
 #include <QJsonArray>
 #include <QJsonDocument>
+#include <QJsonValue>
 #include <QKeySequence>
 #include <QPoint>
 #include <QPushButton>

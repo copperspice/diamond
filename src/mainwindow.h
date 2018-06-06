@@ -29,10 +29,8 @@
 
 #include <QAction>
 #include <QComboBox>
-#include <QFile>
 #include <QFrame>
 #include <QJsonObject>
-#include <QJsonValue>
 #include <QList>
 #include <QMenu>
 #include <QMainWindow>
@@ -43,10 +41,10 @@
 #include <QShortcut>
 #include <QStandardItemModel>
 #include <QStandardPaths>
+#include <QString>
 #include <QStringList>
 #include <QSplitter>
 #include <QStackedWidget>
-#include <QTabWidget>
 
 class Dialog_AdvFind;
 
@@ -74,9 +72,9 @@ class MainWindow : public QMainWindow
 {
    CS_OBJECT(MainWindow)
 
-   public:      
+   public:
       MainWindow(QStringList fileList, QStringList flagList);
-      struct Settings get_StructData();           
+      struct Settings get_StructData();
 
       // fonts
       void changeFont();
@@ -102,12 +100,12 @@ class MainWindow : public QMainWindow
       void dropEvent(QDropEvent *event);
 
    private:
-      Ui::MainWindow *m_ui;      
+      Ui::MainWindow *m_ui;
 
       // textEdit
-      DiamondTextEdit *m_textEdit;      
+      DiamondTextEdit *m_textEdit;
       QTabWidget *m_tabWidget;
-      QString m_curFile;     
+      QString m_curFile;
 
       QStringList m_openedFiles;
       QList<bool> m_openedModified;
@@ -115,7 +113,7 @@ class MainWindow : public QMainWindow
       // split
       DiamondTextEdit *m_split_textEdit;
       DiamondTextEdit *m_noSplit_textEdit;
-      QSplitter *m_splitter;     
+      QSplitter *m_splitter;
 
       bool m_isSplit;
       QFrame *m_splitWidget;
@@ -142,7 +140,7 @@ class MainWindow : public QMainWindow
       Dialog_AdvFind *m_dwAdvFind;
       QString m_advFindText;
       QString m_advFindFileType;
-      QString m_advFindFolder;     
+      QString m_advFindFolder;
 
       bool m_advFCase;
       bool m_advFWholeWords;
@@ -160,7 +158,7 @@ class MainWindow : public QMainWindow
       QStringList m_replaceList;
       int getReply();
 
-      // macros    
+      // macros
       bool m_record;
       QList<QKeyEvent *> m_macroList;
       QStringList m_macroNames;
@@ -170,9 +168,9 @@ class MainWindow : public QMainWindow
 
       // passed parms
       void autoLoad();
-      void argLoad(QList<QString> argList);      
+      void argLoad(QList<QString> argList);
 
-      // preset folders      
+      // preset folders
       QAction *prefolder_Actions[PRESET_FOLDERS_MAX];
       QStringList m_prefolder_List;
 
@@ -180,7 +178,7 @@ class MainWindow : public QMainWindow
       void prefolder_RedoList();
       //void prefolder_UpdateActions();
 
-      // recent folders     
+      // recent folders
       QAction *rfolder_Actions[RECENT_FOLDERS_MAX];
       QStringList m_rfolder_List;
 
@@ -188,7 +186,7 @@ class MainWindow : public QMainWindow
       void rfolder_Add();
       void rfolder_UpdateActions();
 
-      // recent files      
+      // recent files
       QAction *rf_Actions[RECENT_FILES_MAX];
       QStringList m_rf_List;
 
@@ -212,10 +210,10 @@ class MainWindow : public QMainWindow
       QList<int> m_tabStops;
       void setUpTabStops();
 
-      // open tabs      
+      // open tabs
       QAction *openTab_Actions[OPENTABS_MAX];
 
-      void openTab_CreateMenus();      
+      void openTab_CreateMenus();
       void openTab_Add();
       void openTab_Delete();
       void openTab_UpdateActions();
@@ -223,9 +221,9 @@ class MainWindow : public QMainWindow
       void openTab_Select(int index);
       void openTab_UpdateOneAction(int index, bool isModified);
 
-      // spell check     
+      // spell check
       void createSpellCheck();
-      SpellCheck *m_spellCheck;          
+      SpellCheck *m_spellCheck;
 
       // menu bar
       QToolBar *fileToolBar;
@@ -238,7 +236,7 @@ class MainWindow : public QMainWindow
       // status bar
       QLabel *m_statusLine;
       QLabel *m_statusMode;
-      QLabel *m_statusName;                
+      QLabel *m_statusName;
 
       enum Option { ABOUTURL, ADVFIND, AUTOLOAD, CLOSE, COLORS, COLUMN_MODE, DICT_MAIN, DICT_USER, FIND_LIST,
                     FIND_REPLACE, FONT, FORMAT_DATE, FORMAT_TIME, KEYS, MACRO, MACRO_NAMES, PATH_SYNTAX,
@@ -251,7 +249,7 @@ class MainWindow : public QMainWindow
       enum SaveFiles { SAVE_ONE, SAVE_ALL };
 
       void openDoc(QString path);
-      bool closeAll_Doc(bool isExit);      
+      bool closeAll_Doc(bool isExit);
       void save_ConfigFile();
 
       void setScreenColors();
@@ -289,7 +287,7 @@ class MainWindow : public QMainWindow
 
       QFont json_SetFont(QString value);
       QColor json_SetColor(QString values);
-      QString json_GetRGB(QColor color);     
+      QString json_GetRGB(QColor color);
       QJsonObject json_SaveSyntax(QJsonObject object);
 
       // printing
@@ -301,25 +299,25 @@ class MainWindow : public QMainWindow
 
       int get_HeaderSize(QPainter *painter);
       int get_FooterSize(QPainter *painter);
-     
+
       void doHeader(QPainter *painter);
       void doFooter(QPainter *painter);
       QString macroExpand(QString macro);
       QString convertBlockToHTML(const QString &plain) const;
 
-      // support           
+      // support
       int get_line_col(const QString route);
-      bool querySave();     
+      bool querySave();
       bool saveFile(const QString &fileName, SaveFiles saveType);
       bool saveAs(SaveFiles saveType);
 
-      void setCurrentTitle(const QString &fileName, bool tabChange = false);
+      void setCurrentTitle(const QString &fileName, bool tabChange = false, bool isReload = false);
       void setDiamondTitle(const QString title);
 
       QString get_curFileName(int whichTab);
       QString pathName(QString fileName) const;
       QString strippedName(const QString filename);
-      QString suffixName() const;   
+      QString suffixName() const;
 
       void focusChanged(QWidget *prior, QWidget *current);
 
@@ -448,17 +446,17 @@ class MainWindow : public QMainWindow
       void showContext_RecentFolder(const QPoint &pt);
 
       CS_SLOT_1(Private, void rfolder_Open())
-      CS_SLOT_2(rfolder_Open) 
+      CS_SLOT_2(rfolder_Open)
 
       CS_SLOT_1(Private, void rfolder_ClearList())
-      CS_SLOT_2(rfolder_ClearList) 
+      CS_SLOT_2(rfolder_ClearList)
 
       CS_SLOT_1(Private, void rfolder_RemoveFName())
-      CS_SLOT_2(rfolder_RemoveFName) 
+      CS_SLOT_2(rfolder_RemoveFName)
 
-      // preset folders      
+      // preset folders
       CS_SLOT_1(Private, void prefolder_Open())
-      CS_SLOT_2(prefolder_Open) 
+      CS_SLOT_2(prefolder_Open)
 
       // recent files
       void showContext_Files(const QPoint &pt);
@@ -467,16 +465,16 @@ class MainWindow : public QMainWindow
       CS_SLOT_2(rf_Open)
 
       CS_SLOT_1(Private, void rf_ClearList())
-      CS_SLOT_2(rf_ClearList) 
+      CS_SLOT_2(rf_ClearList)
 
       CS_SLOT_1(Private, void rf_RemoveFName())
-      CS_SLOT_2(rf_RemoveFName) 
+      CS_SLOT_2(rf_RemoveFName)
 
       // open (tab) files
       void showContext_Tabs(const QPoint &pt);
 
       CS_SLOT_1(Private, void openTab_redo())
-      CS_SLOT_2(openTab_redo) 
+      CS_SLOT_2(openTab_redo)
 
       // split
       void set_splitCombo();
