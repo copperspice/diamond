@@ -47,6 +47,10 @@ void MainWindow::split_Horizontal()
    temp.setColor(QPalette::Base, m_struct.colorBack);
    m_split_textEdit->setPalette(temp);
 
+   // position on same line
+   QTextCursor cursor(m_textEdit->textCursor());
+   m_split_textEdit->setTextCursor(cursor);
+
    m_isSplit  = true;
    m_textEdit = m_split_textEdit;
 
@@ -137,6 +141,10 @@ void MainWindow::split_Vertical()
    temp.setColor(QPalette::Text, m_struct.colorText);
    temp.setColor(QPalette::Base, m_struct.colorBack);
    m_split_textEdit->setPalette(temp);
+
+   // position on same line
+   QTextCursor cursor(m_textEdit->textCursor());
+   m_split_textEdit->setTextCursor(cursor);
 
    m_isSplit  = true;
    m_textEdit = m_split_textEdit;
