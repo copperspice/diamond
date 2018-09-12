@@ -482,7 +482,7 @@ void MainWindow::setStatus_LineCol()
 {
    QTextCursor cursor(m_textEdit->textCursor());
 
-   // BROOM - adjust value when tabs are used instead of spaces
+   // broom - adjust value when tabs are used instead of spaces
    int adjColNum = cursor.columnNumber()+1;
 
    m_statusLine->setText(" Line: "  + QString::number(cursor.blockNumber()+1) +

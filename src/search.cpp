@@ -87,6 +87,7 @@ void MainWindow::find()
          }
       }
 
+
    } else {
       m_findText = saveText;
 
@@ -104,7 +105,7 @@ void MainWindow::find()
 
 void MainWindow::findNext()
 {
-   // broom: may want to modify m_FindText for html
+   // broom: may want to modify m_FindText when text contains html
 
    QTextDocument::FindFlags flags = QTextDocument::FindFlags(~QTextDocument::FindBackward & m_flags);
    bool found = m_textEdit->find(m_findText, flags);
@@ -122,7 +123,6 @@ void MainWindow::findNext()
       int result = msgFindNext.exec();
 
       if (result == QMessageBox::Yes) {
-
          // reset to the beginning of the document
          QTextCursor cursor(m_textEdit->textCursor());
          cursor.movePosition(QTextCursor::Start);
