@@ -1,5 +1,5 @@
 # project name, version, email
-AC_INIT([Diamond], 1.2.4, [info@copperspice.com])
+AC_INIT([Diamond], 1.3.0, [info@copperspice.com])
 export BUILD_DATE=`date +%m/%d/%Y`
 
 # location of temp autotools files
