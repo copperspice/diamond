@@ -7,9 +7,9 @@ var NAVTREE =
     ] ],
     [ "Building", "build.html", [
       [ "Compile & Link", "build-diamond.html", null ],
-      [ "Building for OS X", "build-mac.html", null ],
+      [ "Building for Mac OS X", "build-mac.html", null ],
       [ "Building for Windows", "build-win.html", null ],
-      [ "Building for X11", "build-x11.html", null ]
+      [ "Building for Unix", "build-x11.html", null ]
     ] ],
     [ "Features", "features.html", null ],
     [ "Getting Started", "how_to.html", null ],
