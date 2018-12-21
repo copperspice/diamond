@@ -313,28 +313,17 @@ void Syntax::highlightBlock(const QString &text)
 
    if (m_spellCheck && m_isSpellCheck)  {
       QTextBoundaryFinder wordFinder(QTextBoundaryFinder::Word, text);
-
-      int wordStart  = 0;
-      int wordLength = 0;
-      QString word   = "";
-
+      
       while (wordFinder.position() < text.length()) {
+         int wordStart  = wordFinder.position();
+         int wordLength = wordFinder.toNextBoundary() - wordStart;
 
-         if (wordFinder.position() == 0)  {
-            wordStart = 0;
-         } else  {
-            wordStart = wordFinder.position();
-         }
-
-         wordLength = wordFinder.toNextBoundary()-wordStart;
-         word       = text.mid(wordStart,wordLength).trimmed();
+         QStringView word = text.midView(wordStart, wordLength).trimmed();
 
          if ( ! m_spellCheck->spell(word) )   {
             setFormat(wordStart, wordLength, m_spellCheckFormat);
          }
       }
-
    }
-
 }
 

@@ -30,7 +30,7 @@ class SpellCheck
       SpellCheck(const QString &dictMain, const QString &dictUser);
       ~SpellCheck();
 
-      bool spell(const QString &word);
+      bool spell(QStringView word);
       QStringList suggest(const QString &word);
       void ignoreWord(const QString &word);
       void addToUserDict(const QString &word);

@@ -73,7 +73,7 @@ SpellCheck::~SpellCheck()
    delete m_hunspell;
 }
 
-bool SpellCheck::spell(const QString &word)
+bool SpellCheck::spell(QStringView word)
 {
    bool isCorrect;
 
@@ -81,13 +81,11 @@ bool SpellCheck::spell(const QString &word)
       return true;
    }
 
-   QString lookUp(word);
-
-   while ( ! lookUp.isEmpty() && ! lookUp.at(0).isLetter()) {
-      lookUp = lookUp.mid(1);
+   while (! word.isEmpty() && ! word.at(0).isLetter()) {
+      word = word.mid(1);
    }
 
-   isCorrect = m_hunspell->spell(m_codec->fromUnicode(lookUp).constData()) != 0;
+   isCorrect = m_hunspell->spell(m_codec->fromUnicode(word).constData()) != 0;      // BROOM CHECK
 
    return isCorrect;
 }
