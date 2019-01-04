@@ -1,21 +1,16 @@
 /**************************************************************************
 *
-* Copyright (c) 2012-2018 Barbara Geller
-* All rights reserved.
+* Copyright (c) 2012-2019 Barbara Geller
 *
 * Diamond Editor is free software: you can redistribute it and/or
 * modify it under the terms of the GNU General Public License version 2
 * as published by the Free Software Foundation.
 *
-* Diamond Editor is distributed in the hope that it will be useful,
+* Diamond is distributed in the hope that it will be useful,
 * but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-* General Public License for more details.
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 *
-* You should have received a copy of the GNU General Public License
-* along with Diamond Editor.  If not, see <http://www.gnu.org/licenses/>.
-*
-**************************************************************************/
+***************************************************************************/
 
 #include "diamond_build_info.h"
 #include "mainwindow.h"
@@ -150,7 +145,7 @@ static void showVersion()
           "<td>ansel@copperspice.com</td></tr>"
       "</table></font>"
       "<br>"
-      "<p><small>Copyright 2012-2018 BG Consulting, All rights reserved.<br>"
+      "<p><small>Copyright 2012-2019 BG Consulting, All rights reserved.<br>"
       "This program is provided AS IS with no warranty of any kind.<br></small></p>";
 
    QMessageBox msgB;
