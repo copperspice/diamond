@@ -20,6 +20,7 @@
 
 #include <QDialog>
 #include <QString>
+#include <QStringList>
 
 class Dialog_AdvFind : public QDialog
 {     
@@ -43,6 +44,8 @@ class Dialog_AdvFind : public QDialog
       Ui::Dialog_AdvFind *m_ui;
       MainWindow *m_parent;
       QLabel *m_busyMsg;
+
+      static QStringList dirCombo;
 
       void pick_Folder();
       void find();

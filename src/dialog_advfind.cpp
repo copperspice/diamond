@@ -18,9 +18,11 @@
 #include <QFileDialog>
 #include <QToolButton>
 
+QStringList Dialog_AdvFind::dirCombo;
+
 Dialog_AdvFind::Dialog_AdvFind(MainWindow *parent, QString findText, QString fileType, QString findFolder, bool searchFolders)
    : QDialog(parent), m_ui(new Ui::Dialog_AdvFind)
-{   
+{
    m_parent  = parent;
    m_busyMsg = nullptr;
 
@@ -29,7 +31,10 @@ Dialog_AdvFind::Dialog_AdvFind(MainWindow *parent, QString findText, QString fil
 
    m_ui->find->setText(findText);
    m_ui->findType->setText(fileType);
-   m_ui->findFolder->setText(findFolder);
+
+   // pre load
+   m_ui->findFolder->insertItems(0, dirCombo);
+   m_ui->findFolder->setEditText(findFolder);
 
    if (searchFolders) {
       m_ui->searchSubFolders_CKB->setChecked(true);
@@ -47,7 +52,7 @@ Dialog_AdvFind::~Dialog_AdvFind()
 
 void Dialog_AdvFind::pick_Folder()
 {
-   QString oldFolder = m_ui->findFolder->text();
+   QString oldFolder = m_ui->findFolder->currentText();
 
    if (oldFolder.isEmpty())    {
       oldFolder = QDir::currentPath();
@@ -56,7 +61,13 @@ void Dialog_AdvFind::pick_Folder()
    QString newFolder = m_parent->get_DirPath("Select Directory or Folder to Search", oldFolder);
 
    if (! newFolder.isEmpty()) {
-      m_ui->findFolder->setText(newFolder);
+
+#if defined (Q_OS_WIN)
+      // change forward to backslash
+      newFolder.replace('/', '\\');
+#endif
+
+      m_ui->findFolder->setEditText(newFolder);
    }
 }
 
@@ -112,6 +123,12 @@ void Dialog_AdvFind::cancel()
 
 void Dialog_AdvFind::find()
 {
+   QString tmp = m_ui->findFolder->currentText();
+
+   if (! dirCombo.contains(tmp)) {
+      dirCombo.append(tmp);
+   }
+
    this->done(1);
 }
 
@@ -127,7 +144,7 @@ QString Dialog_AdvFind::get_findType()
 
 QString Dialog_AdvFind::get_findFolder()
 {
-   return m_ui->findFolder->text();
+   return m_ui->findFolder->currentText();
 }
 
 bool Dialog_AdvFind::get_Case()

@@ -82,7 +82,6 @@ void MainWindow::find()
          }
       }
 
-
    } else {
       m_findText = saveText;
 
@@ -92,7 +91,6 @@ void MainWindow::find()
          m_findList = dw->get_findList();
          json_Write(FIND_LIST);
       }
-
    }
 
    delete dw;
@@ -285,6 +283,11 @@ QList<advFindStruct> MainWindow::advFind_getResults(bool &aborted)
 
       }
 
+#if defined (Q_OS_WIN)
+      // change forward to backslash
+      name.replace('/', '\\');
+#endif
+
       QFile file(name);
 
       if (file.open(QIODevice::ReadOnly)) {
@@ -383,6 +386,11 @@ void MainWindow::advFind_ShowFiles(QList<advFindStruct> foundList)
    view->setColumnWidth(0, 300);
    view->setColumnWidth(1, 75);
    view->horizontalHeader()->setStretchLastSection(true);
+
+   // increase font, allow user to change this
+   QFont font = view->font();
+   font.setPointSize(12);
+   view->setFont(font);
 
    // background color
    view->setAlternatingRowColors(true);
