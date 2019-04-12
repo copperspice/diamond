@@ -38,13 +38,13 @@ void MainWindow::open_RelatedFile()
    QFileInfo tmp(m_curFile);
    QString ext = tmp.suffix();
 
-   if (ext == "cpp" || ext == "h") {
+   if (ext == "cpp" || ext == "c" || ext == "cc" || ext == "h") {
       QStringList list;
 
       QString tFile;
       QString baseName = tmp.canonicalPath() + "/" +  tmp.completeBaseName();
 
-      if (ext == "cpp") {
+      if (ext == "cpp" || ext == "c" || ext == "cc") {
          tFile = baseName + ".h";
 
          if ( QFile::exists(tFile) ) {
@@ -67,6 +67,12 @@ void MainWindow::open_RelatedFile()
             list.append(tFile);
          }
 
+         tFile = baseName + ".c";
+
+         if ( QFile::exists(tFile) ) {
+            list.append(tFile);
+         }
+
          tFile = baseName + ".h";
 
          if ( QFile::exists(tFile) ) {
@@ -77,6 +83,12 @@ void MainWindow::open_RelatedFile()
       } else if (ext == "h")  {
 
          tFile = baseName + ".cpp";
+
+         if ( QFile::exists(tFile) ) {
+            list.append(tFile);
+         }
+
+         tFile = baseName + ".c";
 
          if ( QFile::exists(tFile) ) {
             list.append(tFile);
