@@ -38,13 +38,13 @@ void MainWindow::open_RelatedFile()
    QFileInfo tmp(m_curFile);
    QString ext = tmp.suffix();
 
-   if (ext == "cpp" || ext == "c" || ext == "cc" || ext == "h") {
+   if (ext == "cpp" || ext == "c" || ext == "cc" || ext == "m" || ext == "mm" || ext == "h") {
       QStringList list;
 
       QString tFile;
       QString baseName = tmp.canonicalPath() + "/" +  tmp.completeBaseName();
 
-      if (ext == "cpp" || ext == "c" || ext == "cc") {
+      if (ext == "cpp" || ext == "c" || ext == "cc" || ext == "m" || ext == "mm") {
          tFile = baseName + ".h";
 
          if ( QFile::exists(tFile) ) {
@@ -73,16 +73,27 @@ void MainWindow::open_RelatedFile()
             list.append(tFile);
          }
 
+         tFile = baseName + ".cc";
+
+         if ( QFile::exists(tFile) ) {
+            list.append(tFile);
+         }
+
          tFile = baseName + ".h";
 
          if ( QFile::exists(tFile) ) {
             list.append(tFile);
          }
 
-
       } else if (ext == "h")  {
 
          tFile = baseName + ".cpp";
+
+         if ( QFile::exists(tFile) ) {
+            list.append(tFile);
+         }
+
+         tFile = baseName + ".c";
 
          if ( QFile::exists(tFile) ) {
             list.append(tFile);
@@ -125,7 +136,7 @@ void MainWindow::open_RelatedFile()
       }
 
    } else {
-      csError(tr("Open Related Files"), tr("Related files only configured for .cpp and .h files"));
+      csError(tr("Open Related Files"), tr("Related files only configured for .cpp, .c, .cc, .mm and .h files"));
 
    }
 }
