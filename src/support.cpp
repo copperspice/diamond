@@ -202,8 +202,13 @@ int MainWindow::get_line_col(const QString route)
    return col;
 }
 
-bool MainWindow::loadFile(const QString &fileName, bool addNewTab, bool isAuto, bool isReload)
+bool MainWindow::loadFile(QString fileName, bool addNewTab, bool isAuto, bool isReload)
 {
+#if defined (Q_OS_WIN)
+   // change forward to backslash
+   fileName.replace('/', '\\');
+#endif
+
    // part 1
    if (addNewTab)  {
       // test if fileName is open in another tab
@@ -242,7 +247,6 @@ bool MainWindow::loadFile(const QString &fileName, bool addNewTab, bool isAuto, 
       }
    }
 
-   // part 2
    QFile file(fileName);
 
    if (! file.open(QFile::ReadOnly | QFile::Text)) {
@@ -360,8 +364,13 @@ bool MainWindow::querySave()
    return true;
 }
 
-bool MainWindow::saveFile(const QString &fileName, SaveFiles saveType)
+bool MainWindow::saveFile(QString fileName, SaveFiles saveType)
 {
+#if defined (Q_OS_WIN)
+   // change forward to backslash
+   fileName.replace('/', '\\');
+#endif
+
    QFile file(fileName);
 
    if (! file.open(QFile::WriteOnly | QFile::Text)) {
