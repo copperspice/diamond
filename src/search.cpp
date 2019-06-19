@@ -387,10 +387,14 @@ void MainWindow::advFind_ShowFiles(QList<advFindStruct> foundList)
    view->setColumnWidth(1, 75);
    view->horizontalHeader()->setStretchLastSection(true);
 
-   // increase font, allow user to change this
-   QFont font = view->font();
-   font.setPointSize(12);
-   view->setFont(font);
+
+   // use main window font and size, allow user to change this
+
+//  out for now since it was too big
+//  QFont font = view->font();
+//  font.setPointSize(12);
+//  view->setFont(font);
+
 
    // background color
    view->setAlternatingRowColors(true);
