@@ -37,7 +37,7 @@ static const double SOURCE_DPI = 100.00;
 
 void MainWindow::print()
 {
-   QPrinter printer(QPrinter::HighResolution);   
+   QPrinter printer(QPrinter::HighResolution);
 
    QPrintDialog dialog(&printer, this);
    dialog.setWindowTitle("Print Document");
@@ -52,7 +52,7 @@ void MainWindow::print()
 }
 
 void MainWindow::printPreview()
-{  
+{
    // called from menu
    QPrinter printer(QPrinter::HighResolution);
 
@@ -64,11 +64,11 @@ void MainWindow::printPreview()
 }
 
 void MainWindow::printPdf()
-{       
+{
    QString outputName = QFileInfo(m_curFile).baseName() + ".pdf";
 
    QString selectedFilter;
-   QFileDialog::Options options;  
+   QFileDialog::Options options;
 
    QString fileName = QFileDialog::getSaveFileName(this, tr("Print to PDF"),
          outputName, tr("PDF File (*.pdf)"), &selectedFilter, options);
@@ -132,15 +132,15 @@ void MainWindow::printOut(QPrinter *printer)
 
    td->setHtml(html);
 
-   printer->setPaperSize(QPrinter::Letter);
-   printer->setPageMargins(m_printer.marLeft, m_printer.marTop,
-                           m_printer.marRight, m_printer.marBottom,QPrinter::Inch);
+   printer->setPaperSize(QPageSize::Letter);
+   printer->setPageMargins( QMarginsF{ m_printer.marLeft, m_printer.marTop,
+                           m_printer.marRight, m_printer.marBottom}, QPageSize::Inch);
 
-   QPainter painter;      
+   QPainter painter;
 
    if (painter.begin(printer)) {
 
-      m_resolution = printer->logicalDpiX();            
+      m_resolution = printer->logicalDpiX();
 
       painter.setViewport(printer->paperRect());
 
@@ -173,7 +173,7 @@ void MainWindow::printOut(QPrinter *printer)
       m_pageNo    = 1;
       m_pageCount = td->pageCount();
 
-      // print header and footer     
+      // print header and footer
       this->doHeader(&painter);
       this->doFooter(&painter);
 
@@ -285,7 +285,7 @@ void MainWindow::doHeader(QPainter *painter)
    header = m_printer.header_line2;
 
    if (header.isEmpty()) {
-      // line after header       
+      // line after header
       painter->drawLine(rectBig.left(), rect1.bottom()+8, rectBig.right(), rect1.bottom()+8);
 
    } else {
@@ -305,7 +305,7 @@ void MainWindow::doHeader(QPainter *painter)
 }
 
 void MainWindow::doFooter(QPainter *painter)
-{  
+{
    if ( ! m_printer.printFooter) {
       return;
    }
@@ -349,7 +349,7 @@ void MainWindow::doFooter(QPainter *painter)
    rect1.translate(0, rectBig.height() - rect1.height() - rect_L2.height() );
    painter->drawText(rect1, Qt::AlignRight, footer);
 
-   // line before footer  
+   // line before footer
    painter->drawLine( rectBig.left(), rect1.top()-3, rectBig.right(), rect1.top()-3 );
 
    painter->restore();
