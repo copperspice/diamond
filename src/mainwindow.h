@@ -32,6 +32,7 @@
 #include <QModelIndex>
 #include <QPlainTextEdit>
 #include <QPushButton>
+#include <QPrinter>
 #include <QRectF>
 #include <QShortcut>
 #include <QStandardItemModel>
@@ -87,7 +88,7 @@ class MainWindow : public QMainWindow
 
       // support
       QString get_DirPath(QString message, QString path);
-      bool loadFile(const QString &fileName, bool newTab, bool isAuto, bool isReload = false);
+      bool loadFile(QString fileName, bool newTab, bool isAuto, bool isReload = false);
 
    protected:
       void closeEvent(QCloseEvent *event);
@@ -303,7 +304,7 @@ class MainWindow : public QMainWindow
       // support
       int get_line_col(const QString route);
       bool querySave();
-      bool saveFile(const QString &fileName, SaveFiles saveType);
+      bool saveFile(QString fileName, SaveFiles saveType);
       bool saveAs(SaveFiles saveType);
 
       void setCurrentTitle(const QString &fileName, bool tabChange = false, bool isReload = false);
