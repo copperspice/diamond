@@ -59,7 +59,7 @@ bool Syntax::processSyntax()
 
    QJsonDocument doc = QJsonDocument::fromJson(data);
 
-   QJsonObject object = doc.object();   
+   QJsonObject object = doc.object();
    QJsonArray list;
    int cnt;
 
@@ -205,9 +205,12 @@ bool Syntax::processSyntax()
    m_commentStartExpression = QRegularExpression(commentStart);
    m_commentEndExpression   = QRegularExpression(commentEnd);
 
-   // spell check   
+   // spell check
    m_spellCheckFormat.setUnderlineColor(QColor(Qt::red));
-   m_spellCheckFormat.setUnderlineStyle(QTextCharFormat::SpellCheckUnderline);
+
+   // pending CS 1.6.1
+   // m_spellCheckFormat.setUnderlineStyle(QTextCharFormat::SpellCheckUnderline);
+   m_spellCheckFormat.setUnderlineStyle(QTextCharFormat::WaveUnderline);
 
    // redo the current document
    rehighlight();
@@ -248,7 +251,7 @@ QByteArray Syntax::json_ReadFile(QString fileName)
 
 void Syntax::set_Spell(bool value)
 {
-   m_isSpellCheck = value;   
+   m_isSpellCheck = value;
 }
 
 void Syntax::highlightBlock(const QString &text)
@@ -308,7 +311,7 @@ void Syntax::highlightBlock(const QString &text)
 
    if (m_spellCheck && m_isSpellCheck)  {
       QTextBoundaryFinder wordFinder(QTextBoundaryFinder::Word, text);
-      
+
       while (wordFinder.position() < text.length()) {
          int wordStart  = wordFinder.position();
          int wordLength = wordFinder.toNextBoundary() - wordStart;
