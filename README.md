@@ -2,11 +2,12 @@
 
 ### Introduction
 
-Diamond is a cross platform compact editor designed for programmers. It was developed using the
-CopperSpice libraries and was written in C++.
+Diamond is a cross platform compact editor designed for programmers. It was developed using the CopperSpice libraries
+and was written in C++.
 
-The Diamond project began as a replacement for the Crimson and Emerald Editors which were Windows
-only programs and are no longer supported.
+The Diamond project began as a replacement for the Crimson and Emerald Editors, both of these were Windows only programs and
+are no longer supported. Diamond has evolved to become a programmers editor with a focus on developing C++ appplications.
+
 
 ###### Key Features
 
@@ -26,31 +27,52 @@ only programs and are no longer supported.
 * Record, Save, and Play back Macros
 
 
-### System Requirements
+### Building
 
-To build Diamond you will need the CopperSpice libraries (CsCore, CSGui, CsXml, CsWebKit),
-a C++11 compiler, and a C++11 standard library.
+To build Diamond you will need the following CopperSpice libraries: CsCore, CsGui, CsNetwork
 
-Uses Autotools for building binary files.
+Diamond prebuilt binaries are available for Linux, Mac OS X, and Windows.
+
+https://download.copperspice.com/diamond/binary/
+
+To build Diamond from source a current copy of the CopperSpice libraries, a C++17 compiler, and a C++17 standard
+library are required.
+
+CMake build files are provided with the Diamond source distribution.
 
 
 ### Documentation
 
-DoxyPress documentation for Diamond can be downloaded from our CopperSpice website:
+Full documentation for Diamond is available on our download page.
 
-http://download.copperspice.com/diamond/documentation
+|URL      |Description|
+|---------|-----------|
+|https://download.copperspice.com/diamond/documentation| Download (tar and zip formats)|
+
+
+### Presentations
+
+Our YouTube channel videos are about modern C++, build systems, CopperSpice, DoxyPress, and other topics related to
+our open source work.
+
+https://www.youtube.com/copperspice
+
+
+Links to technical presentations recorded at CppNow and CppCon:
+
+www.copperspice.com/presentations.html
 
 
 ### Authors
 
-* **Ansel Sermersheim**
 * **Barbara Geller**
+* **Ansel Sermersheim**
 
 
 ### License
 
-This library is released under the GPL V2 license. For more information refer to the
-LICENSE file provided with this project.
+This application is released under the GPL 2 license. For more information refer to the LICENSE file provided with this
+project.
 
 
 ### References
