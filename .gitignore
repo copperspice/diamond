@@ -1,16 +1,13 @@
-do-build
-do-config
-do-update-hunspell
+CMakeCache.txt
+Diamond.*
+diamond*.tar.bz2
+diamond*.zip
 
-diamond*.tar.gz
-Diamond.creator.user*
-
-/build
+/do-*
+/build/
 /deploy/
-/hunspell/
+/src/diamond_build_info.h
+
 /hunspell_lib/
-/install/
 /source_extra/*.tar.bz2
 /source_extra/*.zip
-
-src/diamond_build_info.h

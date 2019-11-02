@@ -23,7 +23,7 @@ list(APPEND DIAMOND_INCLUDES
 
    ${CMAKE_CURRENT_SOURCE_DIR}/diamond_edit.h
    ${CMAKE_CURRENT_SOURCE_DIR}/keylineedit.h
-   ${CMAKE_CURRENT_SOURCE_DIR}/mainnwindow.h
+   ${CMAKE_CURRENT_SOURCE_DIR}/mainwindow.h
    ${CMAKE_CURRENT_SOURCE_DIR}/search.h
    ${CMAKE_CURRENT_SOURCE_DIR}/spellcheck.h
    ${CMAKE_CURRENT_SOURCE_DIR}/syntax.h
