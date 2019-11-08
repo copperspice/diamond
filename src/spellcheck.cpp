@@ -23,7 +23,7 @@
 #include <QTextCodec>
 
 SpellCheck::SpellCheck(const QString &dictMain, const QString &dictUser)
-{ 
+{
    m_userFname = dictUser;
 
    QString base = dictMain;
@@ -38,9 +38,7 @@ SpellCheck::SpellCheck(const QString &dictMain, const QString &dictUser)
    m_encoding = "ISO8859-1";
    m_codec    = QTextCodec::codecForName(m_encoding.toLatin1().constData());
 
-   //
    if (! m_userFname.isEmpty()) {
-
       QFile file(m_userFname);
 
       if (! file.open(QFile::ReadOnly)) {

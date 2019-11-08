@@ -37,7 +37,7 @@ void MainWindow::spell_replaceWord()
    QAction *action;
    action = (QAction *)sender();
 
-   if (action) {      
+   if (action) {
       // retrieve saved cursor
       QTextCursor cursor = m_textEdit->get_Cursor();
       cursor.insertText(action->text());
@@ -76,7 +76,7 @@ void MainWindow::setSyntax()
          suffix = "cpp";
 
       } else if (suffix == "prg") {
-         suffix = "clipper";                 
+         suffix = "clipper";
 
       } else if (fname == "cmakelists.txt" || suffix == "cmake") {
          suffix = "cmake";
@@ -126,7 +126,7 @@ void MainWindow::setSyntax()
       m_syntaxEnum = SYN_NONE;
       m_textEdit->set_SyntaxEnum(m_syntaxEnum);
 
-   } else {      
+   } else {
 
       if (suffix == "cpp") {
          // setSynType(SYN_C);
@@ -160,7 +160,7 @@ void MainWindow::setSyntax()
          m_syntaxEnum = SYN_JSON;
 
       } else if ( suffix == "make")  {
-         m_syntaxEnum = SYN_MAKE;         
+         m_syntaxEnum = SYN_MAKE;
 
       } else if (suffix == "nsi")  {
          m_syntaxEnum = SYN_NSIS;
@@ -198,10 +198,10 @@ void MainWindow::setSyntax()
 
 void MainWindow::forceSyntax(SyntaxTypes data)
 {
-   QString synFName;   
+   QString synFName;
 
    switch (data)  {
-      case SYN_C:         
+      case SYN_C:
          synFName = m_struct.pathSyntax + "syn_cpp.json";
          break;
 
@@ -289,7 +289,7 @@ void MainWindow::forceSyntax(SyntaxTypes data)
 
    }
 
-   if (! QFile::exists(synFName)) {   
+   if (! QFile::exists(synFName)) {
       csError(tr("Syntax Highlighting"), tr("Syntax highlighting file was not found: \n\n") + synFName  + "  ");
 
    } else {
@@ -312,6 +312,6 @@ void MainWindow::runSyntax(QString synFName)
 
    if ( m_syntaxParser->processSyntax() ) {
       m_textEdit->set_SyntaxParser(m_syntaxParser);
-   } 
+   }
 }
 
