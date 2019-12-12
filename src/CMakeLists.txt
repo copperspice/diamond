@@ -179,11 +179,19 @@ elseif(CMAKE_SYSTEM_NAME MATCHES "Windows")
    install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/../resources/diamond.ico  DESTINATION .)
 endif()
 
-# add a way not to overwrite dictionary/userDict.txt
-
-install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/../source_extra/dictionary/ DESTINATION dictionary)
 install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/../source_extra/syntax/ DESTINATION syntax)
 install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/../source_extra/help/ DESTINATION help)
+
+# installs English by default
+install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/../source_extra/dictionary/en_US.aff DESTINATION dictionary)
+install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/../source_extra/dictionary/en_US.dic DESTINATION dictionary)
+
+# will not overwrite dictionary/userDict.txt
+install(CODE "
+   if (NOT EXISTS  \"${CMAKE_INSTALL_PREFIX}/dictionary/userDict.txt    \")
+      file(INSTALL \"${CMAKE_CURRENT_SOURCE_DIR}/../source_extra/dictionary/userDict.txt\" DESTINATION  \"${CMAKE_INSTALL_PREFIX}/dictionary\")
+   endif()
+")
 
 install(TARGETS Diamond DESTINATION .)
 
@@ -193,3 +201,4 @@ cs_copy_library(CsNetwork)
 
 # installs the platform Gui plugin
 cs_copy_plugins(CsGui)
+cs_copy_plugins(CsPrinterDriver)
