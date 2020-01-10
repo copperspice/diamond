@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright (c) 2012-2019 Barbara Geller
+* Copyright (c) 2012-2020 Barbara Geller
 *
 * Diamond Editor is free software: you can redistribute it and/or
 * modify it under the terms of the GNU General Public License version 2
@@ -145,7 +145,7 @@ static void showVersion()
           "<td>ansel@copperspice.com</td></tr>"
       "</table></font>"
       "<br>"
-      "<p><small>Copyright 2012-2019 BG Consulting, All rights reserved.<br>"
+      "<p><small>Copyright 2012-2020 BG Consulting, All rights reserved.<br>"
       "This program is provided AS IS with no warranty of any kind.<br></small></p>";
 
    QMessageBox msgB;
