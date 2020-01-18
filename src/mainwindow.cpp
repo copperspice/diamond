@@ -334,7 +334,7 @@ void MainWindow::about()
                       "<td>ansel@copperspice.com</td></tr>"
                   "</table></font>"
                   "<br>"
-                  "<p><small>Copyright 2012-2020 BG Consulting, All rights reserved.<br>"
+                  "<p><small>Copyright 2012-2020 BG Consulting, released under the terms of the GNU GPL version 2<br>"
                   "This program is provided AS IS with no warranty of any kind.<br></small></p>";
 
    //
