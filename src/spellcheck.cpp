@@ -78,7 +78,7 @@ bool SpellCheck::spell(QStringView word)
       word = word.mid(1);
    }
 
-   isCorrect = m_hunspell->spell(m_codec->fromUnicode(word).constData()) != 0;      // BROOM CHECK
+   isCorrect = m_hunspell->spell(m_codec->fromUnicode(word).constData()) != 0;
 
    return isCorrect;
 }

@@ -17,9 +17,7 @@
 
 #include <QKeyEvent>
 #include <QString>
-#include <Qt>
-
-#include <qglobal.h>
+#include <QGlobal>
 
 KeyLineEdit::KeyLineEdit(QWidget *parent) :
    QLineEdit(parent)
@@ -31,7 +29,7 @@ void KeyLineEdit::keyPressEvent(QKeyEvent *event)
    QString keyPress;
 
    int key = event->key();
-   int modifiers = event->modifiers();   
+   int modifiers = event->modifiers();
 
    if (key == Qt::Key_Control || key == Qt::Key_Shift || key == Qt::Key_Alt || key == Qt::Key_Meta)  {
       // do nothing yet
@@ -86,7 +84,7 @@ void KeyLineEdit::keyPressEvent(QKeyEvent *event)
          keyPress.append("Home");
 
       } else if (key == Qt::Key_End) {
-         keyPress.append("End");                  
+         keyPress.append("End");
 
       } else if (key == Qt::Key_PageUp) {
          keyPress.append("PgUp");

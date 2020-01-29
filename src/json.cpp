@@ -29,7 +29,6 @@
 #include <QPoint>
 #include <QPushButton>
 #include <QSettings>
-#include <Qt>
 
 #include <qglobal.h>
 

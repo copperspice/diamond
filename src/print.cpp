@@ -26,7 +26,6 @@
 #include <QPrintDialog>
 #include <QRect>
 #include <QString>
-#include <Qt>
 #include <QTime>
 #include <QTextDocument>
 #include <QTextEdit>

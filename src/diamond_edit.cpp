@@ -19,7 +19,6 @@
 #include <QClipboard>
 #include <QPainter>
 #include <QShortcutEvent>
-#include <Qt>
 
 const QColor FILL_COLOR = QColor(0xD0D0D0);
 
@@ -61,7 +60,7 @@ DiamondTextEdit::~DiamondTextEdit()
 
 // ** line numbers
 void DiamondTextEdit::lineNum_PaintEvent(QPaintEvent *event)
-{   
+{
    if (m_showlineNum)  {
 
       QPainter painter(m_lineNumArea);
@@ -102,7 +101,7 @@ int DiamondTextEdit::lineNum_Width()
 }
 
 void DiamondTextEdit::update_LineNumWidth(int newBlockCount)
-{   
+{
    setViewportMargins(lineNum_Width(), 0, 0, 0);
 }
 
@@ -165,7 +164,7 @@ void DiamondTextEdit::contextMenuEvent(QContextMenuEvent *event)
    if (m_spellCheck && m_isSpellCheck)  {
 
       cursor.setPosition(cursorForPosition(event->pos()).position());
-      cursor.select(QTextCursor::WordUnderCursor);      
+      cursor.select(QTextCursor::WordUnderCursor);
       selectedText = cursor.selectedText();
 
       // set up to save words, used in add_userDict() and replaceWord()
@@ -174,7 +173,7 @@ void DiamondTextEdit::contextMenuEvent(QContextMenuEvent *event)
       QStringList m_maybeList = m_mainWindow->spell_getMaybe(selectedText);
       int cnt = m_maybeList.count();
 
-      if (cnt > 0)  {              
+      if (cnt > 0)  {
 
          for (int k = 0; k < cnt; ++k)  {
             menu->addAction(m_maybeList[k], m_mainWindow, SLOT(spell_replaceWord())  );
@@ -273,7 +272,7 @@ void DiamondTextEdit::set_SyntaxEnum(SyntaxTypes data)
 // ** spell check
 void DiamondTextEdit::set_Spell(bool value)
 {
-   m_isSpellCheck = value;   
+   m_isSpellCheck = value;
    m_syntaxParser->set_Spell(value);
 
    // force syntax highlight to redraw
@@ -391,7 +390,7 @@ void DiamondTextEdit::cut()
 
 void DiamondTextEdit::copy()
 {
-   if (m_isColumnMode) {     
+   if (m_isColumnMode) {
 
       QString text;
       QList<QTextEdit::ExtraSelection> oldSelections = this->extraSelections();
@@ -456,7 +455,7 @@ void DiamondTextEdit::paste()
                // at end of document
                cursor.movePosition(QTextCursor::EndOfBlock);
                cursor.insertText("\n");
-            }            
+            }
 
             int length = cursor.block().length();
 
@@ -538,7 +537,7 @@ bool DiamondTextEdit::event(QEvent *event)
 
       if (modifiers == Qt::ControlModifier && (key == Qt::Key_A || key == Qt::Key_X || key == Qt::Key_C  || key == Qt::Key_V)) {
          /// required to disable default selectAll(), cut(), copy(), paste()
-         return false;   
+         return false;
       }
 
       if (m_isColumnMode) {
@@ -624,7 +623,7 @@ bool DiamondTextEdit::event(QEvent *event)
                   selection.cursor.movePosition(QTextCursor::Right, QTextCursor::KeepAnchor, m_endCol-m_startCol);
                }
 
-            }           
+            }
 
             // select text until cursor reaches endRow
             for (int k = m_startRow; k <= m_endRow; ++k)   {
@@ -737,7 +736,7 @@ void DiamondTextEdit::mousePressEvent(QMouseEvent *event)
 
 
 void DiamondTextEdit::keyReleaseEvent(QKeyEvent *event)
-{  
+{
    int modifiers = event->modifiers();
 
    if (m_isColumnMode) {
@@ -745,7 +744,7 @@ void DiamondTextEdit::keyReleaseEvent(QKeyEvent *event)
       if (m_colHighlight && ((modifiers & Qt::ShiftModifier) == 0))  {
          // shift key was not pressed, out of selection, reset
          m_colHighlight = false;
-      } 
+      }
    }
 
    // now call the parent
