@@ -2,11 +2,12 @@
 
 ### Introduction
 
-Diamond is a cross platform compact editor designed for programmers. It was developed using the CopperSpice libraries
-and was written in C++.
+Diamond is a cross platform compact editor designed for programmers. It was developed using the CopperSpice
+libraries and was written in C++.
 
-The Diamond project began as a replacement for the Crimson and Emerald Editors, both of these were Windows only programs and
-are no longer supported. Diamond has evolved to become a programmers editor with a focus on developing C++ appplications.
+The Diamond project began as a replacement for the Crimson and Emerald Editors, both of these were Windows
+only programs and are no longer supported. Diamond has evolved to become a programmers editor with a focus
+on developing C++ appplications.
 
 
 ###### Key Features
@@ -29,16 +30,34 @@ are no longer supported. Diamond has evolved to become a programmers editor with
 
 ### Building
 
-To build Diamond you will need the following CopperSpice libraries: CsCore, CsGui, CsNetwork
-
 Diamond prebuilt binaries are available for Linux, Mac OS X, and Windows.
 
 https://download.copperspice.com/diamond/binary/
 
 To build Diamond from source a current copy of the CopperSpice libraries, a C++17 compiler, and a C++17 standard
-library are required.
+library are required. Diamond uses the following CopperSpice libraries are required: CsCore, CsGui, CsNetwork.
+Diamond also uses the CsPrinterDriver plugin which is copied to "your_path/diamond/printerdrivers" folder during
+the install.
 
 CMake build files are provided with the Diamond source distribution.
+
+
+##### Additional Dependency
+
+The diamond program uses the Hunspell library which is used for spell checking. When building Diamond from  source
+code ensure you have Hunspell installed on your computer. For Windows developers the full source code is available on
+our Diamond source download page. For other platforms we suggest installing the Hunspell package
+
+* Debian, Ubuntu
+   * `apt-get install libhunspell-dev`
+
+
+* Fedora, Centos
+   * `dnf install hunspell-devel`
+
+
+* Mac OSX
+   * `brew install hunspell`
 
 
 ### Documentation
