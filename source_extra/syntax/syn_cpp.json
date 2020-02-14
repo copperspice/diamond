@@ -1,6 +1,6 @@
 {
    "classes": [
-      "\\bQ[A-Za-z0-9]+\\b",
+      "\\bQ[A-Z][A-Za-z0-9]*\\b",
       "\\bCS[A-Za-z0-9]+\\b",
       "</?Q[^>]*>",
       "\\band\\b",
@@ -114,7 +114,7 @@
       "\\bdouble\\b",
       "\\bfloat\\b",
       "\\bint\\b",
-      "\\biterator\\b",
+      "\\b(?<!_)iterator\\b",
       "\\breverse_iterator\\b",
       "\\blong\\b",
       "\\bmutable\\b",
