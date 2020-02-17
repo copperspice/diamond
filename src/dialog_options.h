@@ -42,10 +42,10 @@ class Dialog_Options : public QDialog
       void pick_Main();
       void pick_User();
       void pick_Syntax();
-      void pick_About();
+
       void reset_StandardKey();
       void save();
-      void cancel(); 
+      void cancel();
 };
 
 #endif

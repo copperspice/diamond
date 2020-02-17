@@ -115,7 +115,6 @@ bool MainWindow::json_Read(Config trail)
 
       m_struct.dictMain        = object.value("dictMain").toString();
       m_struct.dictUser        = object.value("dictUser").toString();
-      m_struct.aboutUrl        = object.value("aboutUrl").toString();
 
       // printer options
       m_printer.lineNumbers    = object.value("prt-lineNumbers").toBool();
@@ -364,10 +363,6 @@ bool MainWindow::json_Write(Option route, Config trail)
       QJsonObject object = doc.object();
 
       switch (route)  {
-
-         case ABOUTURL:
-            object.insert("aboutUrl", m_struct.aboutUrl);
-            break;
 
          case ADVFIND:
             object.insert("advFile-text",          m_advFindText);
@@ -878,10 +873,6 @@ bool MainWindow::json_CreateNew()
    QFile::copy(resourcePath + "/dictionary/en_US.aff", libraryPath + "dictionary/en_US.aff");
    QFile::copy(resourcePath + "/dictionary/en_US.dic", libraryPath + "dictionary/en_US.dic");
 
-   // get help file location (3)
-   QString indexPath = resourcePath + "/help/index.html";
-   value = QJsonValue(QString(indexPath));
-   object.insert("aboutUrl", value);
 
 #elif defined(Q_OS_MAC)
    if (m_appPath.contains(".app/Contents/MacOS")) {
@@ -921,11 +912,6 @@ bool MainWindow::json_CreateNew()
 
       QFile::copy(resourcePath + "/dictionary/en_US.aff", libraryPath + "dictionary/en_US.aff");
       QFile::copy(resourcePath + "/dictionary/en_US.dic", libraryPath + "dictionary/en_US.dic");
-
-      // get help file location (3)
-      QString indexPath = resourcePath + "/help/index.html";
-      value = QJsonValue(QString(indexPath));
-      object.insert("aboutUrl", value);
    }
 #endif
 
@@ -962,16 +948,6 @@ bool MainWindow::json_CreateNew()
 
       value = QJsonValue(QString( dictFile) );
       object.insert("dictUser", value);
-
-      // get help file location (3)
-      QString indexPath = m_appPath + "/help/index.html";
-
-      if (! QFile::exists(indexPath) ) {
-         get_xxFile("Help File (index.html)", "index.html", "HTML Files (index.html)" );
-      }
-
-      value = QJsonValue(QString(indexPath));
-      object.insert("aboutUrl", value);
    }
 
    // adv find

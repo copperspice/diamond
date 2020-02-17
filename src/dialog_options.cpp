@@ -37,7 +37,6 @@ Dialog_Options::Dialog_Options(MainWindow *parent, struct Options data)
    connect(m_ui->dictMain_TB, &QToolButton::clicked, this, &Dialog_Options::pick_Main);
    connect(m_ui->dictUser_TB, &QToolButton::clicked, this, &Dialog_Options::pick_User);
    connect(m_ui->syntax_TB,   &QToolButton::clicked, this, &Dialog_Options::pick_Syntax);
-   connect(m_ui->about_TB,    &QToolButton::clicked, this, &Dialog_Options::pick_About);
 
    connect(m_ui->reset_PB,    &QPushButton::clicked, this, &Dialog_Options::reset_StandardKey);
    connect(m_ui->save_PB,     &QPushButton::clicked, this, &Dialog_Options::save);
@@ -106,12 +105,9 @@ void Dialog_Options::initData()
    m_ui->syntax->setText(m_options.pathSyntax);
    m_ui->syntax->setCursorPosition(0);
 
-   m_ui->about->setText(m_options.aboutUrl);
-   m_ui->about->setCursorPosition(0);
-
    // ** tab two
    m_ui->key_open->setText(m_options.key_open);
-   m_ui->key_close->setText(m_options.key_close);  
+   m_ui->key_close->setText(m_options.key_close);
    m_ui->key_save->setText(m_options.key_save);
    m_ui->key_saveAs->setText(m_options.key_saveAs);
    m_ui->key_print->setText(m_options.key_print);
@@ -136,7 +132,7 @@ void Dialog_Options::initData()
    m_ui->key_selectWord->setText(m_options.key_selectWord);
    m_ui->key_selectBlock->setText(m_options.key_selectBlock);
    m_ui->key_upper->setText(m_options.key_upper);
-   m_ui->key_lower->setText(m_options.key_lower);  
+   m_ui->key_lower->setText(m_options.key_lower);
    m_ui->key_indentIncr->setText(m_options.key_indentIncr);
    m_ui->key_indentDecr->setText(m_options.key_indentDecr);
    m_ui->key_deleteLine->setText(m_options.key_deleteLine);
@@ -163,7 +159,7 @@ void Dialog_Options::cancel()
 void Dialog_Options::pick_Main()
 {
    QString selectedFilter;
-   QFileDialog::Options options;   
+   QFileDialog::Options options;
 
    // force windows 7 and 8 to honor initial path
    options = QFileDialog::ForceInitialDir_Win7;
@@ -204,22 +200,6 @@ void Dialog_Options::pick_Syntax()
    }
 }
 
-void Dialog_Options::pick_About()
-{
-   QString selectedFilter;
-   QFileDialog::Options options;
-
-   // force windows 7 and 8 to honor initial path
-   options = QFileDialog::ForceInitialDir_Win7;
-
-   QString fileName = QFileDialog::getOpenFileName(this, tr("Select Diamond Help"),
-         m_ui->about->text(), tr("All Files (index.html)"), &selectedFilter, options);
-
-   if (! fileName.isEmpty()) {
-      m_ui->about->setText(fileName);
-   }
-}
-
 struct Options Dialog_Options::get_Results()
 {
    // ** tab 1
@@ -228,7 +208,6 @@ struct Options Dialog_Options::get_Results()
    m_options.dictMain    = m_ui->dictMain->text();
    m_options.dictUser    = m_ui->dictUser->text();
    m_options.pathSyntax  = m_ui->syntax->text();
-   m_options.aboutUrl    = m_ui->about->text();
 
    QString value = m_ui->tabSpacing_CB->currentText();
    m_options.tabSpacing  = value.toInteger<int>();
@@ -254,7 +233,7 @@ struct Options Dialog_Options::get_Results()
    m_options.key_findNext     = m_ui->key_findNext->text();
    m_options.key_findPrev     = m_ui->key_findPrev->text();
    m_options.key_goTop        = m_ui->key_goTop->text();
-   m_options.key_goBottom     = m_ui->key_goBottom->text();  
+   m_options.key_goBottom     = m_ui->key_goBottom->text();
    m_options.key_newTab       = m_ui->key_newTab->text();
 
    // ** tab 3
