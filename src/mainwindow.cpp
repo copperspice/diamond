@@ -316,7 +316,7 @@ void MainWindow::focusChanged(QWidget *prior, QWidget *current)
 void MainWindow::diamondHelp()
 {
    try {
-      showHtml("docs", m_struct.aboutUrl);
+      showHtml("docs", "https://www.copperspice.com/docs/diamond/index.html");
 
    } catch (std::exception &e) {
       // do nothing for now

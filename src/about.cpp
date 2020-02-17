@@ -21,37 +21,27 @@
 #include <QString>
 #include <QUrl>
 
-void showHtml(QString route, QString file)
+void showHtml(QString route, QString url)
 {
-   QString m_url = file;
-   QFileInfo fileInfo(m_url);
+   QFileInfo fileInfo(url);
 
    if (route == "docs") {
 
-      if (! fileInfo.exists() )  {
-         csError("Diamond Documentation", "Help file was not found:\n" +  m_url + "\n\n"
-                 "To specify the location of the Diamond Documentation, select 'Settings' from the main Menu. "
-                 "Then select 'General Options' and click on the Options tab.\n");
-         return;
-      }
-
-      // display html help file using the clients browser
-
-      QString indexUrl = "file:///" + fileInfo.absoluteFilePath();
-      bool ok = QDesktopServices::openUrl(QUrl(indexUrl));
+      // display html help file using client browser
+      bool ok = QDesktopServices::openUrl(QUrl(url));
 
       if (! ok)  {
-         csError("Diamond Documentation", "Unable to display Diamond Documentation\n" + indexUrl );
+         csError("Diamond Documentation", "Unable to display Diamond Documentation\n" + url );
       }
 
    } else {
 
-      if (m_url.isEmpty())  {
+      if (url.isEmpty())  {
          csError("Html Viewer", "No file was specified.");
          return;
 
       } else if (! fileInfo.exists() )  {
-         csError("Html Viewer", "Specified file does not exist\n" + m_url);
+         csError("Html Viewer", "Specified file does not exist\n" + url);
          return;
 
       } else if (fileInfo.suffix().isEmpty())  {
