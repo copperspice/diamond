@@ -180,7 +180,6 @@ elseif(CMAKE_SYSTEM_NAME MATCHES "Windows")
 endif()
 
 install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/../source_extra/syntax/ DESTINATION syntax)
-install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/../source_extra/help/ DESTINATION help)
 
 # installs English by default
 install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/../source_extra/dictionary/en_US.aff DESTINATION dictionary)
