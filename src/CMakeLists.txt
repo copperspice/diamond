@@ -192,12 +192,22 @@ install(CODE "
    endif()
 ")
 
-install(TARGETS Diamond DESTINATION .)
+if (CMAKE_SYSTEM_NAME MATCHES "Darwin")
+   install(TARGETS Diamond DESTINATION ../MacOS)
+else()
+   install(TARGETS Diamond DESTINATION .)
+endif()
 
 cs_copy_library(CsCore)
 cs_copy_library(CsGui)
 cs_copy_library(CsNetwork)
 
-# installs the platform Gui plugin
-cs_copy_plugins(CsGui)
-cs_copy_plugins(CsPrinterDriver)
+if (CMAKE_SYSTEM_NAME MATCHES "Darwin")
+   # copy required plugins to the bundle
+   cs_copy_plugins(CsGui ../plugins)
+   cs_copy_plugins(CsPrinterDriver ../plugins)
+else()
+   # installs required plugins
+   cs_copy_plugins(CsGui)
+   cs_copy_plugins(CsPrinterDriver)
+endif()
