@@ -7,7 +7,7 @@ libraries and was written in C++.
 
 The Diamond project began as a replacement for the Crimson and Emerald Editors, both of these were Windows
 only programs and are no longer supported. Diamond has evolved to become a programmers editor with a focus
-on developing C++ appplications.
+on developing C++ applications.
 
 
 ###### Key Features
@@ -44,9 +44,9 @@ CMake build files are provided with the Diamond source distribution.
 
 ##### Additional Dependency
 
-The diamond program uses the Hunspell library which is used for spell checking. When building Diamond from  source
-code ensure you have Hunspell installed on your computer. For Windows developers the full source code is available on
-our Diamond source download page. For other platforms we suggest installing the Hunspell package
+The diamond program uses the Hunspell library for spell checking. When building Diamond from  source ensure you have
+Hunspell installed on your computer. For Windows developers the full source code is available on our Diamond source
+download page. For other platforms install the Hunspell package.
 
 * Debian, Ubuntu
    * `apt-get install libhunspell-dev`

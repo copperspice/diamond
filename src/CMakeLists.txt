@@ -124,7 +124,6 @@ target_link_libraries(Diamond
    CopperSpice::CsCore
    CopperSpice::CsGui
    CopperSpice::CsNetwork
-#  hunspell
 )
 
 if (CMAKE_SYSTEM_NAME MATCHES "Darwin")
@@ -133,12 +132,38 @@ if (CMAKE_SYSTEM_NAME MATCHES "Darwin")
    find_package(PkgConfig)
    pkg_check_modules(Hunspell IMPORTED_TARGET hunspell)
 
+   find_library(hunspell_lib_A
+      NAMES ${Hunspell_LIBRARIES}
+      HINTS ${Hunspell_LIBRARY_DIRS}
+   )
+
+   get_filename_component(hunspell_lib_B
+      ${hunspell_lib_A} REALPATH
+   )
+
+   get_filename_component(hunspell_install_name
+      ${hunspell_lib_A} NAME
+   )
+
    target_link_libraries(Diamond
       PRIVATE
       PkgConfig::Hunspell
    )
 
+   execute_process(COMMAND otool -X -D ${hunspell_lib_A} OUTPUT_VARIABLE hunspell_dylib_name)
+   string(STRIP "${hunspell_dylib_name}" hunspell_dylib_name)
+
+   install(FILES ${hunspell_lib_A}  DESTINATION .)
+   install(FILES ${hunspell_lib_B}  DESTINATION .)
+
    install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/../resources/diamond.icns  DESTINATION .)
+
+   # correct the hunspell path
+   add_custom_command(TARGET Diamond
+      POST_BUILD COMMAND
+      ${CMAKE_INSTALL_NAME_TOOL} -change ${hunspell_dylib_name} "@rpath/${hunspell_install_name}"
+      $<TARGET_FILE:Diamond>
+   )
 
 elseif(CMAKE_SYSTEM_NAME MATCHES "(Linux|OpenBSD|FreeBSD|NetBSD|DragonFly)")
    set_target_properties(Diamond PROPERTIES OUTPUT_NAME diamond)
@@ -158,8 +183,8 @@ elseif(CMAKE_SYSTEM_NAME MATCHES "Windows")
    # path to hunspell
    get_filename_component(hunspell_path ../hunspell_lib ABSOLUTE)
 
-   set(hunspell_dll  ${hunspell_path}/bin/libhunspell-1.3-0.dll)
-   set(hunspell_la   ${hunspell_path}/lib/libhunspell-1.3.dll.a)
+   set(hunspell_dll  ${hunspell_path}/bin/libhunspell-1.7-0.dll)
+   set(hunspell_a    ${hunspell_path}/lib/libhunspell-1.7.dll.a)
 
    target_include_directories(Diamond
       PRIVATE
@@ -171,7 +196,7 @@ elseif(CMAKE_SYSTEM_NAME MATCHES "Windows")
       PRIVATE
       netapi32
       mpr
-      ${hunspell_la}
+      ${hunspell_a}
       -mwindows
    )
 
