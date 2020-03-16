@@ -387,14 +387,12 @@ void MainWindow::advFind_ShowFiles(QList<advFindStruct> foundList)
    view->setColumnWidth(1, 75);
    view->horizontalHeader()->setStretchLastSection(true);
 
-
    // use main window font and size, allow user to change this
+   // out for now since the font was too large
 
-//  out for now since it was too big
 //  QFont font = view->font();
 //  font.setPointSize(12);
 //  view->setFont(font);
-
 
    // background color
    view->setAlternatingRowColors(true);
@@ -402,18 +400,22 @@ void MainWindow::advFind_ShowFiles(QList<advFindStruct> foundList)
 
    int row = 0;
 
-   for (auto index = foundList.begin(); index != foundList.end(); index++) {
+   for (const auto &entry : foundList) {
 
-      QStandardItem *item0  = new QStandardItem(index->fileName);
-      QStandardItem *item1  = new QStandardItem(QString::number(index->lineNumber));
-      QStandardItem *item2  = new QStandardItem(index->text);
+      QStandardItem *item0  = new QStandardItem(entry.fileName);
+      QStandardItem *item1  = new QStandardItem(QString::number(entry.lineNumber));
+      QStandardItem *item2  = new QStandardItem(entry.text);
+
+      if (entry.fileName.endsWith(".wpd")) {
+         item2->setText("** WordPerfect file, text format incompatible");
+      }
 
       m_model->insertRow(row);
       m_model->setItem(row, 0, item0);
       m_model->setItem(row, 1, item1);
       m_model->setItem(row, 2, item2);
 
-      row++;
+      ++row;
    }
 
    view->resizeRowsToContents();
@@ -455,6 +457,11 @@ void MainWindow::advFind_View(const QModelIndex &index)
 
    QString fileName = m_model->item(row,0)->data(Qt::DisplayRole).toString();
    int lineNumber   = m_model->item(row,1)->data(Qt::DisplayRole).toInt();
+
+   if (fileName.endsWith(".wpd")) {
+      csError("Open File", "WordPerfect file, text format incompatible with Diamond");
+      return;
+   }
 
    // is the file already open?
    bool open = false;
