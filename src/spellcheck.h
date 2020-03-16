@@ -32,7 +32,6 @@ class SpellCheck
 
    private:
       QString m_userFname;
-      QString m_encoding;
       QTextCodec *m_codec;
 
       Hunspell *m_hunspell;

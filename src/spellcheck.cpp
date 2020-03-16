@@ -19,8 +19,22 @@
 
 #include <QByteArray>
 #include <QFile>
-#include <QTextStream>
 #include <QTextCodec>
+#include <QTextStream>
+
+#if defined (H_DEPRECATED)
+// could be version 1.5, 1.6, or 1.7
+#define HUNSPELL_VERSION 5
+
+#else
+// any version less than 1.5
+#define HUNSPELL_VERSION 4
+
+#endif
+
+// debian 9 uses 1.4.1
+// ubuntu 16.04 uses 1.3.3
+// all other supported platforms use 1.5 or newer
 
 SpellCheck::SpellCheck(const QString &dictMain, const QString &dictUser)
 {
@@ -35,8 +49,7 @@ SpellCheck::SpellCheck(const QString &dictMain, const QString &dictUser)
    m_hunspell = new Hunspell(affFName .constData(), dicFname.constData() );
 
    // encode as SET option in the affix file
-   m_encoding = "ISO8859-1";
-   m_codec    = QTextCodec::codecForName(m_encoding.toLatin1().constData());
+   m_codec = QTextCodec::codecForName("UTF-8");
 
    if (! m_userFname.isEmpty()) {
       QFile file(m_userFname);
@@ -78,23 +91,40 @@ bool SpellCheck::spell(QStringView word)
       word = word.mid(1);
    }
 
+#if (HUNSPELL_VERSION >= 5)
+   isCorrect = m_hunspell->spell(QString(word).toStdString());
+
+#else
    isCorrect = m_hunspell->spell(m_codec->fromUnicode(word).constData()) != 0;
+
+#endif
 
    return isCorrect;
 }
 
 QStringList SpellCheck::suggest(const QString &word)
 {
-   char **suggestWordList;
    QStringList suggestions;
+
+#if (HUNSPELL_VERSION >= 5)
+
+   QVector<std::string> suggestWordList = QVector<std::string>::fromStdVector(m_hunspell->suggest(word.toStdString()));
+
+   for (auto item : suggestWordList) {
+      suggestions.append(QString::fromStdString(item));
+   }
+#else
+   char **suggestWordList;
 
    const int cnt = m_hunspell->suggest(&suggestWordList, m_codec->fromUnicode(word).constData());
 
    for (int k = 0; k < cnt; ++k) {
-      suggestions.append(m_codec->toUnicode(suggestWordList[k]));
+      suggestions.append( m_codec->toUnicode(suggestWordList[k]) );
    }
 
    m_hunspell->free_list(&suggestWordList, cnt);
+#endif
+
    return suggestions;
 }
 
