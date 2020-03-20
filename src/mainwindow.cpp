@@ -327,15 +327,27 @@ void MainWindow::about()
 {
    // change mainwindow.cpp & main.cpp
 
-   QString textBody = "<font color='#000080'><table style=margin-right:25>"
-                  "<tr><td><nobr>Developed by Barbara Geller</nobr></td>"
-                      "<td>barbara@copperspice.com</td></tr>"
-                  "<tr><td style=padding-right:25><nobr>Developed by Ansel Sermersheim</nobr></td>"
-                      "<td>ansel@copperspice.com</td></tr>"
-                  "</table></font>"
-                  "<br>"
-                  "<p><small>Copyright 2012-2020 BG Consulting, released under the terms of the GNU GPL version 2<br>"
-                  "This program is provided AS IS with no warranty of any kind.<br></small></p>";
+   QString icon = ":/resources/diamond.png";
+
+   QString textBody =
+      "<font color='#000080'><table style=margin-right:25>"
+
+      "<tr><td><img width='96' height='96'src='" + icon + "'></td>"
+
+      "    <td>"
+      "      <table style='margin-left:25; margin-top:15px' >"
+      "        <tr><td><nobr>Developed by Barbara Geller</nobr></td>"
+      "            <td>barbara@copperspice.com</td></tr>"
+      "        <tr><td style=padding-right:25><nobr>Developed by Ansel Sermersheim</nobr></td>"
+      "            <td>ansel@copperspice.com</td></tr>"
+      "       </table>"
+      "    </td>"
+
+      "</tr>"
+      "</table></font>"
+
+      "<p><small>Copyright 2012-2020 BG Consulting, released under the terms of the GNU GPL version 2<br>"
+      "This program is provided AS IS with no warranty of any kind.<br></small></p>";
 
    //
    QMessageBox msgB;
