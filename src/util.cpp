@@ -21,6 +21,7 @@
 void csMsg(const QString &msg)
 {
    QMessageBox msgB;
+   msgB.setTextFormat(Qt::PlainText);
 
    msgB.setWindowTitle(QApplication::translate("csMsg", "General Information"));
    msgB.setWindowIcon(QIcon("://resources/diamond.png"));
