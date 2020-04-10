@@ -379,16 +379,18 @@ void MainWindow::advFind_ShowFiles(QList<advFindStruct> foundList)
    m_model->setHeaderData(2, Qt::Horizontal, tr("Text"));
 
    view->setModel(m_model);
+
    view->setSelectionMode(QAbstractItemView::SingleSelection);
    view->setSelectionBehavior(QAbstractItemView::SelectRows);
    view->setEditTriggers(QAbstractItemView::NoEditTriggers);
 
    view->setColumnWidth(0, 300);
    view->setColumnWidth(1, 75);
+
    view->horizontalHeader()->setStretchLastSection(true);
 
-   // use main window font and size, allow user to change this
-   // out for now since the font was too large
+   // use main window font and size, add feature to allow user to change font
+   // following code out for now since the font was too large
 
 //  QFont font = view->font();
 //  font.setPointSize(12);
@@ -418,8 +420,6 @@ void MainWindow::advFind_ShowFiles(QList<advFindStruct> foundList)
       ++row;
    }
 
-   view->resizeRowsToContents();
-
    //
    QPushButton *closeButton = new QPushButton();
    closeButton->setText("Close");
@@ -437,6 +437,9 @@ void MainWindow::advFind_ShowFiles(QList<advFindStruct> foundList)
 
    m_splitter->setOrientation(Qt::Vertical);
    m_splitter->addWidget(m_findWidget);
+
+   // must call after addWidget
+   view->resizeRowsToContents();
 
    connect(view,        &QTableView::clicked,  this, &MainWindow::advFind_View);
    connect(closeButton, &QPushButton::clicked, this, &MainWindow::advFind_Close);
