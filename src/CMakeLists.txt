@@ -1,9 +1,3 @@
-check_include_file(windows.h HAVE_WINDOWS_H)
-
-if (HAVE_WINDOWS_H)
-   add_definitions(-DHAVE_WINDOWS_H)
-endif()
-
 list(APPEND DIAMOND_INCLUDES
    ${CMAKE_CURRENT_SOURCE_DIR}/dialog_advfind.h
    ${CMAKE_CURRENT_SOURCE_DIR}/dialog_buffer.h
