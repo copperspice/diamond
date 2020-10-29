@@ -6,7 +6,7 @@
       "comment-multi-end": "(?!E)E",
       "comment-single": "#[^\n]*",
    "functions": [
-      "\\b[A-Za-z0-9_]+(?=\\()"
+      "\\b[A-Za-z0-9_]+ *(?=\\()"
    ],
    "ignore-case" : true,
    "keywords": [
