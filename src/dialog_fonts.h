@@ -21,25 +21,22 @@
 #include <QDialog>
 
 class Dialog_Fonts : public QDialog
-{     
-   CS_OBJECT(Dialog_Fonts)
+{
+    CS_OBJECT( Dialog_Fonts )
 
-   public:
-      Dialog_Fonts(QFont normal, QFont column);
-      ~Dialog_Fonts();
+public:
+    Dialog_Fonts( QFont normal, QFont column );
+    ~Dialog_Fonts();
 
-      QFont get_fontNormal();
-      QFont get_fontColumn();
+private:
+    Ui::Dialog_Fonts *m_ui;
+    QFont m_fontNormal;
+    QFont m_fontColumn;
 
-   private:
-      Ui::Dialog_Fonts *m_ui;
-      QFont m_fontNormal;
-      QFont m_fontColumn;
-
-      void save();
-      void cancel();
-      void fontNormal();
-      void fontColumn();
+    void save();
+    void cancel();
+    void fontNormal();
+    void fontColumn();
 };
 
 #endif

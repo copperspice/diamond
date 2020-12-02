@@ -16,36 +16,35 @@
 #define DIALOG_OPTIONS_H
 
 #include "ui_dialog_options.h"
-#include "mainwindow.h"
-#include "settings.h"
+#include "options.h"
 
 #include <QDialog>
 #include <QStringList>
 
 class Dialog_Options : public QDialog
 {
-   CS_OBJECT(Dialog_Options)
+    CS_OBJECT( Dialog_Options )
 
-   public:
-      Dialog_Options(MainWindow *parent, struct Options data);
-      ~Dialog_Options();
+public:
+    Dialog_Options( QWidget *parent );
+    ~Dialog_Options();
 
-      struct Options get_Results();
+    void show_help();
 
-   private:
-      Ui::Dialog_Options *m_ui;
-      MainWindow *m_parent;
+private:
+    Ui::Dialog_Options *m_ui;
 
-      struct Options m_options;
-      void initData();
+    Options m_options;
+    void initData();
 
-      void pick_Main();
-      void pick_User();
-      void pick_Syntax();
+    void pick_Main();
+    void pick_User();
+    void pick_Syntax();
+    void pick_BackupDirectory();
 
-      void reset_StandardKey();
-      void save();
-      void cancel();
+    void reset_StandardKey();
+    void save();
+    void cancel();
 };
 
 #endif

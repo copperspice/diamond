@@ -15,6 +15,7 @@
 #include "spellcheck.h"
 #include "syntax.h"
 #include "util.h"
+#include "syntaxpatterns.h"
 
 #include <QFileInfo>
 #include <QJsonArray>
@@ -23,305 +24,291 @@
 #include <QJsonValue>
 #include <QString>
 #include <QTextBoundaryFinder>
+#include <QDebug>
 
-static const QRegularExpression DEFAULT_COMMENT = QRegularExpression("(?!E)E");
+static const QRegularExpression DEFAULT_COMMENT = QRegularExpression( "(?!E)E" );
 
-Syntax::Syntax(QTextDocument *document, QString synFName, const struct Settings &settings, SpellCheck *spell)
-   : QSyntaxHighlighter(document)
+Syntax::Syntax( QTextDocument *document, QString synFName, SpellCheck *spell )
+    : QSyntaxHighlighter( document )
+    , m_syntaxFile( synFName )
+    , m_spellCheck( spell )
 {
-   m_syntaxFile   = synFName;
-   m_settings     = settings;
-   m_spellCheck   = spell;
-
-   m_isSpellCheck = settings.isSpellCheck;
+    m_isSpellCheck = Overlord::getInstance()->isSpellCheck();
 }
 
 Syntax::~Syntax()
 {
+    deleteHighlightingRules();
 }
 
-bool Syntax::processSyntax(const struct Settings &settings)
+void Syntax::deleteHighlightingRules()
 {
-   // only called from Dialog_Colors
-   m_settings = settings;
+    if ( m_highlightingRules.count() > 0 )
+    {
+        for ( HighlightingRule *rule : m_highlightingRules )
+        {
+            if ( rule )
+            {
+                delete rule;
+            }
+        }
 
-   return processSyntax();
+        m_highlightingRules.clear();
+    }
+
 }
 
-bool Syntax::processSyntax()
+void Syntax::processSyntax( Settings *settings )
 {
-   // get existing json data
-   QByteArray data = json_ReadFile(m_syntaxFile);
+    SyntaxPatterns *patterns = Overlord::getInstance()->getSyntaxPatterns( m_syntaxFile );
 
-   if (data.isEmpty()) {
-      return false;
-   }
+    deleteHighlightingRules();
 
-   QJsonDocument doc = QJsonDocument::fromJson(data);
+    HighlightingRule *rule;
 
-   QJsonObject object = doc.object();
-   QJsonArray list;
-   int cnt;
+    for ( const QString &pattern : patterns->key_Patterns )
+    {
+        if ( pattern.trimmed().isEmpty() )
+        {
+            continue;
+        }
 
-   //
-   bool ignoreCase = object.value("ignore-case").toBool();
+        rule = new HighlightingRule;
 
-   // * key
-   QStringList key_Patterns;
+        // key
+        rule->format.setFontWeight( settings->currentTheme()->syntaxKey().weight() );
+        rule->format.setFontItalic( settings->currentTheme()->syntaxKey().italic() );
+        rule->format.setForeground( settings->currentTheme()->syntaxKey().color() );
+        rule->pattern = QRegularExpression( pattern );
 
-   list = object.value("keywords").toArray();
-   cnt  = list.count();
+        if ( patterns->ignoreCase )
+        {
+            rule->pattern.setPatternOptions( QPatternOption::CaseInsensitiveOption );
+        }
 
-   for (int k = 0; k < cnt; k++)  {
-      key_Patterns.append(list.at(k).toString());
-   }
+        m_highlightingRules.append( rule );
+    }
 
-   // class
-   QStringList class_Patterns;
+    for ( const QString &pattern : patterns->class_Patterns )
+    {
+        if ( pattern.trimmed().isEmpty() )
+        {
+            continue;
+        }
 
-   list = object.value("classes").toArray();
-   cnt  = list.count();
+        rule = new HighlightingRule;
 
-   for (int k = 0; k < cnt; k++)  {
-      class_Patterns.append(list.at(k).toString());
-   }
+        // class
+        rule->format.setFontWeight( settings->currentTheme()->syntaxClass().weight() );
+        rule->format.setFontItalic( settings->currentTheme()->syntaxClass().italic() );
+        rule->format.setForeground( settings->currentTheme()->syntaxClass().color() );
+        rule->pattern = QRegularExpression( pattern );
 
-   // functions
-   QStringList func_Patterns;
+        if ( patterns->ignoreCase )
+        {
+            rule->pattern.setPatternOptions( QPatternOption::CaseInsensitiveOption );
+        }
 
-   list = object.value("functions").toArray();
-   cnt  = list.count();
+        m_highlightingRules.append( rule );
+    }
 
-   for (int k = 0; k < cnt; k++)  {
-      func_Patterns.append(list.at(k).toString());
-   }
+    for ( const QString &pattern : patterns->func_Patterns )
+    {
+        if ( pattern.trimmed().isEmpty() )
+        {
+            continue;
+        }
 
-   // types
-   QStringList type_Patterns;
+        rule = new HighlightingRule;
 
-   list = object.value("types").toArray();
-   cnt  = list.count();
+        // func
+        rule->format.setFontWeight( settings->currentTheme()->syntaxFunc().weight() );
+        rule->format.setFontItalic( settings->currentTheme()->syntaxFunc().italic() );
+        rule->format.setForeground( settings->currentTheme()->syntaxFunc().color() );
+        rule->pattern = QRegularExpression( pattern );
 
-   for (int k = 0; k < cnt; k++)  {
-      type_Patterns.append(list.at(k).toString());
-   }
+        if ( patterns->ignoreCase )
+        {
+            rule->pattern.setPatternOptions( QPatternOption::CaseInsensitiveOption );
+        }
 
-   //
-   HighlightingRule rule;
+        m_highlightingRules.append( rule );
+    }
 
-   for (const QString &pattern : key_Patterns) {
-      if (pattern.trimmed().isEmpty()) {
-         continue;
-      }
+    for ( const QString &pattern : patterns->type_Patterns )
+    {
+        if ( pattern.trimmed().isEmpty() )
+        {
+            continue;
+        }
 
-      // key
-      rule.format.setFontWeight(m_settings.syn_KeyWeight);
-      rule.format.setFontItalic(m_settings.syn_KeyItalic);
-      rule.format.setForeground(m_settings.syn_KeyText);
-      rule.pattern = QRegularExpression(pattern);
+        rule = new HighlightingRule;
 
-      if (ignoreCase) {
-         rule.pattern.setPatternOptions(QPatternOption::CaseInsensitiveOption);
-      }
-      highlightingRules.append(rule);
-   }
+        // types
+        rule->format.setFontWeight( settings->currentTheme()->syntaxType().weight() );
+        rule->format.setFontItalic( settings->currentTheme()->syntaxType().italic() );
+        rule->format.setForeground( settings->currentTheme()->syntaxType().color() );
+        rule->pattern = QRegularExpression( pattern );
 
-   for (const QString &pattern : class_Patterns) {
-      if (pattern.trimmed().isEmpty()) {
-         continue;
-      }
+        if ( patterns->ignoreCase )
+        {
+            rule->pattern.setPatternOptions( QPatternOption::CaseInsensitiveOption );
+        }
 
-      // class
-      rule.format.setFontWeight(m_settings.syn_ClassWeight);
-      rule.format.setFontItalic(m_settings.syn_ClassItalic);
-      rule.format.setForeground(m_settings.syn_ClassText);
-      rule.pattern = QRegularExpression(pattern);
+        m_highlightingRules.append( rule );
+    }
 
-      if (ignoreCase) {
-         rule.pattern.setPatternOptions(QPatternOption::CaseInsensitiveOption);
-      }
 
-      highlightingRules.append(rule);
-   }
+    for ( const QString &pattern : patterns->constant_Patterns )
+    {
+        if ( pattern.trimmed().isEmpty() )
+        {
+            continue;
+        }
 
-   for (const QString &pattern : func_Patterns) {
-      if (pattern.trimmed().isEmpty()) {
-         continue;
-      }
+        rule = new HighlightingRule;
 
-      // func
-      rule.format.setFontWeight(m_settings.syn_FuncWeight);
-      rule.format.setFontItalic(m_settings.syn_FuncItalic);
-      rule.format.setForeground(m_settings.syn_FuncText);
-      rule.pattern = QRegularExpression(pattern);
+        // types
+        rule->format.setFontWeight( settings->currentTheme()->syntaxConstant().weight() );
+        rule->format.setFontItalic( settings->currentTheme()->syntaxConstant().italic() );
+        rule->format.setForeground( settings->currentTheme()->syntaxConstant().color() );
+        rule->pattern = QRegularExpression( pattern );
 
-      if (ignoreCase) {
-         rule.pattern.setPatternOptions(QPatternOption::CaseInsensitiveOption);
-      }
+        if ( patterns->ignoreCase )
+        {
+            rule->pattern.setPatternOptions( QPatternOption::CaseInsensitiveOption );
+        }
 
-      highlightingRules.append(rule);
-   }
+        m_highlightingRules.append( rule );
+    }
 
-   for (const QString &pattern : type_Patterns) {
-      if (pattern.trimmed().isEmpty()) {
-         continue;
-      }
+    rule = new HighlightingRule;
 
-      // types
-      rule.format.setFontWeight(m_settings.syn_TypeWeight);
-      rule.format.setFontItalic(m_settings.syn_TypeItalic);
-      rule.format.setForeground(m_settings.syn_TypeText);
-      rule.pattern = QRegularExpression(pattern);
+    // quoted text - everyone
+    rule->format.setFontWeight( settings->currentTheme()->syntaxQuote().weight() );
+    rule->format.setFontItalic( settings->currentTheme()->syntaxQuote().italic() );
+    rule->format.setForeground( settings->currentTheme()->syntaxQuote().color() );
+    rule->pattern = QRegularExpression( "\".*?\"" );
+    m_highlightingRules.append( rule );
 
-      if (ignoreCase) {
-         rule.pattern.setPatternOptions(QPatternOption::CaseInsensitiveOption);
-      }
-      highlightingRules.append(rule);
-   }
+    rule = new HighlightingRule;
 
-   // quoted text - everyone
-   rule.format.setFontWeight(m_settings.syn_QuoteWeight);
-   rule.format.setFontItalic(m_settings.syn_QuoteItalic);
-   rule.format.setForeground(m_settings.syn_QuoteText);
-   rule.pattern = QRegularExpression("\".*?\"");
-   highlightingRules.append(rule);
+    //  TODO:: this needs to be fixed
+    //         Only works for languages that ripped off C comments.
+    //         Won't work for COBOL, FORTRAN, BASIC, etc.
+    //
+    rule->format.setFontWeight( settings->currentTheme()->syntaxComment().weight() );
+    rule->format.setFontItalic( settings->currentTheme()->syntaxComment().italic() );
+    rule->format.setForeground( settings->currentTheme()->syntaxComment().color() );
+    rule->pattern = QRegularExpression( patterns->commentSingle );
+    m_highlightingRules.append( rule );
 
-   // single line comment
-   QString commentSingle = object.value("comment-single").toString();
 
-   rule.format.setFontWeight(m_settings.syn_CommentWeight);
-   rule.format.setFontItalic(m_settings.syn_CommentItalic);
-   rule.format.setForeground(m_settings.syn_CommentText);
-   rule.pattern = QRegularExpression(commentSingle);
-   highlightingRules.append(rule);
+    m_multiLineCommentFormat.setFontWeight( settings->currentTheme()->syntaxMLine().weight() );
+    m_multiLineCommentFormat.setFontItalic( settings->currentTheme()->syntaxMLine().italic() );
+    m_multiLineCommentFormat.setForeground( settings->currentTheme()->syntaxMLine().color() );
+    m_commentStartExpression = QRegularExpression( patterns->commentStart );
+    m_commentEndExpression   = QRegularExpression( patterns->commentEnd );
 
-   // multi line comment
-   QString commentStart = object.value("comment-multi-start").toString();
-   QString commentEnd   = object.value("comment-multi-end").toString();
+    // spell check
+    m_spellCheckFormat.setUnderlineColor( QColor( Qt::red ) );
 
-   m_multiLineCommentFormat.setFontWeight(m_settings.syn_MLineWeight);
-   m_multiLineCommentFormat.setFontItalic(m_settings.syn_MLineItalic);
-   m_multiLineCommentFormat.setForeground(m_settings.syn_MLineText);
-   m_commentStartExpression = QRegularExpression(commentStart);
-   m_commentEndExpression   = QRegularExpression(commentEnd);
-
-   // spell check
-   m_spellCheckFormat.setUnderlineColor(QColor(Qt::red));
-
-   // pending CS 1.6.1
-   // m_spellCheckFormat.setUnderlineStyle(QTextCharFormat::SpellCheckUnderline);
-   m_spellCheckFormat.setUnderlineStyle(QTextCharFormat::WaveUnderline);
-
-   // redo the current document
-   rehighlight();
-
-   return true;
+    // pending CS 1.6.1
+    // m_spellCheckFormat.setUnderlineStyle(QTextCharFormat::SpellCheckUnderline);
+    m_spellCheckFormat.setUnderlineStyle( QTextCharFormat::WaveUnderline );
 }
 
-QByteArray Syntax::json_ReadFile(QString fileName)
+
+void Syntax::set_Spell( bool value )
 {
-   QByteArray data;
-
-   if (fileName.isEmpty()) {
-      csError(tr("Read Json Syntax"), tr("Syntax file name was not supplied."));
-      return data;
-   }
-
-   if (! QFile::exists(fileName) ) {
-      csError(tr("Read Json Syntax"), tr("Syntax file was not found: ") + fileName + "\n\n"
-              "To specify the location of the syntax files select 'Settings' from the main Menu. "
-              "Then select 'General Options' and click on the Options tab.\n");
-
-      return data;
-   }
-
-   QFile file(fileName);
-   if (! file.open(QFile::ReadOnly | QFile::Text)) {
-      const QString msg = tr("Unable to open Json Syntax file: ") +  fileName + " : " + file.errorString();
-      csError(tr("Read Json Syntax"), msg);
-      return data;
-   }
-
-   file.seek(0);
-   data = file.readAll();
-   file.close();
-
-   return data;
+    m_isSpellCheck = value;
 }
 
-void Syntax::set_Spell(bool value)
+void Syntax::highlightBlock( const QString &text )
 {
-   m_isSpellCheck = value;
+    if ( text.length() < 1 )
+    {
+        return;
+    }
+
+    QRegularExpressionMatch match;
+
+
+    for ( HighlightingRule *rule : m_highlightingRules )
+    {
+        match = rule->pattern.match( text );
+
+        while ( match.hasMatch() )
+        {
+            int index  = match.capturedStart( 0 ) - text.begin();
+            int length = match.capturedLength();
+
+            setFormat( index, length, rule->format );
+
+            // get new match
+            match = rule->pattern.match( text, match.capturedEnd( 0 ) );
+        }
+    }
+
+    // multi line comments
+    setCurrentBlockState( 0 );
+
+    int startIndex = 0;
+
+    if ( m_commentStartExpression.pattern().isEmpty() )
+    {
+        m_commentStartExpression = DEFAULT_COMMENT;
+    }
+
+    if ( m_commentEndExpression.pattern().isEmpty() )
+    {
+        m_commentEndExpression = DEFAULT_COMMENT;
+    }
+
+    if ( previousBlockState() != 1 )
+    {
+        startIndex = text.indexOf( m_commentStartExpression );
+    }
+
+    while ( startIndex >= 0 )
+    {
+        int commentLength;
+        match = m_commentEndExpression.match( text, text.begin() + startIndex );
+
+        if ( match.hasMatch() )
+        {
+            int endIndex  = match.capturedStart( 0 ) - text.begin();
+            commentLength = endIndex - startIndex + match.capturedLength();
+
+        }
+        else
+        {
+            setCurrentBlockState( 1 );
+            commentLength = text.length() - startIndex;
+
+        }
+
+        setFormat( startIndex, commentLength, m_multiLineCommentFormat );
+        startIndex = text.indexOf( m_commentStartExpression, startIndex + commentLength );
+    }
+
+    // spell check
+
+    if ( m_spellCheck && m_isSpellCheck )
+    {
+        QTextBoundaryFinder wordFinder( QTextBoundaryFinder::Word, text );
+
+        while ( wordFinder.position() < text.length() )
+        {
+            int wordStart  = wordFinder.position();
+            int wordLength = wordFinder.toNextBoundary() - wordStart;
+
+            QStringView word = text.midView( wordStart, wordLength ).trimmed();
+
+            if ( ! m_spellCheck->spell( word ) )
+            {
+                setFormat( wordStart, wordLength, m_spellCheckFormat );
+            }
+        }
+    }
 }
-
-void Syntax::highlightBlock(const QString &text)
-{
-   QRegularExpressionMatch match;
-
-   for (auto &rule : highlightingRules) {
-      match = rule.pattern.match(text);
-
-      while (match.hasMatch()) {
-         int index  = match.capturedStart(0) - text.begin();
-         int length = match.capturedLength();
-
-         setFormat(index, length, rule.format);
-
-         // get new match
-         match = rule.pattern.match(text, match.capturedEnd(0));
-      }
-   }
-
-   // multi line comments
-   setCurrentBlockState(0);
-
-   int startIndex = 0;
-
-   if (m_commentStartExpression.pattern().isEmpty()) {
-      m_commentStartExpression = DEFAULT_COMMENT;
-   }
-
-   if (m_commentEndExpression.pattern().isEmpty()) {
-      m_commentEndExpression = DEFAULT_COMMENT;
-   }
-
-   if (previousBlockState() != 1) {
-      startIndex = text.indexOf(m_commentStartExpression);
-   }
-
-   while (startIndex >= 0) {
-      int commentLength;
-      match = m_commentEndExpression.match(text, text.begin() + startIndex);
-
-      if (match.hasMatch()) {
-         int endIndex  = match.capturedStart(0) - text.begin();
-         commentLength = endIndex - startIndex + match.capturedLength();
-
-      } else {
-         setCurrentBlockState(1);
-         commentLength = text.length() - startIndex;
-
-      }
-
-      setFormat(startIndex, commentLength, m_multiLineCommentFormat);
-      startIndex = text.indexOf(m_commentStartExpression, startIndex + commentLength);
-   }
-
-   // spell check
-
-   if (m_spellCheck && m_isSpellCheck)  {
-      QTextBoundaryFinder wordFinder(QTextBoundaryFinder::Word, text);
-
-      while (wordFinder.position() < text.length()) {
-         int wordStart  = wordFinder.position();
-         int wordLength = wordFinder.toNextBoundary() - wordStart;
-
-         QStringView word = text.midView(wordStart, wordLength).trimmed();
-
-         if ( ! m_spellCheck->spell(word) )   {
-            setFormat(wordStart, wordLength, m_spellCheckFormat);
-         }
-      }
-   }
-}
-

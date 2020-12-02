@@ -1,0 +1,2 @@
+?package(diamond):needs="X11" section="Applications/Programming" \
+  title="Diamond" command="/usr/opt/diamond/diamond" icon="/usr/share/pixmaps/diamond.png"

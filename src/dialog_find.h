@@ -25,35 +25,35 @@
 
 class Dialog_Find : public QDialog
 {
-   CS_OBJECT(Dialog_Find)
+    CS_OBJECT( Dialog_Find )
 
-   public:
-      Dialog_Find(MainWindow *parent, QString text, QStringList findList);
-      ~Dialog_Find();
+public:
+    Dialog_Find( MainWindow *parent, QString text, QStringList findList );
+    ~Dialog_Find();
 
-      QString get_findText();
-      QStringList get_findList();
-      bool get_Direction();
-      bool get_Case();
-      bool get_WholeWords();
-      bool get_Upd_Find();
+    QString get_findText();
+    QStringList get_findList();
+    bool get_Direction();
+    bool get_Case();
+    bool get_WholeWords();
+    bool get_Upd_Find();
 
-   private:
-      Ui::Dialog_Find *m_ui;
-      QStringList m_findList;
-      void setUp();    
-      bool m_upd_Find;
+private:
+    Ui::Dialog_Find *m_ui;
+    QStringList m_findList;
+    void setUp();
+    bool m_upd_Find;
 
-      void find(); 
-      void cancel();
+    void find();
+    void cancel();
 
-      void combo_ContextMenu(const QPoint & pt);
+    void combo_ContextMenu( const QPoint &pt );
 
-      CS_SLOT_1(Private, void menu_clearList())
-      CS_SLOT_2(menu_clearList)
+    CS_SLOT_1( Private, void menu_clearList() )
+    CS_SLOT_2( menu_clearList )
 
-      CS_SLOT_1(Private, void menu_deleteEntry())
-      CS_SLOT_2(menu_deleteEntry)
+    CS_SLOT_1( Private, void menu_deleteEntry() )
+    CS_SLOT_2( menu_deleteEntry )
 };
 
 #endif

@@ -26,7 +26,7 @@
      <x>0</x>
      <y>0</y>
      <width>800</width>
-     <height>28</height>
+     <height>22</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -84,6 +84,7 @@
      <addaction name="separator"/>
      <addaction name="actionDelete_Line"/>
      <addaction name="actionDelete_EOL"/>
+     <addaction name="actionDelete_ThroughEOL"/>
     </widget>
     <addaction name="actionUndo"/>
     <addaction name="actionRedo"/>
@@ -151,6 +152,8 @@
     <addaction name="actionShow_Breaks"/>
     <addaction name="separator"/>
     <addaction name="actionDisplay_HTML"/>
+    <addaction name="actionClipboard"/>
+    <addaction name="actionBackups"/>
    </widget>
    <widget class="QMenu" name="menuDocument">
     <property name="title">
@@ -214,11 +217,13 @@
     <addaction name="actionMacro_Start"/>
     <addaction name="actionMacro_Stop"/>
     <addaction name="actionMacro_Play"/>
+    <addaction name="actionMacro_Repeat"/>
     <addaction name="separator"/>
     <addaction name="actionMacro_Load"/>
     <addaction name="actionMacro_EditNames"/>
     <addaction name="separator"/>
     <addaction name="actionSpell_Check"/>
+    <addaction name="actionAstyle"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuEdit"/>
@@ -744,7 +749,7 @@
   </action>
   <action name="actionMacro_EditNames">
    <property name="text">
-    <string>Edit Macro Names</string>
+    <string>Manage Macros</string>
    </property>
   </action>
   <action name="actionOpen_RecentFolder">
@@ -808,6 +813,31 @@
   <action name="actionSyn_Xml">
    <property name="text">
     <string>XML</string>
+   </property>
+  </action>
+  <action name="actionDelete_ThroughEOL">
+   <property name="text">
+    <string>Delete through End of Line</string>
+   </property>
+  </action>
+  <action name="actionClipboard">
+   <property name="text">
+    <string>Clipboard</string>
+   </property>
+  </action>
+  <action name="actionAstyle">
+   <property name="text">
+    <string>Astyle</string>
+   </property>
+  </action>
+  <action name="actionBackups">
+   <property name="text">
+    <string>Backups</string>
+   </property>
+  </action>
+  <action name="actionMacro_Repeat">
+   <property name="text">
+    <string>Repeat Macro</string>
    </property>
   </action>
  </widget>

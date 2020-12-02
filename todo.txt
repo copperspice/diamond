@@ -1,0 +1,98 @@
+// todo.txt
+
+*) Options dialog either looking in wrong place for .dic files or the initial startup needs to copy all of them to the ~/.config/diamond directory. Startup needs a verify_dictionaries() thread that will copy whatever dictionary files are in the main distro/install tree that are not in ~/.config/diamond. We really need to revisit the dictionary file logic in general. It really should be looking back at the install directory for everything but the UserDict.
+
+*) If installed to existing "original" environment we don't seem to get the full theme list.
+
+*) [SEL][GOLD][4] not selecting to end of file
+
+*) EDT PF4 doesn't work on wrapped line.
+
+
+*) EDT keys might need some work to be part of macro. Test this
+
+*) Clean up astyle logic. We shouldn't replace and re-highlight the entire document if only a few lines moved.
+
+*) Each Theme should provide its own colors for selected text
+    QPalette roles
+    QPalette::Highlight
+    QPalette::HighlightedText
+
+
+
+
+*) read documentation for QSyntaxHighlighter in CopperSpice
+   see if there is any support for "matching" {(<
+   if so add option to turn on "matching" highlight
+    ~/Downloads/qq31-parenthesis.zip  source code for QtQuarterly31.pdf shows how to do parentesis matching. Should be able to expand to handle <> [] {} as well as ()
+
+        cobalt
+        '(show-paren-match ((t (:background "#26425D"))))
+         '(show-paren-mismatch ((t (:background "#FF0000"))))
+        
+        solarized
+          <style name="Parentheses" foreground="#dc322f" background="#93a1a1" bold="true"/>
+          <style name="ParenthesesMismatch" foreground="#ffff00" background="#ff00ff" bold="true"/>
+        
+        tango
+           `(show-paren-match               ((,class (:inherit highlight))))
+           `(show-paren-mismatch            ((,class (:inherit trailing-whitespace))))
+           `(highlight                      ((,class (:background ,alum-1))))
+           `(trailing-whitespace            ((,class (:background ,red-1))))
+
+
+
+*) Create an RPM
+*) See if Fedora allows me to create a Snap container.
+   Create Snap container on Ubuntu 18.04. See if we can create script to do that.
+
+*) DEL L does not work on wrapped line or very last line of file. Need to look into that.
+
+*) Make EDT Prompt appear at bottom of Window and be modal.
+
+
+============== Part of editor rewrite =========
+
+The source code for QPlainTextEditor along with its internal class(es) needs to be pulled into this project under a different name. Give it direct ability to support EDT keypad navigation via passed cnofiguration information. That will get rid of a lot of hacks because now there won't be two places trying to keep track select range active or not. Will be able to have much cleaner support in general.
+
+Create custom QKeySequence class that can return binary values matching what QKeyEvent has. That will greatly expand what we can and cannot do for the "word" key. It will also make the internal event handling logic of the custom QPlainTextEditor class easier.
+
+Need to be able to show FF character. It gets inserted, but does not show.  This will require gutting QPlainTextEdit I think. Need to see how it shows spaces and tabs and add this feature to CsPlainTextEditor class.
+
+EDT keys don't seem to always work in split window/frame - should be fixed by CsPlainTextEditor class creation.
+
+============== Distant Future =================
+
+*) auto-save minutes
+
+*) persistance for unsaved tabs
+
+*) add support for EDT commands
+    S|some-text|new-text|sel   wh  rest
+    INC file.name =buff-name
+    INC file.name
+    WRITE file.name [range] | ALL | SELECT
+    EXIT
+    QUIT
+    See what other EDT and LSE commands are worth adding.
+    LINE 9999
+    SUBSTITUTE   /QUERY   WHOLE | REST | BEFORE | SELECTION
+    probably add Astyle command
+
+*) Need to to have some "in-line comment" highlighting capability.
+    BASIC allows something like 
+        X = 0 : ! some comment ! Y = 2
+
+*) ANSI COBOL, FORTRAN IV, FORTRAN 77, DEC BASIC, and most other large installed base languages DO NOT support
+ // or /* */ for comments. That part of Syntax Highlighting must be moved to the
+ patters. For COBOL a comment is * in column 7 when using 72-column CARD format
+ or as the first character in a line when using "free" format. Pick up a copy of
+ "The Minimum You Need to Know to Be an OpenVMS Application Developer" to learn
+ more about other languages.
+
+*) It would be nice to support a user supplied tab stop list so the editor could support COBOL, FORTRAN, and several other
+   languages. Old FORTRAN had very specific column for comment start. ANSI COBOL starts AREA-B in column 8 with the
+   continuation/comment indicator in column 7. Columns 73-80 are additinoal ignored comments.
+
+*) Get ^M substitution working for EDT search. The problem isn't the substitution. The problem is the "blocks" in QPlainTextEdit. The new line character isn't in the actual text. Have to write a custom search that looks for a block starting with everything after ^M and then checks the end of the preceeding block to see that it matches.
+

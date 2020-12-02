@@ -18,255 +18,259 @@
 #include <QFontDialog>
 #include <QToolButton>
 
-Dialog_PrintOptions::Dialog_PrintOptions(MainWindow *parent, struct PrintSettings data)
-   : QDialog(parent), m_ui(new Ui::Dialog_PrintOptions)
+Dialog_PrintOptions::Dialog_PrintOptions( MainWindow *parent )
+    : QDialog( parent ), m_ui( new Ui::Dialog_PrintOptions )
 {
-   m_parent = parent;
-   m_print  = data;
+    m_print  = Overlord::getInstance()->pullLocalCopyOfPrintSettings();
 
-   m_ui->setupUi(this);
-   this->setWindowIcon(QIcon("://resources/diamond.png"));
+    m_ui->setupUi( this );
+    this->setWindowIcon( QIcon( "://resources/diamond.png" ) );
 
-   initData();
+    initData();
 
-   connect(m_ui->headerLeft_TB,   &QToolButton::clicked, this, &Dialog_PrintOptions::headerLeft);
-   connect(m_ui->headerCenter_TB, &QToolButton::clicked, this, &Dialog_PrintOptions::headerCenter);
-   connect(m_ui->headerRight_TB,  &QToolButton::clicked, this, &Dialog_PrintOptions::headerRight);
-   connect(m_ui->footerLeft_TB,   &QToolButton::clicked, this, &Dialog_PrintOptions::footerLeft);
-   connect(m_ui->footerCenter_TB, &QToolButton::clicked, this, &Dialog_PrintOptions::footerCenter);
-   connect(m_ui->footerRight_TB,  &QToolButton::clicked, this, &Dialog_PrintOptions::footerRight);
+    connect( m_ui->headerLeft_TB,   &QToolButton::clicked, this, &Dialog_PrintOptions::headerLeft );
+    connect( m_ui->headerCenter_TB, &QToolButton::clicked, this, &Dialog_PrintOptions::headerCenter );
+    connect( m_ui->headerRight_TB,  &QToolButton::clicked, this, &Dialog_PrintOptions::headerRight );
+    connect( m_ui->footerLeft_TB,   &QToolButton::clicked, this, &Dialog_PrintOptions::footerLeft );
+    connect( m_ui->footerCenter_TB, &QToolButton::clicked, this, &Dialog_PrintOptions::footerCenter );
+    connect( m_ui->footerRight_TB,  &QToolButton::clicked, this, &Dialog_PrintOptions::footerRight );
 
-   connect(m_ui->fontHeader_TB,   &QToolButton::clicked, this, &Dialog_PrintOptions::fontHeader);
-   connect(m_ui->fontFooter_TB,   &QToolButton::clicked, this, &Dialog_PrintOptions::fontFooter);
-   connect(m_ui->fontText_TB,     &QToolButton::clicked, this, &Dialog_PrintOptions::fontText);
+    connect( m_ui->fontHeader_TB,   &QToolButton::clicked, this, &Dialog_PrintOptions::fontHeader );
+    connect( m_ui->fontFooter_TB,   &QToolButton::clicked, this, &Dialog_PrintOptions::fontFooter );
+    connect( m_ui->fontText_TB,     &QToolButton::clicked, this, &Dialog_PrintOptions::fontText );
 
-   connect(m_ui->save_PB,         &QPushButton::clicked, this, &Dialog_PrintOptions::save);
-   connect(m_ui->cancel_PB,       &QPushButton::clicked, this, &Dialog_PrintOptions::cancel);
+    connect( m_ui->save_PB,         &QPushButton::clicked, this, &Dialog_PrintOptions::save );
+    connect( m_ui->cancel_PB,       &QPushButton::clicked, this, &Dialog_PrintOptions::cancel );
 }
 
 Dialog_PrintOptions::~Dialog_PrintOptions()
 {
-   delete m_ui;
+    delete m_ui;
 }
 
 void Dialog_PrintOptions::initData()
 {
-   m_ui->lineNumbers_CKB->setChecked(m_print.lineNumbers);
+    m_ui->lineNumbers_CKB->setChecked( m_print.lineNumbers() );
 
-   m_ui->print_header_CKB->setChecked(m_print.printHeader);
-   m_ui->header_Left->setText(m_print.header_left);
-   m_ui->header_Center->setText(m_print.header_center);
-   m_ui->header_Right->setText(m_print.header_right);
-   m_ui->header_Line2->setText(m_print.header_line2);
+    m_ui->print_header_CKB->setChecked( m_print.printHeader() );
+    m_ui->header_Left->setText( m_print.headerLeft() );
+    m_ui->header_Center->setText( m_print.headerCenter() );
+    m_ui->header_Right->setText( m_print.headerRight() );
+    m_ui->header_Line2->setText( m_print.headerLine2() );
 
-   m_ui->print_footer_CKB->setChecked(m_print.printFooter);
-   m_ui->footer_Left->setText(m_print.footer_left);
-   m_ui->footer_Center->setText(m_print.footer_center);
-   m_ui->footer_Right->setText(m_print.footer_right);
-   m_ui->footer_Line2->setText(m_print.footer_line2);
+    m_ui->print_footer_CKB->setChecked( m_print.printFooter() );
+    m_ui->footer_Left->setText( m_print.footerLeft() );
+    m_ui->footer_Center->setText( m_print.footerCenter() );
+    m_ui->footer_Right->setText( m_print.footerRight() );
+    m_ui->footer_Line2->setText( m_print.footerLine2() );
 
-   m_ui->marginTop->setText(QString::number(m_print.marTop));
-   m_ui->marginBottom->setText(QString::number(m_print.marBottom));
-   m_ui->marginRight->setText(QString::number(m_print.marRight));
-   m_ui->marginLeft->setText(QString::number(m_print.marLeft));
-   m_ui->hdrGap->setText(QString::number(m_print.hdrGap));
+    m_ui->marginTop->setText( QString::number( m_print.marginTop() ) );
+    m_ui->marginBottom->setText( QString::number( m_print.marginBottom() ) );
+    m_ui->marginRight->setText( QString::number( m_print.marginRight() ) );
+    m_ui->marginLeft->setText( QString::number( m_print.marginLeft() ) );
+    m_ui->hdrGap->setText( QString::number( m_print.headerGap() ) );
 
-   m_ui->fontHeader->setText(m_print.fontHeader.toString());
-   m_ui->fontFooter->setText(m_print.fontFooter.toString());
-   m_ui->fontText->setText(m_print.fontText.toString());
+    m_ui->fontHeader->setText( m_print.fontHeader().toString() );
+    m_ui->fontFooter->setText( m_print.fontFooter().toString() );
+    m_ui->fontText->setText( m_print.fontText().toString() );
 }
 
 void Dialog_PrintOptions::save()
 {
-   this->done(QDialog::Accepted);
+    m_print.set_lineNumbers( m_ui->lineNumbers_CKB->isChecked() );
+
+    m_print.set_printHeader( m_ui->print_header_CKB->isChecked() );
+    m_print.set_headerLeft( m_ui->header_Left->text() );
+    m_print.set_headerCenter( m_ui->header_Center->text() );
+    m_print.set_headerRight( m_ui->header_Right->text() );
+    m_print.set_headerLine2( m_ui->header_Line2->text() );
+
+    m_print.set_printFooter( m_ui->print_footer_CKB->isChecked() );
+    m_print.set_footerLeft( m_ui->footer_Left->text() );
+    m_print.set_footerCenter( m_ui->footer_Center->text() );
+    m_print.set_footerRight( m_ui->footer_Right->text() );
+    m_print.set_footerLine2( m_ui->footer_Line2->text() );
+
+    m_print.set_marginTop( m_ui->marginTop->text().toDouble() );
+    m_print.set_marginBottom( m_ui->marginBottom->text().toDouble() );
+    m_print.set_marginRight( m_ui->marginRight->text().toDouble() );
+    m_print.set_marginLeft( m_ui->marginLeft->text().toDouble() );
+    m_print.set_headerGap( m_ui->hdrGap->text().toDouble() );
+
+    Overlord::getInstance()->updatePrintSettingsFromLocalCopy( m_print );
+
+    this->done( QDialog::Accepted );
 }
 
 void Dialog_PrintOptions::cancel()
 {
-   this->done(QDialog::Rejected);
+    this->done( QDialog::Rejected );
 }
 
-struct PrintSettings Dialog_PrintOptions::get_Results()
+
+void Dialog_PrintOptions::macroMenu( QToolButton *widget )
 {
-   m_print.lineNumbers   = m_ui->lineNumbers_CKB->isChecked();
+    m_menuText = "";
 
-   m_print.printHeader   = m_ui->print_header_CKB->isChecked();
-   m_print.header_left   = m_ui->header_Left->text();
-   m_print.header_center = m_ui->header_Center->text();
-   m_print.header_right  = m_ui->header_Right->text();
-   m_print.header_line2  = m_ui->header_Line2->text();
+    QMenu *menu = new QMenu( this );
+    menu->addAction( "File Name Only",        this, SLOT( fileName() )  );
+    menu->addAction( "File Name with Path",   this, SLOT( pathFileName() )  );
+    menu->addSeparator();
 
-   m_print.printFooter   = m_ui->print_footer_CKB->isChecked();
-   m_print.footer_left   = m_ui->footer_Left->text();
-   m_print.footer_center = m_ui->footer_Center->text();
-   m_print.footer_right  = m_ui->footer_Right->text();
-   m_print.footer_line2  = m_ui->footer_Line2->text();
+    menu->addAction( "Page #",                this, SLOT( pageNumber() )  );
+    menu->addAction( "Total Pages",           this, SLOT( totalPages() )  );
+    menu->addAction( "Page # of Total Pages", this, SLOT( pages() )  );
 
-   m_print.marTop        = m_ui->marginTop->text().toDouble();
-   m_print.marBottom     = m_ui->marginBottom->text().toDouble();
-   m_print.marRight      = m_ui->marginRight->text().toDouble();
-   m_print.marLeft       = m_ui->marginLeft->text().toDouble();   
-   m_print.hdrGap        = m_ui->hdrGap->text().toDouble();
+    menu->addSeparator();
+    menu->addAction( "Date",  this, SLOT( date() )  );
+    menu->addAction( "Time",  this, SLOT( time() )  );
 
-   // unnecessary to save the fonts back to the structure
+    menu->exec( widget->mapToGlobal( QPoint( 40,0 ) ) );
 
-   return m_print;
-}
-
-void Dialog_PrintOptions::macroMenu(QToolButton *widget)
-{
-   m_menuText = "";
-
-   QMenu *menu = new QMenu(this);
-   menu->addAction("File Name Only",        this, SLOT(fileName())  );
-   menu->addAction("File Name with Path",   this, SLOT(pathFileName())  );
-   menu->addSeparator();
-
-   menu->addAction("Page #",                this, SLOT(pageNumber())  );
-   menu->addAction("Total Pages",           this, SLOT(totalPages())  );
-   menu->addAction("Page # of Total Pages", this, SLOT(pages())  );
-
-   menu->addSeparator();
-   menu->addAction("Date",  this, SLOT(date())  );
-   menu->addAction("Time",  this, SLOT(time())  );
-
-   menu->exec(widget->mapToGlobal(QPoint(40,0)));
-
-   delete menu;
+    delete menu;
 }
 
 void Dialog_PrintOptions::headerLeft()
 {
-   QString text = m_ui->header_Left->text();
-   macroMenu(m_ui->headerLeft_TB);
+    QString text = m_ui->header_Left->text();
+    macroMenu( m_ui->headerLeft_TB );
 
-   if (! m_menuText.isEmpty()) {
-      text = text + m_menuText;
-      m_ui->header_Left->setText(text);
-   } 
+    if ( ! m_menuText.isEmpty() )
+    {
+        text = text + m_menuText;
+        m_ui->header_Left->setText( text );
+    }
 }
 
 void Dialog_PrintOptions::headerCenter()
 {
-   QString text = m_ui->header_Center->text();
-    macroMenu(m_ui->headerCenter_TB);
+    QString text = m_ui->header_Center->text();
+    macroMenu( m_ui->headerCenter_TB );
 
-   if (! m_menuText.isEmpty()) {
-      text = text + m_menuText;
-      m_ui->header_Center->setText(text);
-   }
+    if ( ! m_menuText.isEmpty() )
+    {
+        text = text + m_menuText;
+        m_ui->header_Center->setText( text );
+    }
 }
 
 void Dialog_PrintOptions::headerRight()
 {
-   QString text = m_ui->header_Right->text();
-   macroMenu(m_ui->headerRight_TB);
+    QString text = m_ui->header_Right->text();
+    macroMenu( m_ui->headerRight_TB );
 
-   if (! m_menuText.isEmpty()) {
-      text = text + m_menuText;
-      m_ui->header_Right->setText(text);
-   }
+    if ( ! m_menuText.isEmpty() )
+    {
+        text = text + m_menuText;
+        m_ui->header_Right->setText( text );
+    }
 }
 
 void Dialog_PrintOptions::footerLeft()
 {
-   QString text = m_ui->footer_Left->text();
-   macroMenu(m_ui->footerLeft_TB);
+    QString text = m_ui->footer_Left->text();
+    macroMenu( m_ui->footerLeft_TB );
 
-   if (! m_menuText.isEmpty()) {
-      text = text + m_menuText;
-      m_ui->footer_Left->setText(text);
-   }
+    if ( ! m_menuText.isEmpty() )
+    {
+        text = text + m_menuText;
+        m_ui->footer_Left->setText( text );
+    }
 }
 
 void Dialog_PrintOptions::footerCenter()
 {
-   QString text = m_ui->footer_Center->text();
-   macroMenu(m_ui->footerCenter_TB);
+    QString text = m_ui->footer_Center->text();
+    macroMenu( m_ui->footerCenter_TB );
 
-   if (! m_menuText.isEmpty()) {
-      text = text + m_menuText;
-      m_ui->footer_Center->setText(text);
-   }
+    if ( ! m_menuText.isEmpty() )
+    {
+        text = text + m_menuText;
+        m_ui->footer_Center->setText( text );
+    }
 }
 
 void Dialog_PrintOptions::footerRight()
 {
-   QString text = m_ui->footer_Right->text();
-   macroMenu( m_ui->footerRight_TB);
+    QString text = m_ui->footer_Right->text();
+    macroMenu( m_ui->footerRight_TB );
 
-   if (! m_menuText.isEmpty()) {
-      text = text + m_menuText;
-      m_ui->footer_Right->setText(text);
-   }
+    if ( ! m_menuText.isEmpty() )
+    {
+        text = text + m_menuText;
+        m_ui->footer_Right->setText( text );
+    }
 }
 
 void Dialog_PrintOptions::fontHeader()
 {
-   bool ok;
-   QFont font = QFontDialog::getFont(&ok, m_print.fontHeader, this);
+    bool ok;
+    QFont font = QFontDialog::getFont( &ok, m_print.fontHeader(), this );
 
-   if (ok) {
-      m_print.fontHeader = font;
-      m_ui->fontHeader->setText(font.toString());
-   }
+    if ( ok )
+    {
+        m_print.set_fontHeader( font );
+        m_ui->fontHeader->setText( font.toString() );
+    }
 }
 
 void Dialog_PrintOptions::fontFooter()
 {
-   bool ok;
-   QFont font = QFontDialog::getFont(&ok, m_print.fontFooter, this);
+    bool ok;
+    QFont font = QFontDialog::getFont( &ok, m_print.fontFooter(), this );
 
-   if (ok) {
-      m_print.fontFooter = font;
-      m_ui->fontFooter->setText(font.toString());
-   }
+    if ( ok )
+    {
+        m_print.set_fontFooter( font );
+        m_ui->fontFooter->setText( font.toString() );
+    }
 }
 
 void Dialog_PrintOptions::fontText()
 {
-   bool ok;
-   QFont font = QFontDialog::getFont(&ok, m_print.fontText, this);
+    bool ok;
+    QFont font = QFontDialog::getFont( &ok, m_print.fontText(), this );
 
-   if (ok) {
-      m_print.fontText = font;
-      m_ui->fontText->setText(font.toString());
-   }
+    if ( ok )
+    {
+        m_print.set_fontText( font );
+        m_ui->fontText->setText( font.toString() );
+    }
 }
 
 void Dialog_PrintOptions::fileName()
 {
-   m_menuText = "$(FileName)";
+    m_menuText = "$(FileName)";
 }
 
 void Dialog_PrintOptions::pathFileName()
 {
-   m_menuText = "$(PathFileName)";
+    m_menuText = "$(PathFileName)";
 }
 
 void Dialog_PrintOptions::pageNumber()
 {
-   m_menuText = "$(PageNo)";
+    m_menuText = "$(PageNo)";
 }
 
 void Dialog_PrintOptions::totalPages()
 {
-   m_menuText = "$(TotalPages)";
+    m_menuText = "$(TotalPages)";
 }
 
 void Dialog_PrintOptions::pages()
 {
-   m_menuText = "$(PageNo) of $(TotalPages)";
+    m_menuText = "$(PageNo) of $(TotalPages)";
 }
 
 void Dialog_PrintOptions::date()
 {
-   m_menuText = "$(Date)";
+    m_menuText = "$(Date)";
 }
 
 void Dialog_PrintOptions::time()
 {
-   m_menuText = "$(Time)";
+    m_menuText = "$(Time)";
 }
 
 

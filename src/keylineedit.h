@@ -19,14 +19,27 @@
 
 class KeyLineEdit : public QLineEdit
 {
-   CS_OBJECT(KeyLineEdit)
+    CS_OBJECT( KeyLineEdit )
 
-   public:
-      explicit KeyLineEdit(QWidget *parent = 0);
-      
-   protected:
-      void keyPressEvent(QKeyEvent *event);
-      
+public:
+    explicit KeyLineEdit( QWidget *parent = 0 );
+
+    bool blockModifiers()
+    {
+        return m_blockModifiers;
+    }
+
+    void set_blockModifiers( bool yesNo )
+    {
+        m_blockModifiers = yesNo;
+    }
+
+protected:
+    void keyPressEvent( QKeyEvent *event );
+
+private:
+    bool m_blockModifiers;
+
 };
 
 #endif

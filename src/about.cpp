@@ -21,43 +21,53 @@
 #include <QString>
 #include <QUrl>
 
-void showHtml(QString route, QString url)
+void showHtml( QString route, QString url )
 {
-   QFileInfo fileInfo(url);
+    QFileInfo fileInfo( url );
 
-   if (route == "docs") {
+    if ( route == "docs" )
+    {
 
-      // display html help file using client browser
-      bool ok = QDesktopServices::openUrl(QUrl(url));
+        // display html help file using client browser
+        bool ok = QDesktopServices::openUrl( QUrl( url ) );
 
-      if (! ok)  {
-         csError("Diamond Documentation", "Unable to display Diamond Documentation\n" + url );
-      }
+        if ( ! ok )
+        {
+            csError( "Diamond Documentation", "Unable to display Diamond Documentation\n" + url );
+        }
 
-   } else {
+    }
+    else
+    {
 
-      if (url.isEmpty())  {
-         csError("Html Viewer", "No file was specified.");
-         return;
+        if ( url.isEmpty() )
+        {
+            csError( "Html Viewer", "No file was specified." );
+            return;
 
-      } else if (! fileInfo.exists() )  {
-         csError("Html Viewer", "Specified file does not exist\n" + url);
-         return;
+        }
+        else if ( ! fileInfo.exists() )
+        {
+            csError( "Html Viewer", "Specified file does not exist\n" + url );
+            return;
 
-      } else if (fileInfo.suffix().isEmpty())  {
-         csError("Html Viewer", "Specified file does not have an extension, unable to display as HTML.");
-         return;
+        }
+        else if ( fileInfo.suffix().isEmpty() )
+        {
+            csError( "Html Viewer", "Specified file does not have an extension, unable to display as HTML." );
+            return;
 
-      }
+        }
 
-      // display html help file using the clients browser
+        // display html help file using the clients browser
 
-      QString indexUrl = "file:///" + fileInfo.absoluteFilePath();
-      bool ok = QDesktopServices::openUrl(QUrl(indexUrl));
+        QString indexUrl = "file:///" + fileInfo.absoluteFilePath();
+        bool ok = QDesktopServices::openUrl( QUrl( indexUrl ) );
 
-      if (! ok)  {
-         csError("Display HTML", "Unable to display file as HTML\n" + indexUrl );
-      }
-   }
+        if ( ! ok )
+        {
+            csError( "Display HTML", "Unable to display file as HTML\n" + indexUrl );
+        }
+    }
 }
 

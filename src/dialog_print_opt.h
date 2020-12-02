@@ -17,64 +17,61 @@
 
 #include "ui_dialog_print_opt.h"
 #include "mainwindow.h"
-#include "settings.h"
+#include "overlord.h"
 
 #include <QDialog>
 #include <QToolButton>
 
 class Dialog_PrintOptions: public QDialog
 {
-   CS_OBJECT(Dialog_PrintOptions)
+    CS_OBJECT( Dialog_PrintOptions )
 
-   public:
-      Dialog_PrintOptions(MainWindow *parent, struct PrintSettings data);
-      ~Dialog_PrintOptions();
+public:
+    Dialog_PrintOptions( MainWindow *parent );
+    ~Dialog_PrintOptions();
 
-      struct PrintSettings get_Results();
+private:
+    Ui::Dialog_PrintOptions *m_ui;
 
-   private:
-      Ui::Dialog_PrintOptions *m_ui;
-      MainWindow *m_parent;
+    PrintSettings m_print;
+    QString m_menuText;
 
-      struct PrintSettings m_print;      
-      QString m_menuText;
+    void initData();
+    void macroMenu( QToolButton *widget );
 
-      void initData();
-      void macroMenu(QToolButton *widget);
+    void save();
+    void cancel();
 
-      void save();
-      void cancel();
+    CS_SLOT_1( Private, void fileName() )
+    CS_SLOT_2( fileName )
 
-      CS_SLOT_1(Private, void fileName())
-      CS_SLOT_2(fileName)
+    CS_SLOT_1( Private, void pathFileName() )
+    CS_SLOT_2( pathFileName )
 
-      CS_SLOT_1(Private, void pathFileName())
-      CS_SLOT_2(pathFileName)
+    CS_SLOT_1( Private, void pageNumber() )
+    CS_SLOT_2( pageNumber )
 
-      CS_SLOT_1(Private, void pageNumber())
-      CS_SLOT_2(pageNumber)
+    CS_SLOT_1( Private, void totalPages() )
+    CS_SLOT_2( totalPages )
 
-      CS_SLOT_1(Private, void totalPages())
-      CS_SLOT_2(totalPages)
+    CS_SLOT_1( Private, void pages() )
+    CS_SLOT_2( pages )
 
-      CS_SLOT_1(Private, void pages())
-      CS_SLOT_2(pages)
+    CS_SLOT_1( Private, void date() )
+    CS_SLOT_2( date )
 
-      CS_SLOT_1(Private, void date())
-      CS_SLOT_2(date)
+    CS_SLOT_1( Private, void time() )
+    CS_SLOT_2( time )
 
-      CS_SLOT_1(Private, void time())
-      CS_SLOT_2(time)
-
-      void headerLeft();
-      void headerCenter();
-      void headerRight();
-      void footerLeft();
-      void footerCenter();
-      void footerRight();
-      void fontHeader();
-      void fontFooter();
-      void fontText();
+    void headerLeft();
+    void headerCenter();
+    void headerRight();
+    void footerLeft();
+    void footerCenter();
+    void footerRight();
+    void fontHeader();
+    void fontFooter();
+    void fontText();
 };
 
 #endif

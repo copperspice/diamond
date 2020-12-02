@@ -24,5 +24,26 @@
         <file>resources/undo.png</file>
         <file>resources/diamond.png</file>
         <file>resources/diamond.ico</file>
+        <file>resources/EDT-Keypad.png</file>
+        <file>resources/EDT-Help.html</file>
+        <file>resources/EDT-Help_html_2d74e7d3ecceb510.png</file>
+        <file>resources/vt-keyboard.png</file>
+        <file>resources/LK401-keypad.png</file>
+        <file>resources/rewrap.png</file>
+        <file>resources/red-diamond-frames/red_diamond_frame_00.gif</file>
+        <file>resources/red-diamond-frames/red_diamond_frame_01.gif</file>
+        <file>resources/red-diamond-frames/red_diamond_frame_02.gif</file>
+        <file>resources/red-diamond-frames/red_diamond_frame_03.gif</file>
+        <file>resources/red-diamond-frames/red_diamond_frame_04.gif</file>
+        <file>resources/red-diamond-frames/red_diamond_frame_05.gif</file>
+        <file>resources/red-diamond-frames/red_diamond_frame_06.gif</file>
+        <file>resources/red-diamond-frames/red_diamond_frame_07.gif</file>
+        <file>resources/red-diamond-frames/red_diamond_frame_08.gif</file>
+        <file>resources/red-diamond-frames/red_diamond_frame_09.gif</file>
+        <file>resources/red-diamond-frames/red_diamond_frame_10.gif</file>
+        <file>resources/red-diamond-frames/red_diamond_frame_11.gif</file>
+        <file>resources/red-diamond-frames/red_diamond_frame_12.gif</file>
+        <file>resources/red-diamond-frames/red_diamond_frame_13.gif</file>
+        <file>resources/red-diamond-frames/red_diamond_frame_14.gif</file>
     </qresource>
 </RCC>

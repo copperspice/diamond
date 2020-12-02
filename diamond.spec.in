@@ -1,0 +1,105 @@
+Name:       @PACKAGE@
+Version:    @RPM_VERSION@
+Release:    @RPM_RELEASE@
+Summary:    Diamond text editor
+License:    GPL V2
+Group:      Applications/Editors
+URL:        https://www.copperspice.com/documentation-diamond.html
+Vendor:     @CPACK_PACKAGE_VENDOR@
+Packager:   Roland Hughes <roland@logikalsolutions.com>
+Provides:   libCsCore1.7.so()(64bit), libCsGui1.7.so()(64bit), libCsNetwork1.7.so()(64bit)
+
+
+%description
+@DIAMOND_DESCRIPTION@
+
+%prep
+# Cleanup any left over build files
+#
+rm -rf *
+
+# Populate the build directory
+#
+cmake -G "Ninja" -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX="%{buildroot}/opt/diamond" -DCMAKE_PREFIX_PATH=/usr/lib/cs_lib/lib64/cmake/CopperSpice "@CMAKE_SOURCE_DIR@"
+
+%build
+ninja
+
+%install
+rm -rf %{buildroot}/opt/diamond
+mkdir -p %{buildroot}/opt/diamond
+mkdir -p %{buildroot}/usr/lib64/cs_lib/lib64
+ninja install
+
+%files
+/opt/diamond/diamond
+/opt/diamond/diamond.desktop
+/opt/diamond/diamond.png
+/opt/diamond/libCsCore1.7.so
+/opt/diamond/libCsGui1.7.so
+/opt/diamond/libCsNetwork1.7.so
+/opt/diamond/libCsXcbSupport1.7.so
+
+/opt/diamond/dictionary/de_DE.dic
+/opt/diamond/dictionary/de_DE.aff
+/opt/diamond/dictionary/de_DE_frami.aff
+/opt/diamond/dictionary/de_DE_frami.dic
+/opt/diamond/dictionary/en_US.aff
+/opt/diamond/dictionary/en_US.dic
+/opt/diamond/dictionary/es.aff
+/opt/diamond/dictionary/es.dic
+/opt/diamond/dictionary/fr.aff
+/opt/diamond/dictionary/fr.dic
+/opt/diamond/dictionary/it_IT.aff
+/opt/diamond/dictionary/it_IT.dic
+/opt/diamond/dictionary/pt.aff
+/opt/diamond/dictionary/pt_BR.aff
+/opt/diamond/dictionary/pt_BR.dic
+/opt/diamond/dictionary/pt.dic
+/opt/diamond/dictionary/userDict.txt
+
+/opt/diamond/platforms/CsGuiXcb1.7.so
+
+/opt/diamond/syntax/syn_clipper.json
+/opt/diamond/syntax/syn_cmake.json
+/opt/diamond/syntax/syn_cpp.json
+/opt/diamond/syntax/syn_css.json
+/opt/diamond/syntax/syn_doxy.json
+/opt/diamond/syntax/syn_errlog.json
+/opt/diamond/syntax/syn_html.json
+/opt/diamond/syntax/syn_java.json
+/opt/diamond/syntax/syn_js.json
+/opt/diamond/syntax/syn_json.json
+/opt/diamond/syntax/syn_make.json
+/opt/diamond/syntax/syn_none.json
+/opt/diamond/syntax/syn_nsi.json
+/opt/diamond/syntax/syn_php.json
+/opt/diamond/syntax/syn_pl.json
+/opt/diamond/syntax/syn_py.json
+/opt/diamond/syntax/syn_sh.json
+/opt/diamond/syntax/syn_txt.json
+/opt/diamond/syntax/syn_xml.json
+
+/opt/diamond/printerdrivers/CsPrinterDriverCups1.7.so
+
+%post
+# no matter install or upgrade, create and copy
+#
+ln -s /opt/diamond/diamond /usr/local/bin
+cp /opt/diamond/diamond.desktop /usr/share/applications
+
+
+%postun
+# No difference between upgrade and uninstall for these
+#
+rm /usr/local/bin/diamond
+rm /usr/share/applications/diamond.desktop
+
+if [ $1 -gt 0 ] ; then
+    # removing - need to completely remove the directory
+    rm -rf /opt/diamond
+fi
+
+
+%changelog
+# let's skip this for now

@@ -22,19 +22,19 @@
 
 class Dialog_Open : public QDialog
 {
-   CS_OBJECT(Dialog_Open)
+    CS_OBJECT( Dialog_Open )
 
-   public:
-      Dialog_Open(MainWindow *parent, QStringList list);
-      ~Dialog_Open();
-      QString get_FileName();
+public:
+    Dialog_Open( MainWindow *parent, QStringList list );
+    ~Dialog_Open();
+    QString get_FileName();
 
-   private:
-      Ui::Dialog_Open *m_ui;    
-      QStringList m_list;
+private:
+    Ui::Dialog_Open *m_ui;
+    QStringList m_list;
 
-      void open();
-      void cancel();
+    void open();
+    void cancel();
 };
 
 #endif
