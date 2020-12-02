@@ -25,35 +25,32 @@
 
 class Dialog_Macro : public QDialog
 {
-   CS_OBJECT(Dialog_Macro)
+    CS_OBJECT( Dialog_Macro )
 
-   public:
-      enum MacroEnum { MACRO_LOAD, MACRO_SAVE, MACRO_EDITNAMES };
+public:
+    enum MacroEnum { MACRO_LOAD, MACRO_MANAGE };
 
-      Dialog_Macro(MainWindow *parent, MacroEnum enumValue, QStringList macroIds, QStringList macroNames);
-      ~Dialog_Macro();
-      QString get_Macro();
+    Dialog_Macro( QWidget *parent, MacroEnum enumValue );
+    ~Dialog_Macro();
+    QString get_Macro();
 
-   private:
-      Ui::Dialog_Macro *m_ui;
-      MainWindow *m_parent;
-      QStandardItemModel *m_model;
+    static const int ORIGINAL_ROLE = Qt::UserRole + 4;
 
-      QStringList m_macroIds_D;
-      QStringList m_macroNames_D;
-      int m_maxCount;
-      bool m_updateNames = false;
+private:
+    Ui::Dialog_Macro *m_ui;
+    QStandardItemModel *m_model;
 
-      void setupTitle();
-      void setUpView();
+    bool m_updateNames = false;
 
-      MacroEnum m_enum;
-      QStringList m_macroList;
+    void setupTitle();
+    void setUpView();
 
-      void select();   
-      void view();    
-      void cancel();    
-      void tableDataChanged(const QModelIndex & topLeft,const QModelIndex & bottomRight);      
+    MacroEnum m_enum;
+
+    void processEdits();
+    void view();
+    void cancel();
+    void tableDataChanged( const QModelIndex &topLeft,const QModelIndex &bottomRight );
 };
 
 #endif

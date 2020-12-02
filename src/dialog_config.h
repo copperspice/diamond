@@ -21,21 +21,21 @@
 #include <QString>
 
 class Dialog_Config : public QDialog
-{     
-   CS_OBJECT(Dialog_Config)
+{
+    CS_OBJECT( Dialog_Config )
 
-   public:
-      Dialog_Config(QString fileName);
-      ~Dialog_Config();
-      QString get_newName();
+public:
+    Dialog_Config( QString fileName );
+    ~Dialog_Config();
+    QString get_newName();
 
-   private:
-      Ui::Dialog_Config *m_ui;
+private:
+    Ui::Dialog_Config *m_ui;
 
-      void createNew();
-      void select();
-      void rename();
-      void cancel();
+    void createNew();
+    void select();
+    void rename();
+    void cancel();
 };
 
 #endif

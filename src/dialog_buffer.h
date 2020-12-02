@@ -22,21 +22,21 @@
 
 class Dialog_Buffer : public QDialog
 {
-   CS_OBJECT(Dialog_Buffer)
+    CS_OBJECT( Dialog_Buffer )
 
-   public:
-      Dialog_Buffer(QList<QString> copyBuffer);
-      ~Dialog_Buffer();
-      int get_Index();       
+public:
+    Dialog_Buffer( QList<QString> copyBuffer );
+    ~Dialog_Buffer();
+    int get_Index();
 
-   protected:
-      bool eventFilter(QObject *object, QEvent *event);
+protected:
+    bool eventFilter( QObject *object, QEvent *event );
 
-   private :     
-      Ui::Dialog_Buffer *m_ui;
+private :
+    Ui::Dialog_Buffer *m_ui;
 
-      void select();
-      void cancel();
+    void select();
+    void cancel();
 };
 
 #endif

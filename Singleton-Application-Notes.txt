@@ -1,0 +1,5 @@
+Singleton Application Notes
+
+*) No .ui files. 
+*) Must be a QApplication Singleton class that controls single instance per user by opening a lock file.
+*) The "window" class must be a QMainWindow derived class.

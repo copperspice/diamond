@@ -15,7 +15,7 @@
 #ifndef SYNTAX_H
 #define SYNTAX_H
 
-#include "settings.h"
+#include "overlord.h"
 #include "spellcheck.h"
 
 #include <QHash>
@@ -25,45 +25,44 @@
 #include <QRegularExpression>
 #include <QVector>
 
+//
+struct HighlightingRule
+{
+    QRegularExpression pattern;
+    QTextCharFormat format;
+};
+
 class Syntax : public QSyntaxHighlighter
 {
-   CS_OBJECT(Syntax)
+    CS_OBJECT( Syntax )
 
-   public:
-      Syntax(QTextDocument *document,
-             QString synFName, const struct Settings &settings, SpellCheck *spell = 0);
+public:
+    Syntax( QTextDocument *document, QString synFName, SpellCheck *spell = 0 );
 
-      ~Syntax();
-      bool processSyntax();
-      bool processSyntax(const struct Settings &settings);
-      void set_Spell(bool value);
+    ~Syntax();
+    void set_Spell( bool value );
 
-   protected:
-      void highlightBlock(const QString &text);
+    void processSyntax( Settings *settings );
 
-   private:
-      QString m_syntaxFile;
-      struct Settings m_settings;
+protected:
+    void highlightBlock( const QString &text );
 
-      SpellCheck *m_spellCheck;
-      bool m_isSpellCheck;
+private:
+    void deleteHighlightingRules();
 
-      QRegularExpression m_commentStartExpression;
-      QRegularExpression m_commentEndExpression;
+    QString m_syntaxFile;
 
-      QTextCharFormat m_multiLineCommentFormat;
-      QTextCharFormat m_spellCheckFormat;
+    SpellCheck *m_spellCheck;
+    bool m_isSpellCheck;
 
-      QByteArray json_ReadFile(QString fileName);
+    QRegularExpression m_commentStartExpression;
+    QRegularExpression m_commentEndExpression;
 
-      //
-      struct HighlightingRule
-      {
-         QRegularExpression pattern;
-         QTextCharFormat format;
-      };
+    QTextCharFormat m_multiLineCommentFormat;
+    QTextCharFormat m_spellCheckFormat;
 
-      QVector<HighlightingRule> highlightingRules;     
+
+    QVector<HighlightingRule *> m_highlightingRules;
 };
 
 #endif

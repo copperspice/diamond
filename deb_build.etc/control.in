@@ -1,0 +1,9 @@
+Package: diamond
+Priority: optional
+Section: editors
+Maintainer: Roland Hughes <roland@logikalsolutions.com>
+Installed-Size: @DIAMOND_INSTALLED_SIZE@
+Architecture: @DIAMOND_ARCHITECTURE@
+Version: @PACKAGE_VERSION@
+Depends: libc6 (>= 2.27), libstdc++6 (>= 8.4), zlib1g, hunspell, libopengl0, astyle, libxcb-xinerama0, libxcb-xinput0
+Description: @DIAMOND_DESCRIPTION@

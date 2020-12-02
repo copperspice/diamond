@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <title>EDT Keypad Navigation Help</title>
+    <style>body {
+    font-family: 'Liberation Serif';
+    font-size: inherit;
+    font-style: normal
+}
+th, td {
+  padding: 15px;
+}
+</style>
+  </head>
+  <body>
+    <div>
+      <img src="://resources/LK401-keypad.png" alt="" style="margin: 10px 40px 10px 10px;"
+        width="306" height="408" align="left">
+      Keypad image courtesy of John H. Reinhardt
+      <img src="://resources/EDT-Help_html_2d74e7d3ecceb510.png" alt="" style="margin: 10px 40px 10px 10px;"
+        width="407" height="408" align="left">
+    </div>
+    <p style="margin-left: 20px;">EDT Keypad navigation is from a time before
+      keyboards had arrow keys let alone PageUp/Down keys. DEC software
+      engineers made efficient use of the numeric keypad that was added for data
+      entry users. Instead of a big plus key there was a minus and comma key.
+      The top 4 keys were not math operators; rather they were PF-1 through
+      PF-4. In order they were GOLD, HELP, Find, Delete Line. </p>
+    <p>Unlike a PC where you have to hold down <ctrl> and another key, you
+        simply press and release the GOLD key then press and release the key for
+        the function you want. <b>The text that doesn’t have a gold background
+          is what they key does when the GOLD key was not pressed in front of
+          it.</b></ctrl></p>
+    <p>Because some EDT emulation modes on some editors, notably Emacs, are
+      unable to map the NumLock key as GOLD, the Option dialog allows you to
+      choose between NumLock and ScrollLock as your GOLD key.</p>
+    <p>EDT mode is direction maintaining. The default direction is Advance [the
+      4 key]. You can change the direction to Backup by hitting the 5 key. All
+      of your navigation operations will continue in that direction until you
+      change direction again.</p>
+    <h3>All you really need to know is HELP
+    </h3>
+    <p>The PF2 key [/ on the PC keypad] brings up this Help text. Many a
+      programmer learned EDT without access to a printed manual and before the
+      Internet was even a dream. The Help screen had the keypad image you see
+      here and just a few lines of text explaining a few cryptic things. We
+      didn't have screen capture utilities on those green serial terminals, but
+      some of them had an extra serial port for a printer. Many a developer used
+      the magic terminal key combination to print the Help screen on an attached
+      printer then hung it in their cubicle. This Help screen has far more
+      information than we ever had.</p>
+    <p><b>NOTE:</b> Because EDT was from a time before desktop computers or the
+      concept of desktop software, there was no OS or desktop level clipboard.
+      EDT was a mult-buffer editor ahead of its time. Today you have multiple
+      tabs and think nothing of it. One buffer that was always created was
+      PASTE. When you selected and cut text it went here. You could append to
+      it, view it, and even edit it. This EDT emulation will use the system
+      supplied clipboard. It will let you append and view the clipboard
+      contents.</p>
+    <p>EDT became a favorite editor for tens of thousands of developers. It
+      wasn't "expert friendly" like most of the editors then and now. All you
+      needed was that screen print and someone telling you how to exit and save.
+      All of the most used things were on the keypad. There were only a token
+      few commands to execute at the command prompt and you didn't need them
+      very often. You only had to know one: EXIT</p>
+    <p>In general, just be aware that most of the "delete" functions can be
+      undone using GOLD and the same key. The exception is DEL EOL which is
+      discussed later.</p>
+    <br>
+    <h3 style="text-align:center">Navigation</h3>
+    <table style="border-color: black; border-style: solid; width:100%">
+      <tbody>
+        <tr>
+          <td><b>LINE</b> [the 0 key]</td>
+          <td>moves a direction sensitive line at a time.</td>
+        </tr>
+        <tr>
+          <td><b>WORD</b> [the 1 key]</td>
+          <td>moves a direction sensitive word (determined by whitespace) at a
+            time</td>
+        </tr>
+        <tr>
+          <td><b>EOL</b> [the 2 key]</td>
+          <td>moves to the directional end of line. In Backup mode this is the
+            beginning</td>
+        </tr>
+        <tr>
+          <td><b>CHAR</b> [the 3 key]</td>
+          <td>moves a direction sensitive character at a time</td>
+        </tr>
+        <tr>
+          <td><b>ADVANCE</b> [the 4 key]</td>
+          <td>Sets the current editing direction forward which is the default at
+            startup</td>
+        </tr>
+        <tr>
+          <td><b>BOTTOM</b> [GOLD ADVANCE]</td>
+          <td>Takes you to end of file no matter what direction you have set.</td>
+        </tr>
+        <tr>
+          <td><b>BACKUP</b> [the 5 key]</td>
+          <td>Sets the current editing direction backwards towards the beginning
+            of the file</td>
+        </tr>
+        <tr>
+          <td><b>TOP</b> [GOLD BACKUP]</td>
+          <td>Takes you to top of file no matter what direction you have set.</td>
+        </tr>
+        <tr>
+          <td><b>PAGE</b> [the 7 key]</td>
+          <td>actually looks for a FormFeed character. SPECINS (short for
+            special insert) is how you actually enter ASCII character numeric
+            values. Developers printed on continuous form back then and we had
+            to provide the page breaks in the source. This is still really handy
+            when working with languages or data that has defined sections. By
+            placing a FormFeed at the start of each region you can jump between
+            them.</td>
+        </tr>
+        <tr>
+          <td><b>SECT</b> [the 8 key]</td>
+          <td>is what most closely equates to PC Page Up/Down. It moves 16 lines
+            at a time.</td>
+        </tr>
+      </tbody>
+    </table>
+    <br>
+    <h3 style="text-align:center">Editing</h3>
+    <table style="border-color: black; border-style: solid; width:100%">
+      <tbody>
+        <tr>
+          <td><b>DEL L</b> [PF4 - the minus key on the PC keypad]</td>
+          <td>(Delete Line) Deletes from cursor THROUGH directional end of line
+            removing the end of line character causing the text below to move
+            up.</td>
+        </tr>
+        <tr>
+          <td><b>DEL EOL</b> [GOLD 2 key]</td>
+          <td>Deletes from where your cursor is to the directional End of Line.
+            DOES NOT REMOVE THE EOL character(s)</td>
+        </tr>
+        <tr>
+          <td><b>UND L</b> [GOLD PF4 - the minus key on the PC keypad]</td>
+          <td>As weird as it may sound, both DEL L and DEL EOL used the same cut
+            buffer. Using this UnDelete will paste the contents of whichever was
+            last used where your cursor is currently located.</td>
+        </tr>
+        <tr>
+          <td><b>DEL W</b> [default map <alt>+ key on the PC keypad]</alt></td>
+          <td>The option screen lets you chose a different GOLD key mapping
+            because this is the missing keypad key. Some developers use Delete
+            Word all of the time and others (like myself) never do. Keep in mind
+            that word deletion like most things honors the current editing
+            direction</td>
+        </tr>
+        <tr>
+          <td><b>UND W</b> [GOLD DEL W]</td>
+          <td>Pastes the last deleted word where your cursor is in a
+            directionally sensitive manner.</td>
+        </tr>
+        <tr>
+          <td><b>DEL C</b> [the + key on PC keypad]</td>
+          <td>Deletes the character under your cursor and moves in the current
+            editing direction.</td>
+        </tr>
+        <tr>
+          <td><b>SELECT</b>[the . key on the PC keypad]</td>
+          <td>Begins a selection area to be part of another operation.</td>
+        </tr>
+        <tr>
+          <td><b>RESET</b> [GOLD SELECT]</td>
+          <td>Cancels current selection area.</td>
+        </tr>
+        <tr>
+          <td><b>SPECINS</b> [GOLD CHAR]</td>
+          <td>Prompts for a numeric character value which then gets inserted
+            where the cursor is in the file. May support x and u prefixed values
+            for Hex and Unicode. At least that is a planned enhancement. The
+            most used value historically was 12 for ASCII FormFeed because that
+            was used by the PAGE key to identify the start of another page. Some
+            scripts had need of ASCII 7 (Bell) and others needed ASCII 9 (hard
+            horizontal tab).</td>
+        </tr>
+        <tr>
+          <td><b>CUT</b> [the 6 key on the PC keypad]</td>
+          <td>Once you have SELECTed an area you can CUT it into the paste
+            buffer. On PCs this is typically also called the clipboard.</td>
+        </tr>
+        <tr>
+          <td><b>PASTE</b> [GOLD CUT]</td>
+          <td>Pastes the current contents of the PASTE buffer where your cursor
+            is.</td>
+        </tr>
+        <tr>
+          <td><b>APPEND</b> [the 9 key on the PC keypad]</td>
+          <td>Deletes the selected range of text and appends it to the end of
+            the paste buffer (clipboard)</td>
+        </tr>
+        <tr>
+          <td><b>REPLACE</b> [GOLD APPEND]</td>
+          <td>Deletes the currently selected text and replaces it with the text
+            from the paste buffer (clipboard)</td>
+        </tr>
+        <tr>
+          <td><b>CHNGCASE</b> [GOLD WORD (the 1 key)]</td>
+          <td>If you have no current selection this will change the case of the
+            character "under" the cursor. This editor places the cursor
+            "between" characters so the case will be changed for the
+            directionally sensitive "next" character. When you have a current
+            selection the case of every letter is changed. ThIs Is BaD would
+            become tHiS iS bAd.</td>
+        </tr>
+      </tbody>
+    </table>
+    <h3 style="text-align:center">Not implemented</h3>
+    <p><b>COMMAND</b> There are a small number of EDT commands that would still
+      prove useful in this day and age, but none have been implemented.</p>
+    <p><b>SUBS</b> By today's standard this was a complex key sequence for
+      making a text substitution then finding the next matching text. I spent 20
+      years on DEC platforms and never used it. The SUBS command was much easier
+      and less prone to user error. When you hit the SUBS key combination you
+      will be presented with the "Find" dialog</p>
+    <img src="://resources/rewrap.png" alt="" style="margin: 10px 40px 10px 10px;"
+      width="350" height="400" align="left">
+    <p><b>FILL</b> In the very old days when we never turned on wordwrap for
+      fear of forgetting it and trashing a large source file, FILL was
+      necessary. You selected a bunch of lines and it would "pack" as many words
+      as possible without splitting a word on each line. When we only had an 80
+      column screen and narrow continuous form only allowed for 80 printed
+      columns this was how we made our documentation look like we cared. Today
+      you have wordwrap and many free word processors. This editor has wordwrap
+      and spell check. It also has a rewrap option on the context menu. It just
+      wasn't worth the effort to implement FILL.</p>
+    <h3 style="text-align:center">Some Apple/MAC users will be a bit hosed</h3>
+    <p>Most of you probably won't be impacted. If you have on of the Apple/MAC
+      keyboards that sends the numeric keypad modifier with every arrow key then
+      you won't be able to hit the EDT SELECT key and use the arrow keys to make
+      your selection. This could also impact certain laptop users where the
+      keyboard doesn't have an independent numeric keypad. <b>EDT Navigation is
+        meant to be used with a numeric keypad.</b> If your OS or keyboard had
+      to do something cute to simulate such a thing you probably shouldn't turn
+      on the support. You can still navigate by character, line, and word; you
+      just have to use the EDT keys.</p>
+  </body>
+</html>

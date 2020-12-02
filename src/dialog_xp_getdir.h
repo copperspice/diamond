@@ -22,46 +22,48 @@
 #include <QFileSystemModel>
 #include <QTreeWidgetItem>
 
-struct netServers {
-   QString serverName;   
-   bool isAvailable;
+struct netServers
+{
+    QString serverName;
+    bool isAvailable;
 };
 
-struct netShares {
-   QString serverName;
-   QString shareName;
+struct netShares
+{
+    QString serverName;
+    QString shareName;
 };
 
 class Dialog_XP_GetDir  : public QDialog
 {
-   CS_OBJECT(Dialog_XP_GetDir)
+    CS_OBJECT( Dialog_XP_GetDir )
 
-   public:
-      Dialog_XP_GetDir(MainWindow *from, const QString title, const QString path, QFileDialog::Options options);
-      ~Dialog_XP_GetDir();
+public:
+    Dialog_XP_GetDir( MainWindow *from, const QString title, const QString path, QFileDialog::Options options );
+    ~Dialog_XP_GetDir();
 
-       QString getDirectory();
+    QString getDirectory();
 
-       void showMe(const QString &);
-       QSize sizeHint() const;
+    void showMe( const QString & );
+    QSize sizeHint() const;
 
-   private:
-      Ui::Dialog_XP_GetDir *m_ui;      
-      QFileSystemModel  *m_model_R;
+private:
+    Ui::Dialog_XP_GetDir *m_ui;
+    QFileSystemModel  *m_model_R;
 
-      QString m_path;
-      QModelIndex m_index_R;
+    QString m_path;
+    QModelIndex m_index_R;
 
-      QList<netServers> m_netServers;
-      QList<netShares> m_netShares;
+    QList<netServers> m_netServers;
+    QList<netShares> m_netShares;
 
-      QString driveType(QString drive);
-      QList<netServers> getWin_NetServers();
+    QString driveType( QString drive );
+    QList<netServers> getWin_NetServers();
 
-      void showDirectories(QTreeWidgetItem * current,QTreeWidgetItem * previous);
-      void network();
-      void ok();
-      void cancel();
+    void showDirectories( QTreeWidgetItem *current,QTreeWidgetItem *previous );
+    void network();
+    void ok();
+    void cancel();
 };
 
 #endif

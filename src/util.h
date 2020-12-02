@@ -18,12 +18,14 @@
 #include <QMessageBox>
 #include <QString>
 
-void csMsg(const QString &msg);
-void csMsg(QString msg, int value);
-void csMsg(QWidget *parent, const QString &title, const QString &msg);
-void csError(QString title, QString msg);
-void showDialog(QDialog &t_Dialog);
+void csMsg( const QString &msg );
+void csMsg( QString msg, int value );
+void csMsg( QWidget *parent, const QString &title, const QString &msg );
+void csError( QString title, QString msg );
+void showDialog( QDialog *t_Dialog );
 
-void showHtml(QString route, QString file);
+void showHtml( QString route, QString file );
 
+QString get_DirPath( QWidget *parent, QString message, QString path );
+int     get_line_col( QWidget *parent, const QString route );
 #endif

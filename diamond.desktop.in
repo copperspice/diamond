@@ -1,0 +1,19 @@
+[Desktop Entry]
+Encoding=UTF-8
+Version=@PACKAGE_VERSION@
+Name=Diamond
+Name[en]=Diamond
+Comment=Programmers Editor
+GenericName=Text Editor
+GenericName[en]=Text Editor
+Exec=/opt/diamond/diamond %U
+Terminal=false
+Type=Application
+StartupNotify=true
+MimeType=text/plain;
+Icon=diamond.png
+Categories=Utility;TextEditor;Development;
+Keywords=TextEditor;Development;Utility
+X-GNOME-Gettext-Domain=Diamond
+X-GNOME-Fullname=Diamond Text Editor
+X-Ubuntu-Gettext-Domain=Diamond

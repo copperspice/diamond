@@ -14,6 +14,7 @@
 
 #include "dialog_macro.h"
 #include "util.h"
+#include "overlord.h"
 
 #include <QDialog>
 #include <QLabel>
@@ -21,341 +22,363 @@
 #include <QSize>
 #include <QTableView>
 
-Dialog_Macro::Dialog_Macro(MainWindow *parent, MacroEnum enumValue, QStringList macroIds, QStringList macroNames )
-   : QDialog(parent), m_ui(new Ui::Dialog_Macro)
+Dialog_Macro::Dialog_Macro( QWidget *parent, MacroEnum enumValue )
+    : QDialog( parent )
+    , m_ui( new Ui::Dialog_Macro )
+    , m_enum( enumValue )
 {
-   m_parent       = parent;
-   m_enum         = enumValue;
-   m_macroIds_D   = macroIds;
-   m_macroNames_D = macroNames;
+    m_ui->setupUi( this );
+    setWindowIcon( QIcon( "://resources/diamond.png" ) );
 
-   m_ui->setupUi(this);
-   this->setWindowIcon(QIcon("://resources/diamond.png"));
+    setupTitle();
+    setUpView();
 
-   setupTitle();
-   setUpView();
+    // alter the hightlight color
+    QPalette temp = m_ui->tableView->palette();
+    temp.setColor( QPalette::Highlight, QColor( 206, 206, 206, 255 ) );
+    temp.setColor( QPalette::HighlightedText, Qt::black );
+    m_ui->tableView->setPalette( temp );
 
-   // alter the hightlight color
-   QPalette temp = m_ui->tableView->palette();
-   temp.setColor( QPalette::Highlight, QColor(206, 206, 206, 255));
-   temp.setColor( QPalette::HighlightedText, Qt::black);
-   m_ui->tableView->setPalette(temp);
+    // highlight cell
+    QModelIndex index = m_model->index( 0, 1 );
+    m_ui->tableView->setCurrentIndex( index );
 
-   // highlight cell
-   QModelIndex index = m_model->index(0, 1);
-   m_ui->tableView->setCurrentIndex(index);
+    // resize the dialog widget after the text has been displayed
+    adjustSize();
 
-   // resize the dialog widget after the text has been displayed
-   adjustSize();
-
-   connect(m_ui->select_PB, &QPushButton::clicked, this, &Dialog_Macro::select);
-   connect(m_ui->view_PB,   &QPushButton::clicked, this, &Dialog_Macro::view);
-   connect(m_ui->cancel_PB, &QPushButton::clicked, this, &Dialog_Macro::cancel);
+    connect( m_ui->ok_PB,     &QPushButton::clicked, this, &Dialog_Macro::processEdits );
+    connect( m_ui->view_PB,   &QPushButton::clicked, this, &Dialog_Macro::view );
+    connect( m_ui->cancel_PB, &QPushButton::clicked, this, &Dialog_Macro::cancel );
 }
 
 Dialog_Macro::~Dialog_Macro()
 {
-   delete m_ui;
+    delete m_ui;
 }
 
 void Dialog_Macro::setupTitle()
-{   
-   if (m_enum == MACRO_LOAD) {
-      setWindowTitle("Load Macro");
+{
+    switch ( m_enum )
+    {
+        case MACRO_LOAD:
+            setWindowTitle( "Load Macro" );
+            break;
 
-   } else if (m_enum == MACRO_SAVE)  {
-      m_ui->select_PB->setText("Save");
-      setWindowTitle("Save Macro");    
-
-   } else if (m_enum == MACRO_EDITNAMES) {
-      m_ui->select_PB->setDisabled(true);
-      setWindowTitle("Edit Macro Names");
-
-   } 
+        case MACRO_MANAGE:
+            setWindowTitle( "Edit Macro Names" );
+            break;
+    }
 }
 
 void Dialog_Macro::setUpView()
 {
-   m_model = new QStandardItemModel(this);
-   m_model->setColumnCount(2);
-   m_model->setHeaderData(0, Qt::Horizontal, tr("Macro #"));
-   m_model->setHeaderData(1, Qt::Horizontal, tr("Macro Name"));
+    m_model = new QStandardItemModel( this );
+    m_model->setColumnCount( 2 );
+    m_model->setHeaderData( 0, Qt::Horizontal, tr( "Delete" ) );
+    m_model->setHeaderData( 1, Qt::Horizontal, tr( "Macro Name" ) );
 
-   //
-   m_ui->tableView->setModel(m_model);
-   m_ui->tableView->setSelectionMode(QAbstractItemView::SingleSelection);   
-   m_ui->tableView->setEditTriggers(QAbstractItemView::NoEditTriggers);
+    //
+    m_ui->tableView->setModel( m_model );
+    m_ui->tableView->setSelectionMode( QAbstractItemView::SingleSelection );
+    m_ui->tableView->setEditTriggers( QAbstractItemView::NoEditTriggers );
 
-   m_ui->tableView->setColumnWidth(0, 95);
-   m_ui->tableView->setColumnWidth(1, 250);
+    m_ui->tableView->setColumnWidth( 1, 250 );
 
-   // resize the last column
-   m_ui->tableView->horizontalHeader()->setStretchLastSection(true);      
-   QBrush brush = QColor(0,0,255);    
+    // resize the last column
+    m_ui->tableView->horizontalHeader()->setStretchLastSection( true );
+    QBrush brush = QColor( 0,0,255 );
 
-   // add data
-   m_maxCount = m_macroIds_D.size();
-   for (int row = 0; row < m_maxCount; ++row) {
+    // add data
+    QStringList namesList = Overlord::getInstance()->macroNames();
 
-      QStandardItem *item1 = new QStandardItem(m_macroIds_D.at(row));
-      item1->setForeground(brush);
-      item1->setEnabled(false);
+    int row = 0;
 
-      QStandardItem *item2 = new QStandardItem(m_macroNames_D.at(row));
-      item2->setEditable(true);
+    for ( QString nameStr : namesList )
+    {
+        QStandardItem *item0 = new QStandardItem( "" );
+        item0->setCheckable( true );
+        item0->setCheckState( Qt::Unchecked );
+        item0->setTextAlignment( Qt::AlignHCenter );
 
-      m_model->setItem(row, 0, item1);
-      m_model->setItem(row, 1, item2);
-   }
+        QStandardItem *item1 = new QStandardItem( nameStr );
+        item1->setData( nameStr, ORIGINAL_ROLE );
+        item1->setForeground( brush );
+        item1->setEnabled( true );
 
-   // initial sort
-   m_ui->tableView->sortByColumn(0, Qt::AscendingOrder);
-   m_ui->tableView->setSortingEnabled(true);
+        m_model->setItem( row, 0, item0 );
+        m_model->setItem( row, 1, item1 );
+        row++;
+    }
 
-   m_ui->tableView->setEditTriggers(QAbstractItemView::DoubleClicked);
+    m_ui->tableView->setEditTriggers( QAbstractItemView::DoubleClicked );
 
-   connect(m_model, &QStandardItemModel::dataChanged, this, &Dialog_Macro::tableDataChanged);
+    connect( m_model, &QStandardItemModel::dataChanged, this, &Dialog_Macro::tableDataChanged );
 }
 
-void Dialog_Macro::tableDataChanged(const QModelIndex & topLeft, const QModelIndex & bottomRight)
-{  
-   m_updateNames = true;
+void Dialog_Macro::tableDataChanged( const QModelIndex &topLeft, const QModelIndex &bottomRight )
+{
+    Q_UNUSED( topLeft )
+    Q_UNUSED( bottomRight )
+    m_updateNames = true;
 }
 
-void Dialog_Macro::select()
-{   
-   if (m_updateNames) {
+void Dialog_Macro::processEdits()
+{
+    if ( m_updateNames )
+    {
+        for ( int row = 0; row < m_model->rowCount(); row++ )
+        {
+            QStandardItem *item0 = m_model->item( row, 0 );
+            QStandardItem *item1 = m_model->item( row, 1 );
+            QString currentText  = item1->data( Qt::DisplayRole ).toString();
+            QString originalText = item1->data( ORIGINAL_ROLE ).toString();
 
-      for (int row = 0; row < m_maxCount; ++row) {
-         QStandardItem *item = m_model->item(row, 1);
-         QString data = item->data(Qt::DisplayRole).toString();
+            // see if user wants to delete
+            //
+            if ( item0->checkState() == Qt::Checked )
+            {
+                Overlord::getInstance()->deleteMacro( originalText );
+            }
+            else if ( currentText != originalText )
+            {
+                Overlord::getInstance()->renameMacro( originalText, currentText );
+            }
+        }
+    }
 
-         m_macroNames_D.replace(row, data);
-      }
-
-      m_parent->json_Save_MacroNames(m_macroNames_D);
-   }
-
-   this->done(QDialog::Accepted);
+    done( QDialog::Accepted );
 }
 
 void Dialog_Macro::cancel()
 {
-   this->done(QDialog::Rejected);
+    done( QDialog::Rejected );
 }
 
-//
 void Dialog_Macro::view()
 {
-   QString macro = this->get_Macro();
+    QString macro = get_Macro();
 
-   // get the macro
-   QList<macroStruct> data;
-   data = m_parent->json_View_Macro(macro);
+    if ( macro.length() < 1 )
+    {
+        csError( "View Macro", "No macro selected" );
+        return;
+    }
 
-   QString msg = "<table style=margin-right:35>";
+    // get the macro
+    QList<MacroStruct *> data;
+    data = Overlord::getInstance()->viewMacro( macro );
 
-   for (int k = 0; k < data.size(); ++k) {
 
-      int key         = data.at(k).key;
-      int modifier    = data.at(k).modifier;
-      QString textAsc = data.at(k).text;
+    QString msg = "<table style=margin-right:35>";
 
-      msg += "<tr><td width=150>Modifier: &nbsp;";
+    for ( int k = 0; k < data.size(); ++k )
+    {
 
-      switch (modifier)  {
+        int key         = data.at( k )->m_key;
+        int modifier    = data.at( k )->m_modifier;
+        QString textAsc = data.at( k )->m_text;
 
-         case 0:
-            msg += " ";
-            break;
+        msg += "<tr><td width=150>Modifier: &nbsp;";
 
-         case Qt::SHIFT:
-            msg += "Shift";
-            break;
+        switch ( modifier )
+        {
 
-         case Qt::CTRL:
-            msg += "Control";
-            break;
+            case 0:
+                msg += " ";
+                break;
 
-         case Qt::META:
-            msg += "Meta";
-            break;
+            case Qt::SHIFT:
+                msg += "Shift";
+                break;
 
-         case Qt::ALT:
-            msg += "Alt";
-            break;
+            case Qt::CTRL:
+                msg += "Control";
+                break;
 
-         case Qt::KeypadModifier:
-            msg += "Key-Pad";
-            break;
+            case Qt::META:
+                msg += "Meta";
+                break;
 
-         case Qt::GroupSwitchModifier:
-            msg += "Group-Switch";
-            break;
+            case Qt::ALT:
+                msg += "Alt";
+                break;
 
-         default:
-            msg += "(modifier)" + QString::number(modifier);
-      }
+            case Qt::KeypadModifier:
+                msg += "Key-Pad";
+                break;
 
-      msg += "</td> <td width=150>Key: &nbsp;";
+            case Qt::GroupSwitchModifier:
+                msg += "Group-Switch";
+                break;
 
-      // part 2
-      bool isKey = false;
+            default:
+                msg += "(modifier)" + QString::number( modifier );
+        }
 
-      switch (key)  {
+        msg += "</td> <td width=150>Key: &nbsp;";
 
-         case Qt::Key_Tab:
-            msg += "Tab";
-            isKey = true;
-            break;
+        // part 2
+        bool isKey = false;
 
-         case Qt::Key_Backtab:
-            msg += "Back-Tab";
-            isKey = true;
-            break;
+        switch ( key )
+        {
 
-         case Qt::Key_Backspace:
-            msg += "Backspace";
-            isKey = true;
-            break;
+            case Qt::Key_Tab:
+                msg += "Tab";
+                isKey = true;
+                break;
 
-         case Qt::Key_Return:
-         case Qt::Key_Enter:
-            msg += "Return";
-            isKey = true;
-            break;
+            case Qt::Key_Backtab:
+                msg += "Back-Tab";
+                isKey = true;
+                break;
 
-         case Qt::Key_Insert:
-            msg += "Insert";
-            isKey = true;
-            break;
+            case Qt::Key_Backspace:
+                msg += "Backspace";
+                isKey = true;
+                break;
 
-         case Qt::Key_Delete:
-            msg += "Delete";
-            isKey = true;
-            break;
+            case Qt::Key_Return:
+            case Qt::Key_Enter:
+                msg += "Return";
+                isKey = true;
+                break;
 
-         case Qt::Key_Shift:
-            msg += " ";
-            isKey = true;
-            break;
+            case Qt::Key_Insert:
+                msg += "Insert";
+                isKey = true;
+                break;
 
-         case Qt::Key_Space:
-            msg += "Space";
-            isKey = true;
-            break;
+            case Qt::Key_Delete:
+                msg += "Delete";
+                isKey = true;
+                break;
 
-         case Qt::Key_Home:
-            msg += "Home";
-            isKey = true;
-            break;
+            case Qt::Key_Shift:
+                msg += " ";
+                isKey = true;
+                break;
 
-         case Qt::Key_End:
-            msg += "End";
-            isKey = true;
-            break;
+            case Qt::Key_Space:
+                msg += "Space";
+                isKey = true;
+                break;
 
-         case Qt::Key_Left:
-            msg += "Left";
-            isKey = true;
-            break;
+            case Qt::Key_Home:
+                msg += "Home";
+                isKey = true;
+                break;
 
-         case Qt::Key_Right:
-            msg += "Right";
-            isKey = true;
-            break;
+            case Qt::Key_End:
+                msg += "End";
+                isKey = true;
+                break;
 
-         case Qt::Key_Up:
-            msg += "Up";
-            isKey = true;
-            break;
+            case Qt::Key_Left:
+                msg += "Left";
+                isKey = true;
+                break;
 
-         case Qt::Key_Down:
-            msg += "Down";
-            isKey = true;
-            break;
+            case Qt::Key_Right:
+                msg += "Right";
+                isKey = true;
+                break;
 
-         case Qt::Key_PageUp:
-            msg += "Page-Up";
-            isKey = true;
-            break;
+            case Qt::Key_Up:
+                msg += "Up";
+                isKey = true;
+                break;
 
-         case Qt::Key_PageDown:
-            msg += "Page-Down";
-            isKey = true;
-            break;
+            case Qt::Key_Down:
+                msg += "Down";
+                isKey = true;
+                break;
 
-         default:
-            if (textAsc.isEmpty()) {
-               msg += QString::number(key);
-               isKey = true;
-            }
-            break;
-      }
+            case Qt::Key_PageUp:
+                msg += "Page-Up";
+                isKey = true;
+                break;
 
-      // part 3
-      if (! isKey) {
-         int pos = msg.size();
-         msg = msg.left(pos-11) + "Text: &nbsp;" + textAsc;
-      }
+            case Qt::Key_PageDown:
+                msg += "Page-Down";
+                isKey = true;
+                break;
 
-      msg += "</td></tr>";
-   }
+            default:
+                if ( textAsc.isEmpty() )
+                {
+                    msg += QString::number( key );
+                    isKey = true;
+                }
 
-   // blank line
-   msg += "<tr></tr>";
+                break;
+        }
 
-   QDialog msgB;
-   msgB.setWindowIcon(QIcon("://resources/diamond.png"));
-   msgB.setWindowTitle("View Macro - " + macro);      
-   msgB.setMinimumWidth(120);
+        // part 3
+        if ( ! isKey )
+        {
+            int pos = msg.size();
+            msg = msg.left( pos-11 ) + "Text: &nbsp;" + textAsc;
+        }
 
-   //
-   QLabel *label = new QLabel;
+        msg += "</td></tr>";
+    }
 
-   QFont font = label->font();
-   font.setPointSize(10);
-   label->setFont(font);
+    // blank line
+    msg += "<tr></tr>";
 
-   label->setText(msg);
+    QDialog msgB;
+    msgB.setWindowIcon( QIcon( "://resources/diamond.png" ) );
+    msgB.setWindowTitle( "View Macro - " + macro );
+    msgB.setMinimumWidth( 120 );
 
-   //
-   QPushButton *button = new QPushButton();
+    //
+    QLabel *label = new QLabel;
 
-   font = button->font();
-   font.setPointSize(10);
-   button->setFont(font);
+    QFont font = label->font();
+    font.setPointSize( 10 );
+    label->setFont( font );
 
-   button->setText("Ok");
+    label->setText( msg );
 
-   QHBoxLayout *layoutButton = new QHBoxLayout();
-   layoutButton->addStretch();
-   layoutButton->addWidget(button);
-   layoutButton->addStretch();
+    //
+    QPushButton *button = new QPushButton();
 
-   QVBoxLayout *layoutMain = new QVBoxLayout();
-   layoutMain->addWidget(label);
-   layoutMain->addLayout(layoutButton);
+    font = button->font();
+    font.setPointSize( 10 );
+    button->setFont( font );
 
-   msgB.setLayout(layoutMain);
+    button->setText( "Ok" );
 
-   QObject::connect(button, &QPushButton::clicked, &msgB, &QDialog::accept);
+    QHBoxLayout *layoutButton = new QHBoxLayout();
+    layoutButton->addStretch();
+    layoutButton->addWidget( button );
+    layoutButton->addStretch();
 
-   msgB.exec();
+    QVBoxLayout *layoutMain = new QVBoxLayout();
+    layoutMain->addWidget( label );
+    layoutMain->addLayout( layoutButton );
+
+    msgB.setLayout( layoutMain );
+
+    QObject::connect( button, &QPushButton::clicked, &msgB, &QDialog::accept );
+
+    msgB.exec();
 }
 
 QString Dialog_Macro::get_Macro()
 {
-   QModelIndex index = m_ui->tableView->currentIndex();
+    QModelIndex index = m_ui->tableView->currentIndex();
 
-   if (! index.isValid()) {
-      return QString("");
-   }
+    if ( ! index.isValid() )
+    {
+        return QString( "" );
+    }
 
-   // return the macro id
-   QStandardItem *item = m_model->item(index.row(), 0);
-   QString data = item->data(Qt::DisplayRole).toString();
+    // return the macro name
+    QStandardItem *item = m_model->item( index.row(), 1 );
+    QString data = item->data( Qt::DisplayRole ).toString();
 
-   return data;
+    return data;
 }
 

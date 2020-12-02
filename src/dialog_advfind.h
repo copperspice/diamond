@@ -16,40 +16,35 @@
 #define DIALOG_ADVFIND_H
 
 #include "ui_dialog_advfind.h"
-#include "mainwindow.h"
 
 #include <QDialog>
 #include <QString>
 #include <QStringList>
 
 class Dialog_AdvFind : public QDialog
-{     
-   CS_OBJECT(Dialog_AdvFind)
+{
+    CS_OBJECT( Dialog_AdvFind )
 
-   public:
-      Dialog_AdvFind(MainWindow *parent, QString text, QString fileType, QString findFolder, bool searchFolders);
-      ~Dialog_AdvFind();
+public:
+    Dialog_AdvFind( QWidget *parent, QString text, QString fileType, QString findFolder, bool searchFolders );
+    ~Dialog_AdvFind();
 
-      QString get_findText();      
-      QString get_findType();
-      QString get_findFolder();
+    QString get_findText();
+    QString get_findType();
+    QString get_findFolder();
 
-      bool get_Case();
-      bool get_WholeWords();
-      bool get_SearchSubFolders();
-      void showBusyMsg();
-      void showNotBusyMsg();
+    bool get_Case();
+    bool get_WholeWords();
+    bool get_SearchSubFolders();
 
-   private:
-      Ui::Dialog_AdvFind *m_ui;
-      MainWindow *m_parent;
-      QLabel *m_busyMsg;
+private:
+    Ui::Dialog_AdvFind *m_ui;
 
-      static QStringList dirCombo;
+    static QStringList dirCombo;
 
-      void pick_Folder();
-      void find();
-      void cancel();
+    void pick_Folder();
+    void find();
+    void cancel();
 };
 
 #endif

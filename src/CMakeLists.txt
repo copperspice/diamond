@@ -1,4 +1,5 @@
 list(APPEND DIAMOND_INCLUDES
+
    ${CMAKE_CURRENT_SOURCE_DIR}/dialog_advfind.h
    ${CMAKE_CURRENT_SOURCE_DIR}/dialog_buffer.h
    ${CMAKE_CURRENT_SOURCE_DIR}/dialog_colors.h
@@ -14,14 +15,30 @@ list(APPEND DIAMOND_INCLUDES
    ${CMAKE_CURRENT_SOURCE_DIR}/dialog_replace.h
    ${CMAKE_CURRENT_SOURCE_DIR}/dialog_symbols.h
    ${CMAKE_CURRENT_SOURCE_DIR}/dialog_xp_getdir.h
-
    ${CMAKE_CURRENT_SOURCE_DIR}/diamond_edit.h
+   ${CMAKE_CURRENT_SOURCE_DIR}/diamondlimits.h
+   ${CMAKE_CURRENT_SOURCE_DIR}/keydefinitions.h
    ${CMAKE_CURRENT_SOURCE_DIR}/keylineedit.h
+   ${CMAKE_CURRENT_SOURCE_DIR}/macrostruct.h
    ${CMAKE_CURRENT_SOURCE_DIR}/mainwindow.h
-   ${CMAKE_CURRENT_SOURCE_DIR}/search.h
+   ${CMAKE_CURRENT_SOURCE_DIR}/options.h
+   ${CMAKE_CURRENT_SOURCE_DIR}/printsettings.h
+   ${CMAKE_CURRENT_SOURCE_DIR}/replacereply.h
+   ${CMAKE_CURRENT_SOURCE_DIR}/settings.h
    ${CMAKE_CURRENT_SOURCE_DIR}/spellcheck.h
    ${CMAKE_CURRENT_SOURCE_DIR}/syntax.h
+   ${CMAKE_CURRENT_SOURCE_DIR}/textattributes.h
+   ${CMAKE_CURRENT_SOURCE_DIR}/themes.h
    ${CMAKE_CURRENT_SOURCE_DIR}/util.h
+   ${CMAKE_CURRENT_SOURCE_DIR}/non_gui_functions.h
+   ${CMAKE_CURRENT_SOURCE_DIR}/overlord.h
+   ${CMAKE_CURRENT_SOURCE_DIR}/syntaxpatterns.h
+   ${CMAKE_CURRENT_SOURCE_DIR}/dialog_edt_help.h
+   ${CMAKE_CURRENT_SOURCE_DIR}/edt_lineedit.h
+   ${CMAKE_CURRENT_SOURCE_DIR}/dialog_edt_prompt.h
+   ${CMAKE_CURRENT_SOURCE_DIR}/dialog_busy.h
+   ${CMAKE_CURRENT_SOURCE_DIR}/advfind_busy.h
+   ${CMAKE_CURRENT_SOURCE_DIR}/advfindstruct.h
 
    ${CMAKE_CURRENT_SOURCE_DIR}/diamond_build_info.h
 )
@@ -44,22 +61,29 @@ list(APPEND DIAMOND_SOURCES
    ${CMAKE_CURRENT_SOURCE_DIR}/dialog_symbols.cpp
    ${CMAKE_CURRENT_SOURCE_DIR}/dialog_xp_getdir.cpp
    ${CMAKE_CURRENT_SOURCE_DIR}/diamond_edit.cpp
-   ${CMAKE_CURRENT_SOURCE_DIR}/json.cpp
+   ${CMAKE_CURRENT_SOURCE_DIR}/keydefinitions.cpp
    ${CMAKE_CURRENT_SOURCE_DIR}/keylineedit.cpp
    ${CMAKE_CURRENT_SOURCE_DIR}/main.cpp
    ${CMAKE_CURRENT_SOURCE_DIR}/mainwindow.cpp
-   ${CMAKE_CURRENT_SOURCE_DIR}/menu_action.cpp
    ${CMAKE_CURRENT_SOURCE_DIR}/options.cpp
-   ${CMAKE_CURRENT_SOURCE_DIR}/print.cpp
-   ${CMAKE_CURRENT_SOURCE_DIR}/recent_files.cpp
-   ${CMAKE_CURRENT_SOURCE_DIR}/recent_tabs.cpp
-   ${CMAKE_CURRENT_SOURCE_DIR}/search.cpp
-   ${CMAKE_CURRENT_SOURCE_DIR}/spell.cpp
+   ${CMAKE_CURRENT_SOURCE_DIR}/printsettings.cpp
+   ${CMAKE_CURRENT_SOURCE_DIR}/replacereply.cpp
+   ${CMAKE_CURRENT_SOURCE_DIR}/settings.cpp
    ${CMAKE_CURRENT_SOURCE_DIR}/spellcheck.cpp
-   ${CMAKE_CURRENT_SOURCE_DIR}/split_window.cpp
    ${CMAKE_CURRENT_SOURCE_DIR}/syntax.cpp
-   ${CMAKE_CURRENT_SOURCE_DIR}/support.cpp
+   ${CMAKE_CURRENT_SOURCE_DIR}/textattributes.cpp
+   ${CMAKE_CURRENT_SOURCE_DIR}/themes.cpp
    ${CMAKE_CURRENT_SOURCE_DIR}/util.cpp
+   ${CMAKE_CURRENT_SOURCE_DIR}/non_gui_functions.cpp
+   ${CMAKE_CURRENT_SOURCE_DIR}/overlord.cpp
+   ${CMAKE_CURRENT_SOURCE_DIR}/syntaxpatterns.cpp
+   ${CMAKE_CURRENT_SOURCE_DIR}/dialog_edt_help.cpp
+   ${CMAKE_CURRENT_SOURCE_DIR}/edt_lineedit.cpp
+   ${CMAKE_CURRENT_SOURCE_DIR}/dialog_edt_prompt.cpp
+   ${CMAKE_CURRENT_SOURCE_DIR}/dialog_busy.cpp
+   ${CMAKE_CURRENT_SOURCE_DIR}/macrostruct.cpp
+   ${CMAKE_CURRENT_SOURCE_DIR}/advfind_busy.cpp
+   ${CMAKE_CURRENT_SOURCE_DIR}/advfindstruct.cpp
 
    ${CMAKE_CURRENT_SOURCE_DIR}/../forms/dialog_advfind.ui
    ${CMAKE_CURRENT_SOURCE_DIR}/../forms/dialog_buffer.ui
@@ -76,6 +100,8 @@ list(APPEND DIAMOND_SOURCES
    ${CMAKE_CURRENT_SOURCE_DIR}/../forms/dialog_replace.ui
    ${CMAKE_CURRENT_SOURCE_DIR}/../forms/dialog_symbols.ui
    ${CMAKE_CURRENT_SOURCE_DIR}/../forms/dialog_xp_getdir.ui
+   ${CMAKE_CURRENT_SOURCE_DIR}/../forms/dialog_edt_help.ui
+   ${CMAKE_CURRENT_SOURCE_DIR}/../forms/dialog_busy.ui
    ${CMAKE_CURRENT_SOURCE_DIR}/../forms/mainwindow.ui
 
    qrc_diamond.cpp
@@ -103,6 +129,8 @@ COPPERSPICE_RESOURCES(
    ${CMAKE_CURRENT_SOURCE_DIR}/../forms/dialog_replace.ui
    ${CMAKE_CURRENT_SOURCE_DIR}/../forms/dialog_symbols.ui
    ${CMAKE_CURRENT_SOURCE_DIR}/../forms/dialog_xp_getdir.ui
+   ${CMAKE_CURRENT_SOURCE_DIR}/../forms/dialog_edt_help.ui
+   ${CMAKE_CURRENT_SOURCE_DIR}/../forms/dialog_busy.ui
    ${CMAKE_CURRENT_SOURCE_DIR}/../forms/mainwindow.ui
 )
 
@@ -171,6 +199,7 @@ elseif(CMAKE_SYSTEM_NAME MATCHES "(Linux|OpenBSD|FreeBSD|NetBSD|DragonFly)")
    )
 
    install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/../resources/diamond.png  DESTINATION .)
+   install(FILES ${CMAKE_CURRENT_BINARY_DIR}/../diamond.desktop DESTINATION .)
 
 elseif(CMAKE_SYSTEM_NAME MATCHES "Windows")
 
@@ -200,9 +229,25 @@ endif()
 
 install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/../source_extra/syntax/ DESTINATION syntax)
 
-# installs English by default
+# installs all dictionaries so user can choose
+#
 install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/../source_extra/dictionary/en_US.aff DESTINATION dictionary)
 install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/../source_extra/dictionary/en_US.dic DESTINATION dictionary)
+install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/../source_extra/dictionary/es.aff DESTINATION dictionary)
+install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/../source_extra/dictionary/es.dic DESTINATION dictionary)
+install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/../source_extra/dictionary/de_DE_frami.aff DESTINATION dictionary)
+install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/../source_extra/dictionary/de_DE_frami.dic DESTINATION dictionary)
+install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/../source_extra/dictionary/fr.aff DESTINATION dictionary)
+install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/../source_extra/dictionary/fr.dic DESTINATION dictionary)
+install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/../source_extra/dictionary/de_DE.aff DESTINATION dictionary)
+install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/../source_extra/dictionary/de_DE.dic DESTINATION dictionary)
+install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/../source_extra/dictionary/it_IT.aff DESTINATION dictionary)
+install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/../source_extra/dictionary/it_IT.dic DESTINATION dictionary)
+install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/../source_extra/dictionary/pt.aff DESTINATION dictionary)
+install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/../source_extra/dictionary/pt.dic DESTINATION dictionary)
+install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/../source_extra/dictionary/pt_BR.aff DESTINATION dictionary)
+install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/../source_extra/dictionary/pt_BR.dic DESTINATION dictionary)
+
 
 # will not overwrite dictionary/userDict.txt
 install(CODE "

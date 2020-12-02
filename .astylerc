@@ -1,0 +1,32 @@
+#  .astylerc
+#
+#  Style code according to these switches
+#
+--style=allman
+--indent=spaces=4
+--indent-switches
+#
+#    Insert space padding on the inside of parenthesis only
+#
+--pad-paren-in
+#
+#    Add braces around one line blocks
+#
+--add-one-line-braces
+#
+#    place the * or & up against the name when declaring
+#
+--align-pointer=name
+#
+#    Keep return type and method declaration on same line
+#
+--attach-return-type
+#
+#    Do not let source lines go beyond this many  characters
+#
+--max-code-length=130
+--break-blocks
+--convert-tabs
+--break-one-line-headers
+--pad-header
+--break-blocks

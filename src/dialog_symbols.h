@@ -16,26 +16,24 @@
 #define DIALOG_SYMBOLS_H
 
 #include "ui_dialog_symbols.h"
-#include "mainwindow.h"
 
 #include <QDialog>
 
 class Dialog_Symbols : public QDialog
 {
-   CS_OBJECT(Dialog_Symbols)
+    CS_OBJECT( Dialog_Symbols )
 
-   public:
-      Dialog_Symbols(MainWindow *parent);
-      ~Dialog_Symbols();
-      QString get_Symbol();
+public:
+    Dialog_Symbols( QWidget *parent );
+    ~Dialog_Symbols();
+    QString get_Symbol();
 
-   private:
-      Ui::Dialog_Symbols *m_ui;
-      MainWindow *m_parent;
-      QStringList initData();
+private:
+    Ui::Dialog_Symbols *m_ui;
+    QStringList initData();
 
-      void insert();
-      void cancel();
+    void insert();
+    void cancel();
 };
 
 #endif

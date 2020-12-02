@@ -29,328 +29,351 @@
 #include <lm.h>
 #endif
 
-Dialog_XP_GetDir::Dialog_XP_GetDir(MainWindow *from, const QString title, const QString path, QFileDialog::Options options)
-   : QDialog(from), m_ui(new Ui::Dialog_XP_GetDir)
+Dialog_XP_GetDir::Dialog_XP_GetDir( MainWindow *from, const QString title, const QString path, QFileDialog::Options options )
+    : QDialog( from ), m_ui( new Ui::Dialog_XP_GetDir )
 {
-   // the value for path is an absolute path
-   m_path = path;
+    Q_UNUSED( options )
+    // the value for path is an absolute path
+    m_path = path;
 
-   m_ui->setupUi(this);
-   this->setWindowIcon(QIcon("://resources/diamond.png"));
-   setWindowTitle(title);
+    m_ui->setupUi( this );
+    this->setWindowIcon( QIcon( "://resources/diamond.png" ) );
+    setWindowTitle( title );
 
-   // set the width of the panes
-   QSizePolicy sizePolicy1(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    // set the width of the panes
+    QSizePolicy sizePolicy1( QSizePolicy::Expanding, QSizePolicy::Expanding );
 
-   sizePolicy1.setHorizontalStretch(4);
-   sizePolicy1.setVerticalStretch(0);
-   sizePolicy1.setHeightForWidth(m_ui->drives_TV->sizePolicy().hasHeightForWidth());
-   m_ui->drives_TV->setSizePolicy(sizePolicy1);
+    sizePolicy1.setHorizontalStretch( 4 );
+    sizePolicy1.setVerticalStretch( 0 );
+    sizePolicy1.setHeightForWidth( m_ui->drives_TV->sizePolicy().hasHeightForWidth() );
+    m_ui->drives_TV->setSizePolicy( sizePolicy1 );
 
-   QSizePolicy sizePolicy2(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    QSizePolicy sizePolicy2( QSizePolicy::Expanding, QSizePolicy::Expanding );
 
-   sizePolicy2.setHorizontalStretch(5);
-   sizePolicy2.setVerticalStretch(0);
-   sizePolicy2.setHeightForWidth(m_ui->folders_TV->sizePolicy().hasHeightForWidth());
-   m_ui->folders_TV->setSizePolicy(sizePolicy2);
+    sizePolicy2.setHorizontalStretch( 5 );
+    sizePolicy2.setVerticalStretch( 0 );
+    sizePolicy2.setHeightForWidth( m_ui->folders_TV->sizePolicy().hasHeightForWidth() );
+    m_ui->folders_TV->setSizePolicy( sizePolicy2 );
 
-   // get drive list and starting drive
-   QFileInfoList driveList = QDir::drives();
+    // get drive list and starting drive
+    QFileInfoList driveList = QDir::drives();
 
-   QString drive_L = m_path;
-   if (drive_L.isEmpty())  {
-      drive_L = QCoreApplication::applicationDirPath();
-   }
+    QString drive_L = m_path;
 
-   drive_L = drive_L.left(3);
+    if ( drive_L.isEmpty() )
+    {
+        drive_L = QCoreApplication::applicationDirPath();
+    }
 
-   // set up drive tree view - QList<QFileInfo>   
-   m_ui->drives_TV->setHeaderLabels(QStringList() << "Drive"  << "Drive Type");
-   m_ui->drives_TV->setColumnCount(2);
-   m_ui->drives_TV->setColumnWidth(15, 50);
+    drive_L = drive_L.left( 3 );
 
-   QString data;
-   QTreeWidgetItem *item;
+    // set up drive tree view - QList<QFileInfo>
+    m_ui->drives_TV->setHeaderLabels( QStringList() << "Drive"  << "Drive Type" );
+    m_ui->drives_TV->setColumnCount( 2 );
+    m_ui->drives_TV->setColumnWidth( 15, 50 );
 
-   for (auto k = driveList.begin(); k != driveList.end(); ++k) {
-      data = k->path();
+    QString data;
+    QTreeWidgetItem *item;
 
-      if (data.endsWith("/")) {
-         data = data.left(2);
-      }
+    for ( auto k = driveList.begin(); k != driveList.end(); ++k )
+    {
+        data = k->path();
 
-      //
-      QString other = driveType(data);
+        if ( data.endsWith( "/" ) )
+        {
+            data = data.left( 2 );
+        }
 
-      item = new QTreeWidgetItem(m_ui->drives_TV);
-      item->setText(0, data);
-      item->setText(1, other);
+        //
+        QString other = driveType( data );
 
-      if (drive_L.startsWith(data, Qt::CaseInsensitive)) {
-         m_ui->drives_TV->setCurrentItem(item);
-      }
-   } 
+        item = new QTreeWidgetItem( m_ui->drives_TV );
+        item->setText( 0, data );
+        item->setText( 1, other );
 
-   // set up tree view right
-   m_model_R = new QFileSystemModel;
-   m_model_R->setFilter(QDir::Drives | QDir::Dirs | QDir::NoDotAndDotDot);
-   m_model_R->setRootPath(drive_L);
+        if ( drive_L.startsWith( data, Qt::CaseInsensitive ) )
+        {
+            m_ui->drives_TV->setCurrentItem( item );
+        }
+    }
 
-   // reset in case there is a backslash issue
-   drive_L = m_model_R->rootPath();
+    // set up tree view right
+    m_model_R = new QFileSystemModel;
+    m_model_R->setFilter( QDir::Drives | QDir::Dirs | QDir::NoDotAndDotDot );
+    m_model_R->setRootPath( drive_L );
 
-   m_ui->folders_TV->setModel(m_model_R);
-   m_ui->folders_TV->setHeaderHidden(true);
+    // reset in case there is a backslash issue
+    drive_L = m_model_R->rootPath();
 
-   QModelIndex index = m_model_R->index(drive_L);
-   m_ui->folders_TV->setRootIndex(index);
+    m_ui->folders_TV->setModel( m_model_R );
+    m_ui->folders_TV->setHeaderHidden( true );
 
-   for(int nCount = 1; nCount < m_model_R->columnCount(); nCount++) {
-      m_ui->folders_TV->hideColumn(nCount);
-   }
+    QModelIndex index = m_model_R->index( drive_L );
+    m_ui->folders_TV->setRootIndex( index );
 
-   // search for the current path
-   m_index_R = m_model_R->index(m_path);
-   m_ui->folders_TV->setCurrentIndex(m_index_R);
+    for ( int nCount = 1; nCount < m_model_R->columnCount(); nCount++ )
+    {
+        m_ui->folders_TV->hideColumn( nCount );
+    }
 
-   connect(m_ui->drives_TV,  &QTreeWidget::currentItemChanged, this, &Dialog_XP_GetDir::showDirectories);
+    // search for the current path
+    m_index_R = m_model_R->index( m_path );
+    m_ui->folders_TV->setCurrentIndex( m_index_R );
 
-   connect(m_ui->network_PB, &QPushButton::clicked, this, &Dialog_XP_GetDir::network);
-   connect(m_ui->ok_PB,      &QPushButton::clicked, this, &Dialog_XP_GetDir::ok);
-   connect(m_ui->cancel_PB,  &QPushButton::clicked, this, &Dialog_XP_GetDir::cancel);
+    connect( m_ui->drives_TV,  &QTreeWidget::currentItemChanged, this, &Dialog_XP_GetDir::showDirectories );
 
-   // force call to sizeHint()
-   adjustSize();
+    connect( m_ui->network_PB, &QPushButton::clicked, this, &Dialog_XP_GetDir::network );
+    connect( m_ui->ok_PB,      &QPushButton::clicked, this, &Dialog_XP_GetDir::ok );
+    connect( m_ui->cancel_PB,  &QPushButton::clicked, this, &Dialog_XP_GetDir::cancel );
 
-   // update right treeview
-   connect(m_model_R, &QFileSystemModel::directoryLoaded, this, &Dialog_XP_GetDir::showMe);
-   m_ui->drives_TV->setFocus();
+    // force call to sizeHint()
+    adjustSize();
+
+    // update right treeview
+    connect( m_model_R, &QFileSystemModel::directoryLoaded, this, &Dialog_XP_GetDir::showMe );
+    m_ui->drives_TV->setFocus();
 }
 
 Dialog_XP_GetDir::~Dialog_XP_GetDir()
 {
-   delete m_ui;
+    delete m_ui;
 }
 
 void Dialog_XP_GetDir::cancel()
 {
-   this->done(QDialog::Rejected);
+    this->done( QDialog::Rejected );
 }
 
-QString Dialog_XP_GetDir::driveType(QString drive)
+QString Dialog_XP_GetDir::driveType( QString drive )
 {
-   QString retval;
+    QString retval;
 
-   int driveType = 0;
-   drive = drive + "\\";
+    int driveType = 0;
+    drive = drive + "\\";
 
 #ifdef Q_OS_WIN
-   // windows api call, pass drive value as UNICODE
-   driveType = GetDriveType(drive.toStdWString().c_str());
+    // windows api call, pass drive value as UNICODE
+    driveType = GetDriveType( drive.toStdWString().c_str() );
 #endif
 
-   switch (driveType) {
+    switch ( driveType )
+    {
 
-      case 0:
-      case 1:
-         retval = "Unknown";
-         break;
+        case 0:
+        case 1:
+            retval = "Unknown";
+            break;
 
-      case 2:
-         retval = "Removable Drive";
-         break;
+        case 2:
+            retval = "Removable Drive";
+            break;
 
-      case 3:
-         retval = "Local Drive";
-         break;
+        case 3:
+            retval = "Local Drive";
+            break;
 
-      case 4:
-         retval = "Network Drive";
-         break;
+        case 4:
+            retval = "Network Drive";
+            break;
 
-      case 5:
-         retval = "CD Drive";
-         break;
+        case 5:
+            retval = "CD Drive";
+            break;
 
-      case 6:
-         retval = "Ram Disk";
-         break;
-   }
+        case 6:
+            retval = "Ram Disk";
+            break;
+    }
 
-   return retval;
+    return retval;
 }
 
 QString Dialog_XP_GetDir::getDirectory()
 {
-   QModelIndex index = m_ui->folders_TV->currentIndex();     
-   QString retval = m_model_R->filePath(index);
+    QModelIndex index = m_ui->folders_TV->currentIndex();
+    QString retval = m_model_R->filePath( index );
 
-   return retval;
+    return retval;
 }
 
 void Dialog_XP_GetDir::ok()
 {
-   this->done(QDialog::Accepted);
+    this->done( QDialog::Accepted );
 }
 
 void Dialog_XP_GetDir::network()
 {
-   QString data;
-   QTreeWidgetItem *item;
+    QString data;
+    QTreeWidgetItem *item;
 
-   // add network servers to left treeview
-   m_netServers = getWin_NetServers();
+    // add network servers to left treeview
+    m_netServers = getWin_NetServers();
 
 // QFileSystemModel finds the netShares, this method is not required
 // m_netShares  = getWin_NetShares();
 
-   for (auto k = m_netServers.begin(); k != m_netServers.end(); ++k) {
-      data = k->serverName;
+    for ( auto k = m_netServers.begin(); k != m_netServers.end(); ++k )
+    {
+        data = k->serverName;
 
-      QString other = "Network Share";
+        QString other = "Network Share";
 
-/*    if (k->isAvailable) {
-         other = "Network Share";
-      } else  {
-         other = "UnAvailable";
-      }
-*/
-      item = new QTreeWidgetItem(m_ui->drives_TV);
-      item->setText(0, data);
-      item->setText(1, other);
-   }
+        /*    if (k->isAvailable) {
+                 other = "Network Share";
+              } else  {
+                 other = "UnAvailable";
+              }
+        */
+        item = new QTreeWidgetItem( m_ui->drives_TV );
+        item->setText( 0, data );
+        item->setText( 1, other );
+    }
 
-   m_ui->network_PB->setDisabled(true);
+    m_ui->network_PB->setDisabled( true );
 }
 
-void Dialog_XP_GetDir::showDirectories(QTreeWidgetItem *current, QTreeWidgetItem *previous)
+void Dialog_XP_GetDir::showDirectories( QTreeWidgetItem *current, QTreeWidgetItem *previous )
 {
-   if (! current) {
-      return;
-   }
+    Q_UNUSED( previous )
 
-   QString drive;
+    if ( ! current )
+    {
+        return;
+    }
 
-   if (current->text(1) == "Network Share")  {
+    QString drive;
 
-      drive = "//" + current->text(0).toLower() + "/";
+    if ( current->text( 1 ) == "Network Share" )
+    {
 
-      // 1
-      m_model_R = new QFileSystemModel;
-      m_model_R->setFilter(QDir::Drives | QDir::Dirs | QDir::NoDotAndDotDot);
-      m_model_R->setRootPath(drive);
+        drive = "//" + current->text( 0 ).toLower() + "/";
 
-      // will hide printer folders
-      QStringList filters;
-      filters << "*[^$]";
+        // 1
+        m_model_R = new QFileSystemModel;
+        m_model_R->setFilter( QDir::Drives | QDir::Dirs | QDir::NoDotAndDotDot );
+        m_model_R->setRootPath( drive );
 
-      m_model_R->setNameFilters(filters);
-      m_model_R->setNameFilterDisables(false);
+        // will hide printer folders
+        QStringList filters;
+        filters << "*[^$]";
 
-   } else if (current->text(1) == "UnAvailable")  {
-      // show an empty list
+        m_model_R->setNameFilters( filters );
+        m_model_R->setNameFilterDisables( false );
 
-      drive = "//" + current->text(0).toLower() + "/";
+    }
+    else if ( current->text( 1 ) == "UnAvailable" )
+    {
+        // show an empty list
 
-      // 1
-      m_model_R = new QFileSystemModel;
-      m_model_R->setFilter(QDir::Dirs | QDir::NoDotAndDotDot);
-      m_model_R->setRootPath(drive);
+        drive = "//" + current->text( 0 ).toLower() + "/";
 
-      // hide everthing for now
-      QStringList filters;
-      filters << "(?!E)E";
+        // 1
+        m_model_R = new QFileSystemModel;
+        m_model_R->setFilter( QDir::Dirs | QDir::NoDotAndDotDot );
+        m_model_R->setRootPath( drive );
 
-      m_model_R->setNameFilters(filters);
-      m_model_R->setNameFilterDisables(false);
+        // hide everthing for now
+        QStringList filters;
+        filters << "(?!E)E";
 
-   } else {
-      drive = current->text(0) + "/";
+        m_model_R->setNameFilters( filters );
+        m_model_R->setNameFilterDisables( false );
 
-      // 1
-      m_model_R = new QFileSystemModel;
-      m_model_R->setFilter(QDir::Drives | QDir::Dirs | QDir::NoDotAndDotDot);
-      m_model_R->setRootPath(drive);
-   }
+    }
+    else
+    {
+        drive = current->text( 0 ) + "/";
 
-   // 2
-   m_ui->folders_TV->setModel(m_model_R);
+        // 1
+        m_model_R = new QFileSystemModel;
+        m_model_R->setFilter( QDir::Drives | QDir::Dirs | QDir::NoDotAndDotDot );
+        m_model_R->setRootPath( drive );
+    }
 
-   // 3
-   QModelIndex index = m_model_R->index(drive);
-   m_ui->folders_TV->setRootIndex(index);
+    // 2
+    m_ui->folders_TV->setModel( m_model_R );
+
+    // 3
+    QModelIndex index = m_model_R->index( drive );
+    m_ui->folders_TV->setRootIndex( index );
 }
 
-void Dialog_XP_GetDir::showMe(const QString &path)
+void Dialog_XP_GetDir::showMe( const QString &path )
 {
-   //  m_index_R = m_model_R->index(m_path);
-   //  m_ui->folders_TV->setCurrentIndex(m_index_R);
+    Q_UNUSED( path )
+    //  m_index_R = m_model_R->index(m_path);
+    //  m_ui->folders_TV->setCurrentIndex(m_index_R);
 
-   // needs additional functionality in CS
-   m_ui->folders_TV->scrollTo(m_index_R, QAbstractItemView::PositionAtCenter);
+    // needs additional functionality in CS
+    m_ui->folders_TV->scrollTo( m_index_R, QAbstractItemView::PositionAtCenter );
 }
 
 QSize Dialog_XP_GetDir::sizeHint() const
-{ 
-   return QSize(625,600);
+{
+    return QSize( 625,600 );
 }
 
 QList<netServers> Dialog_XP_GetDir::getWin_NetServers()
 {
-   QList<netServers> retval;
+    QList<netServers> retval;
 
 #ifdef Q_OS_WIN
-   // local comptuer
-   QString nameLocal;
+    // local comptuer
+    QString nameLocal;
 
-   wchar_t nameBuffer[4096];
-   long unsigned int  nameSize = 4096;
+    wchar_t nameBuffer[4096];
+    long unsigned int  nameSize = 4096;
 
-   if (GetComputerName(nameBuffer, &nameSize)) {
-      nameLocal = QString::fromStdWString(nameBuffer);
-   }
+    if ( GetComputerName( nameBuffer, &nameSize ) )
+    {
+        nameLocal = QString::fromStdWString( nameBuffer );
+    }
 
-   // struct SERVER_INFO_100 declared in lm.h
-   using Server100 = SERVER_INFO_100;
+    // struct SERVER_INFO_100 declared in lm.h
+    using Server100 = SERVER_INFO_100;
 
-   Server100 *buffer;
+    Server100 *buffer;
 
-   wchar_t *serverName           = NULL;
-   long unsigned int maxLen      = MAX_PREFERRED_LENGTH;
-   long unsigned int entriesRead = 0;
-   long unsigned int count       = 0;
-   long unsigned int serverType  = SV_TYPE_SERVER;        // all servers
-   wchar_t *domainName           = NULL;
-   long unsigned int resume      = 0;
+    wchar_t *serverName           = NULL;
+    long unsigned int maxLen      = MAX_PREFERRED_LENGTH;
+    long unsigned int entriesRead = 0;
+    long unsigned int count       = 0;
+    long unsigned int serverType  = SV_TYPE_SERVER;        // all servers
+    wchar_t *domainName           = NULL;
+    long unsigned int resume      = 0;
 
-   NET_API_STATUS nStatus;
+    NET_API_STATUS nStatus;
 
-   nStatus = NetServerEnum(serverName, 100, (LPBYTE *) &buffer, maxLen, &entriesRead, &count, serverType, domainName, &resume);
+    nStatus = NetServerEnum( serverName, 100, ( LPBYTE * ) &buffer, maxLen, &entriesRead, &count, serverType, domainName, &resume );
 
-   if ((nStatus == NERR_Success) || (nStatus == ERROR_MORE_DATA)) {
+    if ( ( nStatus == NERR_Success ) || ( nStatus == ERROR_MORE_DATA ) )
+    {
 
-      if (buffer != NULL) {
+        if ( buffer != NULL )
+        {
 
-         for (uint32_t k = 0; k < entriesRead; k++)  {
-            QString temp = QString::fromStdWString(buffer[k].sv100_name);
+            for ( uint32_t k = 0; k < entriesRead; k++ )
+            {
+                QString temp = QString::fromStdWString( buffer[k].sv100_name );
 
-            if (temp != nameLocal ) {
-               retval.append( netServers{temp, true} );
+                if ( temp != nameLocal )
+                {
+                    retval.append( netServers{temp, true} );
+                }
             }
-         }
-      }
-   }
+        }
+    }
 
 #endif
 
-   return retval;
+    return retval;
 }
 
 /*
 
 // QFileSystemModel finds the netShares, this method is not required
 QList<netShares> Dialog_XP_GetDir::getWin_NetShares()
-{  
+{
    QList<netShares> retval;
 
    // struct PSHARE_INFO_502 declared in lm.h
@@ -397,7 +420,7 @@ QList<netShares> Dialog_XP_GetDir::getWin_NetShares()
 
             NetApiBufferFree(buffer);
             break;
-         }                        
+         }
       }
 
       // must reset

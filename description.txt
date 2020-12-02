@@ -1,0 +1,8 @@
+This is the Diamond text editor.
+ Diamond has been developed using the CopperSpice cross
+ platform C++ libraries. It supports EDT keypad navigation,
+ backups, color themes, and much more. You can configure a backup directory
+ where you not only store a backup copy with each save
+ and can control the maximum number of backups, but
+ also the ability to list and view all backups for a given
+ file. The Diamond Editor is open source and released under GPL V2.
