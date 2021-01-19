@@ -111,8 +111,9 @@ QStringList SpellCheck::suggest(const QString &word)
    QVector<std::string> suggestWordList = QVector<std::string>::fromStdVector(m_hunspell->suggest(word.toStdString()));
 
    for (auto item : suggestWordList) {
-      suggestions.append(QString::fromStdString(item));
+      suggestions.append(QString::fromLatin1(item.c_str()));
    }
+
 #else
    char **suggestWordList;
 
