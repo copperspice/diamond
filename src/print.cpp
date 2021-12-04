@@ -67,7 +67,7 @@ void MainWindow::printPdf()
    QString outputName = QFileInfo(m_curFile).baseName() + ".pdf";
 
    QString selectedFilter;
-   QFileDialog::Options options;
+   QFileDialog::FileDialogOptions options;
 
    QString fileName = QFileDialog::getSaveFileName(this, tr("Print to PDF"),
          outputName, tr("PDF File (*.pdf)"), &selectedFilter, options);

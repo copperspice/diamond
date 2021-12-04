@@ -144,7 +144,7 @@ void MainWindow::open_RelatedFile()
 void MainWindow::openDoc(QString path)
 {
    QString selectedFilter;
-   QFileDialog::Options options;
+   QFileDialog::FileDialogOptions options;
 
    // force windows 7 and 8 to honor initial path
    options = QFileDialog::ForceInitialDir_Win7;
@@ -305,7 +305,7 @@ bool MainWindow::saveAs(SaveFiles saveType)
    bool retval = false;
 
    QString selectedFilter;
-   QFileDialog::Options options;
+   QFileDialog::FileDialogOptions options;
 
    // find the current or prior path
    QString path = pathName(m_curFile);

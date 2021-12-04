@@ -715,7 +715,7 @@ void MainWindow::json_getFileName()
 #endif
 
    QString selectedFilter;
-   QFileDialog::Options options;
+   QFileDialog::FileDialogOptions options;
 
    QMessageBox quest;
    quest.setWindowTitle(tr("Diamond Editor"));
@@ -1228,7 +1228,7 @@ QString MainWindow::get_SyntaxPath(QString syntaxPath)
 QString MainWindow::get_xxFile(QString title, QString fname, QString filter)
 {
    QString selectedFilter;
-   QFileDialog::Options options;
+   QFileDialog::FileDialogOptions options;
 
    // force windows 7 and 8 to honor initial path
    options = QFileDialog::ForceInitialDir_Win7;
@@ -1350,7 +1350,7 @@ void MainWindow::move_ConfigFile()
          // create
          {
             QString selectedFilter;
-            QFileDialog::Options options;
+            QFileDialog::FileDialogOptions options;
 
             // force windows 7 and 8 to honor initial path
             options = QFileDialog::ForceInitialDir_Win7;
@@ -1384,7 +1384,7 @@ void MainWindow::move_ConfigFile()
          // select
          {
             QString selectedFilter;
-            QFileDialog::Options options;
+            QFileDialog::FileDialogOptions options;
 
             QString newName = QFileDialog::getOpenFileName(this, tr("Select Diamond Configuration File"),
                   "*.json", tr("Json Files (*.json)"), &selectedFilter, options);

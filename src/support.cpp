@@ -140,7 +140,7 @@ QString MainWindow::get_curFileName(int whichTab)
 
 QString MainWindow::get_DirPath(QString message, QString path)
 {
-   QFileDialog::Options options;
+   QFileDialog::FileDialogOptions options;
    options |= QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks;
 
    QString retval;

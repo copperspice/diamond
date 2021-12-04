@@ -159,7 +159,7 @@ void Dialog_Options::cancel()
 void Dialog_Options::pick_Main()
 {
    QString selectedFilter;
-   QFileDialog::Options options;
+   QFileDialog::FileDialogOptions options;
 
    // force windows 7 and 8 to honor initial path
    options = QFileDialog::ForceInitialDir_Win7;
@@ -175,7 +175,7 @@ void Dialog_Options::pick_Main()
 void Dialog_Options::pick_User()
 {
    QString selectedFilter;
-   QFileDialog::Options options;
+   QFileDialog::FileDialogOptions options;
 
    // force windows 7 and 8 to honor initial path
    options = QFileDialog::ForceInitialDir_Win7;
