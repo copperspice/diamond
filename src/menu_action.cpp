@@ -549,6 +549,9 @@ void MainWindow::insertSymbol()
          if (text.toLower() == "tab character")  {
             m_textEdit->textCursor().insertText(QChar(9));
 
+         } else if (text.toLower() == "# sign")  {
+            m_textEdit->textCursor().insertText("&#35;");
+
          } else  {
             m_textEdit->textCursor().insertText(text);
          }

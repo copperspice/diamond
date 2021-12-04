@@ -52,6 +52,7 @@ Dialog_Symbols::~Dialog_Symbols()
 
 QStringList Dialog_Symbols::initData()
 {
+   // value may be adjusted in menu_action.cpp insertSymbol()
    QStringList data;
 
    data
@@ -62,7 +63,8 @@ QStringList Dialog_Symbols::initData()
         << "&mdash;"
         << "&ndash;"
         << "&quot;"
-        << "Tab Character"    // tab
+        << "Tab Character"
+        << "# Sign"
         << QChar(0x00BC)      // "1/4"
         << QChar(0x00BD)      // "1/2"
         << QChar(0x00BE)      // "3/4"
