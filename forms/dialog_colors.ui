@@ -9,8 +9,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>797</width>
-    <height>470</height>
+    <width>872</width>
+    <height>499</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -61,17 +61,17 @@
       </font>
      </property>
      <property name="plainText">
-      <string>#include &lt;QString&gt;
+      <string>&#35;include &lt;QString&gt;
 
-class CodeColoring 
+class CodeColoring
 {
    public:
       bool fred(double var1);
       QString test(int x, int y);	
-      
+
    private:
       double var1;	
-      void sally();  
+      void sally();
 };
 
 QString CodeColoring ::test(int x, int y)
@@ -79,9 +79,9 @@ QString CodeColoring ::test(int x, int y)
    QString retval = &quot;no&quot;;	
 
    // test if x is greater than y
-   if  ( x &gt; y)  {
-      retval = &quot;yes&quot; ; 
-   }    
+   if  (x &gt; y)  {
+      retval = &quot;yes&quot; ;
+   }
 
    return retval;	
 }</string>
@@ -692,6 +692,11 @@ QString CodeColoring ::test(int x, int y)
      </item>
      <item row="7" column="3">
       <widget class="QCheckBox" name="mline_Bold_CB">
+       <property name="font">
+        <font>
+         <pointsize>10</pointsize>
+        </font>
+       </property>
        <property name="text">
         <string>Bold</string>
        </property>
@@ -699,6 +704,11 @@ QString CodeColoring ::test(int x, int y)
      </item>
      <item row="7" column="4">
       <widget class="QCheckBox" name="mline_Italic_CB">
+       <property name="font">
+        <font>
+         <pointsize>10</pointsize>
+        </font>
+       </property>
        <property name="text">
         <string>Italic</string>
        </property>
