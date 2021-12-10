@@ -275,6 +275,9 @@ class MainWindow : public QMainWindow
       bool json_SaveFile(QByteArray route);
       QByteArray json_ReadFile();
 
+      void json_setTabList(QStringList list);
+      QStringList json_getTabList();
+
       QStringList json_Load_MacroIds();
       bool json_Load_Macro(QString macroName);
 
@@ -403,6 +406,8 @@ class MainWindow : public QMainWindow
       void macroLoad();
       void macroEditNames();
       void spellCheck();
+      void saveTabs();
+      void loadTabs();
 
       // options
       void setColors();

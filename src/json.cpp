@@ -1215,6 +1215,70 @@ bool MainWindow::json_CreateNew()
    return ok;
 }
 
+void MainWindow::json_setTabList(QStringList list)
+{
+   // get json tag
+   QString userTag = "docs";      // query user to add another category
+
+   // get existing json data
+   QByteArray data = json_ReadFile();
+
+   if (data.isEmpty()) {
+      csError("Config File Error", "Configuration data is empty, aborting ...");
+      return;
+   }
+
+   QJsonDocument doc  = QJsonDocument::fromJson(data);
+   QJsonObject object = doc.object();
+
+   QJsonObject extra = object.value("opened-files-extra").toObject();
+
+   // save extra json data
+   QJsonArray tmp = QJsonArray::fromStringList(list);
+   extra.insert(userTag, tmp);
+
+   object.insert("opened-files-extra", extra);
+
+   // save the new data
+   doc.setObject(object);
+   data = doc.toJson();
+
+   json_SaveFile(data);
+}
+
+QStringList MainWindow::json_getTabList()
+{
+   QStringList list;
+
+   // get json tag
+   QString userTag = "docs";      // query user to add another category
+
+   // get existing json data
+   QByteArray data = json_ReadFile();
+
+  if (data.isEmpty()) {
+      csError("Config File Error", "Configuration data is empty, aborting ...");
+      return list;
+   }
+
+   QJsonDocument doc = QJsonDocument::fromJson(data);
+   QJsonObject object = doc.object();
+
+   QJsonObject extra = object.value("opened-files-extra").toObject();
+
+   // retrieve extra json data
+   QJsonArray array = extra.value(userTag).toArray();
+
+   for (auto item : array)  {
+      QString fileName = item.toString();
+
+      if (! fileName.isEmpty()) {
+         list.append(fileName);
+      }
+   }
+
+   return list;
+}
 
 // **
 QString MainWindow::get_SyntaxPath(QString syntaxPath)

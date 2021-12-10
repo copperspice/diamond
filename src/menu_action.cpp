@@ -1544,3 +1544,38 @@ void MainWindow::spellCheck()
       }
    }
 }
+
+// **
+void MainWindow::saveTabs()
+{
+   QStringList list;
+
+   QWidget *tmp;
+   DiamondTextEdit *textEdit;
+
+   int count = m_tabWidget->count();
+
+   for (int whichTab = 0; whichTab < count; ++whichTab) {
+
+      tmp = m_tabWidget->widget(whichTab);
+      textEdit = dynamic_cast<DiamondTextEdit *>(tmp);
+
+      if (textEdit != nullptr) {
+         list.append(this->get_curFileName(whichTab));
+      }
+   }
+
+   json_setTabList(list);
+}
+
+void MainWindow::loadTabs()
+{
+   QStringList extraFiles = json_getTabList();
+
+   for (auto fileName : extraFiles)  {
+      if (loadFile(fileName, true, false)) {
+         m_openedFiles.append(fileName);
+         m_openedModified.append(false);
+      }
+   }
+}

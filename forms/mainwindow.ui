@@ -26,7 +26,7 @@
      <x>0</x>
      <y>0</y>
      <width>800</width>
-     <height>28</height>
+     <height>25</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -219,6 +219,9 @@
     <addaction name="actionMacro_EditNames"/>
     <addaction name="separator"/>
     <addaction name="actionSpell_Check"/>
+    <addaction name="separator"/>
+    <addaction name="actionSaveTabs"/>
+    <addaction name="actionLoadTabs"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuEdit"/>
@@ -808,6 +811,16 @@
   <action name="actionSyn_Xml">
    <property name="text">
     <string>XML</string>
+   </property>
+  </action>
+  <action name="actionSaveTabs">
+   <property name="text">
+    <string>Save List of Open Files</string>
+   </property>
+  </action>
+  <action name="actionLoadTabs">
+   <property name="text">
+    <string>Load Existing List of Files</string>
    </property>
   </action>
  </widget>

@@ -477,6 +477,8 @@ void MainWindow::createConnections()
    connect(m_ui->actionMacro_Load,        &QAction::triggered, this, &MainWindow::macroLoad);
    connect(m_ui->actionMacro_EditNames,   &QAction::triggered, this, &MainWindow::macroEditNames);
    connect(m_ui->actionSpell_Check,       &QAction::triggered, this, &MainWindow::spellCheck);
+   connect(m_ui->actionSaveTabs,          &QAction::triggered, this, &MainWindow::saveTabs);
+   connect(m_ui->actionLoadTabs,          &QAction::triggered, this, &MainWindow::loadTabs);
 
    // settings
    connect(m_ui->actionColors,            &QAction::triggered, this, &MainWindow::setColors);
