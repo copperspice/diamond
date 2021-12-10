@@ -263,11 +263,11 @@ void MainWindow::setOptions()
       m_struct.key_print       = options.key_print;
       m_struct.key_undo        = options.key_undo;
       m_struct.key_redo        = options.key_redo;
-      m_struct.key_cut	       = options.key_cut;
-      m_struct.key_copy	       = options.key_copy;
+      m_struct.key_cut         = options.key_cut;
+      m_struct.key_copy        = options.key_copy;
       m_struct.key_paste       = options.key_paste;
       m_struct.key_selectAll   = options.key_selectAll;
-      m_struct.key_find	       = options.key_find;
+      m_struct.key_find        = options.key_find;
       m_struct.key_replace     = options.key_replace;
       m_struct.key_findNext    = options.key_findNext;
       m_struct.key_findPrev    = options.key_findPrev;

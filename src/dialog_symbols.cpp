@@ -91,10 +91,10 @@ QStringList Dialog_Symbols::initData()
         << QChar(0x00EB)      // �  lower case e ..
         << QChar(0x00EF)      // �  lower case i ..
 
-        << QChar(0x00F2)      //     lower case o accent
-        << QChar(0x00F3)      //     lower case o accent
-        << QChar(0x00F4)      //     lower case o hat
-        << QChar(0x00F5)      //     lower case o tilde
+        << QChar(0x00F2)      //    lower case o accent
+        << QChar(0x00F3)      //    lower case o accent
+        << QChar(0x00F4)      //    lower case o hat
+        << QChar(0x00F5)      //    lower case o tilde
         << QChar(0x00F6)      // �  lower case o ..
 
         << QChar(0x00FC);     // �  lower case u

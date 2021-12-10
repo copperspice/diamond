@@ -23,7 +23,7 @@
 #include <QTreeWidgetItem>
 
 struct netServers {
-   QString serverName;   
+   QString serverName;
    bool isAvailable;
 };
 
@@ -46,7 +46,7 @@ class Dialog_XP_GetDir  : public QDialog
        QSize sizeHint() const;
 
    private:
-      Ui::Dialog_XP_GetDir *m_ui;      
+      Ui::Dialog_XP_GetDir *m_ui;
       QFileSystemModel  *m_model_R;
 
       QString m_path;

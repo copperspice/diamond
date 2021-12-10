@@ -45,9 +45,9 @@ void csMsg(QString msg, int value)
 
 void csMsg(QWidget *parent, const QString &title, const QString &msg)
 {
-   QMessageBox msgB;
+   QMessageBox msgB(parent);
 
-   if (parent) {
+   if (parent != nullptr) {
       msgB.setWindowModality(Qt::WindowModal);
    }
 

@@ -174,7 +174,6 @@ void DiamondTextEdit::contextMenuEvent(QContextMenuEvent *event)
       int cnt = m_maybeList.count();
 
       if (cnt > 0)  {
-
          for (int k = 0; k < cnt; ++k)  {
             menu->addAction(m_maybeList[k], m_mainWindow, SLOT(spell_replaceWord())  );
          }
@@ -187,7 +186,7 @@ void DiamondTextEdit::contextMenuEvent(QContextMenuEvent *event)
    QAction *tempAction;
 
    if (isSelected) {
-      menu->addAction("Rewrap Paragraph",  m_mainWindow, SLOT(rewrapParagraph()) );
+      menu->addAction("Rewrap Paragraph", m_mainWindow, SLOT(rewrapParagraph()) );
       menu->addSeparator();
    }
 

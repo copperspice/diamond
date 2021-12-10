@@ -399,7 +399,7 @@ class MainWindow : public QMainWindow
       void fixSpaces_Tab();
       void deleteEOL_Spaces();
 
-      // macro
+      // tools
       void mw_macroStart();
       void mw_macroStop();
       void macroPlay();

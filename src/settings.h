@@ -23,25 +23,24 @@ struct Settings {
    int   rewrapColumn;
    int   tabSpacing;
 
-   bool  showLineHighlight;
-   bool  showLineNumbers;
+   bool  autoLoad;
    bool  isColumnMode;
    bool  isSpellCheck;
    bool  isWordWrap;
+   bool  removeSpace;
+   bool  showLineHighlight;
+   bool  showLineNumbers;
    bool  show_Spaces;
    bool  show_Breaks;
-
    bool  useSpaces;
-   bool  removeSpace;
-   bool  autoLoad;
 
-   QString pathSyntax;
-   QString pathPrior;
-   QString formatDate;
-   QString formatTime;
+   QString aboutUrl;
    QString dictMain;
    QString dictUser;
-   QString aboutUrl;
+   QString formatDate;
+   QString formatTime;
+   QString pathSyntax;
+   QString pathPrior;
 
    QFont   fontNormal;
    QFont   fontColumn;
@@ -115,16 +114,16 @@ struct Options {
    int   rewrapColumn;
    int   tabSpacing;
 
-   bool  useSpaces;
-   bool  removeSpace;
    bool  autoLoad;
+   bool  removeSpace;
+   bool  useSpaces;
 
-   QString formatDate;
-   QString formatTime;
+   QString aboutUrl;
    QString dictMain;
    QString dictUser;
+   QString formatDate;
+   QString formatTime;
    QString pathSyntax;
-   QString aboutUrl;
 
    QString key_open;
    QString key_close;

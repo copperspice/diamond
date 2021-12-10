@@ -95,19 +95,17 @@ bool MainWindow::json_Read(Config trail)
       value = object.value("rewrapColumn");
       m_struct.rewrapColumn = value.toInt();
 
-      m_struct.showLineHighlight = object.value("showLineHighlight").toBool();
-      m_struct.showLineNumbers   = object.value("showLineNumbers").toBool();
-      m_struct.isWordWrap        = object.value("word-wrap").toBool();
-      m_struct.show_Spaces       = object.value("showSpaces").toBool();
-      m_struct.show_Breaks       = object.value("showBreaks").toBool();
+      m_struct.autoLoad          = object.value("autoLoad").toBool();
       m_struct.isColumnMode      = object.value("column-mode").toBool();
       m_struct.isSpellCheck      = object.value("spellcheck").toBool();
-
-      m_struct.useSpaces         = object.value("useSpaces").toBool();
+      m_struct.isWordWrap        = object.value("word-wrap").toBool();
       m_struct.removeSpace       = object.value("removeSpace").toBool();
-      m_struct.autoLoad          = object.value("autoLoad").toBool();
+      m_struct.showLineHighlight = object.value("showLineHighlight").toBool();
+      m_struct.showLineNumbers   = object.value("showLineNumbers").toBool();
+      m_struct.show_Spaces       = object.value("showSpaces").toBool();
+      m_struct.show_Breaks       = object.value("showBreaks").toBool();
+      m_struct.useSpaces         = object.value("useSpaces").toBool();
 
-      //
       m_struct.formatDate      = object.value("formatDate").toString();
       m_struct.formatTime      = object.value("formatTime").toString();
       m_struct.pathPrior       = object.value("pathPrior").toString();
@@ -355,7 +353,7 @@ bool MainWindow::json_Write(Option route, Config trail)
       QByteArray data = json_ReadFile();
 
       if (data.isEmpty()) {
-         csError("Save Configuration", "Configuration data is empty, aborting update...");
+         csError("Config File Error", "Configuration data is empty, aborting update...");
          return false;
       }
 
@@ -385,8 +383,8 @@ bool MainWindow::json_Write(Option route, Config trail)
 
             {
               // opened files
-              QJsonArray temp = QJsonArray::fromStringList(m_openedFiles);
-              object.insert("opened-files", temp);
+              QJsonArray tmp = QJsonArray::fromStringList(m_openedFiles);
+              object.insert("opened-files", tmp);
             }
 
             break;
@@ -821,12 +819,13 @@ bool MainWindow::json_CreateNew()
 
    object.insert("showLineNumbers",   true);
    object.insert("showLineHighlight", true);
-   object.insert("word-wrap",   false);
+
+   object.insert("autoLoad",    true);
+   object.insert("column-mode", false);
    object.insert("showSpaces",  false);
    object.insert("showBreaks",  false);
-   object.insert("column-mode", false);
    object.insert("spellcheck",  false);
-   object.insert("autoLoad",    true);
+   object.insert("word-wrap",   false);
 
    value = QJsonValue(QString("MM/dd/yyyy"));
    object.insert("formatDate", value);

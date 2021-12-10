@@ -146,7 +146,7 @@ void MainWindow::openDoc(QString path)
    QString selectedFilter;
    QFileDialog::FileDialogOptions options;
 
-   // force windows 7 and 8 to honor initial path
+   // force windows 7 to honor initial path
    options = QFileDialog::ForceInitialDir_Win7;
 
    QStringList fileList = QFileDialog::getOpenFileNames(this, tr("Select File"),
@@ -318,7 +318,7 @@ bool MainWindow::saveAs(SaveFiles saveType)
       }
    }
 
-   // force windows 7 and 8 to honor initial path
+   // force windows 7 to honor initial path
    options = QFileDialog::ForceInitialDir_Win7;
 
    QString fileName = QFileDialog::getSaveFileName(this, tr("Create or Select File"),
