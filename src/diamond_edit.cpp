@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright (c) 2012-2021 Barbara Geller
+* Copyright (c) 2012-2022 Barbara Geller
 *
 * Diamond Editor is free software: you can redistribute it and/or
 * modify it under the terms of the GNU General Public License version 2
