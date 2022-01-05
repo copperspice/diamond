@@ -145,7 +145,7 @@ static void showVersion()
           "<td>ansel@copperspice.com</td></tr>"
       "</table></font>"
       "<br>"
-      "<p><small>Copyright 2012-2020 BG Consulting, All rights reserved.<br>"
+      "<p><small>Copyright 2012-2022 BG Consulting, All rights reserved.<br>"
       "This program is provided AS IS with no warranty of any kind.<br></small></p>";
 
    QMessageBox msgB;
