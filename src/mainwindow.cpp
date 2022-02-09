@@ -29,7 +29,7 @@ MainWindow::MainWindow(QStringList fileList, QStringList flagList)
    setDiamondTitle("untitled.txt");
 
    setIconSize(QSize(32,32));
-   setWindowIcon(QIcon("://resources/diamond.png"));
+   setWindowIcon(QIcon(":/resources/diamond.png"));
 
    if (! json_Read(CFG_STARTUP) ) {
       // do not start program
@@ -352,7 +352,7 @@ void MainWindow::about()
    //
    QMessageBox msgB;
    msgB.setIcon(QMessageBox::NoIcon);
-   msgB.setWindowIcon(QIcon("://resources/diamond.png"));
+   msgB.setWindowIcon(QIcon(":/resources/diamond.png"));
 
    msgB.setWindowTitle(tr("About Diamond"));
    msgB.setText(tr("<p style=margin-right:25><center><h5>Version: %1<br>Build # %2</h5></center></p>")
