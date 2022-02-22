@@ -718,7 +718,7 @@ void MainWindow::json_getFileName()
    QMessageBox quest;
    quest.setWindowTitle(tr("Diamond Editor"));
    quest.setText(tr("Diamond configuration file is missing.\n\n"
-                    "Selet an option to (a) create the configuration file in the system default location, "
+                    "Select an option to (a) create the configuration file in the system default location, "
                     "(b) pick a folder location, or (c) select an existing Diamond Configuration file.\n"));
 
    QPushButton *createDefault  = quest.addButton("Default Location",     QMessageBox::AcceptRole );
