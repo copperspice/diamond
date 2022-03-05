@@ -713,7 +713,6 @@ void MainWindow::json_getFileName()
 #endif
 
    QString selectedFilter;
-   QFileDialog::FileDialogOptions options;
 
    QMessageBox quest;
    quest.setWindowTitle(tr("Diamond Editor"));
@@ -741,16 +740,13 @@ void MainWindow::json_getFileName()
    } else if (quest.clickedButton() == createNew) {
       QString fname = m_appPath + "/config.json";
 
-      // force windows 7 and 8 to honor initial path
-      options = QFileDialog::ForceInitialDir_Win7;
-
       m_jsonFname = QFileDialog::getSaveFileName(this, tr("Create new Configuration File"),
-            fname, tr("Json Files (*.json)"), &selectedFilter, options);
+            fname, tr("Json Files (*.json)"), &selectedFilter);
 
    } else if (quest.clickedButton() == selectExist) {
 
       m_jsonFname = QFileDialog::getOpenFileName(this, tr("Select Existing Diamond Configuration File"),
-            "", tr("Json Files (*.json)"), &selectedFilter, options);
+            "", tr("Json Files (*.json)"), &selectedFilter);
 
    } else {
       // user aborted
@@ -1291,15 +1287,11 @@ QString MainWindow::get_SyntaxPath(QString syntaxPath)
 QString MainWindow::get_xxFile(QString title, QString fname, QString filter)
 {
    QString selectedFilter;
-   QFileDialog::FileDialogOptions options;
-
-   // force windows 7 and 8 to honor initial path
-   options = QFileDialog::ForceInitialDir_Win7;
 
    fname = m_appPath + "/" + fname;
 
    QString file = QFileDialog::getOpenFileName(this, "Select " + title,
-         fname, filter, &selectedFilter, options);
+         fname, filter, &selectedFilter);
 
    return file;
 }
@@ -1413,13 +1405,9 @@ void MainWindow::move_ConfigFile()
          // create
          {
             QString selectedFilter;
-            QFileDialog::FileDialogOptions options;
-
-            // force windows 7 and 8 to honor initial path
-            options = QFileDialog::ForceInitialDir_Win7;
 
             QString newName = QFileDialog::getSaveFileName(this, tr("Create New Configuration File"),
-                  m_appPath + "/config.json", tr("Json Files (*.json)"), &selectedFilter, options);
+                  m_appPath + "/config.json", tr("Json Files (*.json)"), &selectedFilter);
 
             if (newName.isEmpty()) {
                // do nothing

@@ -159,13 +159,9 @@ void Dialog_Options::cancel()
 void Dialog_Options::pick_Main()
 {
    QString selectedFilter;
-   QFileDialog::FileDialogOptions options;
-
-   // force windows 7 and 8 to honor initial path
-   options = QFileDialog::ForceInitialDir_Win7;
 
    QString fileName = QFileDialog::getOpenFileName(this, tr("Select Main Dictionary"),
-         m_ui->dictMain->text(), tr("Dictionary File (*.dic)"), &selectedFilter, options);
+         m_ui->dictMain->text(), tr("Dictionary File (*.dic)"), &selectedFilter);
 
    if (! fileName.isEmpty()) {
       m_ui->dictMain->setText(fileName);
@@ -175,13 +171,9 @@ void Dialog_Options::pick_Main()
 void Dialog_Options::pick_User()
 {
    QString selectedFilter;
-   QFileDialog::FileDialogOptions options;
-
-   // force windows 7 and 8 to honor initial path
-   options = QFileDialog::ForceInitialDir_Win7;
 
    QString fileName = QFileDialog::getOpenFileName(this, tr("Select User Dictionary"),
-         m_ui->dictUser->text(), tr("User Dictionary File (*.txt)"), &selectedFilter, options);
+         m_ui->dictUser->text(), tr("User Dictionary File (*.txt)"), &selectedFilter);
 
    if (! fileName.isEmpty()) {
       m_ui->dictUser->setText(fileName);
