@@ -35,9 +35,10 @@ Diamond prebuilt binaries are available for Linux, Mac OS X, and Windows.
 https://download.copperspice.com/diamond/binary/
 
 To build Diamond from source a current copy of the CopperSpice libraries, a C++17 compiler, and a C++17 standard
-library are required. Diamond uses the following CopperSpice libraries are required: CsCore, CsGui, CsNetwork.
-Diamond also uses the CsPrinterDriver plugin which is copied to "your_path/diamond/printerdrivers" folder during
-the install.
+library are required. Diamond uses the following CopperSpice libraries: CsCore, CsGui, and CsNetwork.
+
+To run Diamond two plugins must be copied to the deploy folder. The platform plugin is copied to
+"your_path/diamond/platforms" and the printer driver plugin must be copied to "your_path/diamond/printerdrivers".
 
 CMake build files are provided with the Diamond source distribution.
 
