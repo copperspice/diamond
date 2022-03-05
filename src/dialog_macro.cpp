@@ -169,19 +169,19 @@ void Dialog_Macro::view()
             msg += " ";
             break;
 
-         case Qt::SHIFT:
+         case Qt::ShiftModifier:
             msg += "Shift";
             break;
 
-         case Qt::CTRL:
+         case Qt::ControlModifier:
             msg += "Control";
             break;
 
-         case Qt::META:
+         case Qt::MetaModifier:
             msg += "Meta";
             break;
 
-         case Qt::ALT:
+         case Qt::AltModifier:
             msg += "Alt";
             break;
 
