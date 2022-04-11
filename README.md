@@ -2,12 +2,12 @@
 
 ### Introduction
 
-Diamond is a cross platform compact editor designed for programmers. It was developed using the CopperSpice
-libraries and was written in C++.
+Diamond is a cross platform editor designed for programmers. It was developed using the CopperSpice libraries and is
+written in C++.
 
-The Diamond project began as a replacement for the Crimson and Emerald Editors, both of these were Windows
-only programs and are no longer supported. Diamond has evolved to become a programmers editor with a focus
-on developing C++ applications.
+The Diamond project began as a replacement for the Crimson and Emerald Editors, both of these were Windows only
+programs and are no longer supported. Diamond has evolved to become a programmers editor with a focus on developing
+C++ applications.
 
 
 ###### Key Features
