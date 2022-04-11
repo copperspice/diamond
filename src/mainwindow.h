@@ -355,7 +355,7 @@ class MainWindow : public QMainWindow
       void caseCap();
 
       CS_SLOT_1(Private, void deleteLine())
-       CS_SLOT_2(deleteLine)
+      CS_SLOT_2(deleteLine)
 
       CS_SLOT_1(Private, void deleteEOL())
       CS_SLOT_2(deleteEOL)
@@ -445,9 +445,7 @@ class MainWindow : public QMainWindow
 
       // recent folders
       void showContext_RecentFolder(const QPoint &pt);
-
-      CS_SLOT_1(Private, void rfolder_Open())
-      CS_SLOT_2(rfolder_Open)
+      void rfolder_Open();
 
       CS_SLOT_1(Private, void rfolder_ClearList())
       CS_SLOT_2(rfolder_ClearList)
@@ -456,14 +454,11 @@ class MainWindow : public QMainWindow
       CS_SLOT_2(rfolder_RemoveFName)
 
       // preset folders
-      CS_SLOT_1(Private, void prefolder_Open())
-      CS_SLOT_2(prefolder_Open)
+      void prefolder_Open();
 
       // recent files
       void showContext_Files(const QPoint &pt);
-
-      CS_SLOT_1(Private, void rf_Open())
-      CS_SLOT_2(rf_Open)
+      void rf_Open();
 
       CS_SLOT_1(Private, void rf_ClearList())
       CS_SLOT_2(rf_ClearList)

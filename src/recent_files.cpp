@@ -46,8 +46,8 @@ void MainWindow::rf_CreateMenus()
          rf_Actions[i]->setVisible(false);
       }
 
-      connect(rf_Actions[i], SIGNAL(triggered()), this, SLOT(rf_Open()));
-   }   
+      connect(rf_Actions[i], &QAction::triggered, this, &MainWindow::rf_Open);
+   }
 }
 
 void MainWindow::rf_Open()
@@ -197,7 +197,7 @@ void MainWindow::rfolder_CreateMenus()
          rfolder_Actions[i]->setVisible(false);
       }
 
-      connect(rfolder_Actions[i], SIGNAL(triggered()), this, SLOT(rfolder_Open()));
+      connect(rfolder_Actions[i], &QAction::triggered, this, &MainWindow::rfolder_Open);
    }
 
    m_ui->actionOpen_RecentFolder->setMenu(menu);
@@ -337,7 +337,7 @@ void MainWindow::prefolder_CreateMenus()
       prefolder_Actions[i]->setData(QString("preset-folder"));
 
       menu->addAction(prefolder_Actions[i]);
-      connect(prefolder_Actions[i], SIGNAL(triggered()), this, SLOT(prefolder_Open()));
+      connect(prefolder_Actions[i], &QAction::triggered, this, &MainWindow::prefolder_Open);
    }
 
    m_ui->actionOpen_PresetFolder->setMenu(menu);
