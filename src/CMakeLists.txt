@@ -79,6 +79,7 @@ list(APPEND DIAMOND_SOURCES
    ${CMAKE_CURRENT_SOURCE_DIR}/../forms/mainwindow.ui
 
    qrc_diamond.cpp
+   ${CMAKE_CURRENT_SOURCE_DIR}/../diamond.rc
 )
 
 # run rcc to generate qrc output
