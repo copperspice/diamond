@@ -59,19 +59,19 @@ Dialog_Macro::~Dialog_Macro()
 }
 
 void Dialog_Macro::setupTitle()
-{   
+{
    if (m_enum == MACRO_LOAD) {
       setWindowTitle("Load Macro");
 
    } else if (m_enum == MACRO_SAVE)  {
       m_ui->select_PB->setText("Save");
-      setWindowTitle("Save Macro");    
+      setWindowTitle("Save Macro");
 
    } else if (m_enum == MACRO_EDITNAMES) {
       m_ui->select_PB->setDisabled(true);
       setWindowTitle("Edit Macro Names");
 
-   } 
+   }
 }
 
 void Dialog_Macro::setUpView()
@@ -83,15 +83,15 @@ void Dialog_Macro::setUpView()
 
    //
    m_ui->tableView->setModel(m_model);
-   m_ui->tableView->setSelectionMode(QAbstractItemView::SingleSelection);   
+   m_ui->tableView->setSelectionMode(QAbstractItemView::SingleSelection);
    m_ui->tableView->setEditTriggers(QAbstractItemView::NoEditTriggers);
 
    m_ui->tableView->setColumnWidth(0, 95);
    m_ui->tableView->setColumnWidth(1, 250);
 
    // resize the last column
-   m_ui->tableView->horizontalHeader()->setStretchLastSection(true);      
-   QBrush brush = QColor(0,0,255);    
+   m_ui->tableView->horizontalHeader()->setStretchLastSection(true);
+   QBrush brush = QColor(0,0,255);
 
    // add data
    m_maxCount = m_macroIds_D.size();
@@ -118,12 +118,12 @@ void Dialog_Macro::setUpView()
 }
 
 void Dialog_Macro::tableDataChanged(const QModelIndex & topLeft, const QModelIndex & bottomRight)
-{  
+{
    m_updateNames = true;
 }
 
 void Dialog_Macro::select()
-{   
+{
    if (m_updateNames) {
 
       for (int row = 0; row < m_maxCount; ++row) {
@@ -307,7 +307,7 @@ void Dialog_Macro::view()
 
    QDialog msgB;
    msgB.setWindowIcon(QIcon("://resources/diamond.png"));
-   msgB.setWindowTitle("View Macro - " + macro);      
+   msgB.setWindowTitle("View Macro - " + macro);
    msgB.setMinimumWidth(120);
 
    //

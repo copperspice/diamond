@@ -92,7 +92,7 @@ void MainWindow::showContext_Files(const QPoint &pt)
          rfAction->setData(fName);
 
          menu->exec(m_ui->menuFile->mapToGlobal(pt));
-         delete menu;    
+         delete menu;
       }
    }
 }
@@ -166,7 +166,7 @@ void MainWindow::rf_UpdateActions()
         rf_Actions[i]->setVisible(false);
      }
 
-   }   
+   }
 }
 
 

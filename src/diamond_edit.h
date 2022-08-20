@@ -43,7 +43,7 @@ class DiamondTextEdit : public QPlainTextEdit
       void lineNum_PaintEvent(QPaintEvent *event);
       int lineNum_Width();
 
-      void set_ShowLineNum(bool data);           
+      void set_ShowLineNum(bool data);
 
       // column mode
       void set_ColumnMode(bool data);
@@ -83,12 +83,12 @@ class DiamondTextEdit : public QPlainTextEdit
       bool event(QEvent *event);
       void keyPressEvent(QKeyEvent *event);
       void keyReleaseEvent(QKeyEvent *event);
-      void resizeEvent(QResizeEvent *event);            
+      void resizeEvent(QResizeEvent *event);
       void mousePressEvent(QMouseEvent *event);
 
    private:
       MainWindow *m_mainWindow;
-      QWidget *m_lineNumArea;     
+      QWidget *m_lineNumArea;
 
       // column mode
       bool m_isColumnMode;
@@ -105,7 +105,7 @@ class DiamondTextEdit : public QPlainTextEdit
 
       // copy buffer
       QList<QString> m_copyBuffer;
-      void addToCopyBuffer(const QString &text);      
+      void addToCopyBuffer(const QString &text);
 
       // macro
       bool m_record;
@@ -122,7 +122,7 @@ class DiamondTextEdit : public QPlainTextEdit
       SyntaxTypes m_syntaxEnum;
 
       CS_SLOT_1(Private, void update_LineNumWidth(int newBlockCount))
-      CS_SLOT_2(update_LineNumWidth) 
+      CS_SLOT_2(update_LineNumWidth)
 
       CS_SLOT_1(Private, void update_LineNumArea(const QRect & rect,int value))
       CS_SLOT_2(update_LineNumArea)
@@ -148,7 +148,6 @@ class LineNumArea : public QWidget
    private:
      DiamondTextEdit *m_editor;
 };
-
 
 #endif
 

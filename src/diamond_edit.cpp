@@ -38,11 +38,11 @@ DiamondTextEdit::DiamondTextEdit(MainWindow *from, struct Settings settings, Spe
    // line numbers
    m_showlineNum  = settings.showLineNumbers;
    m_isColumnMode = settings.isColumnMode;
-   m_lineNumArea = new LineNumArea(this);
+   m_lineNumArea  = new LineNumArea(this);
    update_LineNumWidth(0);
 
    // syntax - assinged from loadfile(), runSyntax()
-   m_synFName     = "";
+   m_synFName     = QString();
    m_syntaxParser = 0;
 
    // spell check
@@ -64,10 +64,12 @@ void DiamondTextEdit::lineNum_PaintEvent(QPaintEvent *event)
    if (m_showlineNum)  {
 
       QPainter painter(m_lineNumArea);
-      painter.fillRect(event->rect(), FILL_COLOR );
+      painter.fillRect(event->rect(), FILL_COLOR);
+      painter.setFont(font());
 
       QTextBlock block = firstVisibleBlock();
-      int blockNumber = block.blockNumber();
+      int blockNumber  = block.blockNumber();
+
       int top    = (int) blockBoundingGeometry(block).translated(contentOffset()).top();
       int bottom = top + (int) blockBoundingRect(block).height();
 
@@ -79,8 +81,8 @@ void DiamondTextEdit::lineNum_PaintEvent(QPaintEvent *event)
             painter.drawText(0, top, m_lineNumArea->width()-7, fontMetrics().height(), Qt::AlignRight, number);
          }
 
-         block = block.next();
-         top = bottom;
+         block  = block.next();
+         top    = bottom;
          bottom = top + (int) blockBoundingRect(block).height();
          ++blockNumber;
       }
@@ -92,11 +94,11 @@ int DiamondTextEdit::lineNum_Width()
    int digits = 4;
    int max = blockCount();
 
-   for (int k=1000; k < max; k *= 10)  {
+   for (int k = 1000; k < max; k *= 10)  {
       ++digits;
    }
 
-   int space = 8 + fontMetrics().width(QLatin1Char('9')) * digits;
+   int space = 8 + fontMetrics().width(QChar('9')) * digits;
    return space;
 }
 

@@ -330,10 +330,9 @@ void MainWindow::about()
    QString icon = ":/resources/diamond.png";
 
    QString textBody =
-      "<font color='#000080'><table style=margin-right:25>"
-
-      "<tr><td><img width='96' height='96'src='" + icon + "'></td>"
-
+      "<font color='#000080'>"
+      "<table style=margin-right:25>"
+      "  <tr><td><img width='96' height='96'src='" + icon + "'></td>"
       "    <td>"
       "      <table style='margin-left:25; margin-top:15px' >"
       "        <tr><td><nobr>Developed by Barbara Geller</nobr></td>"
@@ -342,8 +341,7 @@ void MainWindow::about()
       "            <td>ansel@copperspice.com</td></tr>"
       "       </table>"
       "    </td>"
-
-      "</tr>"
+      "  </tr>"
       "</table></font>"
 
       "<p><small>Copyright 2012-2022 BG Consulting, released under the terms of the GNU GPL version 2<br>"
@@ -830,5 +828,5 @@ void MainWindow::setStatusBar(QString msg, int timeOut)
 
 void MainWindow::showNotDone(QString item)
 {
-   csMsg( item + " - this feature has not been implemented.");
+   csMsg(item + " - this feature has not been implemented.");
 }
