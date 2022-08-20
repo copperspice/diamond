@@ -90,7 +90,7 @@
       "\\bsignals\\b",
       "\\bsizeof\\b",
       "\\bslots\\b",
-      "\\bstatic\\b",
+      "\\b(?<!_)static\\b(?!_)",
       "\\bstatic_assert\\b",
       "\\bstatic_cast\\b",
       "\\bstruct\\b",
@@ -105,7 +105,7 @@
       "\\btypename\\b",
       "\\busing\\b",
       "\\bunion\\b",
-      "\\bvirtual\\b",
+      "\\b(?<!_)virtual\\b(?!_)",
       "\\bwhile\\b"
    ],
    "types": [
@@ -131,7 +131,6 @@
       "\\bregister\\b",
       "\\bshort\\b",
       "\\bsigned\\b",
-      "\\bstatic\\b",
       "\\thread_local\\b",
       "\\bunsigned\\b",
       "\\buchar\\b",
