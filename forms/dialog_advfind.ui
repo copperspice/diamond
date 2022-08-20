@@ -2,22 +2,22 @@
 <ui version="4.0">
  <class>Dialog_AdvFind</class>
  <widget class="QDialog" name="Dialog_AdvFind">
-  <property name="windowModality">
+  <property name="modal" stdset="0">
+   <bool>false</bool>
+  </property>
+  <property name="windowTitle" stdset="0">
+   <string>Find in Files</string>
+  </property>
+  <property name="windowModality" stdset="0">
    <enum>Qt::NonModal</enum>
   </property>
-  <property name="geometry">
+  <property name="geometry" stdset="0">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>487</width>
-    <height>282</height>
+    <width>489</width>
+    <height>290</height>
    </rect>
-  </property>
-  <property name="windowTitle">
-   <string>Find in Files</string>
-  </property>
-  <property name="modal">
-   <bool>false</bool>
   </property>
   <layout class="QGridLayout" name="gridLayout_top">
    <property name="topMargin">
@@ -27,26 +27,26 @@
     <layout class="QGridLayout" name="gridLayout_1">
      <item row="3" column="2">
       <widget class="QToolButton" name="folder_TB">
-       <property name="text">
+       <property name="text" stdset="0">
         <string>...</string>
        </property>
       </widget>
      </item>
      <item row="1" column="0">
       <widget class="QLabel" name="label_3">
-       <property name="font">
+       <property name="text" stdset="0">
+        <string>File Type:</string>
+       </property>
+       <property name="font" stdset="0">
         <font>
          <pointsize>10</pointsize>
         </font>
-       </property>
-       <property name="text">
-        <string>File Type:</string>
        </property>
       </widget>
      </item>
      <item row="1" column="1">
       <widget class="QLineEdit" name="findType">
-       <property name="font">
+       <property name="font" stdset="0">
         <font>
          <pointsize>10</pointsize>
         </font>
@@ -55,13 +55,13 @@
      </item>
      <item row="0" column="1">
       <widget class="QLineEdit" name="find">
-       <property name="minimumSize">
+       <property name="minimumSize" stdset="0">
         <size>
          <width>350</width>
          <height>0</height>
         </size>
        </property>
-       <property name="font">
+       <property name="font" stdset="0">
         <font>
          <pointsize>10</pointsize>
         </font>
@@ -70,43 +70,43 @@
      </item>
      <item row="0" column="0">
       <widget class="QLabel" name="label">
-       <property name="minimumSize">
+       <property name="text" stdset="0">
+        <string>Find:</string>
+       </property>
+       <property name="minimumSize" stdset="0">
         <size>
          <width>0</width>
          <height>0</height>
         </size>
        </property>
-       <property name="font">
+       <property name="font" stdset="0">
         <font>
          <pointsize>10</pointsize>
         </font>
-       </property>
-       <property name="text">
-        <string>Find:</string>
        </property>
       </widget>
      </item>
      <item row="3" column="0">
       <widget class="QLabel" name="label_2">
-       <property name="font">
+       <property name="text" stdset="0">
+        <string>Directory:</string>
+       </property>
+       <property name="font" stdset="0">
         <font>
          <pointsize>10</pointsize>
         </font>
-       </property>
-       <property name="text">
-        <string>Directory:</string>
        </property>
       </widget>
      </item>
      <item row="3" column="1">
       <widget class="QComboBox" name="findFolder">
-       <property name="font">
+       <property name="editable" stdset="0">
+        <bool>true</bool>
+       </property>
+       <property name="font" stdset="0">
         <font>
          <pointsize>10</pointsize>
         </font>
-       </property>
-       <property name="editable">
-        <bool>true</bool>
        </property>
       </widget>
      </item>
@@ -114,10 +114,7 @@
    </item>
    <item row="1" column="1">
     <spacer name="verticalSpacer_1">
-     <property name="orientation">
-      <enum>Qt::Vertical</enum>
-     </property>
-     <property name="sizeType">
+     <property name="sizeType" stdset="0">
       <enum>QSizePolicy::Fixed</enum>
      </property>
      <property name="sizeHint" stdset="0">
@@ -126,66 +123,80 @@
        <height>13</height>
       </size>
      </property>
+     <property name="orientation" stdset="0">
+      <enum>Qt::Vertical</enum>
+     </property>
     </spacer>
    </item>
    <item row="2" column="0" colspan="2">
     <layout class="QGridLayout" name="gridLayout_2">
      <item row="0" column="0">
       <spacer name="horizontalSpacer_2">
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
-       <property name="sizeType">
+       <property name="sizeType" stdset="0">
         <enum>QSizePolicy::Fixed</enum>
        </property>
        <property name="sizeHint" stdset="0">
         <size>
-         <width>70</width>
+         <width>50</width>
          <height>20</height>
         </size>
+       </property>
+       <property name="orientation" stdset="0">
+        <enum>Qt::Horizontal</enum>
        </property>
       </spacer>
      </item>
      <item row="0" column="1">
-      <widget class="QCheckBox" name="case_CKB">
-       <property name="minimumSize">
+      <widget class="QCheckBox" name="matchCase_CKB">
+       <property name="text" stdset="0">
+        <string>Match Case</string>
+       </property>
+       <property name="minimumSize" stdset="0">
         <size>
          <width>140</width>
          <height>0</height>
         </size>
        </property>
-       <property name="font">
+       <property name="font" stdset="0">
         <font>
          <pointsize>10</pointsize>
         </font>
-       </property>
-       <property name="text">
-        <string>Match Case</string>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="2">
-      <widget class="QCheckBox" name="searchSubFolders_CKB">
-       <property name="font">
-        <font>
-         <pointsize>10</pointsize>
-        </font>
-       </property>
-       <property name="text">
-        <string>Search in Sub Folders</string>
        </property>
       </widget>
      </item>
      <item row="1" column="1">
       <widget class="QCheckBox" name="wholeWords_CKB">
-       <property name="font">
+       <property name="text" stdset="0">
+        <string>Match Whole Words</string>
+       </property>
+       <property name="font" stdset="0">
         <font>
          <pointsize>10</pointsize>
         </font>
        </property>
-       <property name="text">
-        <string>Match Whole Words
-Regular Expressions </string>
+      </widget>
+     </item>
+     <item row="0" column="2">
+      <widget class="QCheckBox" name="searchSubFolders_CKB">
+       <property name="text" stdset="0">
+        <string>Search in Sub Folders</string>
+       </property>
+       <property name="font" stdset="0">
+        <font>
+         <pointsize>10</pointsize>
+        </font>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="1">
+      <widget class="QCheckBox" name="regexp_CKB">
+       <property name="text" stdset="0">
+        <string>Reqular Expression</string>
+       </property>
+       <property name="font" stdset="0">
+        <font>
+         <pointsize>10</pointsize>
+        </font>
        </property>
       </widget>
      </item>
@@ -193,10 +204,7 @@ Regular Expressions </string>
    </item>
    <item row="3" column="0">
     <spacer name="verticalSpacer_2">
-     <property name="orientation">
-      <enum>Qt::Vertical</enum>
-     </property>
-     <property name="sizeType">
+     <property name="sizeType" stdset="0">
       <enum>QSizePolicy::Fixed</enum>
      </property>
      <property name="sizeHint" stdset="0">
@@ -205,36 +213,36 @@ Regular Expressions </string>
        <height>13</height>
       </size>
      </property>
+     <property name="orientation" stdset="0">
+      <enum>Qt::Vertical</enum>
+     </property>
     </spacer>
    </item>
    <item row="4" column="0" colspan="2">
     <layout class="QHBoxLayout" name="layout_buttons">
      <item>
       <spacer name="horizontalSpacer_31">
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
        <property name="sizeHint" stdset="0">
         <size>
          <width>10</width>
          <height>20</height>
         </size>
        </property>
+       <property name="orientation" stdset="0">
+        <enum>Qt::Horizontal</enum>
+       </property>
       </spacer>
      </item>
      <item>
       <widget class="QPushButton" name="find_PB">
-       <property name="text">
+       <property name="text" stdset="0">
         <string>Find</string>
        </property>
       </widget>
      </item>
      <item>
       <spacer name="horizontalSpacer_32">
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
-       <property name="sizeType">
+       <property name="sizeType" stdset="0">
         <enum>QSizePolicy::Fixed</enum>
        </property>
        <property name="sizeHint" stdset="0">
@@ -243,25 +251,28 @@ Regular Expressions </string>
          <height>25</height>
         </size>
        </property>
+       <property name="orientation" stdset="0">
+        <enum>Qt::Horizontal</enum>
+       </property>
       </spacer>
      </item>
      <item>
       <widget class="QPushButton" name="cancel_PB">
-       <property name="text">
+       <property name="text" stdset="0">
         <string>Cancel</string>
        </property>
       </widget>
      </item>
      <item>
       <spacer name="horizontalSpacer_33">
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
        <property name="sizeHint" stdset="0">
         <size>
          <width>10</width>
          <height>20</height>
         </size>
+       </property>
+       <property name="orientation" stdset="0">
+        <enum>Qt::Horizontal</enum>
        </property>
       </spacer>
      </item>
@@ -272,9 +283,11 @@ Regular Expressions </string>
  <tabstops>
   <tabstop>find</tabstop>
   <tabstop>findType</tabstop>
+  <tabstop>findFolder</tabstop>
   <tabstop>folder_TB</tabstop>
-  <tabstop>case_CKB</tabstop>
+  <tabstop>matchCase_CKB</tabstop>
   <tabstop>wholeWords_CKB</tabstop>
+  <tabstop>regexp_CKB</tabstop>
   <tabstop>searchSubFolders_CKB</tabstop>
   <tabstop>find_PB</tabstop>
   <tabstop>cancel_PB</tabstop>
