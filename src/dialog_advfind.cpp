@@ -20,7 +20,8 @@
 
 QStringList Dialog_AdvFind::dirCombo;
 
-Dialog_AdvFind::Dialog_AdvFind(MainWindow *parent, QString findText, QString fileType, QString findFolder, bool searchFolders)
+Dialog_AdvFind::Dialog_AdvFind(MainWindow *parent, QString findText, QString fileType, QString findFolder, bool searchFolders,
+      bool matchCase, bool wholeWords, bool regexp)
    : QDialog(parent), m_ui(new Ui::Dialog_AdvFind)
 {
    m_parent  = parent;
@@ -32,12 +33,23 @@ Dialog_AdvFind::Dialog_AdvFind(MainWindow *parent, QString findText, QString fil
    m_ui->find->setText(findText);
    m_ui->findType->setText(fileType);
 
-   // pre load
    m_ui->findFolder->insertItems(0, dirCombo);
    m_ui->findFolder->setEditText(findFolder);
 
    if (searchFolders) {
       m_ui->searchSubFolders_CKB->setChecked(true);
+   }
+
+   if (matchCase) {
+      m_ui->matchCase_CKB->setChecked(true);
+   }
+
+   if (wholeWords) {
+      m_ui->wholeWords_CKB->setChecked(true);
+   }
+
+   if (regexp) {
+      m_ui->regexp_CKB->setChecked(true);
    }
 
    connect(m_ui->folder_TB, &QToolButton::clicked, this, &Dialog_AdvFind::pick_Folder);
@@ -147,14 +159,19 @@ QString Dialog_AdvFind::get_findFolder()
    return m_ui->findFolder->currentText();
 }
 
-bool Dialog_AdvFind::get_Case()
+bool Dialog_AdvFind::get_MatchCase()
 {
-   return m_ui->case_CKB->isChecked();
+   return m_ui->matchCase_CKB->isChecked();
 }
 
 bool Dialog_AdvFind::get_WholeWords()
 {
    return m_ui->wholeWords_CKB->isChecked();
+}
+
+bool Dialog_AdvFind::get_Regexp()
+{
+   return m_ui->regexp_CKB->isChecked();
 }
 
 bool Dialog_AdvFind::get_SearchSubFolders()

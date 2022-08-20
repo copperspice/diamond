@@ -23,19 +23,22 @@
 #include <QStringList>
 
 class Dialog_AdvFind : public QDialog
-{     
+{
    CS_OBJECT(Dialog_AdvFind)
 
    public:
-      Dialog_AdvFind(MainWindow *parent, QString text, QString fileType, QString findFolder, bool searchFolders);
+      Dialog_AdvFind(MainWindow *parent, QString text, QString fileType, QString findFolder, bool searchFolders,
+         bool matchCase, bool wholeWords, bool regexp);
       ~Dialog_AdvFind();
 
-      QString get_findText();      
+      QString get_findText();
       QString get_findType();
       QString get_findFolder();
 
-      bool get_Case();
+      bool get_MatchCase();
       bool get_WholeWords();
+      bool get_Regexp();
+
       bool get_SearchSubFolders();
       void showBusyMsg();
       void showNotBusyMsg();
