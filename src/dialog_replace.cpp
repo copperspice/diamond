@@ -165,9 +165,9 @@ QStringList Dialog_Replace::get_replaceList()
    return m_replaceList;
 }
 
-bool Dialog_Replace::get_Case()
+bool Dialog_Replace::get_MatchCase()
 {
-   return m_ui->case_CKB->isChecked();
+   return m_ui->matchCase_CKB->isChecked();
 }
 
 bool Dialog_Replace::get_WholeWords()

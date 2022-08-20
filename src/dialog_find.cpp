@@ -24,7 +24,7 @@
 
 Dialog_Find::Dialog_Find(MainWindow *parent, QString findText, QStringList findList)
    : QDialog(parent), m_ui(new Ui::Dialog_Find)
-{   
+{
    m_findList = findList;
    m_upd_Find = false;
 
@@ -76,7 +76,7 @@ void Dialog_Find::combo_ContextMenu(const QPoint &pt)
 }
 
 void Dialog_Find::menu_clearList()
-{   
+{
    m_findList.clear();
    m_ui->find_Combo->clear();
 
@@ -100,7 +100,7 @@ void Dialog_Find::find()
 }
 
 void Dialog_Find::cancel()
-{  
+{
    this->done(0);
 }
 
@@ -123,9 +123,9 @@ bool Dialog_Find::get_Direction()
    }
 }
 
-bool Dialog_Find::get_Case()
+bool Dialog_Find::get_MatchCase()
 {
-   return m_ui->case_CKB->isChecked();
+   return m_ui->matchCase_CKB->isChecked();
 }
 
 bool Dialog_Find::get_WholeWords()

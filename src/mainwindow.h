@@ -129,7 +129,7 @@ class MainWindow : public QMainWindow
       QStringList m_findList;
       QTextDocument::FindFlags m_flags;
       bool m_fDirection;
-      bool m_fCase;
+      bool m_fMatchCase;
       bool m_fWholeWords;
 
       // advanced find
@@ -138,8 +138,9 @@ class MainWindow : public QMainWindow
       QString m_advFindFileType;
       QString m_advFindFolder;
 
-      bool m_advFCase;
+      bool m_advFMatchCase;
       bool m_advFWholeWords;
+      bool m_advFRegexp;
       bool m_advFSearchFolders;
 
       QStringList m_recursiveList;

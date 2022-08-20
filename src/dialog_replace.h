@@ -24,10 +24,10 @@
 #include <QStringList>
 
 class Dialog_Replace : public QDialog
-{     
+{
    CS_OBJECT(Dialog_Replace)
 
-   public:      
+   public:
       Dialog_Replace(MainWindow *parent, QString findText, QStringList findList,
                      QString replaceText, QStringList replaceList);
       ~Dialog_Replace();
@@ -37,7 +37,7 @@ class Dialog_Replace : public QDialog
       QString get_replaceText();
       QStringList get_replaceList();
 
-      bool get_Case();
+      bool get_MatchCase();
       bool get_WholeWords();
       bool get_Upd_Find();
       bool get_Upd_Replace();
@@ -57,18 +57,18 @@ class Dialog_Replace : public QDialog
       void combo_ContextMenu_F(const QPoint & pt);
 
       CS_SLOT_1(Private, void menu_clearList_F())
-      CS_SLOT_2(menu_clearList_F) 
+      CS_SLOT_2(menu_clearList_F)
 
       CS_SLOT_1(Private, void menu_deleteEntry_F())
-      CS_SLOT_2(menu_deleteEntry_F) 
+      CS_SLOT_2(menu_deleteEntry_F)
 
       void combo_ContextMenu_R(const QPoint & pt);
 
       CS_SLOT_1(Private, void menu_clearList_R())
-      CS_SLOT_2(menu_clearList_R) 
+      CS_SLOT_2(menu_clearList_R)
 
       CS_SLOT_1(Private, void menu_deleteEntry_R())
-      CS_SLOT_2(menu_deleteEntry_R) 
+      CS_SLOT_2(menu_deleteEntry_R)
 };
 
 #endif

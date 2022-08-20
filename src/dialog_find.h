@@ -34,17 +34,17 @@ class Dialog_Find : public QDialog
       QString get_findText();
       QStringList get_findList();
       bool get_Direction();
-      bool get_Case();
+      bool get_MatchCase();
       bool get_WholeWords();
       bool get_Upd_Find();
 
    private:
       Ui::Dialog_Find *m_ui;
       QStringList m_findList;
-      void setUp();    
+      void setUp();
       bool m_upd_Find;
 
-      void find(); 
+      void find();
       void cancel();
 
       void combo_ContextMenu(const QPoint & pt);

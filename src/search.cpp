@@ -63,8 +63,8 @@ void MainWindow::find()
          m_flags |= QTextDocument::FindBackward;
       }
 
-      m_fCase = dw->get_Case();
-      if (m_fCase) {
+      m_fMatchCase = dw->get_MatchCase();
+      if (m_fMatchCase) {
          m_flags |= QTextDocument::FindCaseSensitively;
       }
 
@@ -149,20 +149,22 @@ void MainWindow::advFind()
       m_advFindText = selectedText;
    }
 
-   m_dwAdvFind = new Dialog_AdvFind(this, m_advFindText, m_advFindFileType, m_advFindFolder, m_advFSearchFolders);
+   m_dwAdvFind = new Dialog_AdvFind(this, m_advFindText, m_advFindFileType, m_advFindFolder, m_advFSearchFolders,
+         m_advFMatchCase, m_advFWholeWords, m_advFRegexp);
 
    while (true) {
       int result = m_dwAdvFind->exec();
 
       if (result == QDialog::Accepted) {
 
-         m_advFindText     = m_dwAdvFind->get_findText();
-         m_advFindFileType = m_dwAdvFind->get_findType();
-         m_advFindFolder   = m_dwAdvFind->get_findFolder();
+         m_advFindText       = m_dwAdvFind->get_findText();
+         m_advFindFileType   = m_dwAdvFind->get_findType();
+         m_advFindFolder     = m_dwAdvFind->get_findFolder();
 
          // get the flags
-         m_advFCase          = m_dwAdvFind->get_Case();
+         m_advFMatchCase     = m_dwAdvFind->get_MatchCase();
          m_advFWholeWords    = m_dwAdvFind->get_WholeWords();
+         m_advFRegexp        = m_dwAdvFind->get_Regexp();
          m_advFSearchFolders = m_dwAdvFind->get_SearchSubFolders();
 
          json_Write(ADVFIND);
@@ -252,9 +254,18 @@ QList<advFindStruct> MainWindow::advFind_getResults(bool &aborted)
    QString name;
 
    enum Qt::CaseSensitivity caseFlag;
-   QRegularExpression regExp = QRegularExpression("\\b" + m_advFindText + "\\b");
 
-   if (m_advFCase) {
+   QRegularExpression regExp;
+
+   if (m_advFWholeWords) {
+      regExp = QRegularExpression("\\b" + m_advFindText + "\\b");
+
+   } else if (m_advFRegexp) {
+      regExp = QRegularExpression(m_advFindText);
+
+   }
+
+   if (m_advFMatchCase) {
       caseFlag = Qt::CaseSensitive;
 
    }  else {
@@ -300,9 +311,9 @@ QList<advFindStruct> MainWindow::advFind_getResults(bool &aborted)
          while (! in.atEnd()) {
 
             line = in.readLine();
-            lineNumber++;
+            ++lineNumber;
 
-            if (m_advFWholeWords)  {
+            if (m_advFWholeWords || m_advFRegexp)  {
                position = line.indexOf(regExp);
 
             } else  {
@@ -542,8 +553,8 @@ void MainWindow::replace()
       // get the flags
       m_flags = 0;
 
-      m_fCase = dw->get_Case();
-      if (m_fCase) {
+      m_fMatchCase = dw->get_MatchCase();
+      if (m_fMatchCase) {
          m_flags |= QTextDocument::FindCaseSensitively;
       }
 
