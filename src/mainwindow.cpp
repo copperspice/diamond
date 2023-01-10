@@ -1,6 +1,6 @@
 /**************************************************************************
 *
-* Copyright (c) 2012-2022 Barbara Geller
+* Copyright (c) 2012-2023 Barbara Geller
 *
 * Diamond Editor is free software: you can redistribute it and/or
 * modify it under the terms of the GNU General Public License version 2
@@ -344,7 +344,7 @@ void MainWindow::about()
       "  </tr>"
       "</table></font>"
 
-      "<p><small>Copyright 2012-2022 BG Consulting, released under the terms of the GNU GPL version 2<br>"
+      "<p><small>Copyright 2012-2023 BG Consulting, released under the terms of the GNU GPL version 2<br>"
       "This program is provided AS IS with no warranty of any kind.<br></small></p>";
 
    //
