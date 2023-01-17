@@ -16,12 +16,10 @@
 #include "syntax.h"
 #include "util.h"
 
-#include <QFileInfo>
 #include <QJsonArray>
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QJsonValue>
-#include <QString>
 #include <QTextBoundaryFinder>
 
 static const QRegularExpression DEFAULT_COMMENT = QRegularExpression("(?!E)E");
@@ -34,10 +32,6 @@ Syntax::Syntax(QTextDocument *document, QString synFName, const struct Settings 
    m_spellCheck   = spell;
 
    m_isSpellCheck = settings.isSpellCheck;
-}
-
-Syntax::~Syntax()
-{
 }
 
 bool Syntax::processSyntax(const struct Settings &settings)
@@ -61,64 +55,54 @@ bool Syntax::processSyntax()
 
    QJsonObject object = doc.object();
    QJsonArray list;
-   int cnt;
 
-   //
    bool ignoreCase = object.value("ignore-case").toBool();
 
-   // * key
+   // key
    QStringList key_Patterns;
-
    list = object.value("keywords").toArray();
-   cnt  = list.count();
 
-   for (int k = 0; k < cnt; k++)  {
-      key_Patterns.append(list.at(k).toString());
+   for (const auto &item : list) {
+      key_Patterns.append(item.toString());
    }
 
    // class
    QStringList class_Patterns;
-
    list = object.value("classes").toArray();
-   cnt  = list.count();
 
-   for (int k = 0; k < cnt; k++)  {
-      class_Patterns.append(list.at(k).toString());
+   for (const auto &item : list) {
+      class_Patterns.append(item.toString());
    }
 
    // functions
    QStringList func_Patterns;
-
    list = object.value("functions").toArray();
-   cnt  = list.count();
 
-   for (int k = 0; k < cnt; k++)  {
-      func_Patterns.append(list.at(k).toString());
+   for (const auto &item : list) {
+      func_Patterns.append(item.toString());
    }
 
    // types
    QStringList type_Patterns;
-
    list = object.value("types").toArray();
-   cnt  = list.count();
 
-   for (int k = 0; k < cnt; k++)  {
-      type_Patterns.append(list.at(k).toString());
+   for (const auto &item : list) {
+      type_Patterns.append(item.toString());
    }
 
-   //
    HighlightingRule rule;
 
-   for (const QString &pattern : key_Patterns) {
-      if (pattern.trimmed().isEmpty()) {
+   // key
+   rule.format.setFontWeight(m_settings.syn_KeyWeight);
+   rule.format.setFontItalic(m_settings.syn_KeyItalic);
+   rule.format.setForeground(m_settings.syn_KeyText);
+
+   for (const QString &item : key_Patterns) {
+      if (item.trimmed().isEmpty()) {
          continue;
       }
 
-      // key
-      rule.format.setFontWeight(m_settings.syn_KeyWeight);
-      rule.format.setFontItalic(m_settings.syn_KeyItalic);
-      rule.format.setForeground(m_settings.syn_KeyText);
-      rule.pattern = QRegularExpression(pattern);
+      rule.pattern = QRegularExpression(item);
 
       if (ignoreCase) {
          rule.pattern.setPatternOptions(QPatternOption::CaseInsensitiveOption);
@@ -126,52 +110,17 @@ bool Syntax::processSyntax()
       highlightingRules.append(rule);
    }
 
-   for (const QString &pattern : class_Patterns) {
-      if (pattern.trimmed().isEmpty()) {
+   // class
+   rule.format.setFontWeight(m_settings.syn_ClassWeight);
+   rule.format.setFontItalic(m_settings.syn_ClassItalic);
+   rule.format.setForeground(m_settings.syn_ClassText);
+
+   for (const QString &item : class_Patterns) {
+      if (item.trimmed().isEmpty()) {
          continue;
       }
 
-      // class
-      rule.format.setFontWeight(m_settings.syn_ClassWeight);
-      rule.format.setFontItalic(m_settings.syn_ClassItalic);
-      rule.format.setForeground(m_settings.syn_ClassText);
-      rule.pattern = QRegularExpression(pattern);
-
-      if (ignoreCase) {
-         rule.pattern.setPatternOptions(QPatternOption::CaseInsensitiveOption);
-      }
-
-      highlightingRules.append(rule);
-   }
-
-   for (const QString &pattern : func_Patterns) {
-      if (pattern.trimmed().isEmpty()) {
-         continue;
-      }
-
-      // func
-      rule.format.setFontWeight(m_settings.syn_FuncWeight);
-      rule.format.setFontItalic(m_settings.syn_FuncItalic);
-      rule.format.setForeground(m_settings.syn_FuncText);
-      rule.pattern = QRegularExpression(pattern);
-
-      if (ignoreCase) {
-         rule.pattern.setPatternOptions(QPatternOption::CaseInsensitiveOption);
-      }
-
-      highlightingRules.append(rule);
-   }
-
-   for (const QString &pattern : type_Patterns) {
-      if (pattern.trimmed().isEmpty()) {
-         continue;
-      }
-
-      // types
-      rule.format.setFontWeight(m_settings.syn_TypeWeight);
-      rule.format.setFontItalic(m_settings.syn_TypeItalic);
-      rule.format.setForeground(m_settings.syn_TypeText);
-      rule.pattern = QRegularExpression(pattern);
+      rule.pattern = QRegularExpression(item);
 
       if (ignoreCase) {
          rule.pattern.setPatternOptions(QPatternOption::CaseInsensitiveOption);
@@ -179,7 +128,43 @@ bool Syntax::processSyntax()
       highlightingRules.append(rule);
    }
 
-   // quoted text - everyone
+   // func
+   rule.format.setFontWeight(m_settings.syn_FuncWeight);
+   rule.format.setFontItalic(m_settings.syn_FuncItalic);
+   rule.format.setForeground(m_settings.syn_FuncText);
+
+   for (const QString &item : func_Patterns) {
+      if (item.trimmed().isEmpty()) {
+         continue;
+      }
+
+      rule.pattern = QRegularExpression(item);
+
+      if (ignoreCase) {
+         rule.pattern.setPatternOptions(QPatternOption::CaseInsensitiveOption);
+      }
+      highlightingRules.append(rule);
+   }
+
+   // types
+   rule.format.setFontWeight(m_settings.syn_TypeWeight);
+   rule.format.setFontItalic(m_settings.syn_TypeItalic);
+   rule.format.setForeground(m_settings.syn_TypeText);
+
+   for (const QString &item : type_Patterns) {
+      if (item.trimmed().isEmpty()) {
+         continue;
+      }
+
+      rule.pattern = QRegularExpression(item);
+
+      if (ignoreCase) {
+         rule.pattern.setPatternOptions(QPatternOption::CaseInsensitiveOption);
+      }
+      highlightingRules.append(rule);
+   }
+
+   // quoted text
    rule.format.setFontWeight(m_settings.syn_QuoteWeight);
    rule.format.setFontItalic(m_settings.syn_QuoteItalic);
    rule.format.setForeground(m_settings.syn_QuoteText);
@@ -208,7 +193,7 @@ bool Syntax::processSyntax()
    // spell check
    m_spellCheckFormat.setUnderlineColor(QColor(Qt::red));
 
-   // pending CS 1.6.1
+   // pending
    // m_spellCheckFormat.setUnderlineStyle(QTextCharFormat::SpellCheckUnderline);
    m_spellCheckFormat.setUnderlineStyle(QTextCharFormat::WaveUnderline);
 
@@ -223,12 +208,12 @@ QByteArray Syntax::json_ReadFile(QString fileName)
    QByteArray data;
 
    if (fileName.isEmpty()) {
-      csError(tr("Read Json Syntax"), tr("Syntax file name was not supplied."));
+      csError(tr("Read Syntax File"), tr("Syntax file name was not supplied."));
       return data;
    }
 
    if (! QFile::exists(fileName) ) {
-      csError(tr("Read Json Syntax"), tr("Syntax file was not found: ") + fileName + "\n\n"
+      csError(tr("Read Syntax File"), tr("Syntax file was not found: ") + fileName + "\n\n"
               "To specify the location of the syntax files select 'Settings' from the main Menu. "
               "Then select 'General Options' and click on the Options tab.\n");
 
@@ -237,12 +222,11 @@ QByteArray Syntax::json_ReadFile(QString fileName)
 
    QFile file(fileName);
    if (! file.open(QFile::ReadOnly | QFile::Text)) {
-      const QString msg = tr("Unable to open Json Syntax file: ") +  fileName + " : " + file.errorString();
+      const QString msg = tr("Unable to open Syntax file: ") +  fileName + " : " + file.errorString();
       csError(tr("Read Json Syntax"), msg);
       return data;
    }
 
-   file.seek(0);
    data = file.readAll();
    file.close();
 
@@ -308,7 +292,6 @@ void Syntax::highlightBlock(const QString &text)
    }
 
    // spell check
-
    if (m_spellCheck && m_isSpellCheck)  {
       QTextBoundaryFinder wordFinder(QTextBoundaryFinder::Word, text);
 

@@ -18,11 +18,9 @@
 #include "settings.h"
 #include "spellcheck.h"
 
-#include <QHash>
-#include <QPlainTextEdit>
+#include <QRegularExpression>
 #include <QSyntaxHighlighter>
 #include <QTextCharFormat>
-#include <QRegularExpression>
 #include <QVector>
 
 class Syntax : public QSyntaxHighlighter
@@ -30,10 +28,9 @@ class Syntax : public QSyntaxHighlighter
    CS_OBJECT(Syntax)
 
    public:
-      Syntax(QTextDocument *document,
-             QString synFName, const struct Settings &settings, SpellCheck *spell = 0);
+      Syntax(QTextDocument *document, QString synFName,
+            const struct Settings &settings, SpellCheck *spell = nullptr);
 
-      ~Syntax();
       bool processSyntax();
       bool processSyntax(const struct Settings &settings);
       void set_Spell(bool value);
@@ -42,6 +39,8 @@ class Syntax : public QSyntaxHighlighter
       void highlightBlock(const QString &text);
 
    private:
+      static QByteArray json_ReadFile(QString fileName);
+
       QString m_syntaxFile;
       struct Settings m_settings;
 
@@ -54,16 +53,13 @@ class Syntax : public QSyntaxHighlighter
       QTextCharFormat m_multiLineCommentFormat;
       QTextCharFormat m_spellCheckFormat;
 
-      QByteArray json_ReadFile(QString fileName);
-
-      //
       struct HighlightingRule
       {
          QRegularExpression pattern;
          QTextCharFormat format;
       };
 
-      QVector<HighlightingRule> highlightingRules;     
+      QVector<HighlightingRule> highlightingRules;
 };
 
 #endif

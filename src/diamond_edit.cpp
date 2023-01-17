@@ -43,7 +43,7 @@ DiamondTextEdit::DiamondTextEdit(MainWindow *from, struct Settings settings, Spe
 
    // syntax - assinged from loadfile(), runSyntax()
    m_synFName     = QString();
-   m_syntaxParser = 0;
+   m_syntaxParser = nullptr;
 
    // spell check
    m_spellCheck   = spell;
