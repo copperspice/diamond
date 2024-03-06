@@ -18,17 +18,17 @@
 #include "spellcheck.h"
 #include "syntax.h"
 
-#include <QObject>
 #include <QList>
-#include <QPlainTextEdit>
+#include <QObject>
 #include <QPaintEvent>
+#include <QPlainTextEdit>
 #include <QResizeEvent>
 #include <QSize>
 #include <QTextCursor>
 #include <QWidget>
 
-class MainWindow;
 class LineNumberArea;
+class MainWindow;
 
 class DiamondTextEdit : public QPlainTextEdit
 {

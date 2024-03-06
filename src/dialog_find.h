@@ -15,8 +15,8 @@
 #ifndef DIALOG_FIND_H
 #define DIALOG_FIND_H
 
-#include "ui_dialog_find.h"
 #include "mainwindow.h"
+#include "ui_dialog_find.h"
 
 #include <QDialog>
 #include <QPoint>

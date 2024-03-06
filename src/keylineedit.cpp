@@ -15,9 +15,9 @@
 #include "keylineedit.h"
 #include "util.h"
 
+#include <QGlobal>
 #include <QKeyEvent>
 #include <QString>
-#include <QGlobal>
 
 KeyLineEdit::KeyLineEdit(QWidget *parent) :
    QLineEdit(parent)

@@ -15,9 +15,9 @@
 #ifndef DIALOG_COLORS_H
 #define DIALOG_COLORS_H
 
-#include "ui_dialog_colors.h"
 #include "mainwindow.h"
 #include "syntax.h"
+#include "ui_dialog_colors.h"
 
 #include <QDialog>
 #include <QStringList>

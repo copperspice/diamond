@@ -15,9 +15,9 @@
 #ifndef DIALOG_OPTIONS_H
 #define DIALOG_OPTIONS_H
 
-#include "ui_dialog_options.h"
 #include "mainwindow.h"
 #include "settings.h"
+#include "ui_dialog_options.h"
 
 #include <QDialog>
 #include <QStringList>

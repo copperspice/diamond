@@ -17,10 +17,10 @@
 #include "dialog_xp_getdir.h"
 #include "mainwindow.h"
 
-#include <QFileInfo>
-#include <QFileDialog>
-#include <QFSFileEngine>
 #include <QDragEnterEvent>
+#include <QFSFileEngine>
+#include <QFileDialog>
+#include <QFileInfo>
 #include <QMimeData>
 #include <QSysInfo>
 #include <QUrl>

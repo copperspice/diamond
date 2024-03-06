@@ -15,8 +15,8 @@
 #ifndef DIALOG_PRESET_H
 #define DIALOG_PRESET_H
 
-#include "ui_dialog_preset.h"
 #include "mainwindow.h"
+#include "ui_dialog_preset.h"
 
 #include <QDialog>
 #include <QString>

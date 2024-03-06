@@ -15,12 +15,13 @@
 #include "diamond_build_info.h"
 #include "mainwindow.h"
 
-#include <stdexcept>
-
 #include <QFileInfo>
 #include <QKeySequence>
 #include <QLabel>
+#include <QStyleFactory>
 #include <QToolBar>
+
+#include <stdexcept>
 
 MainWindow::MainWindow(QStringList fileList, QStringList flagList)
    : m_ui(new Ui::MainWindow)

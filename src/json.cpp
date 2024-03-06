@@ -20,8 +20,9 @@
 #include <QByteArray>
 #include <QDir>
 #include <QFile>
-#include <QFlags>
 #include <QFileDialog>
+#include <QFlags>
+#include <QGlobal>
 #include <QJsonArray>
 #include <QJsonDocument>
 #include <QJsonValue>
@@ -29,8 +30,6 @@
 #include <QPoint>
 #include <QPushButton>
 #include <QSettings>
-
-#include <qglobal.h>
 
 bool MainWindow::json_Read(Config trail)
 {

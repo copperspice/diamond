@@ -15,22 +15,21 @@
 #include "mainwindow.h"
 #include "util.h"
 
-#include <QDialog>
-#include <QFileInfo>
+#include <QAbstractTextDocumentLayout>
 #include <QDate>
-#include <QLine>
+#include <QDialog>
 #include <QFileDialog>
+#include <QFileInfo>
+#include <QLine>
 #include <QPainter>
+#include <QPrintDialog>
 #include <QPrintPreviewDialog>
 #include <QPrinter>
-#include <QPrintDialog>
 #include <QRect>
 #include <QString>
-#include <QTime>
 #include <QTextDocument>
 #include <QTextEdit>
-
-#include <QAbstractTextDocumentLayout>
+#include <QTime>
 
 static const double SOURCE_DPI = 100.00;
 

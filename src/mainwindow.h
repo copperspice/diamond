@@ -27,20 +27,20 @@
 #include <QFrame>
 #include <QJsonObject>
 #include <QList>
-#include <QMenu>
 #include <QMainWindow>
+#include <QMenu>
 #include <QModelIndex>
 #include <QPlainTextEdit>
-#include <QPushButton>
 #include <QPrinter>
+#include <QPushButton>
 #include <QRectF>
 #include <QShortcut>
+#include <QSplitter>
+#include <QStackedWidget>
 #include <QStandardItemModel>
 #include <QStandardPaths>
 #include <QString>
 #include <QStringList>
-#include <QSplitter>
-#include <QStackedWidget>
 
 class Dialog_AdvFind;
 

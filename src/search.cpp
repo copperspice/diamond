@@ -22,8 +22,8 @@
 #include <QDir>
 #include <QMessageBox>
 #include <QProgressDialog>
-#include <QTextStream>
 #include <QTableView>
+#include <QTextStream>
 
 // * find
 void MainWindow::find()

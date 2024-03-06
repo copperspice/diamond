@@ -15,8 +15,8 @@
 #ifndef DIALOG_REPLACE_H
 #define DIALOG_REPLACE_H
 
-#include "ui_dialog_replace.h"
 #include "mainwindow.h"
+#include "ui_dialog_replace.h"
 
 #include <QDialog>
 #include <QPoint>

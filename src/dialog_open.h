@@ -15,8 +15,8 @@
 #ifndef DIALOG_OPEN_H
 #define DIALOG_OPEN_H
 
-#include "ui_dialog_open.h"
 #include "mainwindow.h"
+#include "ui_dialog_open.h"
 
 #include <QDialog>
 

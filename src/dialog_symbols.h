@@ -15,8 +15,8 @@
 #ifndef DIALOG_SYMBOLS_H
 #define DIALOG_SYMBOLS_H
 
-#include "ui_dialog_symbols.h"
 #include "mainwindow.h"
+#include "ui_dialog_symbols.h"
 
 #include <QDialog>
 

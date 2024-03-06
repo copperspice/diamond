@@ -14,12 +14,12 @@
 
 #include "util.h"
 
-#include <stdexcept>
-
 #include <QDesktopServices>
 #include <QFileInfo>
 #include <QString>
 #include <QUrl>
+
+#include <stdexcept>
 
 void showHtml(QString route, QString url)
 {

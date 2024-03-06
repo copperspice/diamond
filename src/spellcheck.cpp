@@ -15,12 +15,12 @@
 #include "spellcheck.h"
 #include "util.h"
 
-#include <hunspell.hxx>
-
 #include <QByteArray>
 #include <QFile>
 #include <QTextCodec>
 #include <QTextStream>
+
+#include <hunspell.hxx>
 
 #if defined (H_DEPRECATED)
 // could be version 1.5, 1.6, or 1.7

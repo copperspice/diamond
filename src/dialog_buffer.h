@@ -15,8 +15,8 @@
 #ifndef DIALOG_BUFFER_H
 #define DIALOG_BUFFER_H
 
-#include "ui_dialog_buffer.h"
 #include "mainwindow.h"
+#include "ui_dialog_buffer.h"
 
 #include <QDialog>
 

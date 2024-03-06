@@ -15,9 +15,9 @@
 #ifndef DIALOG_PRINT_OPT_H
 #define DIALOG_PRINT_OPT_H
 
-#include "ui_dialog_print_opt.h"
 #include "mainwindow.h"
 #include "settings.h"
+#include "ui_dialog_print_opt.h"
 
 #include <QDialog>
 #include <QToolButton>

@@ -15,13 +15,13 @@
 #ifndef DIALOG_MACRO_H
 #define DIALOG_MACRO_H
 
-#include "ui_dialog_macro.h"
 #include "mainwindow.h"
+#include "ui_dialog_macro.h"
 
 #include <QDialog>
 #include <QModelIndex>
-#include <QStringList>
 #include <QStandardItemModel>
+#include <QStringList>
 
 class Dialog_Macro : public QDialog
 {

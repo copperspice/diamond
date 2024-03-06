@@ -16,12 +16,11 @@
 #include "util.h"
 
 #include <QFileDialog>
+#include <QGlobal>
 #include <QKeySequence>
 #include <QLineEdit>
 #include <QString>
 #include <QToolButton>
-
-#include <qglobal.h>
 
 Dialog_Options::Dialog_Options(MainWindow *parent, struct Options data)
    : QDialog(parent), m_ui(new Ui::Dialog_Options)
