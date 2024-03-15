@@ -19,92 +19,92 @@
 #include <QFileInfo>
 #include <QPalette>
 
-Dialog_Preset::Dialog_Preset(MainWindow *parent, QStringList data)
+Dialog_Preset::Dialog_Preset(MainWindow *parent, QStringList folders)
    : QDialog(parent), m_ui(new Ui::Dialog_Preset)
 {
    m_parent   = parent;
-   m_dataList = data;
+   m_folderList = folders;
 
    m_ui->setupUi(this);
    this->setWindowIcon(QIcon("://resources/diamond.png"));
 
-   for (int k = 0; k < m_dataList.count(); k++)  {
-      QString temp = m_dataList.at(k);
-      int index = k + 1;
+   for (int i = 0; i < m_folderList.count(); i++)  {
+      QString tmp = m_folderList.at(i);
+      int index   = i + 1;
 
       switch (index)  {
           case 1:
-            m_ui->folder1->setText(temp);
+            m_ui->folder1->setText(tmp);
             m_ui->folder1->setCursorPosition(0);
             break;
 
          case 2:
-            m_ui->folder2->setText(temp);
+            m_ui->folder2->setText(tmp);
             m_ui->folder2->setCursorPosition(0);
             break;
 
          case 3:
-            m_ui->folder3->setText(temp);
+            m_ui->folder3->setText(tmp);
             m_ui->folder3->setCursorPosition(0);
             break;
 
          case 4:
-            m_ui->folder4->setText(temp);
+            m_ui->folder4->setText(tmp);
             m_ui->folder4->setCursorPosition(0);
             break;
 
          case 5:
-            m_ui->folder5->setText(temp);
+            m_ui->folder5->setText(tmp);
             m_ui->folder5->setCursorPosition(0);
             break;
 
          case 6:
-            m_ui->folder6->setText(temp);
+            m_ui->folder6->setText(tmp);
             m_ui->folder6->setCursorPosition(0);
             break;
 
          case 7:
-            m_ui->folder7->setText(temp);
+            m_ui->folder7->setText(tmp);
             m_ui->folder7->setCursorPosition(0);
             break;
 
          case 8:
-            m_ui->folder8->setText(temp);
+            m_ui->folder8->setText(tmp);
             m_ui->folder8->setCursorPosition(0);
             break;
 
          case 9:
-            m_ui->folder9->setText(temp);
+            m_ui->folder9->setText(tmp);
             m_ui->folder9->setCursorPosition(0);
             break;
 
          case 10:
-            m_ui->folder10->setText(temp);
+            m_ui->folder10->setText(tmp);
             m_ui->folder10->setCursorPosition(0);
             break;
 
          case 11:
-            m_ui->folder11->setText(temp);
+            m_ui->folder11->setText(tmp);
             m_ui->folder11->setCursorPosition(0);
             break;
 
          case 12:
-            m_ui->folder12->setText(temp);
+            m_ui->folder12->setText(tmp);
             m_ui->folder12->setCursorPosition(0);
             break;
 
          case 13:
-            m_ui->folder13->setText(temp);
+            m_ui->folder13->setText(tmp);
             m_ui->folder13->setCursorPosition(0);
             break;
 
          case 14:
-            m_ui->folder14->setText(temp);
+            m_ui->folder14->setText(tmp);
             m_ui->folder14->setCursorPosition(0);
             break;
 
          case 15:
-            m_ui->folder15->setText(temp);
+            m_ui->folder15->setText(tmp);
             m_ui->folder15->setCursorPosition(0);
             break;
 
@@ -204,74 +204,75 @@ void Dialog_Preset::cancel()
 
 QStringList Dialog_Preset::getData()
 { 
-   for (int k = 0; k < m_dataList.count(); k++)  {
-      int index = k + 1;
+   for (int i = 0; i < m_folderList.count(); i++)  {
+      int index = i + 1;
 
       switch (index)  {
          case 1:
-            m_dataList.replace(k, m_ui->folder1->text());
+            m_folderList.replace(i, m_ui->folder1->text());
             break;
 
          case 2:
-            m_dataList.replace(k, m_ui->folder2->text());
+            m_folderList.replace(i, m_ui->folder2->text());
             break;
 
          case 3:
-            m_dataList.replace(k, m_ui->folder3->text());
+            m_folderList.replace(i, m_ui->folder3->text());
             break;
 
          case 4:
-            m_dataList.replace(k, m_ui->folder4->text());
+            m_folderList.replace(i, m_ui->folder4->text());
             break;
 
          case 5:
-            m_dataList.replace(k, m_ui->folder5->text());
+            m_folderList.replace(i, m_ui->folder5->text());
             break;
 
          case 6:
-            m_dataList.replace(k, m_ui->folder6->text());
+            m_folderList.replace(i, m_ui->folder6->text());
             break;
 
          case 7:
-            m_dataList.replace(k, m_ui->folder7->text());
+            m_folderList.replace(i, m_ui->folder7->text());
             break;
 
-         case 8:  
-            m_dataList.replace(k, m_ui->folder8->text());
+         case 8:
+            m_folderList.replace(i, m_ui->folder8->text());
             break;
 
          case 9:
-            m_dataList.replace(k, m_ui->folder9->text());
+            m_folderList.replace(i, m_ui->folder9->text());
             break;
 
          case 10:
-            m_dataList.replace(k, m_ui->folder10->text());
+            m_folderList.replace(i, m_ui->folder10->text());
             break;
 
          case 11:
-            m_dataList.replace(k, m_ui->folder11->text());
+            m_folderList.replace(i, m_ui->folder11->text());
             break;
 
          case 12:
-            m_dataList.replace(k, m_ui->folder12->text());
+            m_folderList.replace(i, m_ui->folder12->text());
             break;
 
          case 13:
-            m_dataList.replace(k, m_ui->folder13->text());
+            m_folderList.replace(i, m_ui->folder13->text());
             break;
 
          case 14:
-            m_dataList.replace(k, m_ui->folder14->text());
+            m_folderList.replace(i, m_ui->folder14->text());
             break;
 
          case 15:
-            m_dataList.replace(k, m_ui->folder15->text());
+            m_folderList.replace(i, m_ui->folder15->text());
             break;
 
          default:
             break;
        }
    }
-   return m_dataList;
+
+   return m_folderList;
 }
 

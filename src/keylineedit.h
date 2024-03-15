@@ -22,11 +22,10 @@ class KeyLineEdit : public QLineEdit
    CS_OBJECT(KeyLineEdit)
 
    public:
-      explicit KeyLineEdit(QWidget *parent = 0);
-      
+      explicit KeyLineEdit(QWidget *parent = nullptr);
+
    protected:
-      void keyPressEvent(QKeyEvent *event);
-      
+      void keyPressEvent(QKeyEvent *event) override;
 };
 
 #endif

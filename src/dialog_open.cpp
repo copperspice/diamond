@@ -19,10 +19,10 @@
 #include <QStringList>
 #include <QStringListModel>
 
-Dialog_Open::Dialog_Open(MainWindow *parent, QStringList data)
+Dialog_Open::Dialog_Open(MainWindow *parent, QStringList strlist)
    : QDialog(parent), m_ui(new Ui::Dialog_Open)
 {
-   m_list = data;
+   m_list = strlist;
 
    m_ui->setupUi(this);
    this->setWindowIcon(QIcon("://resources/diamond.png"));

@@ -18,11 +18,11 @@
 #include <QFontDialog>
 #include <QToolButton>
 
-Dialog_PrintOptions::Dialog_PrintOptions(MainWindow *parent, struct PrintSettings data)
+Dialog_PrintOptions::Dialog_PrintOptions(MainWindow *parent, struct PrintSettings printSettings)
    : QDialog(parent), m_ui(new Ui::Dialog_PrintOptions)
 {
    m_parent = parent;
-   m_print  = data;
+   m_print  = printSettings;
 
    m_ui->setupUi(this);
    this->setWindowIcon(QIcon("://resources/diamond.png"));

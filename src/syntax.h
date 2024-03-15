@@ -36,7 +36,7 @@ class Syntax : public QSyntaxHighlighter
       void set_Spell(bool value);
 
    protected:
-      void highlightBlock(const QString &text);
+      void highlightBlock(const QString &text) override;
 
    private:
       static QByteArray json_ReadFile(QString fileName);

@@ -84,21 +84,21 @@ void MainWindow::openTab_Select(int index)
 
    } else {
       int cnt   = m_tabWidget->count();
-      int index = m_tabWidget->currentIndex();
+      int currentIndex = m_tabWidget->currentIndex();
 
       for (int k = 0; k < cnt; ++k) {
          QString tcurFile = this->get_curFileName(k);
 
          if (tcurFile == fullName) {
             match = true;
-            index = k;
+            currentIndex = k;
             break;
          }
       }
 
       if (match) {
          // select new tab
-         m_tabWidget->setCurrentIndex(index);
+         m_tabWidget->setCurrentIndex(currentIndex);
 
       } else {
          // delete entry from list since it did not exist
@@ -115,9 +115,9 @@ void MainWindow::showContext_Tabs(const QPoint &pt)
    QAction *action = m_ui->menuWindow->actionAt(pt);
 
    if (action)  {
-      QString data = action->data().toString();
+      QString actionData = action->data().toString();
 
-      if (data == "select-tab")  {
+      if (actionData == "select-tab")  {
          QMenu *menu = new QMenu(this);
          menu->addAction("Reorder Tab file list", this, SLOT(openTab_redo() ));
 

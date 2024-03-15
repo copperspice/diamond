@@ -30,7 +30,7 @@ class ReplaceReply: public QDialog
       int getKey();
 
    protected:
-      void keyPressEvent(QKeyEvent *event);
+      void keyPressEvent(QKeyEvent *event) override;
 
    private:
       int m_replaceReply;

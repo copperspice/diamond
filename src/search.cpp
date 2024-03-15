@@ -56,7 +56,7 @@ void MainWindow::find()
       json_Write(FIND_LIST);
 
       // get the flags
-      m_flags = 0;
+      m_flags = nullptr;
 
       m_fDirection  = dw->get_Direction();
       if (! m_fDirection) {
@@ -461,9 +461,9 @@ void MainWindow::advFind_Close()
    m_findWidget->deleteLater();
 }
 
-void MainWindow::advFind_View(const QModelIndex &index)
+void MainWindow::advFind_View(const QModelIndex &modelIndex)
 {
-   int row = index.row();
+   int row = modelIndex.row();
 
    if (row < 0) {
       return;
@@ -551,7 +551,7 @@ void MainWindow::replace()
       }
 
       // get the flags
-      m_flags = 0;
+      m_flags = nullptr;
 
       m_fMatchCase = dw->get_MatchCase();
       if (m_fMatchCase) {

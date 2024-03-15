@@ -119,6 +119,9 @@ void Dialog_Macro::setUpView()
 
 void Dialog_Macro::tableDataChanged(const QModelIndex & topLeft, const QModelIndex & bottomRight)
 {
+   (void) topLeft;
+   (void) bottomRight;
+
    m_updateNames = true;
 }
 
@@ -128,9 +131,9 @@ void Dialog_Macro::select()
 
       for (int row = 0; row < m_maxCount; ++row) {
          QStandardItem *item = m_model->item(row, 1);
-         QString data = item->data(Qt::DisplayRole).toString();
+         QString itemText = item->data(Qt::DisplayRole).toString();
 
-         m_macroNames_D.replace(row, data);
+         m_macroNames_D.replace(row, itemText);
       }
 
       m_parent->json_Save_MacroNames(m_macroNames_D);
@@ -150,16 +153,16 @@ void Dialog_Macro::view()
    QString macro = this->get_Macro();
 
    // get the macro
-   QList<macroStruct> data;
-   data = m_parent->json_View_Macro(macro);
+   QList<macroStruct> listData;
+   listData = m_parent->json_View_Macro(macro);
 
    QString msg = "<table style=margin-right:35>";
 
-   for (int k = 0; k < data.size(); ++k) {
+   for (int k = 0; k < listData.size(); ++k) {
 
-      int key         = data.at(k).key;
-      int modifier    = data.at(k).modifier;
-      QString textAsc = data.at(k).text;
+      int key         = listData.at(k).key;
+      int modifier    = listData.at(k).modifier;
+      QString textAsc = listData.at(k).text;
 
       msg += "<tr><td width=150>Modifier: &nbsp;";
 
@@ -354,8 +357,8 @@ QString Dialog_Macro::get_Macro()
 
    // return the macro id
    QStandardItem *item = m_model->item(index.row(), 0);
-   QString data = item->data(Qt::DisplayRole).toString();
+   QString itemText = item->data(Qt::DisplayRole).toString();
 
-   return data;
+   return itemText;
 }
 

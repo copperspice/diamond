@@ -80,9 +80,9 @@ void MainWindow::showContext_Files(const QPoint &pt)
    QAction *action = m_ui->menuFile->actionAt(pt);
 
    if (action)  {
-      QString data = action->data().toString();
+      QString actionData = action->data().toString();
 
-      if (data == "recent-file")  {
+      if (actionData == "recent-file")  {
          QString fName = action->text();
 
          QMenu *menu = new QMenu(this);
@@ -220,9 +220,9 @@ void MainWindow::showContext_RecentFolder(const QPoint &pt)
    QAction *action = m_ui->actionOpen_RecentFolder->menu()->actionAt(pt);
 
    if (action)  {
-      QString data = action->data().toString();
+      QString actionData = action->data().toString();
 
-      if (data == "recent-folder")  {
+      if (actionData == "recent-folder")  {
          QString fName = action->text();
 
          QMenu *menu = new QMenu(this);

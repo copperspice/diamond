@@ -1067,7 +1067,7 @@ void MainWindow::show_Spaces()
          textOpt.setFlags(QTextOption::ShowLineAndParagraphSeparators);
 
        } else {
-         textOpt.setFlags(0);
+         textOpt.setFlags(nullptr);
 
        }
 
@@ -1108,7 +1108,7 @@ void MainWindow::show_Breaks()
         textOpt.setFlags(QTextOption::ShowTabsAndSpaces);
 
       } else {
-        textOpt.setFlags(0);
+        textOpt.setFlags(nullptr);
 
       }
 
@@ -1132,7 +1132,7 @@ void MainWindow::displayHTML()
 }
 
 // **document
-void MainWindow::setSynType(SyntaxTypes data)
+void MainWindow::setSynType(SyntaxTypes syntaxData)
 {
    m_ui->actionSyn_C->setChecked(false);
    m_ui->actionSyn_Clipper->setChecked(false);
@@ -1157,7 +1157,7 @@ void MainWindow::setSynType(SyntaxTypes data)
    // m_ui->actionSyn_UnUsed1->setChecked(false);
    // m_ui->actionSyn_UnUsed2->setChecked(false);
 
-   switch (data)  {
+   switch (syntaxData)  {
       case SYN_C:
          m_ui->actionSyn_C->setChecked(true);
          break;
@@ -1243,6 +1243,9 @@ void MainWindow::setSynType(SyntaxTypes data)
          m_ui->actionSyn_UnUsed2->setChecked(true);
          break;
 */
+
+      default:
+         break;
    }
 }
 

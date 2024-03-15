@@ -30,7 +30,7 @@ class Dialog_Buffer : public QDialog
       int get_Index();       
 
    protected:
-      bool eventFilter(QObject *object, QEvent *event);
+      bool eventFilter(QObject *object, QEvent *event) override;
 
    private :     
       Ui::Dialog_Buffer *m_ui;

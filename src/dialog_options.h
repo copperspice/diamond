@@ -27,7 +27,7 @@ class Dialog_Options : public QDialog
    CS_OBJECT(Dialog_Options)
 
    public:
-      Dialog_Options(MainWindow *parent, struct Options data);
+      Dialog_Options(MainWindow *parent, struct Options optionData);
       ~Dialog_Options();
 
       struct Options get_Results();

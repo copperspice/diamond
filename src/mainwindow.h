@@ -91,9 +91,9 @@ class MainWindow : public QMainWindow
       bool loadFile(QString fileName, bool newTab, bool isAuto, bool isReload = false);
 
    protected:
-      void closeEvent(QCloseEvent *event);
-      void dragEnterEvent(QDragEnterEvent *event);
-      void dropEvent(QDropEvent *event);
+      void closeEvent(QCloseEvent *event) override;
+      void dragEnterEvent(QDragEnterEvent *event) override;
+      void dropEvent(QDropEvent *event) override;
 
    private:
       Ui::MainWindow *m_ui;
@@ -251,8 +251,8 @@ class MainWindow : public QMainWindow
 
       void setScreenColors();
       void setSyntax();
-      void setSynType(SyntaxTypes data);
-      void forceSyntax(SyntaxTypes data);
+      void setSynType(SyntaxTypes syntaxData);
+      void forceSyntax(SyntaxTypes syntaxData);
 
       // create shortcuts, menus, status bar
       void createShortCuts(bool setupAll);
@@ -477,7 +477,7 @@ class MainWindow : public QMainWindow
       void set_splitCombo();
       void split_Horizontal();
       void split_Vertical();
-      void split_NameChanged(int data);
+      void split_NameChanged(int itemNum);
       void split_CloseButton();
 };
 

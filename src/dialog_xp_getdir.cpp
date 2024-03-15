@@ -29,11 +29,14 @@
 #include <lm.h>
 #endif
 
-Dialog_XP_GetDir::Dialog_XP_GetDir(MainWindow *from, const QString title, const QString path, QFileDialog::FileDialogOptions options)
+Dialog_XP_GetDir::Dialog_XP_GetDir(MainWindow *from, const QString title, const QString absolutePath,
+      QFileDialog::FileDialogOptions options)
    : QDialog(from), m_ui(new Ui::Dialog_XP_GetDir)
 {
+   (void) options;
+
    // the value for path is an absolute path
-   m_path = path;
+   m_path = absolutePath;
 
    m_ui->setupUi(this);
    this->setWindowIcon(QIcon("://resources/diamond.png"));
@@ -57,52 +60,52 @@ Dialog_XP_GetDir::Dialog_XP_GetDir(MainWindow *from, const QString title, const 
    // get drive list and starting drive
    QFileInfoList driveList = QDir::drives();
 
-   QString drive_L = m_path;
-   if (drive_L.isEmpty())  {
-      drive_L = QCoreApplication::applicationDirPath();
+   QString driveLetter = m_path;
+
+   if (driveLetter.isEmpty())  {
+      driveLetter = QCoreApplication::applicationDirPath();
    }
 
-   drive_L = drive_L.left(3);
+   driveLetter = driveLetter.left(3);
 
    // set up drive tree view - QList<QFileInfo>
    m_ui->drives_TV->setHeaderLabels(QStringList() << "Drive"  << "Drive Type");
    m_ui->drives_TV->setColumnCount(2);
    m_ui->drives_TV->setColumnWidth(15, 50);
 
-   QString data;
-   QTreeWidgetItem *item;
+   QString path;
+   QTreeWidgetItem *treeItem;
 
-   for (auto k = driveList.begin(); k != driveList.end(); ++k) {
-      data = k->path();
+   for (auto item : driveList) {
+      path = item.path();
 
-      if (data.endsWith("/")) {
-         data = data.left(2);
+      if (path.endsWith("/")) {
+         path = path.left(2);
       }
 
-      //
-      QString other = driveType(data);
+      QString other = driveType(path);
 
-      item = new QTreeWidgetItem(m_ui->drives_TV);
-      item->setText(0, data);
-      item->setText(1, other);
+      treeItem = new QTreeWidgetItem(m_ui->drives_TV);
+      treeItem->setText(0, path);
+      treeItem->setText(1, other);
 
-      if (drive_L.startsWith(data, Qt::CaseInsensitive)) {
-         m_ui->drives_TV->setCurrentItem(item);
+      if (driveLetter.startsWith(path, Qt::CaseInsensitive)) {
+         m_ui->drives_TV->setCurrentItem(treeItem);
       }
    }
 
    // set up tree view right
    m_model_R = new QFileSystemModel;
    m_model_R->setFilter(QDir::Drives | QDir::Dirs | QDir::NoDotAndDotDot);
-   m_model_R->setRootPath(drive_L);
+   m_model_R->setRootPath(driveLetter);
 
    // reset in case there is a backslash issue
-   drive_L = m_model_R->rootPath();
+   driveLetter = m_model_R->rootPath();
 
    m_ui->folders_TV->setModel(m_model_R);
    m_ui->folders_TV->setHeaderHidden(true);
 
-   QModelIndex index = m_model_R->index(drive_L);
+   QModelIndex index = m_model_R->index(driveLetter);
    m_ui->folders_TV->setRootIndex(index);
 
    for(int nCount = 1; nCount < m_model_R->columnCount(); nCount++) {
@@ -195,29 +198,20 @@ void Dialog_XP_GetDir::ok()
 
 void Dialog_XP_GetDir::network()
 {
-   QString data;
-   QTreeWidgetItem *item;
+   QString networkName;
+   QTreeWidgetItem *treeItem;
 
    // add network servers to left treeview
    m_netServers = getWin_NetServers();
 
-// QFileSystemModel finds the netShares, this method is not required
-// m_netShares  = getWin_NetShares();
-
-   for (auto k = m_netServers.begin(); k != m_netServers.end(); ++k) {
-      data = k->serverName;
+   for (auto item : m_netServers) {
+      networkName = item.serverName;
 
       QString other = "Network Share";
 
-/*    if (k->isAvailable) {
-         other = "Network Share";
-      } else  {
-         other = "UnAvailable";
-      }
-*/
-      item = new QTreeWidgetItem(m_ui->drives_TV);
-      item->setText(0, data);
-      item->setText(1, other);
+      treeItem = new QTreeWidgetItem(m_ui->drives_TV);
+      treeItem->setText(0, networkName);
+      treeItem->setText(1, other);
    }
 
    m_ui->network_PB->setDisabled(true);
@@ -225,6 +219,8 @@ void Dialog_XP_GetDir::network()
 
 void Dialog_XP_GetDir::showDirectories(QTreeWidgetItem *current, QTreeWidgetItem *previous)
 {
+   (void) previous;
+
    if (! current) {
       return;
    }
@@ -281,7 +277,7 @@ void Dialog_XP_GetDir::showDirectories(QTreeWidgetItem *current, QTreeWidgetItem
    m_ui->folders_TV->setRootIndex(index);
 }
 
-void Dialog_XP_GetDir::showMe(const QString &path)
+void Dialog_XP_GetDir::showMe()
 {
    //  m_index_R = m_model_R->index(m_path);
    //  m_ui->folders_TV->setCurrentIndex(m_index_R);

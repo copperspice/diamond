@@ -58,8 +58,8 @@ void MainWindow::setSyntax()
    if (m_syntaxParser) {
       delete m_syntaxParser;
 
-      m_syntaxParser = 0;
-      m_textEdit->set_SyntaxParser(0);
+      m_syntaxParser = nullptr;
+      m_textEdit->set_SyntaxParser(nullptr);
    }
 
    QString fname  = "";
@@ -196,11 +196,13 @@ void MainWindow::setSyntax()
    }
 }
 
-void MainWindow::forceSyntax(SyntaxTypes data)
+void MainWindow::forceSyntax(SyntaxTypes syntaxData)
 {
+   m_syntaxEnum = syntaxData;
+
    QString synFName;
 
-   switch (data)  {
+   switch (syntaxData)  {
       case SYN_C:
          synFName = m_struct.pathSyntax + "syn_cpp.json";
          break;
@@ -287,13 +289,14 @@ void MainWindow::forceSyntax(SyntaxTypes data)
          break;
 */
 
+      default:
+         return;
    }
 
    if (! QFile::exists(synFName)) {
       csError(tr("Syntax Highlighting"), tr("Syntax highlighting file was not found: \n\n") + synFName  + "  ");
 
    } else {
-      m_syntaxEnum = data;
       m_textEdit->set_SyntaxEnum(m_syntaxEnum);
 
       // check the box

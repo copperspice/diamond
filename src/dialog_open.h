@@ -33,7 +33,7 @@ class Dialog_Open : public QDialog
       Ui::Dialog_Open *m_ui;    
       QStringList m_list;
 
-      void open();
+      void open() override;
       void cancel();
 };
 

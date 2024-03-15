@@ -57,7 +57,7 @@ MainWindow::MainWindow(QStringList fileList, QStringList flagList)
 
    connect(qApp, &QApplication::focusChanged, this, &MainWindow::focusChanged);
 
-   m_split_textEdit = 0;
+   m_split_textEdit = nullptr;
    m_isSplit = false;
 
    // macros
@@ -240,6 +240,8 @@ void MainWindow::tabChanged(int index)
 
 void MainWindow::focusChanged(QWidget *prior, QWidget *current)
 {
+   (void) prior;
+
    if (! current) {
       return;
    }

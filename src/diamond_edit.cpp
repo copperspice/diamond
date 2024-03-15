@@ -104,6 +104,8 @@ int DiamondTextEdit::lineNum_Width()
 
 void DiamondTextEdit::update_LineNumWidth(int newBlockCount)
 {
+   (void) newBlockCount;
+
    setViewportMargins(lineNum_Width(), 0, 0, 0);
 }
 
@@ -264,9 +266,9 @@ SyntaxTypes DiamondTextEdit::get_SyntaxEnum()
    return m_syntaxEnum;
 }
 
-void DiamondTextEdit::set_SyntaxEnum(SyntaxTypes data)
+void DiamondTextEdit::set_SyntaxEnum(SyntaxTypes syntaxData)
 {
-   m_syntaxEnum = data;
+   m_syntaxEnum = syntaxData;
 }
 
 
@@ -282,9 +284,9 @@ void DiamondTextEdit::set_Spell(bool value)
 
 
 // ** column mode
-void DiamondTextEdit::set_ColumnMode(bool data)
+void DiamondTextEdit::set_ColumnMode(bool columnMode)
 {
-   m_isColumnMode = data;
+   m_isColumnMode = columnMode;
    m_mainWindow->changeFont();
 
    // leaving column mode
@@ -305,9 +307,9 @@ bool DiamondTextEdit::get_ColumnMode()
    return m_isColumnMode;
 }
 
-void DiamondTextEdit::set_ShowLineNum(bool data)
+void DiamondTextEdit::set_ShowLineNum(bool showLine)
 {
-   m_showlineNum = data;
+   m_showlineNum = showLine;
 }
 
 void DiamondTextEdit::removeColumnModeSpaces()

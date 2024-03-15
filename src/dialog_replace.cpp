@@ -71,6 +71,8 @@ void Dialog_Replace::setUp()
 
 void Dialog_Replace::combo_ContextMenu_F(const QPoint &pt)
 {
+   (void) pt;
+
    QMenu *menu = m_ui->find_Combo->lineEdit()->createStandardContextMenu();
 
    menu->addSeparator();
@@ -84,6 +86,8 @@ void Dialog_Replace::combo_ContextMenu_F(const QPoint &pt)
 
 void Dialog_Replace::combo_ContextMenu_R(const QPoint &pt)
 {
+   (void) pt;
+
    QMenu *menu = m_ui->replace_Combo->lineEdit()->createStandardContextMenu();
 
    menu->addSeparator();

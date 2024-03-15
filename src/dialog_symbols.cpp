@@ -53,9 +53,9 @@ Dialog_Symbols::~Dialog_Symbols()
 QStringList Dialog_Symbols::initData()
 {
    // value may be adjusted in menu_action.cpp insertSymbol()
-   QStringList data;
+   QStringList strList;
 
-   data
+   strList
         << "&amp;"
         << "&nbsp;"
         << "&lt;"
@@ -99,7 +99,7 @@ QStringList Dialog_Symbols::initData()
 
         << QChar(0x00FC);     // �  lower case u
 
-   return data;
+   return strList;
 }
 
 void Dialog_Symbols::insert()

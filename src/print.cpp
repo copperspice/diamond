@@ -355,31 +355,28 @@ void MainWindow::doFooter(QPainter *painter)
    return;
 }
 
-QString MainWindow::macroExpand(QString data)
+QString MainWindow::macroExpand(QString macroData)
 {
-   QString macro;
-   QString text;
-
    int begin;
    int end;
 
    while (true)  {
 
-      begin = data.indexOf("$(");
+      begin = macroData.indexOf("$(");
 
       if (begin == -1)  {
          break;
       }
 
-      end = data.indexOf(")", begin);
+      end = macroData.indexOf(")", begin);
 
       if (end == -1)  {
-         data = data.replace(begin, 2, "");
+         macroData = macroData.replace(begin, 2, QString());
          continue;
       }
 
-      macro = data.mid(begin, end-begin+1);
-      text  = "";
+      QString macro = macroData.mid(begin, end - begin + 1);
+      QString text = QString();
 
       if (macro == "$(FileName)") {
          text = strippedName(m_curFile);
@@ -403,10 +400,10 @@ QString MainWindow::macroExpand(QString data)
 
       }
 
-      data = data.replace(begin, end-begin+1, text);
+      macroData = macroData.replace(begin, end-begin+1, text);
    }
 
-   return data;
+   return macroData;
 }
 
 QString MainWindow::convertBlockToHTML(const QString &plain) const

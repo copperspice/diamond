@@ -27,7 +27,7 @@ class Dialog_Preset : public QDialog
    CS_OBJECT(Dialog_Preset)
 
    public:
-      Dialog_Preset(MainWindow *parent, QStringList data);
+      Dialog_Preset(MainWindow *parent, QStringList folders);
       ~Dialog_Preset();
 
       QStringList getData();
@@ -36,7 +36,6 @@ class Dialog_Preset : public QDialog
       Ui::Dialog_Preset *m_ui;
 
       QPalette m_editPalette;
-      QStringList m_dataList;
       MainWindow *m_parent;
 
       void verify_Folder(QLineEdit *field);
@@ -44,6 +43,7 @@ class Dialog_Preset : public QDialog
 
       void save();
       void cancel();
+      QStringList m_folderList;
 };
 
 #endif

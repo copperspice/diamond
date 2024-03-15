@@ -27,7 +27,7 @@ class Dialog_PrintOptions: public QDialog
    CS_OBJECT(Dialog_PrintOptions)
 
    public:
-      Dialog_PrintOptions(MainWindow *parent, struct PrintSettings data);
+      Dialog_PrintOptions(MainWindow *parent, struct PrintSettings printSettings);
       ~Dialog_PrintOptions();
 
       struct PrintSettings get_Results();

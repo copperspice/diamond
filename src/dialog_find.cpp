@@ -64,6 +64,8 @@ void Dialog_Find::setUp()
 
 void Dialog_Find::combo_ContextMenu(const QPoint &pt)
 {
+   (void) pt;
+
    QMenu *menu = m_ui->find_Combo->lineEdit()->createStandardContextMenu();
 
    menu->addSeparator();

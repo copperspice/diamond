@@ -43,10 +43,10 @@ class DiamondTextEdit : public QPlainTextEdit
       void lineNum_PaintEvent(QPaintEvent *event);
       int lineNum_Width();
 
-      void set_ShowLineNum(bool data);
+      void set_ShowLineNum(bool showLine);
 
       // column mode
-      void set_ColumnMode(bool data);
+      void set_ColumnMode(bool columnMode);
       bool get_ColumnMode();
 
       // copy buffer
@@ -65,9 +65,9 @@ class DiamondTextEdit : public QPlainTextEdit
       QString get_SyntaxFile();
       void set_SyntaxFile(QString fname);
       Syntax * get_SyntaxParser();
-      void set_SyntaxParser(Syntax *data);
+      void set_SyntaxParser(Syntax *parser);
       SyntaxTypes get_SyntaxEnum();
-      void set_SyntaxEnum(SyntaxTypes data);
+      void set_SyntaxEnum(SyntaxTypes syntaxData);
 
       CS_SLOT_1(Public, void cut())
       CS_SLOT_2(cut)
@@ -79,12 +79,12 @@ class DiamondTextEdit : public QPlainTextEdit
       CS_SLOT_2(paste)
 
    protected:
-      void contextMenuEvent(QContextMenuEvent *event);
-      bool event(QEvent *event);
-      void keyPressEvent(QKeyEvent *event);
-      void keyReleaseEvent(QKeyEvent *event);
-      void resizeEvent(QResizeEvent *event);
-      void mousePressEvent(QMouseEvent *event);
+      void contextMenuEvent(QContextMenuEvent *event) override;
+      bool event(QEvent *event) override;
+      void keyPressEvent(QKeyEvent *event) override;
+      void keyReleaseEvent(QKeyEvent *event) override;
+      void resizeEvent(QResizeEvent *event) override;
+      void mousePressEvent(QMouseEvent *event) override;
 
    private:
       MainWindow *m_mainWindow;
@@ -136,12 +136,12 @@ class LineNumArea : public QWidget
          m_editor = editor;
       }
 
-      QSize sizeHint() const {
+      QSize sizeHint() const override {
          return QSize(m_editor->lineNum_Width(), 0);
       }
 
    protected:
-      void paintEvent(QPaintEvent *event) {
+      void paintEvent(QPaintEvent *event) override {
          m_editor->lineNum_PaintEvent(event);
       }
 

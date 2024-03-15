@@ -45,13 +45,13 @@ bool Syntax::processSyntax(const struct Settings &settings)
 bool Syntax::processSyntax()
 {
    // get existing json data
-   QByteArray data = json_ReadFile(m_syntaxFile);
+   QByteArray jsonData = json_ReadFile(m_syntaxFile);
 
-   if (data.isEmpty()) {
+   if (jsonData.isEmpty()) {
       return false;
    }
 
-   QJsonDocument doc = QJsonDocument::fromJson(data);
+   QJsonDocument doc = QJsonDocument::fromJson(jsonData);
 
    QJsonObject object = doc.object();
    QJsonArray list;
@@ -205,11 +205,11 @@ bool Syntax::processSyntax()
 
 QByteArray Syntax::json_ReadFile(QString fileName)
 {
-   QByteArray data;
+   QByteArray jsonData;
 
    if (fileName.isEmpty()) {
       csError(tr("Read Syntax File"), tr("Syntax file name was not supplied."));
-      return data;
+      return jsonData;
    }
 
    if (! QFile::exists(fileName) ) {
@@ -217,20 +217,20 @@ QByteArray Syntax::json_ReadFile(QString fileName)
               "To specify the location of the syntax files select 'Settings' from the main Menu. "
               "Then select 'General Options' and click on the Options tab.\n");
 
-      return data;
+      return jsonData;
    }
 
    QFile file(fileName);
    if (! file.open(QFile::ReadOnly | QFile::Text)) {
       const QString msg = tr("Unable to open Syntax file: ") +  fileName + " : " + file.errorString();
       csError(tr("Read Json Syntax"), msg);
-      return data;
+      return jsonData;
    }
 
-   data = file.readAll();
+   jsonData = file.readAll();
    file.close();
 
-   return data;
+   return jsonData;
 }
 
 void Syntax::set_Spell(bool value)

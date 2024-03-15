@@ -57,9 +57,9 @@ bool MainWindow::json_Read(Config trail)
    if (ok) {
 
       // get existing json data
-      QByteArray data = json_ReadFile();
+      QByteArray jsonData = json_ReadFile();
 
-      QJsonDocument doc = QJsonDocument::fromJson(data);
+      QJsonDocument doc = QJsonDocument::fromJson(jsonData);
 
       QJsonObject object = doc.object();
       QJsonValue value;
@@ -349,17 +349,20 @@ bool MainWindow::json_Write(Option route, Config trail)
 
    if (true) {
       // get existing json data
-      QByteArray data = json_ReadFile();
+      QByteArray jsonData = json_ReadFile();
 
-      if (data.isEmpty()) {
+      if (jsonData.isEmpty()) {
          csError("Config File Error", "Configuration data is empty, aborting update...");
          return false;
       }
 
-      QJsonDocument doc  = QJsonDocument::fromJson(data);
+      QJsonDocument doc  = QJsonDocument::fromJson(jsonData);
       QJsonObject object = doc.object();
 
       switch (route)  {
+
+         case ABOUTURL:
+            break;
 
          case ADVFIND:
             object.insert("advFile-text",          m_advFindText);
@@ -548,13 +551,12 @@ bool MainWindow::json_Write(Option route, Config trail)
                      event = eventList.at(k);
 
                      // hard coded order
-                     QStringList eventList;
-                     eventList.append( QString::number(event->key()) );
-                     eventList.append( QString::number(event->modifiers()) );
-                     eventList.append( event->text() );
+                     QStringList listStr;
+                     listStr.append(QString::number(event->key()));
+                     listStr.append(QString::number(event->modifiers()));
+                     listStr.append(event->text());
 
-                     //
-                     macroList.append( eventList );
+                     macroList.append(listStr);
                   }
 
                   bool ok = true;
@@ -677,9 +679,9 @@ bool MainWindow::json_Write(Option route, Config trail)
 
       // save the new data
       doc.setObject(object);
-      data = doc.toJson();
+      jsonData = doc.toJson();
 
-      json_SaveFile(data);
+      json_SaveFile(jsonData);
    }
 
    return true;
@@ -756,23 +758,23 @@ void MainWindow::json_getFileName()
 
 QByteArray MainWindow::json_ReadFile()
 {
-   QByteArray data;
+   QByteArray jsonData;
 
    QFile file(m_jsonFname);
    if (! file.open(QFile::ReadWrite | QFile::Text)) {
       const QString msg = tr("Unable to open Configuration File: ") +  m_jsonFname + " : " + file.errorString();
       csError(tr("Read Json"), msg);
-      return data;
+      return jsonData;
    }
 
    file.seek(0);
-   data = file.readAll();
+   jsonData = file.readAll();
    file.close();
 
-   return data;
+   return jsonData;
 }
 
-bool MainWindow::json_SaveFile(QByteArray data)
+bool MainWindow::json_SaveFile(QByteArray jsonData)
 {
    QString path = pathName(m_jsonFname);
    QDir directory(path);
@@ -790,7 +792,7 @@ bool MainWindow::json_SaveFile(QByteArray data)
    }
 
    file.seek(0);
-   file.write(data);
+   file.write(jsonData);
    file.close();
 
    return true;
@@ -841,9 +843,9 @@ bool MainWindow::json_CreateNew()
    QString libraryPath  = QDir::homePath() + "/.config/Diamond/";
 
    // get syntax folder (1)
-   QString syntaxPath = resourcePath + "/syntax/";
+   QString syntaxFolder = resourcePath + "/syntax/";
 
-   value = QJsonValue(QString(syntaxPath));
+   value = QJsonValue(QString(syntaxFolder));
    object.insert("pathSyntax", value);
 
    // get dictionary file location (2)
@@ -881,9 +883,9 @@ bool MainWindow::json_CreateNew()
       resourcePath = dir.path();
 
       // get syntax folder (1)
-      QString syntaxPath = resourcePath + "/syntax/";
+      QString syntaxFolder = resourcePath + "/syntax/";
 
-      value = QJsonValue(QString(syntaxPath));
+      value = QJsonValue(QString(syntaxFolder));
       object.insert("pathSyntax", value);
 
       // get dictionary file location (2)
@@ -921,26 +923,25 @@ bool MainWindow::json_CreateNew()
       object.insert("pathSyntax", value);
 
       // get dictionary file location (2)
-      QString dictFile = m_appPath + "/dictionary/en_US.dic";
+      QString dictionaryFName = m_appPath + "/dictionary/en_US.dic";
 
-      if (! QFile::exists(dictFile))  {
-         dictFile = get_xxFile("Dictionary File (*.dic)", "en_US.dic", "Dictionary Files (*.dic)" );
+      if (! QFile::exists(dictionaryFName))  {
+         dictionaryFName = get_xxFile("Dictionary File (*.dic)", "en_US.dic", "Dictionary Files (*.dic)" );
       }
 
-      value = QJsonValue(QString(dictFile));
+      value = QJsonValue(QString(dictionaryFName));
       object.insert("dictMain", value);
 
-      // default dictionary to dictPath
-      dictFile = this->pathName(dictFile) + "/userDict.txt";
+      dictionaryFName = this->pathName(dictionaryFName) + "/userDict.txt";
 
-      if (! QFile::exists(dictFile) ) {
+      if (! QFile::exists(dictionaryFName) ) {
          // add missing file
-         QFile temp(dictFile);
-         temp.open(QIODevice::WriteOnly);
-         temp.close();
+         QFile tmp(dictionaryFName);
+         tmp.open(QIODevice::WriteOnly);
+         tmp.close();
       }
 
-      value = QJsonValue(QString( dictFile) );
+      value = QJsonValue(QString(dictionaryFName) );
       object.insert("dictUser", value);
    }
 
@@ -1202,9 +1203,9 @@ bool MainWindow::json_CreateNew()
 
    // save the data
    QJsonDocument doc(object);
-   QByteArray data = doc.toJson();
+   QByteArray jsonData = doc.toJson();
 
-   bool ok = json_SaveFile(data);
+   bool ok = json_SaveFile(jsonData);
 
    return ok;
 }
@@ -1215,14 +1216,14 @@ void MainWindow::json_setTabList(QStringList list)
    QString userTag = "docs";      // query user to add another category
 
    // get existing json data
-   QByteArray data = json_ReadFile();
+   QByteArray jsonData = json_ReadFile();
 
-   if (data.isEmpty()) {
+   if (jsonData.isEmpty()) {
       csError("Config File Error", "Configuration data is empty, aborting ...");
       return;
    }
 
-   QJsonDocument doc  = QJsonDocument::fromJson(data);
+   QJsonDocument doc  = QJsonDocument::fromJson(jsonData);
    QJsonObject object = doc.object();
 
    QJsonObject extra = object.value("opened-files-extra").toObject();
@@ -1235,9 +1236,9 @@ void MainWindow::json_setTabList(QStringList list)
 
    // save the new data
    doc.setObject(object);
-   data = doc.toJson();
+   jsonData = doc.toJson();
 
-   json_SaveFile(data);
+   json_SaveFile(jsonData);
 }
 
 QStringList MainWindow::json_getTabList()
@@ -1248,14 +1249,14 @@ QStringList MainWindow::json_getTabList()
    QString userTag = "docs";      // query user to add another category
 
    // get existing json data
-   QByteArray data = json_ReadFile();
+   QByteArray jsonData = json_ReadFile();
 
-  if (data.isEmpty()) {
+  if (jsonData.isEmpty()) {
       csError("Config File Error", "Configuration data is empty, aborting ...");
       return list;
    }
 
-   QJsonDocument doc = QJsonDocument::fromJson(data);
+   QJsonDocument doc = QJsonDocument::fromJson(jsonData);
    QJsonObject object = doc.object();
 
    QJsonObject extra = object.value("opened-files-extra").toObject();
@@ -1519,9 +1520,9 @@ void MainWindow::save_ConfigFile()
 QStringList MainWindow::json_Load_MacroIds()
 {
    // get existing json data
-   QByteArray data = json_ReadFile();
+   QByteArray jsonData = json_ReadFile();
 
-   QJsonDocument doc  = QJsonDocument::fromJson(data);
+   QJsonDocument doc  = QJsonDocument::fromJson(jsonData);
    QJsonObject object = doc.object();
 
    //
@@ -1544,9 +1545,9 @@ bool MainWindow::json_Load_Macro(QString macroName)
    bool ok = true;
 
    // get existing json data
-   QByteArray data = json_ReadFile();
+   QByteArray jsonData = json_ReadFile();
 
-   QJsonDocument doc = QJsonDocument::fromJson(data);
+   QJsonDocument doc = QJsonDocument::fromJson(jsonData);
 
    QJsonObject object = doc.object();
    QJsonArray list;
@@ -1581,9 +1582,9 @@ QList<macroStruct> MainWindow::json_View_Macro(QString macroName)
    QList<macroStruct> retval;
 
    // get existing json data
-   QByteArray data = json_ReadFile();
+   QByteArray jsonData = json_ReadFile();
 
-   QJsonDocument doc = QJsonDocument::fromJson(data);
+   QJsonDocument doc = QJsonDocument::fromJson(jsonData);
 
    QJsonObject object = doc.object();
    QJsonArray list;

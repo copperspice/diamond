@@ -271,9 +271,9 @@ void MainWindow::rm_splitCombo(QString fullName)
    }
 }
 
-void MainWindow::split_NameChanged(int data)
+void MainWindow::split_NameChanged(int itemNum)
 {
-   QString newName = m_splitName_CB->itemData(data).toString();
+   QString newName = m_splitName_CB->itemData(itemNum).toString();
 
    if (m_splitFileName != newName)  {
 
@@ -300,8 +300,8 @@ void MainWindow::split_NameChanged(int data)
          return;
       }
 
-      QWidget *temp = m_tabWidget->widget(whichTab);
-      DiamondTextEdit *textEdit = dynamic_cast<DiamondTextEdit *>(temp);
+      QWidget *tabWidget = m_tabWidget->widget(whichTab);
+      DiamondTextEdit *textEdit = dynamic_cast<DiamondTextEdit *>(tabWidget);
 
       if (textEdit) {
          // get document matching the file name
@@ -313,10 +313,10 @@ void MainWindow::split_NameChanged(int data)
             m_split_textEdit->setFont(m_struct.fontNormal);
          }
 
-         QPalette temp = m_split_textEdit->palette();
-         temp.setColor(QPalette::Text, m_struct.colorText);
-         temp.setColor(QPalette::Base, m_struct.colorBack);
-         m_split_textEdit->setPalette(temp);
+         QPalette tmp = m_split_textEdit->palette();
+         tmp.setColor(QPalette::Text, m_struct.colorText);
+         tmp.setColor(QPalette::Base, m_struct.colorBack);
+         m_split_textEdit->setPalette(tmp);
 
          m_textEdit = m_split_textEdit;
 
@@ -373,7 +373,7 @@ void MainWindow::split_CloseButton()
    disconnect(m_split_textEdit, &DiamondTextEdit::copyAvailable, m_ui->actionCopy, &QAction::setEnabled);
 
    m_splitName_CB->clear();
-   m_split_textEdit = 0;
+   m_split_textEdit = nullptr;
 
    m_splitWidget->deleteLater();
 }

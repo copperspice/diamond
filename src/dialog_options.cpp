@@ -22,11 +22,11 @@
 #include <QString>
 #include <QToolButton>
 
-Dialog_Options::Dialog_Options(MainWindow *parent, struct Options data)
+Dialog_Options::Dialog_Options(MainWindow *parent, struct Options optionData)
    : QDialog(parent), m_ui(new Ui::Dialog_Options)
 {
    m_parent   = parent;
-   m_options  = data;
+   m_options  = optionData;
 
    m_ui->setupUi(this);
    this->setWindowIcon(QIcon("://resources/diamond.png"));
