@@ -893,6 +893,50 @@ void MainWindow::rewrapParagraph()
    cursor.endEditBlock();
 }
 
+void MainWindow::sortLines()
+{
+   QTextCursor cursor(m_textEdit->textCursor());
+   cursor.beginEditBlock();
+
+   if (cursor.hasSelection()) {
+      int posStart = cursor.selectionStart();
+      int posEnd   = cursor.selectionEnd();
+
+      // reset posEnd to the end to the last selected line
+      cursor.setPosition(posEnd);
+      cursor.movePosition(QTextCursor::EndOfLine);
+      posEnd = cursor.position();
+
+      // reset posStart to the beginning of the first selected line
+      cursor.setPosition(posStart);
+      cursor.movePosition(QTextCursor::StartOfLine);
+      posStart = cursor.position();
+
+      // select all of the text
+      cursor.setPosition(posEnd, QTextCursor::KeepAnchor);
+
+      QString tmp = cursor.selectedText();
+
+      //
+      QStringList lines = tmp.split(QChar(0x2029));
+      lines.sort();
+
+      tmp = lines.join(QChar(0x2029));
+
+      // remove the selected text
+      cursor.removeSelectedText();
+
+      // insert new text
+      cursor.insertText(tmp);
+
+   } else {
+      csMsg("No text was selected to sort");
+
+   }
+
+   cursor.endEditBlock();
+}
+
 void MainWindow::columnMode()
 {
    // alters cut, copy, paste

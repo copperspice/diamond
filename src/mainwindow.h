@@ -370,6 +370,9 @@ class MainWindow : public QMainWindow
       CS_SLOT_1(Private, void rewrapParagraph())
       CS_SLOT_2(rewrapParagraph)
 
+      CS_SLOT_1(Private, void sortLines())
+      CS_SLOT_2(sortLines)
+
       void insertSymbol();
       void columnMode();
 

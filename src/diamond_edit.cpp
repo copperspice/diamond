@@ -191,6 +191,7 @@ void DiamondTextEdit::contextMenuEvent(QContextMenuEvent *event)
 
    if (isSelected) {
       menu->addAction("Rewrap Paragraph", m_mainWindow, SLOT(rewrapParagraph()) );
+      menu->addAction("Sort Lines", m_mainWindow, SLOT(sortLines()));
       menu->addSeparator();
    }
 
