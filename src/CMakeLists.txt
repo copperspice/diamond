@@ -115,7 +115,6 @@ target_include_directories(Diamond
 )
 
 target_link_libraries(Diamond
-   PRIVATE
    CopperSpice::CsCore
    CopperSpice::CsGui
    CopperSpice::CsNetwork
@@ -141,7 +140,6 @@ if (CMAKE_SYSTEM_NAME MATCHES "Darwin")
    )
 
    target_link_libraries(Diamond
-      PRIVATE
       PkgConfig::Hunspell
    )
 
@@ -167,7 +165,6 @@ elseif(CMAKE_SYSTEM_NAME MATCHES "(Linux|OpenBSD|FreeBSD|NetBSD|DragonFly)")
    pkg_check_modules(Hunspell IMPORTED_TARGET hunspell)
 
    target_link_libraries(Diamond
-      PRIVATE
       PkgConfig::Hunspell
    )
 
@@ -186,14 +183,27 @@ elseif(CMAKE_SYSTEM_NAME MATCHES "Windows")
       ${hunspell_path}/include
    )
 
-   # used by xp only
    target_link_libraries(Diamond
-      PRIVATE
       netapi32
       mpr
       ${hunspell_a}
-      -mwindows
    )
+
+   if (MSVC)
+      # disables the console window
+      target_link_options(Diamond
+         PRIVATE
+         /subsystem:windows
+         /entry:mainCRTStartup
+      )
+
+   else()
+      # disables the console window
+      target_link_libraries(Diamond
+         -mwindows
+      )
+
+   endif()
 
    install(FILES ${hunspell_dll}  DESTINATION .)
    install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/../resources/diamond.ico  DESTINATION .)
