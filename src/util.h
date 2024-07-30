@@ -20,7 +20,8 @@
 
 void csMsg(const QString &msg);
 void csMsg(QString msg, int value);
-void csMsg(QWidget *parent, const QString &title, const QString &msg);
+void csMsg(const QString &ms1, const QString &msg2, QWidget *parent = nullptr);
+
 void csError(QString title, QString msg);
 void showDialog(QDialog &t_Dialog);
 

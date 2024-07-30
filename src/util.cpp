@@ -23,7 +23,7 @@ void csMsg(const QString &msg)
    QMessageBox msgB;
    msgB.setTextFormat(Qt::PlainText);
 
-   msgB.setWindowTitle(QApplication::translate("csMsg", "General Information"));
+   msgB.setWindowTitle(QApplication::translate("csMsg", "Diamond Editor"));
    msgB.setWindowIcon(QIcon("://resources/diamond.png"));
 
    msgB.setText(msg);
@@ -36,14 +36,14 @@ void csMsg(QString msg, int value)
 
    QMessageBox msgB;
 
-   msgB.setWindowTitle(QApplication::translate("csMsg", "General Information"));
+   msgB.setWindowTitle(QApplication::translate("csMsg", "Diamond Editor"));
    msgB.setWindowIcon(QIcon("://resources/diamond.png"));
 
    msgB.setText(msg);
    msgB.exec();
 }
 
-void csMsg(QWidget *parent, const QString &title, const QString &msg)
+void csMsg(const QString &msg1, const QString &msg2, QWidget *parent)
 {
    QMessageBox msgB(parent);
 
@@ -51,10 +51,10 @@ void csMsg(QWidget *parent, const QString &title, const QString &msg)
       msgB.setWindowModality(Qt::WindowModal);
    }
 
-   msgB.setWindowTitle(title);
+   msgB.setWindowTitle(QApplication::translate("csMsg", "Diamond Editor"));
    msgB.setWindowIcon(QIcon("://resources/diamond.png"));
 
-   msgB.setText(msg);
+   msgB.setText(msg1 + ",  " + msg2);
    msgB.exec();
 }
 
