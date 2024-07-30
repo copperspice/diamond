@@ -25,7 +25,7 @@ class Dialog_Open : public QDialog
    CS_OBJECT(Dialog_Open)
 
    public:
-      Dialog_Open(MainWindow *parent, QStringList list);
+      Dialog_Open(MainWindow *parent, QStringList strlist);
       ~Dialog_Open();
       QString get_FileName();
 

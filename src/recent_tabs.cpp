@@ -86,12 +86,12 @@ void MainWindow::openTab_Select(int index)
       int cnt = m_tabWidget->count();
       int currentIndex = m_tabWidget->currentIndex();
 
-      for (int k = 0; k < cnt; ++k) {
-         QString tcurFile = this->get_curFileName(k);
+      for (int i = 0; i < cnt; ++i) {
+         QString tcurFile = get_curFileName(i);
 
          if (tcurFile == fullName) {
             match = true;
-            currentIndex = k;
+            currentIndex = i;
             break;
          }
       }
@@ -129,7 +129,7 @@ void MainWindow::showContext_Tabs(const QPoint &pt)
 
 void MainWindow::openTab_redo()
 {
-   QWidget *temp;
+   QWidget *widget;
    DiamondTextEdit *textEdit;
 
    QAction *action;
@@ -145,13 +145,13 @@ void MainWindow::openTab_redo()
 
       int cnt = m_tabWidget->count();
 
-      for (int k = 0; k < cnt; ++k) {
-         tName = this->get_curFileName(k);
+      for (int i = 0; i < cnt; ++i) {
+         tName = get_curFileName(i);
          m_openedFiles.append(tName);
 
          //
-         temp = m_tabWidget->widget(k);
-         textEdit = dynamic_cast<DiamondTextEdit *>(temp);
+         widget = m_tabWidget->widget(i);
+         textEdit = dynamic_cast<DiamondTextEdit *>(widget);
 
          if (textEdit != nullptr) {
             isModified = textEdit->document()->isModified();
@@ -206,20 +206,20 @@ void MainWindow::openTab_UpdateActions()
 {
    int cnt = m_openedFiles.count();
 
-   for (int k = 0; k < OPENTABS_MAX; ++k) {
+   for (int i = 0; i < OPENTABS_MAX; ++i) {
 
-      if (k < cnt)  {
+      if (i < cnt)  {
          QString modified;
 
-         if (m_openedModified[k]) {
+         if (m_openedModified[i]) {
             modified += " *";
          }
 
-         openTab_Actions[k]->setText(m_openedFiles[k] + modified);
-         openTab_Actions[k]->setVisible(true);
+         openTab_Actions[i]->setText(m_openedFiles[i] + modified);
+         openTab_Actions[i]->setVisible(true);
 
-     } else {        
-         openTab_Actions[k]->setVisible(false);
+     } else {
+         openTab_Actions[i]->setVisible(false);
      }
 
    }

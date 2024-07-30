@@ -28,10 +28,10 @@ Dialog_Open::Dialog_Open(MainWindow *parent, QStringList strlist)
    setWindowIcon(QIcon("://resources/diamond.png"));
 
    // alter the hightlight color
-   QPalette temp = m_ui->openList->palette();
-   temp.setColor( QPalette::Highlight, QColor(206, 206, 206, 255));
-   temp.setColor( QPalette::HighlightedText, Qt::black);
-   m_ui->openList->setPalette(temp);
+   QPalette tmp = m_ui->openList->palette();
+   tmp.setColor( QPalette::Highlight, QColor(206, 206, 206, 255));
+   tmp.setColor( QPalette::HighlightedText, Qt::black);
+   m_ui->openList->setPalette(tmp);
 
    QStringListModel *model = new QStringListModel(this);
    model->setStringList(m_list);

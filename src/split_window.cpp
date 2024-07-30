@@ -37,10 +37,10 @@ void MainWindow::split_Horizontal()
       m_split_textEdit->setFont(m_struct.fontNormal);
    }
 
-   QPalette temp = m_split_textEdit->palette();
-   temp.setColor(QPalette::Text, m_struct.colorText);
-   temp.setColor(QPalette::Base, m_struct.colorBack);
-   m_split_textEdit->setPalette(temp);
+   QPalette tmp = m_split_textEdit->palette();
+   tmp.setColor(QPalette::Text, m_struct.colorText);
+   tmp.setColor(QPalette::Base, m_struct.colorBack);
+   m_split_textEdit->setPalette(tmp);
 
    // position on same line
    QTextCursor cursor(m_textEdit->textCursor());
@@ -132,10 +132,10 @@ void MainWindow::split_Vertical()
       m_split_textEdit->setFont(m_struct.fontNormal);
    }
 
-   QPalette temp = m_split_textEdit->palette();
-   temp.setColor(QPalette::Text, m_struct.colorText);
-   temp.setColor(QPalette::Base, m_struct.colorBack);
-   m_split_textEdit->setPalette(temp);
+   QPalette tmp = m_split_textEdit->palette();
+   tmp.setColor(QPalette::Text, m_struct.colorText);
+   tmp.setColor(QPalette::Base, m_struct.colorBack);
+   m_split_textEdit->setPalette(tmp);
 
    // position on same line
    QTextCursor cursor(m_textEdit->textCursor());
@@ -353,8 +353,8 @@ void MainWindow::split_NameChanged(int itemNum)
 void MainWindow::split_CloseButton()
 {
    // set focus to the current tab widget
-   QWidget *temp = m_tabWidget->currentWidget();
-   temp->setFocus();
+   QWidget *tabWidget = m_tabWidget->currentWidget();
+   tabWidget->setFocus();
 
    m_isSplit = false;
 
