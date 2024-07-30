@@ -39,6 +39,12 @@ class Syntax : public QSyntaxHighlighter
       void highlightBlock(const QString &text) override;
 
    private:
+      struct HighlightingRule
+      {
+         QRegularExpression pattern;
+         QTextCharFormat format;
+      };
+
       static QByteArray json_ReadFile(QString fileName);
 
       QString m_syntaxFile;
@@ -52,12 +58,6 @@ class Syntax : public QSyntaxHighlighter
 
       QTextCharFormat m_multiLineCommentFormat;
       QTextCharFormat m_spellCheckFormat;
-
-      struct HighlightingRule
-      {
-         QRegularExpression pattern;
-         QTextCharFormat format;
-      };
 
       QVector<HighlightingRule> highlightingRules;
 };

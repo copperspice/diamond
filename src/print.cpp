@@ -45,7 +45,7 @@ void MainWindow::print()
    }
 
    if (dialog.exec() == QDialog::Accepted) {
-      this->printOut(&printer);
+      printOut(&printer);
    }
 }
 
@@ -82,7 +82,7 @@ void MainWindow::printPdf()
       printer.setOutputFormat(QPrinter::PdfFormat);
       printer.setOutputFileName(fileName);
 
-      this->printOut(&printer);
+      printOut(&printer);
    }
 }
 
@@ -99,7 +99,7 @@ void MainWindow::printOut(QPrinter *printer)
    }
 */
 
-   QString html = "";
+   QString html;
 
    if (m_printer.lineNumbers)  {
 
@@ -114,7 +114,7 @@ void MainWindow::printOut(QPrinter *printer)
          html += "<tr>";
          html += "<td  align='right' valign='middle'><b><font size='2'>" + QString::number(blockNumber + 1) + "</b></font></td>";
          html += "<td> &nbsp;&nbsp; </td>";
-         html += "<td> " + this->convertBlockToHTML(block.text()) + "</td>";
+         html += "<td> " + convertBlockToHTML(block.text()) + "</td>";
          html += "</tr>";
 
          block = block.next();
@@ -172,8 +172,8 @@ void MainWindow::printOut(QPrinter *printer)
       m_pageCount = td->pageCount();
 
       // print header and footer
-      this->doHeader(&painter);
-      this->doFooter(&painter);
+      doHeader(&painter);
+      doFooter(&painter);
 
       int headerSpace = + headHeight + spacer;
 
@@ -196,8 +196,8 @@ void MainWindow::printOut(QPrinter *printer)
          if (k < m_pageCount) {
             printer->newPage();
 
-            this->doHeader(&painter);
-            this->doFooter(&painter);
+            doHeader(&painter);
+            doFooter(&painter);
          }
       }
 

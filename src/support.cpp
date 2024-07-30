@@ -132,7 +132,7 @@ QString MainWindow::get_curFileName(int whichTab)
    QString name = m_tabWidget->tabWhatsThis(whichTab);
 
    if (name == "untitled.txt") {
-      name = "";
+      name = QString();
    }
 
    return name;
@@ -274,7 +274,7 @@ bool MainWindow::loadFile(QString fileName, bool addNewTab, bool isAuto, bool is
    if (addNewTab) {
       tabNew();
 
-      m_struct.pathPrior = this->pathName(fileName);
+      m_struct.pathPrior = pathName(fileName);
 
       if (! isAuto) {
          json_Write(PATH_PRIOR);
@@ -299,7 +299,7 @@ bool MainWindow::loadFile(QString fileName, bool addNewTab, bool isAuto, bool is
       rfolder_Add();
    }
 
-   if ( addNewTab && (! isAuto) )  {
+   if (addNewTab && (! isAuto))  {
       // update open tab list
       openTab_Add();
 
@@ -316,7 +316,7 @@ bool MainWindow::loadFile(QString fileName, bool addNewTab, bool isAuto, bool is
 
 QString MainWindow::pathName(QString fileName) const
 {
-   QString retval = "";
+   QString retval;
 
    if (! fileName.isEmpty())  {
       QFileInfo temp(fileName);
@@ -436,7 +436,7 @@ void MainWindow::setCurrentTitle(const QString &fileName, bool tabChange, bool i
 
    if (fileName.isEmpty()) {
 
-      m_curFile = "";
+      m_curFile = QString();
       showName  = "untitled.txt";
 
       setStatus_FName(showName);

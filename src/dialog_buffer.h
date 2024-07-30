@@ -27,16 +27,16 @@ class Dialog_Buffer : public QDialog
    public:
       Dialog_Buffer(QList<QString> copyBuffer);
       ~Dialog_Buffer();
-      int get_Index();       
+      int get_Index();
 
    protected:
       bool eventFilter(QObject *object, QEvent *event) override;
 
-   private :     
-      Ui::Dialog_Buffer *m_ui;
-
+   private:
       void select();
       void cancel();
+
+      Ui::Dialog_Buffer *m_ui;
 };
 
 #endif

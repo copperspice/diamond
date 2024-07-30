@@ -25,7 +25,7 @@ Dialog_Open::Dialog_Open(MainWindow *parent, QStringList strlist)
    m_list = strlist;
 
    m_ui->setupUi(this);
-   this->setWindowIcon(QIcon("://resources/diamond.png"));
+   setWindowIcon(QIcon("://resources/diamond.png"));
 
    // alter the hightlight color
    QPalette temp = m_ui->openList->palette();
@@ -42,7 +42,7 @@ Dialog_Open::Dialog_Open(MainWindow *parent, QStringList strlist)
    m_ui->openList->setFocus();
 
    connect(m_ui->open_PB,   &QPushButton::clicked, this, &Dialog_Open::open);
-   connect(m_ui->cancel_PB, &QPushButton::clicked, this, &Dialog_Open::cancel);  
+   connect(m_ui->cancel_PB, &QPushButton::clicked, this, &Dialog_Open::cancel);
 }
 
 Dialog_Open::~Dialog_Open()
@@ -52,12 +52,12 @@ Dialog_Open::~Dialog_Open()
 
 void Dialog_Open::open()
 {
-   this->done(QDialog::Accepted);
+   done(QDialog::Accepted);
 }
 
 void Dialog_Open::cancel()
 {
-   this->done(QDialog::Rejected);
+   done(QDialog::Rejected);
 }
 
 QString Dialog_Open::get_FileName()

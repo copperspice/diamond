@@ -96,68 +96,22 @@ class MainWindow : public QMainWindow
       void dropEvent(QDropEvent *event) override;
 
    private:
-      Ui::MainWindow *m_ui;
 
-      // textEdit
-      DiamondTextEdit *m_textEdit;
-      QTabWidget *m_tabWidget;
-      QString m_curFile;
-
-      QStringList m_openedFiles;
-      QList<bool> m_openedModified;
-
-      // split
-      DiamondTextEdit *m_split_textEdit;
-      DiamondTextEdit *m_noSplit_textEdit;
-      QSplitter *m_splitter;
-
-      bool m_isSplit;
-      QFrame *m_splitWidget;
-      QString m_splitFileName;
-      QComboBox *m_splitName_CB;
-      QPushButton *m_splitClose_PB;
+      enum SaveFiles {
+         SAVE_ONE,
+         SAVE_ALL
+      };
 
       void add_splitCombo(QString fullName);
       void rm_splitCombo(QString fullName);
       void update_splitCombo(QString fullName, bool isModified);
 
-      // copy buffer
-      QShortcut *m_actionCopyBuffer;
+      int getReply();
 
-      // find
-      QString m_findText;
-      QStringList m_findList;
-      QTextDocument::FindFlags m_flags;
-      bool m_fDirection;
-      bool m_fMatchCase;
-      bool m_fWholeWords;
-
-      // advanced find
-      Dialog_AdvFind *m_dwAdvFind;
-      QString m_advFindText;
-      QString m_advFindFileType;
-      QString m_advFindFolder;
-
-      bool m_advFMatchCase;
-      bool m_advFWholeWords;
-      bool m_advFRegexp;
-      bool m_advFSearchFolders;
-
-      QStringList m_recursiveList;
-      QFrame *m_findWidget;
-      QStandardItemModel *m_model;
       QList<advFindStruct> advFind_getResults(bool &aborted);
       void findRecursive(const QString &path, bool isFirstLoop = true);
       void advFind_ShowFiles(QList<advFindStruct> foundList);
 
-      // replace
-      QString m_replaceText;
-      QStringList m_replaceList;
-      int getReply();
-
-      // macros
-      bool m_record;
-      QList<QKeyEvent *> m_macroList;
       QStringList m_macroNames;
 
       void replaceQuery();
@@ -167,48 +121,19 @@ class MainWindow : public QMainWindow
       void autoLoad();
       void argLoad(QList<QString> argList);
 
-      // preset folders
-      QAction *prefolder_Actions[PRESET_FOLDERS_MAX];
-      QStringList m_prefolder_List;
-
       void prefolder_CreateMenus();
       void prefolder_RedoList();
-      //void prefolder_UpdateActions();
-
-      // recent folders
-      QAction *rfolder_Actions[RECENT_FOLDERS_MAX];
-      QStringList m_rfolder_List;
+      // void prefolder_UpdateActions();
 
       void rfolder_CreateMenus();
       void rfolder_Add();
       void rfolder_UpdateActions();
 
-      // recent files
-      QAction *rf_Actions[RECENT_FILES_MAX];
-      QStringList m_rf_List;
-
       void rf_CreateMenus();
       void rf_Update();
       void rf_UpdateActions();
 
-      // syntax
-      QString m_appPath;
-      QString m_jsonFname;
-      SyntaxTypes m_syntaxEnum;
-      Syntax *m_syntaxParser;
-      void runSyntax(QString synFName);
-
-      // settings
-      struct Arugments m_args;
-      struct Settings m_struct;
-      struct PrintSettings m_printer;
-
-      // tab stops
-      QList<int> m_tabStops;
       void setUpTabStops();
-
-      // open tabs
-      QAction *openTab_Actions[OPENTABS_MAX];
 
       void openTab_CreateMenus();
       void openTab_Add();
@@ -218,22 +143,8 @@ class MainWindow : public QMainWindow
       void openTab_Select(int index);
       void openTab_UpdateOneAction(int index, bool isModified);
 
-      // spell check
       void createSpellCheck();
-      SpellCheck *m_spellCheck;
 
-      // menu bar
-      QToolBar *fileToolBar;
-      QToolBar *editToolBar;
-      QToolBar *searchToolBar;
-      QToolBar *viewToolBar;
-      QToolBar *toolsToolBar;
-      QToolBar *windowToolBar;
-
-      // status bar
-      QLabel *m_statusLine;
-      QLabel *m_statusMode;
-      QLabel *m_statusName;
 
       enum Option { ABOUTURL, ADVFIND, AUTOLOAD, CLOSE, COLORS, COLUMN_MODE, DICT_MAIN, DICT_USER, FIND_LIST,
                     FIND_REPLACE, FONT, FORMAT_DATE, FORMAT_TIME, KEYS, MACRO, MACRO_NAMES, PATH_SYNTAX,
@@ -242,8 +153,6 @@ class MainWindow : public QMainWindow
                     TAB_SPACING, USESPACES, WORDWRAP};
 
       enum Config { CFG_STARTUP, CFG_DEFAULT };
-
-      enum SaveFiles { SAVE_ONE, SAVE_ALL };
 
       void openDoc(QString path);
       bool closeAll_Doc(bool isExit);
@@ -254,7 +163,6 @@ class MainWindow : public QMainWindow
       void setSynType(SyntaxTypes syntaxData);
       void forceSyntax(SyntaxTypes syntaxData);
 
-      // create shortcuts, menus, status bar
       void createShortCuts(bool setupAll);
       void createToolBars();
       void createStatusBar();
@@ -482,6 +390,103 @@ class MainWindow : public QMainWindow
       void split_Vertical();
       void split_NameChanged(int itemNum);
       void split_CloseButton();
+
+      Ui::MainWindow *m_ui;
+
+      DiamondTextEdit *m_textEdit;
+      QTabWidget *m_tabWidget;
+      QString m_curFile;
+
+      QStringList m_openedFiles;
+      QList<bool> m_openedModified;
+
+      DiamondTextEdit *m_split_textEdit;
+      DiamondTextEdit *m_noSplit_textEdit;
+      QSplitter *m_splitter;
+
+      bool m_isSplit;
+      QFrame *m_splitWidget;
+      QString m_splitFileName;
+      QComboBox *m_splitName_CB;
+      QPushButton *m_splitClose_PB;
+
+      QShortcut *m_actionCopyBuffer;
+
+      QString m_findText;
+      QStringList m_findList;
+      QTextDocument::FindFlags m_flags;
+      bool m_fDirection;
+      bool m_fMatchCase;
+      bool m_fWholeWords;
+
+      Dialog_AdvFind *m_dwAdvFind;
+      QString m_advFindText;
+      QString m_advFindFileType;
+      QString m_advFindFolder;
+
+      bool m_advFMatchCase  = false;
+      bool m_advFWholeWords = false;
+      bool m_advFRegexp     = false;
+
+      bool m_advFSearchFolders;
+
+      QStringList m_recursiveList;
+      QFrame *m_findWidget;
+      QStandardItemModel *m_model;
+
+      // replace
+      QString m_replaceText;
+      QStringList m_replaceList;
+
+      // macros
+      bool m_record;
+      QList<QKeyEvent *> m_macroList;
+
+      // preset folders
+      QAction *prefolder_Actions[PRESET_FOLDERS_MAX];
+      QStringList m_prefolder_List;
+
+      // recent folders
+      QAction *rfolder_Actions[RECENT_FOLDERS_MAX];
+      QStringList m_rfolder_List;
+
+      // recent files
+      QAction *rf_Actions[RECENT_FILES_MAX];
+      QStringList m_rf_List;
+
+      // syntax
+      QString m_appPath;
+      QString m_jsonFname;
+      SyntaxTypes m_syntaxEnum;
+      Syntax *m_syntaxParser;
+      void runSyntax(QString synFName);
+
+      // settings
+      struct Arguments m_args;
+      struct Settings m_struct;
+      struct PrintSettings m_printer;
+
+      // tab stops
+      QList<int> m_tabStops;
+
+      // open tabs
+      QAction *openTab_Actions[OPENTABS_MAX];
+
+      // spell check
+      SpellCheck *m_spellCheck;
+
+      // menu bar
+      QToolBar *fileToolBar;
+      QToolBar *editToolBar;
+      QToolBar *searchToolBar;
+      QToolBar *viewToolBar;
+      QToolBar *toolsToolBar;
+      QToolBar *windowToolBar;
+
+      // status bar
+      QLabel *m_statusLine;
+      QLabel *m_statusMode;
+      QLabel *m_statusName;
 };
 
 #endif

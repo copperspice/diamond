@@ -38,8 +38,6 @@ class DiamondTextEdit : public QPlainTextEdit
       DiamondTextEdit(MainWindow *from, struct Settings settings, SpellCheck *spell, QString owner);
       ~DiamondTextEdit();
 
-      QString m_owner;
-
       void lineNum_PaintEvent(QPaintEvent *event);
       int lineNum_Width();
 
@@ -78,6 +76,8 @@ class DiamondTextEdit : public QPlainTextEdit
       CS_SLOT_1(Public, void paste())
       CS_SLOT_2(paste)
 
+      QString m_owner;
+
    protected:
       void contextMenuEvent(QContextMenuEvent *event) override;
       bool event(QEvent *event) override;
@@ -87,13 +87,21 @@ class DiamondTextEdit : public QPlainTextEdit
       void mousePressEvent(QMouseEvent *event) override;
 
    private:
+      void addToCopyBuffer(const QString &text);
+      void removeColumnModeSpaces();
+
+      CS_SLOT_1(Private, void update_LineNumWidth(int newBlockCount))
+      CS_SLOT_2(update_LineNumWidth)
+
+      CS_SLOT_1(Private, void update_LineNumArea(const QRect & rect,int value))
+      CS_SLOT_2(update_LineNumArea)
+
       MainWindow *m_mainWindow;
       QWidget *m_lineNumArea;
 
       // column mode
       bool m_isColumnMode;
       int m_undoCount;
-      void removeColumnModeSpaces();
 
       bool m_showlineNum;
       bool m_colHighlight;
@@ -105,7 +113,6 @@ class DiamondTextEdit : public QPlainTextEdit
 
       // copy buffer
       QList<QString> m_copyBuffer;
-      void addToCopyBuffer(const QString &text);
 
       // macro
       bool m_record;
@@ -120,12 +127,6 @@ class DiamondTextEdit : public QPlainTextEdit
       Syntax *m_syntaxParser;
       QString m_synFName;
       SyntaxTypes m_syntaxEnum;
-
-      CS_SLOT_1(Private, void update_LineNumWidth(int newBlockCount))
-      CS_SLOT_2(update_LineNumWidth)
-
-      CS_SLOT_1(Private, void update_LineNumArea(const QRect & rect,int value))
-      CS_SLOT_2(update_LineNumArea)
 };
 
 
@@ -150,4 +151,3 @@ class LineNumArea : public QWidget
 };
 
 #endif
-

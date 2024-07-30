@@ -39,7 +39,7 @@ Dialog_XP_GetDir::Dialog_XP_GetDir(MainWindow *from, const QString title, const 
    m_path = absolutePath;
 
    m_ui->setupUi(this);
-   this->setWindowIcon(QIcon("://resources/diamond.png"));
+   setWindowIcon(QIcon("://resources/diamond.png"));
    setWindowTitle(title);
 
    // set the width of the panes
@@ -137,7 +137,7 @@ Dialog_XP_GetDir::~Dialog_XP_GetDir()
 
 void Dialog_XP_GetDir::cancel()
 {
-   this->done(QDialog::Rejected);
+   done(QDialog::Rejected);
 }
 
 QString Dialog_XP_GetDir::driveType(QString drive)
@@ -193,7 +193,7 @@ QString Dialog_XP_GetDir::getDirectory()
 
 void Dialog_XP_GetDir::ok()
 {
-   this->done(QDialog::Accepted);
+   done(QDialog::Accepted);
 }
 
 void Dialog_XP_GetDir::network()

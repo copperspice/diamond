@@ -30,11 +30,11 @@ class Dialog_Open : public QDialog
       QString get_FileName();
 
    private:
-      Ui::Dialog_Open *m_ui;    
-      QStringList m_list;
-
       void open() override;
       void cancel();
+
+      Ui::Dialog_Open *m_ui;
+      QStringList m_list;
 };
 
 #endif

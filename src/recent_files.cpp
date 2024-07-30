@@ -34,7 +34,7 @@ void MainWindow::rf_CreateMenus()
       if (i < cnt)  {
          tName = m_rf_List[i];
       } else {
-         tName = "file"+QString::number(i);
+         tName = "file" + QString::number(i);
       }
 
       rf_Actions[i] = new QAction(tName, this);
@@ -169,9 +169,6 @@ void MainWindow::rf_UpdateActions()
    }
 }
 
-
-
-
 // ****  recent folders
 void MainWindow::rfolder_CreateMenus()
 {
@@ -287,7 +284,7 @@ void MainWindow::rfolder_Add()
       m_rfolder_List.removeFirst();
    }
 
-   QString fileName = this->pathName(m_curFile);
+   QString fileName = pathName(m_curFile);
 
    if (! m_rfolder_List.contains(fileName)) {
       m_rfolder_List.append(fileName);

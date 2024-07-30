@@ -29,7 +29,7 @@ class Dialog_Replace : public QDialog
 
    public:
       Dialog_Replace(MainWindow *parent, QString findText, QStringList findList,
-                     QString replaceText, QStringList replaceList);
+            QString replaceText, QStringList replaceList);
       ~Dialog_Replace();
 
       QString get_findText();
@@ -43,18 +43,14 @@ class Dialog_Replace : public QDialog
       bool get_Upd_Replace();
 
    private:
-      Ui::Dialog_Replace *m_ui;
-      QStringList m_findList;
-      QStringList m_replaceList;
-      void setUp();
-      bool m_upd_Find;
-      bool m_upd_Replace;
-
       void replace();
       void replaceAll();
       void cancel();
 
-      void combo_ContextMenu_F(const QPoint & pt);
+      void combo_ContextMenu_F(const QPoint &pt);
+      void combo_ContextMenu_R(const QPoint &pt);
+
+      void setUp();
 
       CS_SLOT_1(Private, void menu_clearList_F())
       CS_SLOT_2(menu_clearList_F)
@@ -62,13 +58,18 @@ class Dialog_Replace : public QDialog
       CS_SLOT_1(Private, void menu_deleteEntry_F())
       CS_SLOT_2(menu_deleteEntry_F)
 
-      void combo_ContextMenu_R(const QPoint & pt);
-
       CS_SLOT_1(Private, void menu_clearList_R())
       CS_SLOT_2(menu_clearList_R)
 
       CS_SLOT_1(Private, void menu_deleteEntry_R())
       CS_SLOT_2(menu_deleteEntry_R)
+
+      Ui::Dialog_Replace *m_ui;
+      QStringList m_findList;
+      QStringList m_replaceList;
+
+      bool m_upd_Find;
+      bool m_upd_Replace;
 };
 
 #endif

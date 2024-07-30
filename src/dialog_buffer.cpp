@@ -21,9 +21,9 @@
 
 Dialog_Buffer::Dialog_Buffer(QList<QString> copyBuffer)
    : m_ui(new Ui::Dialog_Buffer)
-{  
+{
    m_ui->setupUi(this);
-   this->setWindowIcon(QIcon("://resources/diamond.png"));
+   setWindowIcon(QIcon("://resources/diamond.png"));
 
    // alter the hightlight color
    QPalette temp = m_ui->bufferTable->palette();
@@ -59,7 +59,7 @@ Dialog_Buffer::~Dialog_Buffer()
 }
 
 bool Dialog_Buffer::eventFilter(QObject *object, QEvent *event)
-{   
+{
    if (object == m_ui->bufferTable && event->type() == QEvent::KeyPress) {
 
       QKeyEvent *keyPressEvent = dynamic_cast<QKeyEvent *>(event);
@@ -75,7 +75,7 @@ bool Dialog_Buffer::eventFilter(QObject *object, QEvent *event)
 
             if (row < model->rowCount() )  {
                m_ui->bufferTable->setCurrentIndex(model->index(row, 0));
-               this->done(QDialog::Accepted);
+               done(QDialog::Accepted);
 
                return true;
             }
@@ -88,12 +88,12 @@ bool Dialog_Buffer::eventFilter(QObject *object, QEvent *event)
 
 void Dialog_Buffer::select()
 {
-   this->done(QDialog::Accepted);
+   done(QDialog::Accepted);
 }
 
 void Dialog_Buffer::cancel()
 {
-   this->done(QDialog::Rejected);
+   done(QDialog::Rejected);
 }
 
 int Dialog_Buffer::get_Index()

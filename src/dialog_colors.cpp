@@ -29,10 +29,10 @@ Dialog_Colors::Dialog_Colors(MainWindow *parent)
    m_mainWindow = parent;
 
    m_ui->setupUi(this);
-   this->setWindowIcon(QIcon("://resources/diamond.png"));
+   setWindowIcon(QIcon("://resources/diamond.png"));
 
    m_struSettings = m_mainWindow->get_StructData();
-   m_syntaxFname  = m_struSettings.pathSyntax + "syn_cpp.json";  
+   m_syntaxFname  = m_struSettings.pathSyntax + "syn_cpp.json";
 
    m_syntaxParser = new Syntax(m_ui->sample->document(), m_syntaxFname, m_struSettings);
    updateParser(false);
@@ -87,7 +87,7 @@ void Dialog_Colors::colorBox(QLineEdit *field, QColor color)
 }
 
 void Dialog_Colors::initData()
-{   
+{
    // 1
    m_ui->text_Color->setReadOnly(true);
    colorBox(m_ui->text_Color, m_struSettings.colorText);
@@ -473,12 +473,12 @@ void Dialog_Colors::mline_italic()
 
 void Dialog_Colors::save()
 {
-   this->done(QDialog::Accepted);
+   done(QDialog::Accepted);
 }
 
 void Dialog_Colors::cancel()
 {
-   this->done(QDialog::Rejected);
+   done(QDialog::Rejected);
 }
 
 struct Settings Dialog_Colors::get_Colors()

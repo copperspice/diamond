@@ -21,7 +21,7 @@
 #include <QDialog>
 
 class Dialog_Fonts : public QDialog
-{     
+{
    CS_OBJECT(Dialog_Fonts)
 
    public:
@@ -32,14 +32,14 @@ class Dialog_Fonts : public QDialog
       QFont get_fontColumn();
 
    private:
-      Ui::Dialog_Fonts *m_ui;
-      QFont m_fontNormal;
-      QFont m_fontColumn;
-
       void save();
       void cancel();
       void fontNormal();
       void fontColumn();
+
+      Ui::Dialog_Fonts *m_ui;
+      QFont m_fontNormal;
+      QFont m_fontColumn;
 };
 
 #endif

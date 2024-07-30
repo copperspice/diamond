@@ -32,14 +32,6 @@ class Dialog_Colors : public QDialog
       struct Settings get_Colors();
 
    private:
-      Ui::Dialog_Colors *m_ui;
-
-      MainWindow *m_mainWindow;
-      Syntax *m_syntaxParser;
-
-      QString m_syntaxFname;
-      struct Settings m_struSettings;
-
       void initData();
       void colorBox(QLineEdit *field, QColor color);
       void updateParser(bool newSettings);
@@ -73,6 +65,14 @@ class Dialog_Colors : public QDialog
 
       void save();
       void cancel();
+
+      Ui::Dialog_Colors *m_ui;
+
+      MainWindow *m_mainWindow;
+      Syntax *m_syntaxParser;
+
+      QString m_syntaxFname;
+      struct Settings m_struSettings;
 };
 
 #endif

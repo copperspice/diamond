@@ -122,7 +122,7 @@ void MainWindow::findNext()
          m_textEdit->setTextCursor(cursor);
 
          // search again
-         this->findNext();
+         findNext();
       }
    }
 }
@@ -181,7 +181,7 @@ void MainWindow::advFind()
 
             //
             bool aborted = false;
-            QList<advFindStruct> foundList = this->advFind_getResults(aborted);
+            QList<advFindStruct> foundList = advFind_getResults(aborted);
 
             if (aborted)  {
                // do nothing
@@ -194,7 +194,7 @@ void MainWindow::advFind()
                continue;
 
             } else   {
-               this->advFind_ShowFiles(foundList);
+               advFind_ShowFiles(foundList);
 
             }
          }
@@ -222,7 +222,7 @@ QList<advFindStruct> MainWindow::advFind_getResults(bool &aborted)
    if (m_advFSearchFolders)  {
       m_recursiveList.clear();
 
-      this->findRecursive(m_advFindFolder);
+      findRecursive(m_advFindFolder);
       searchList = m_recursiveList;
 
    } else {
@@ -482,7 +482,7 @@ void MainWindow::advFind_View(const QModelIndex &modelIndex)
    int max   = m_tabWidget->count();
 
    for (int index = 0; index < max; ++index) {
-      QString tcurFile = this->get_curFileName(index);
+      QString tcurFile = get_curFileName(index);
 
       if (tcurFile == fileName) {
          m_tabWidget->setCurrentIndex(index);
@@ -751,10 +751,10 @@ void ReplaceReply::keyPressEvent(QKeyEvent *event)
    m_replaceReply = event->key();
 
    if (m_replaceReply == Qt::Key_Escape) {
-      this->done(0);
+      done(0);
 
    } else {
-      this->done(1);
+      done(1);
 
    }
 }

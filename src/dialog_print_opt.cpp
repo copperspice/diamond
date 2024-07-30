@@ -25,7 +25,7 @@ Dialog_PrintOptions::Dialog_PrintOptions(MainWindow *parent, struct PrintSetting
    m_print  = printSettings;
 
    m_ui->setupUi(this);
-   this->setWindowIcon(QIcon("://resources/diamond.png"));
+   setWindowIcon(QIcon("://resources/diamond.png"));
 
    initData();
 
@@ -78,12 +78,12 @@ void Dialog_PrintOptions::initData()
 
 void Dialog_PrintOptions::save()
 {
-   this->done(QDialog::Accepted);
+   done(QDialog::Accepted);
 }
 
 void Dialog_PrintOptions::cancel()
 {
-   this->done(QDialog::Rejected);
+   done(QDialog::Rejected);
 }
 
 struct PrintSettings Dialog_PrintOptions::get_Results()
@@ -105,7 +105,7 @@ struct PrintSettings Dialog_PrintOptions::get_Results()
    m_print.marTop        = m_ui->marginTop->text().toDouble();
    m_print.marBottom     = m_ui->marginBottom->text().toDouble();
    m_print.marRight      = m_ui->marginRight->text().toDouble();
-   m_print.marLeft       = m_ui->marginLeft->text().toDouble();   
+   m_print.marLeft       = m_ui->marginLeft->text().toDouble();
    m_print.hdrGap        = m_ui->hdrGap->text().toDouble();
 
    // unnecessary to save the fonts back to the structure
@@ -115,7 +115,7 @@ struct PrintSettings Dialog_PrintOptions::get_Results()
 
 void Dialog_PrintOptions::macroMenu(QToolButton *widget)
 {
-   m_menuText = "";
+   m_menuText = QString();
 
    QMenu *menu = new QMenu(this);
    menu->addAction("File Name Only",        this, SLOT(fileName())  );
@@ -143,7 +143,7 @@ void Dialog_PrintOptions::headerLeft()
    if (! m_menuText.isEmpty()) {
       text = text + m_menuText;
       m_ui->header_Left->setText(text);
-   } 
+   }
 }
 
 void Dialog_PrintOptions::headerCenter()

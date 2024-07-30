@@ -29,7 +29,7 @@ Dialog_Options::Dialog_Options(MainWindow *parent, struct Options optionData)
    m_options  = optionData;
 
    m_ui->setupUi(this);
-   this->setWindowIcon(QIcon("://resources/diamond.png"));
+   setWindowIcon(QIcon("://resources/diamond.png"));
 
    initData();
 
@@ -147,12 +147,12 @@ void Dialog_Options::initData()
 
 void Dialog_Options::save()
 {
-   this->done(QDialog::Accepted);
+   done(QDialog::Accepted);
 }
 
 void Dialog_Options::cancel()
 {
-   this->done(QDialog::Rejected);
+   done(QDialog::Rejected);
 }
 
 void Dialog_Options::pick_Main()

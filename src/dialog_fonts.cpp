@@ -25,7 +25,7 @@ Dialog_Fonts::Dialog_Fonts(QFont normal, QFont column)
    m_fontColumn = column;
 
    m_ui->setupUi(this);
-   this->setWindowIcon(QIcon("://resources/diamond.png"));
+   setWindowIcon(QIcon("://resources/diamond.png"));
 
    m_ui->fontNormal->setText(m_fontNormal.toString());
    m_ui->fontColumn->setText(m_fontColumn.toString());
@@ -63,15 +63,14 @@ void Dialog_Fonts::fontColumn()
    }
 }
 
-//
 void Dialog_Fonts::save()
 {
-   this->done(QDialog::Accepted);
+   done(QDialog::Accepted);
 }
 
 void Dialog_Fonts::cancel()
 {
-   this->done(QDialog::Rejected);
+   done(QDialog::Rejected);
 }
 
 QFont Dialog_Fonts::get_fontNormal()
@@ -83,4 +82,3 @@ QFont Dialog_Fonts::get_fontColumn()
 {
    return m_fontColumn;
 }
-

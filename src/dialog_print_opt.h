@@ -33,11 +33,15 @@ class Dialog_PrintOptions: public QDialog
       struct PrintSettings get_Results();
 
    private:
-      Ui::Dialog_PrintOptions *m_ui;
-      MainWindow *m_parent;
-
-      struct PrintSettings m_print;      
-      QString m_menuText;
+      void headerLeft();
+      void headerCenter();
+      void headerRight();
+      void footerLeft();
+      void footerCenter();
+      void footerRight();
+      void fontHeader();
+      void fontFooter();
+      void fontText();
 
       void initData();
       void macroMenu(QToolButton *widget);
@@ -66,15 +70,11 @@ class Dialog_PrintOptions: public QDialog
       CS_SLOT_1(Private, void time())
       CS_SLOT_2(time)
 
-      void headerLeft();
-      void headerCenter();
-      void headerRight();
-      void footerLeft();
-      void footerCenter();
-      void footerRight();
-      void fontHeader();
-      void fontFooter();
-      void fontText();
+      Ui::Dialog_PrintOptions *m_ui;
+      MainWindow *m_parent;
+
+      struct PrintSettings m_print;
+      QString m_menuText;
 };
 
 #endif

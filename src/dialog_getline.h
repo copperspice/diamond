@@ -20,20 +20,21 @@
 #include <QDialog>
 
 class Dialog_GetLine : public QDialog
-{     
+{
    CS_OBJECT(Dialog_GetLine)
 
    public:
       Dialog_GetLine();
       ~Dialog_GetLine();
+
       QString get_Value();
       void set_ColNo();
 
    private:
-      Ui::Dialog_GetLine *m_ui;
-
       void ok();
       void cancel();
+
+      Ui::Dialog_GetLine *m_ui;
 };
 
 #endif

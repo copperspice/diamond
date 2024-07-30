@@ -29,7 +29,7 @@ void MainWindow::openTab_CreateMenus()
    m_openedModified.clear();
 
    for (int k = 0; k < cnt; ++k) {
-      fullName = this->get_curFileName(k);
+      fullName = get_curFileName(k);
 
       if (fullName.isEmpty()) {
          --cnt;
@@ -75,15 +75,15 @@ void MainWindow::openTab_CreateMenus()
 }
 
 void MainWindow::openTab_Select(int index)
-{ 
+{
    bool match = false;
    QString fullName = m_openedFiles[index];
 
    if (fullName.isEmpty()) {
-      // something is pretty bogus
+      // something is off
 
    } else {
-      int cnt   = m_tabWidget->count();
+      int cnt = m_tabWidget->count();
       int currentIndex = m_tabWidget->currentIndex();
 
       for (int k = 0; k < cnt; ++k) {
@@ -114,7 +114,7 @@ void MainWindow::showContext_Tabs(const QPoint &pt)
 {
    QAction *action = m_ui->menuWindow->actionAt(pt);
 
-   if (action)  {
+   if (action != nullptr)  {
       QString actionData = action->data().toString();
 
       if (actionData == "select-tab")  {
@@ -135,7 +135,7 @@ void MainWindow::openTab_redo()
    QAction *action;
    action = (QAction *)sender();
 
-   if (action) {
+   if (action != nullptr) {
       // re-populate m_openedFiles and m_openedModified
       QString tName;
       bool isModified;
@@ -153,7 +153,7 @@ void MainWindow::openTab_redo()
          temp = m_tabWidget->widget(k);
          textEdit = dynamic_cast<DiamondTextEdit *>(temp);
 
-         if (textEdit) {
+         if (textEdit != nullptr) {
             isModified = textEdit->document()->isModified();
             m_openedModified.append(isModified);
          }
@@ -177,13 +177,12 @@ void MainWindow::openTab_redo()
          if (i >= cnt)  {
             openTab_Actions[i]->setVisible(false);
          }
-
       }
    }
 }
 
 void MainWindow::openTab_Add()
-{ 
+{
    if (m_curFile.isEmpty()) {
       return;
    }

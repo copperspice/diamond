@@ -22,11 +22,11 @@
 Dialog_Preset::Dialog_Preset(MainWindow *parent, QStringList folders)
    : QDialog(parent), m_ui(new Ui::Dialog_Preset)
 {
-   m_parent   = parent;
+   m_parent     = parent;
    m_folderList = folders;
 
    m_ui->setupUi(this);
-   this->setWindowIcon(QIcon("://resources/diamond.png"));
+   setWindowIcon(QIcon("://resources/diamond.png"));
 
    for (int i = 0; i < m_folderList.count(); i++)  {
       QString tmp = m_folderList.at(i);
@@ -194,16 +194,16 @@ void Dialog_Preset::pick_Folder(QString number, QLineEdit *field)
 
 void Dialog_Preset::save()
 {
-   this->done(QDialog::Accepted);
+   done(QDialog::Accepted);
 }
 
 void Dialog_Preset::cancel()
 {
-   this->done(QDialog::Rejected);
+   done(QDialog::Rejected);
 }
 
 QStringList Dialog_Preset::getData()
-{ 
+{
    for (int i = 0; i < m_folderList.count(); i++)  {
       int index = i + 1;
 

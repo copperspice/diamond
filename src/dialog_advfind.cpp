@@ -20,8 +20,8 @@
 
 QStringList Dialog_AdvFind::dirCombo;
 
-Dialog_AdvFind::Dialog_AdvFind(MainWindow *parent, QString findText, QString fileType, QString findFolder, bool searchFolders,
-      bool matchCase, bool wholeWords, bool regexp)
+Dialog_AdvFind::Dialog_AdvFind(MainWindow *parent, QString findText, QString fileType, QString findFolder,
+      bool searchFolders, bool matchCase, bool wholeWords, bool regexp)
    : QDialog(parent), m_ui(new Ui::Dialog_AdvFind)
 {
    m_parent  = parent;
@@ -130,7 +130,7 @@ void Dialog_AdvFind::showNotBusyMsg()
 
 void Dialog_AdvFind::cancel()
 {
-   this->done(0);
+   done(0);
 }
 
 void Dialog_AdvFind::find()
@@ -141,7 +141,7 @@ void Dialog_AdvFind::find()
       dirCombo.append(tmp);
    }
 
-   this->done(1);
+   done(1);
 }
 
 QString Dialog_AdvFind::get_findText()

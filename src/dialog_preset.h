@@ -23,7 +23,7 @@
 #include <QStringList>
 
 class Dialog_Preset : public QDialog
-{     
+{
    CS_OBJECT(Dialog_Preset)
 
    public:
@@ -33,17 +33,17 @@ class Dialog_Preset : public QDialog
       QStringList getData();
 
    private:
-      Ui::Dialog_Preset *m_ui;
-
-      QPalette m_editPalette;
-      MainWindow *m_parent;
-
       void verify_Folder(QLineEdit *field);
       void pick_Folder(QString number, QLineEdit *field);
 
       void save();
       void cancel();
+
+      Ui::Dialog_Preset *m_ui;
+
+      QPalette m_editPalette;
       QStringList m_folderList;
+      MainWindow *m_parent;
 };
 
 #endif

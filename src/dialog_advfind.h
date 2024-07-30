@@ -44,15 +44,15 @@ class Dialog_AdvFind : public QDialog
       void showNotBusyMsg();
 
    private:
+      void pick_Folder();
+      void find();
+      void cancel();
+
       Ui::Dialog_AdvFind *m_ui;
       MainWindow *m_parent;
       QLabel *m_busyMsg;
 
       static QStringList dirCombo;
-
-      void pick_Folder();
-      void find();
-      void cancel();
 };
 
 #endif

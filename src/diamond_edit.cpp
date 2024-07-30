@@ -141,7 +141,7 @@ void DiamondTextEdit::contextMenuEvent(QContextMenuEvent *event)
 {
    bool isSelected = false;
 
-   QTextCursor cursor(this->textCursor());
+   QTextCursor cursor(textCursor());
    QString selectedText = cursor.selectedText();
 
    if (! selectedText.isEmpty())  {
@@ -151,7 +151,7 @@ void DiamondTextEdit::contextMenuEvent(QContextMenuEvent *event)
    if (! isSelected && m_isColumnMode) {
       // check for extra selection
 
-      QList<QTextEdit::ExtraSelection> oldSelections = this->extraSelections();
+      QList<QTextEdit::ExtraSelection> oldSelections = extraSelections();
 
       for (int k = 0; k < oldSelections.size(); ++k) {
 
@@ -321,7 +321,7 @@ void DiamondTextEdit::removeColumnModeSpaces()
    int startCol = m_endCol;
 
    for (int k = 0; k < m_undoCount; k++) {
-      this->undo();
+      undo();
    }
 
    // from the start of the document go to startRow
@@ -340,7 +340,7 @@ void DiamondTextEdit::cut()
    if (m_isColumnMode) {
 
       QString text;
-      QList<QTextEdit::ExtraSelection> oldSelections = this->extraSelections();
+      QList<QTextEdit::ExtraSelection> oldSelections = extraSelections();
 
       // obtain text
       for (int k = 0; k < oldSelections.size(); ++k) {
@@ -397,7 +397,7 @@ void DiamondTextEdit::copy()
    if (m_isColumnMode) {
 
       QString text;
-      QList<QTextEdit::ExtraSelection> oldSelections = this->extraSelections();
+      QList<QTextEdit::ExtraSelection> oldSelections = extraSelections();
 
       // obtain text
       for (int k = 0; k < oldSelections.count(); ++k) {
@@ -440,7 +440,7 @@ void DiamondTextEdit::paste()
       QString text = QApplication::clipboard()->text();
       QStringList lineList = text.split("\n");
 
-      QTextCursor cursor(this->textCursor());
+      QTextCursor cursor(textCursor());
       cursor.beginEditBlock();
 
       // reset posStart to the beginning
@@ -549,7 +549,7 @@ bool DiamondTextEdit::event(QEvent *event)
          if (modifiers == Qt::ShiftModifier &&
               ((key == Qt::Key_Up) || (key == Qt::Key_Down) || (key == Qt::Key_Left) || (key == Qt::Key_Right)) ) {
 
-            QTextCursor cursor(this->textCursor());
+            QTextCursor cursor(textCursor());
 
             if (! m_colHighlight) {
                m_startRow = cursor.blockNumber()+1;
@@ -569,7 +569,7 @@ bool DiamondTextEdit::event(QEvent *event)
 
             QList<QTextEdit::ExtraSelection> oldSelections = this->extraSelections();
 
-            for (int k=0; k < oldSelections.size(); ++k) {
+            for (int k = 0; k < oldSelections.size(); ++k) {
                if (oldSelections[k].format.property(QTextFormat::UserProperty).toString() == "highlightbar") {
                   extraSelections.append(oldSelections[k]);
                   break;
@@ -653,7 +653,7 @@ bool DiamondTextEdit::event(QEvent *event)
                selection.cursor.movePosition(QTextCursor::NextBlock, QTextCursor::MoveAnchor, 1);
             }
 
-            this->setExtraSelections(extraSelections);
+            setExtraSelections(extraSelections);
 
             //  Note: If the selection obtained from an editor spans a line break, the text will contain a Unicode
             //  U+2029 paragraph separator character instead of a newline \n character. Use QString::replace() to

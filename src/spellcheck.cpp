@@ -32,9 +32,7 @@
 
 #endif
 
-// debian 9 uses 1.4.1
-// ubuntu 16.04 uses 1.3.3
-// all other supported platforms use 1.5 or newer
+// all supported platforms use 1.5 or newer
 
 SpellCheck::SpellCheck(const QString &dictMain, const QString &dictUser)
 {
@@ -83,7 +81,7 @@ bool SpellCheck::spell(QStringView word)
 {
    bool isCorrect;
 
-   if ( word.isEmpty() ) {
+   if (word.isEmpty()) {
       return true;
    }
 
@@ -107,7 +105,6 @@ QStringList SpellCheck::suggest(const QString &word)
    QStringList suggestions;
 
 #if (HUNSPELL_VERSION >= 5)
-
    QVector<std::string> suggestWordList = QVector<std::string>::fromStdVector(m_hunspell->suggest(word.toStdString()));
 
    for (auto item : suggestWordList) {

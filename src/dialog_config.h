@@ -21,7 +21,7 @@
 #include <QString>
 
 class Dialog_Config : public QDialog
-{     
+{
    CS_OBJECT(Dialog_Config)
 
    public:
@@ -30,12 +30,12 @@ class Dialog_Config : public QDialog
       QString get_newName();
 
    private:
-      Ui::Dialog_Config *m_ui;
-
       void createNew();
       void select();
       void rename();
       void cancel();
+
+      Ui::Dialog_Config *m_ui;
 };
 
 #endif

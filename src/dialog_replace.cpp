@@ -22,7 +22,7 @@
 #include <QTextCursor>
 
 Dialog_Replace::Dialog_Replace(MainWindow *parent, QString findText, QStringList findList,
-                               QString replaceText, QStringList replaceList)
+      QString replaceText, QStringList replaceList)
    : QDialog(parent), m_ui(new Ui::Dialog_Replace)
 {
    m_findList    = findList;
@@ -31,9 +31,9 @@ Dialog_Replace::Dialog_Replace(MainWindow *parent, QString findText, QStringList
    m_upd_Replace = false;
 
    m_ui->setupUi(this);
-   this->setWindowIcon(QIcon("://resources/diamond.png"));
+   setWindowIcon(QIcon("://resources/diamond.png"));
 
-   this->setUp();
+   setUp();
 
    // display last edit value
    m_ui->find_Combo->lineEdit()->setText(findText);
@@ -133,20 +133,19 @@ void Dialog_Replace::menu_deleteEntry_R()
    m_ui->replace_Combo->removeItem(index);
 }
 
-
 void Dialog_Replace::replace()
 {
-   this->done(1);
+   done(1);
 }
 
 void Dialog_Replace::replaceAll()
 {
-   this->done(2);
+   done(2);
 }
 
 void Dialog_Replace::cancel()
 {
-   this->done(0);
+   done(0);
 }
 
 QString Dialog_Replace::get_findText()

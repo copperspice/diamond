@@ -33,10 +33,6 @@ class Dialog_Options : public QDialog
       struct Options get_Results();
 
    private:
-      Ui::Dialog_Options *m_ui;
-      MainWindow *m_parent;
-
-      struct Options m_options;
       void initData();
 
       void pick_Main();
@@ -46,6 +42,11 @@ class Dialog_Options : public QDialog
       void reset_StandardKey();
       void save();
       void cancel();
+
+      Ui::Dialog_Options *m_ui;
+      MainWindow *m_parent;
+
+      struct Options m_options;
 };
 
 #endif

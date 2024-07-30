@@ -287,7 +287,7 @@ void MainWindow::split_NameChanged(int itemNum)
       int whichTab = -1;
       for (int k = 0; k < m_tabWidget->count(); ++k) {
 
-         if (newName == this->get_curFileName(k)) {
+         if (newName == get_curFileName(k)) {
             whichTab = k;
             break;
          }

@@ -62,7 +62,7 @@ void MainWindow::setSyntax()
       m_textEdit->set_SyntaxParser(nullptr);
    }
 
-   QString fname  = "";
+   QString fname;
    QString suffix = "txt";
 
    if (! m_curFile.isEmpty()) {

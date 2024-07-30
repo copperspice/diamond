@@ -31,12 +31,12 @@ class SpellCheck
       void addToUserDict(const QString &word);
 
    private:
+      void put_word(const QString &word);
+
       QString m_userFname;
       QTextCodec *m_codec;
 
       Hunspell *m_hunspell;
-
-      void put_word(const QString &word);
 };
 
 #endif

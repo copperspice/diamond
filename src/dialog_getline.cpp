@@ -18,7 +18,7 @@ Dialog_GetLine::Dialog_GetLine()
    : m_ui(new Ui::Dialog_GetLine)
 {
    m_ui->setupUi(this);
-   this->setWindowIcon(QIcon("://resources/diamond.png"));
+   setWindowIcon(QIcon("://resources/diamond.png"));
 
    m_ui->value->setText("1");
 
@@ -36,12 +36,12 @@ Dialog_GetLine::~Dialog_GetLine()
 
 void Dialog_GetLine::ok()
 {
-   this->done(1);
+   done(1);
 }
 
 void Dialog_GetLine::cancel()
 {
-   this->done(0);
+   done(0);
 }
 
 QString Dialog_GetLine::get_Value()

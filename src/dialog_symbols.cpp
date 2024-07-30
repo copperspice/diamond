@@ -25,7 +25,7 @@ Dialog_Symbols::Dialog_Symbols(MainWindow *parent)
    m_parent = parent;
 
    m_ui->setupUi(this);
-   this->setWindowIcon(QIcon("://resources/diamond.png"));
+   setWindowIcon(QIcon("://resources/diamond.png"));
 
    // alter the hightlight color
    QPalette temp = m_ui->sampleList->palette();
@@ -104,12 +104,12 @@ QStringList Dialog_Symbols::initData()
 
 void Dialog_Symbols::insert()
 {
-   this->done(QDialog::Accepted);
+   done(QDialog::Accepted);
 }
 
 void Dialog_Symbols::cancel()
 {
-   this->done(QDialog::Rejected);
+   done(QDialog::Rejected);
 }
 
 QString Dialog_Symbols::get_Symbol()

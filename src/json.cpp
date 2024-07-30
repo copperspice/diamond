@@ -55,7 +55,6 @@ bool MainWindow::json_Read(Config trail)
    }
 
    if (ok) {
-
       // get existing json data
       QByteArray jsonData = json_ReadFile();
 
@@ -747,11 +746,11 @@ void MainWindow::json_getFileName()
    } else if (quest.clickedButton() == selectExist) {
 
       m_jsonFname = QFileDialog::getOpenFileName(this, tr("Select Existing Diamond Configuration File"),
-            "", tr("Json Files (*.json)"), &selectedFilter);
+            QString(), tr("Json Files (*.json)"), &selectedFilter);
 
    } else {
       // user aborted
-      m_jsonFname = "";
+      m_jsonFname = QString();
 
    }
 }
@@ -854,7 +853,6 @@ bool MainWindow::json_CreateNew()
    value = QJsonValue(QString(dictFile));
    object.insert("dictMain", value);
 
-   // default dictionary to dictPath
    dictFile = libraryPath + "dictionary/userDict.txt";
 
    if (! QFile::exists(dictFile) ) {
@@ -874,7 +872,7 @@ bool MainWindow::json_CreateNew()
    if (m_appPath.contains(".app/Contents/MacOS")) {
       isAutoDetect = true;
 
-      QString resourcePath = this->pathName(m_appPath) + "/../Contents/Resources";
+      QString resourcePath = pathName(m_appPath) + "/../Contents/Resources";
       QString libraryPath  = QDir::homePath() + "/Library/Diamond/";
 
       QDir dir = resourcePath;
@@ -894,7 +892,6 @@ bool MainWindow::json_CreateNew()
       value = QJsonValue(QString(dictFile));
       object.insert("dictMain", value);
 
-      // default dictionary to dictPath
       dictFile = libraryPath + "dictionary/userDict.txt";
 
       if (! QFile::exists(dictFile) ) {
@@ -932,7 +929,7 @@ bool MainWindow::json_CreateNew()
       value = QJsonValue(QString(dictionaryFName));
       object.insert("dictMain", value);
 
-      dictionaryFName = this->pathName(dictionaryFName) + "/userDict.txt";
+      dictionaryFName = pathName(dictionaryFName) + "/userDict.txt";
 
       if (! QFile::exists(dictionaryFName) ) {
          // add missing file
@@ -956,7 +953,7 @@ bool MainWindow::json_CreateNew()
    object.insert("advFile-folder",     value);
 
    // print options
-   value = QJsonValue(QString(""));
+   value = QJsonValue(QString());
 
    object.insert("prt-lineNumbers",  true);
    object.insert("prt-printHeader",  true);
@@ -1105,10 +1102,10 @@ bool MainWindow::json_CreateNew()
    value = QJsonValue(QString("Alt+G"));
    object.insert("key-goLine",      value);
 
-   value = QJsonValue(QString(""));
+   value = QJsonValue(QString());
    object.insert("key-showSpaces",   value);
 
-   value = QJsonValue(QString(""));
+   value = QJsonValue(QString());
    object.insert("key-showBreaks", value);
 
    value = QJsonValue(QString("Alt+Return"));
@@ -1228,7 +1225,7 @@ void MainWindow::json_setTabList(QStringList list)
 
    QJsonObject extra = object.value("opened-files-extra").toObject();
 
-   // save extra json data
+   // save extra data using tag
    QJsonArray tmp = QJsonArray::fromStringList(list);
    extra.insert(userTag, tmp);
 
@@ -1251,7 +1248,7 @@ QStringList MainWindow::json_getTabList()
    // get existing json data
    QByteArray jsonData = json_ReadFile();
 
-  if (jsonData.isEmpty()) {
+   if (jsonData.isEmpty()) {
       csError("Config File Error", "Configuration data is empty, aborting ...");
       return list;
    }
@@ -1261,7 +1258,7 @@ QStringList MainWindow::json_getTabList()
 
    QJsonObject extra = object.value("opened-files-extra").toObject();
 
-   // retrieve extra json data
+   // retrieve extra data from tag
    QJsonArray array = extra.value(userTag).toArray();
 
    for (auto item : array)  {
@@ -1279,7 +1276,7 @@ QStringList MainWindow::json_getTabList()
 QString MainWindow::get_SyntaxPath(QString syntaxPath)
 {
    QString msg  = tr("Select Diamond Syntax Folder");
-   QString path = this->get_DirPath(msg, syntaxPath);
+   QString path = get_DirPath(msg, syntaxPath);
 
    return path;
 }
@@ -1564,7 +1561,7 @@ bool MainWindow::json_Load_Macro(QString macroName)
       QJsonArray element = list.at(k).toArray();
 
       // hard coded order
-      int key      = element.at(0).toString().toInteger<int>();
+      int key = element.at(0).toString().toInteger<int>();
       Qt::KeyboardModifier modifier = Qt::KeyboardModifier( element.at(1).toString().toInteger<int>() );
       QString text = element.at(2).toString();
 

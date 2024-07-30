@@ -30,7 +30,7 @@ Dialog_Macro::Dialog_Macro(MainWindow *parent, MacroEnum enumValue, QStringList 
    m_macroNames_D = macroNames;
 
    m_ui->setupUi(this);
-   this->setWindowIcon(QIcon("://resources/diamond.png"));
+   setWindowIcon(QIcon("://resources/diamond.png"));
 
    setupTitle();
    setUpView();

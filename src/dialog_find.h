@@ -39,11 +39,7 @@ class Dialog_Find : public QDialog
       bool get_Upd_Find();
 
    private:
-      Ui::Dialog_Find *m_ui;
-      QStringList m_findList;
       void setUp();
-      bool m_upd_Find;
-
       void find();
       void cancel();
 
@@ -54,6 +50,10 @@ class Dialog_Find : public QDialog
 
       CS_SLOT_1(Private, void menu_deleteEntry())
       CS_SLOT_2(menu_deleteEntry)
+
+      Ui::Dialog_Find *m_ui;
+      bool m_upd_Find;
+      QStringList m_findList;
 };
 
 #endif

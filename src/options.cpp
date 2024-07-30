@@ -214,7 +214,7 @@ void MainWindow::setOptions()
          json_Write(TAB_SPACING);
 
          // update tab stops
-         this->setUpTabStops();
+         setUpTabStops();
       }
 
       //
@@ -298,7 +298,7 @@ void MainWindow::setOptions()
       json_Write(KEYS);
 
       // false will redisplay only user defined shortcuts
-      this->createShortCuts(true);
+      createShortCuts(true);
    }
 
    delete dw;

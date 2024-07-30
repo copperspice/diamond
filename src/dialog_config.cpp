@@ -19,7 +19,7 @@ Dialog_Config::Dialog_Config(QString fileName)
    : m_ui(new Ui::Dialog_Config)
 {
    m_ui->setupUi(this);
-   this->setWindowIcon(QIcon("://resources/diamond.png"));
+   setWindowIcon(QIcon("://resources/diamond.png"));
 
    m_ui->currentName->setText(fileName);
    m_ui->newName->setText(fileName);
@@ -37,12 +37,12 @@ Dialog_Config::~Dialog_Config()
 
 void Dialog_Config::createNew()
 {
-   this->done(1);
+   done(1);
 }
 
 void Dialog_Config::select()
 {
-   this->done(2);
+   done(2);
 }
 
 void Dialog_Config::rename()
@@ -54,12 +54,12 @@ void Dialog_Config::rename()
       return;
    }
 
-   this->done(3);
+   done(3);
 }
 
 void Dialog_Config::cancel()
 {
-   this->done(0);
+   done(0);
 }
 
 QString Dialog_Config::get_newName()

@@ -29,7 +29,7 @@ void MainWindow::newFile()
 
    if (okClose) {
       m_textEdit->clear();
-      setCurrentTitle("");
+      setCurrentTitle(QString());
    }
 }
 
@@ -120,7 +120,7 @@ void MainWindow::open_RelatedFile()
 
       } else if (cnt == 1)  {
          // open the one related file
-         this->loadFile(list.at(0), true, false);
+         loadFile(list.at(0), true, false);
 
       }  else {
          // display the full list of related files
@@ -129,7 +129,7 @@ void MainWindow::open_RelatedFile()
 
          if (result == QDialog::Accepted) {
             QString tmpF = dw->get_FileName();
-            this->loadFile(tmpF, true, false);
+            loadFile(tmpF, true, false);
          }
 
          delete dw;
@@ -174,7 +174,7 @@ bool MainWindow::close_Doc()
       openTab_Delete();
 
       m_textEdit->clear();
-      setCurrentTitle("");
+      setCurrentTitle(QString());
    }
 
    return okClose;
@@ -201,7 +201,7 @@ bool MainWindow::closeAll_Doc(bool isExit)
 
       if (textEdit) {
          m_textEdit = textEdit;
-         m_curFile  = this->get_curFileName(whichTab);
+         m_curFile  = get_curFileName(whichTab);
 
          bool okClose = querySave();
 
@@ -217,7 +217,7 @@ bool MainWindow::closeAll_Doc(bool isExit)
                // do not remove this tab !
 
                m_textEdit->clear();
-               setCurrentTitle("");
+               setCurrentTitle(QString());
 
             } else {
                m_tabWidget->removeTab(whichTab);
@@ -389,7 +389,7 @@ void MainWindow::saveAll()
       fileName = m_tabWidget->tabWhatsThis(hold_index);
 
       if (fileName == "untitled.txt") {
-         m_curFile = "";
+         m_curFile = QString();
 
       } else {
          m_curFile = fileName;
@@ -798,7 +798,7 @@ void MainWindow::rewrapParagraph()
 
       for (QString &str : lines)  {
          str.prepend(hold);
-         hold = "";
+         hold = QString();
 
          while (! str.isEmpty()) {
             int len    = str.size();
@@ -830,7 +830,7 @@ void MainWindow::rewrapParagraph()
       if (! hold.isEmpty()) {
          // retrieve the last line
          QString lastLine = lines.takeLast() + " " + hold;
-         hold = "";
+         hold = QString();
 
          // is this line too long now
          int len    = lastLine.size();
@@ -1574,7 +1574,7 @@ void MainWindow::spellCheck()
 
    for (int k = 0; k < count; ++k)  {
 
-      tmp      = m_tabWidget->widget(k);
+      tmp = m_tabWidget->widget(k);
       textEdit = dynamic_cast<DiamondTextEdit *>(tmp);
 
       if (textEdit) {
@@ -1595,12 +1595,11 @@ void MainWindow::saveTabs()
    int count = m_tabWidget->count();
 
    for (int whichTab = 0; whichTab < count; ++whichTab) {
-
       tmp = m_tabWidget->widget(whichTab);
       textEdit = dynamic_cast<DiamondTextEdit *>(tmp);
 
       if (textEdit != nullptr) {
-         list.append(this->get_curFileName(whichTab));
+         list.append(get_curFileName(whichTab));
       }
    }
 

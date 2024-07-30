@@ -48,23 +48,24 @@ class Dialog_XP_GetDir  : public QDialog
 
    protected:
       QSize sizeHint() const override;
+
    private:
+      QString driveType(QString drive);
+      QList<netServers> getWin_NetServers();
+
+      void showDirectories(QTreeWidgetItem *current, QTreeWidgetItem *previous);
+      void network();
+      void ok();
+      void cancel();
+
       Ui::Dialog_XP_GetDir *m_ui;
-      QFileSystemModel  *m_model_R;
+      QFileSystemModel *m_model_R;
 
       QString m_path;
       QModelIndex m_index_R;
 
       QList<netServers> m_netServers;
-      QList<netShares> m_netShares;
-
-      QString driveType(QString drive);
-      QList<netServers> getWin_NetServers();
-
-      void showDirectories(QTreeWidgetItem * current,QTreeWidgetItem * previous);
-      void network();
-      void ok();
-      void cancel();
+      QList<netShares>  m_netShares;
 };
 
 #endif

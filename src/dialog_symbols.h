@@ -30,12 +30,12 @@ class Dialog_Symbols : public QDialog
       QString get_Symbol();
 
    private:
-      Ui::Dialog_Symbols *m_ui;
-      MainWindow *m_parent;
-      QStringList initData();
-
       void insert();
       void cancel();
+      QStringList initData();
+
+      Ui::Dialog_Symbols *m_ui;
+      MainWindow *m_parent;
 };
 
 #endif

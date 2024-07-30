@@ -132,6 +132,6 @@ void KeyLineEdit::keyPressEvent(QKeyEvent *event)
           keyPress.append(key);
       }
 
-      this->setText(keyPress.trimmed());
+      setText(keyPress.trimmed());
    }
 }

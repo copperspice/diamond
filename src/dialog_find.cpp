@@ -29,9 +29,9 @@ Dialog_Find::Dialog_Find(MainWindow *parent, QString findText, QStringList findL
    m_upd_Find = false;
 
    m_ui->setupUi(this);
-   this->setWindowIcon(QIcon("://resources/diamond.png"));
+   setWindowIcon(QIcon("://resources/diamond.png"));
 
-   this->setUp();
+   setUp();
 
    m_ui->find_Combo->completer()->setCaseSensitivity(Qt::CaseSensitive);
 
@@ -98,12 +98,12 @@ void Dialog_Find::menu_deleteEntry()
 
 void Dialog_Find::find()
 {
-   this->done(1);
+   done(1);
 }
 
 void Dialog_Find::cancel()
 {
-   this->done(0);
+   done(0);
 }
 
 QString Dialog_Find::get_findText()

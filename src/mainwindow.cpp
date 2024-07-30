@@ -810,13 +810,13 @@ void MainWindow::createToolBars()
 
 void MainWindow::createStatusBar()
 {
-   m_statusLine = new QLabel("", this);
+   m_statusLine = new QLabel(QString(), this);
    //m_statusLine->setFrameStyle(QFrame::Panel| QFrame::Sunken);
 
-   m_statusMode = new QLabel("", this);
+   m_statusMode = new QLabel(QString(), this);
    //m_statusMode->setFrameStyle(QFrame::Panel | QFrame::Sunken);
 
-   m_statusName = new QLabel("", this);
+   m_statusName = new QLabel(QString(), this);
    //m_statusName->setFrameStyle(QFrame::Panel | QFrame::Sunken);
 
    statusBar()->addPermanentWidget(m_statusLine, 0);
