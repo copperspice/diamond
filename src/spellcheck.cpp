@@ -39,21 +39,32 @@ SpellCheck::SpellCheck(const QString &dictMain, const QString &dictUser)
    m_userFname = dictUser;
 
    QString base = dictMain;
-   base = base.mid(0, base.indexOf("."));
+   base = base.mid(0, base.lastIndexOf("."));
 
-   QString dicFname  = base + ".dic";
+   QString dicFName  = base + ".dic";
    QString affFName  = base + ".aff";
 
-   m_hunspell = new Hunspell(affFName .constData(), dicFname.constData() );
+   if (! QFile::exists(dicFName)) {
+      csError("Spell Check", "Dictionary File was not found\n" + dicFName);
+   }
+
+   if (! QFile::exists(affFName))  {
+      csError("Spell Check", "Dictionary Support File was not found\n" + affFName);
+   }
+
+   m_hunspell = new Hunspell(affFName .constData(), dicFName.constData() );
 
    // encode as SET option in the affix file
    m_codec = QTextCodec::codecForName("UTF-8");
 
-   if (! m_userFname.isEmpty()) {
+   if (m_userFname.isEmpty()) {
+      csError("Spell Check", "Unable to find User Dictionary");
+
+    } else {
       QFile file(m_userFname);
 
       if (! file.open(QFile::ReadOnly)) {
-         QString error = QObject::tr("Unable to read file %1:\n%2.").formatArgs(m_userFname, file.errorString());
+         QString error = QObject::tr("Unable to read User Dictionary\n%1\n\n%2").formatArgs(m_userFname, file.errorString());
          csError("Spell Check", error);
          return;
       }
@@ -65,10 +76,6 @@ SpellCheck::SpellCheck(const QString &dictMain, const QString &dictUser)
       }
 
       file.close();
-
-   } else {
-      csError("Spell Check", "Unable to find User Dictionary " + m_userFname);
-
    }
 }
 
