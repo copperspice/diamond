@@ -21,18 +21,19 @@
 #include <QSize>
 #include <QTableView>
 
-Dialog_Macro::Dialog_Macro(MainWindow *parent, MacroEnum enumValue, QStringList macroIds, QStringList macroNames )
+Dialog_Macro::Dialog_Macro(MainWindow *parent, MainWindow::Option enumValue, QStringList macroIds,
+      QStringList macroText, QStringList macroNames)
    : QDialog(parent), m_ui(new Ui::Dialog_Macro)
 {
-   m_parent       = parent;
-   m_enum         = enumValue;
-   m_macroIds_D   = macroIds;
-   m_macroNames_D = macroNames;
+   m_parent     = parent;
+   m_enum       = enumValue;
+   m_macroIds   = macroIds;
+   m_macroText  = macroText;
+   m_macroNames = macroNames;
 
    m_ui->setupUi(this);
    setWindowIcon(QIcon("://resources/diamond.png"));
 
-   setupTitle();
    setUpView();
 
    // alter the hightlight color
@@ -48,9 +49,13 @@ Dialog_Macro::Dialog_Macro(MainWindow *parent, MacroEnum enumValue, QStringList 
    // resize the dialog widget after the text has been displayed
    adjustSize();
 
-   connect(m_ui->select_PB, &QPushButton::clicked, this, &Dialog_Macro::select);
-   connect(m_ui->view_PB,   &QPushButton::clicked, this, &Dialog_Macro::view);
-   connect(m_ui->cancel_PB, &QPushButton::clicked, this, &Dialog_Macro::cancel);
+   connect(m_ui->saveTags_PB,  &QPushButton::clicked, this, &Dialog_Macro::saveTags);
+
+   connect(m_ui->saveMacro_PB, &QPushButton::clicked, this, &Dialog_Macro::saveMacro);
+   connect(m_ui->loadMacro_PB, &QPushButton::clicked, this, &Dialog_Macro::loadMacro);
+   connect(m_ui->viewMacro_PB, &QPushButton::clicked, this, &Dialog_Macro::viewMacro);
+
+   connect(m_ui->close_PB,     &QPushButton::clicked, this, &Dialog_Macro::close);
 }
 
 Dialog_Macro::~Dialog_Macro()
@@ -58,20 +63,68 @@ Dialog_Macro::~Dialog_Macro()
    delete m_ui;
 }
 
-void Dialog_Macro::setupTitle()
+void Dialog_Macro::close()
 {
-   if (m_enum == MACRO_LOAD) {
-      setWindowTitle("Load Macro");
+   done(QDialog::Rejected);
+}
 
-   } else if (m_enum == MACRO_SAVE)  {
-      m_ui->select_PB->setText("Save");
-      setWindowTitle("Save Macro");
+void Dialog_Macro::loadMacro()
+{
+   QString macroId = get_MacroId();
+   m_parent->json_Load_Macro(macroId);
 
-   } else if (m_enum == MACRO_EDITNAMES) {
-      m_ui->select_PB->setDisabled(true);
-      setWindowTitle("Edit Macro Names");
+   done(QDialog::Accepted);
+}
 
+void Dialog_Macro::saveMacro()
+{
+   csMsg("Not implemented");
+
+//  m_parent->json_Save_Macro();
+//  done(QDialog::Accepted);
+
+}
+
+QString Dialog_Macro::get_MacroId()
+{
+   QModelIndex index = m_ui->tableView->currentIndex();
+
+   if (! index.isValid()) {
+      return QString();
    }
+
+   int row = index.row();
+   QString macroId = m_macroIds[row];
+
+   return macroId;
+}
+
+QString Dialog_Macro::get_MacroName()
+{
+   QModelIndex index = m_ui->tableView->currentIndex();
+
+   if (! index.isValid()) {
+      return QString();
+   }
+
+   QStandardItem *item = m_model->item(index.row(), 1);
+   QString macroName = item->data(Qt::DisplayRole).toString();
+
+   return macroName;
+}
+
+void Dialog_Macro::saveTags()
+{
+   for (int row = 0; row < m_maxCount; ++row) {
+      QStandardItem *item = m_model->item(row, 1);
+      QString itemText = item->data(Qt::DisplayRole).toString();
+
+      m_macroNames.replace(row, itemText);
+   }
+
+   m_parent->json_Save_MacroNames(m_macroNames);
+
+   csMsg("Macro Names Saved");
 }
 
 void Dialog_Macro::setUpView()
@@ -91,70 +144,32 @@ void Dialog_Macro::setUpView()
 
    // resize the last column
    m_ui->tableView->horizontalHeader()->setStretchLastSection(true);
-   QBrush brush = QColor(0,0,255);
+   QBrush brush = QColor(0, 0, 255);
 
    // add data
-   m_maxCount = m_macroIds_D.size();
-   for (int row = 0; row < m_maxCount; ++row) {
+   m_maxCount = m_macroIds.size();
 
-      QStandardItem *item1 = new QStandardItem(m_macroIds_D.at(row));
+   for (int row = 0; row < m_maxCount; ++row) {
+      QStandardItem *item1 = new QStandardItem(m_macroText.at(row));
       item1->setForeground(brush);
       item1->setEnabled(false);
 
-      QStandardItem *item2 = new QStandardItem(m_macroNames_D.at(row));
+      QStandardItem *item2 = new QStandardItem(m_macroNames.at(row));
       item2->setEditable(true);
 
       m_model->setItem(row, 0, item1);
       m_model->setItem(row, 1, item2);
    }
 
-   // initial sort
-   m_ui->tableView->sortByColumn(0, Qt::AscendingOrder);
-   m_ui->tableView->setSortingEnabled(true);
-
    m_ui->tableView->setEditTriggers(QAbstractItemView::DoubleClicked);
-
-   connect(m_model, &QStandardItemModel::dataChanged, this, &Dialog_Macro::tableDataChanged);
 }
 
-void Dialog_Macro::tableDataChanged(const QModelIndex & topLeft, const QModelIndex & bottomRight)
+void Dialog_Macro::viewMacro()
 {
-   (void) topLeft;
-   (void) bottomRight;
+   QString macroId = get_MacroId();
 
-   m_updateNames = true;
-}
-
-void Dialog_Macro::select()
-{
-   if (m_updateNames) {
-
-      for (int row = 0; row < m_maxCount; ++row) {
-         QStandardItem *item = m_model->item(row, 1);
-         QString itemText = item->data(Qt::DisplayRole).toString();
-
-         m_macroNames_D.replace(row, itemText);
-      }
-
-      m_parent->json_Save_MacroNames(m_macroNames_D);
-   }
-
-   this->done(QDialog::Accepted);
-}
-
-void Dialog_Macro::cancel()
-{
-   this->done(QDialog::Rejected);
-}
-
-//
-void Dialog_Macro::view()
-{
-   QString macro = this->get_Macro();
-
-   // get the macro
-   QList<macroStruct> listData;
-   listData = m_parent->json_View_Macro(macro);
+   // get the macro details
+   QList<macroStruct> listData = m_parent->json_View_Macro(macroId);
 
    QString msg = "<table style=margin-right:35>";
 
@@ -310,7 +325,7 @@ void Dialog_Macro::view()
 
    QDialog msgB;
    msgB.setWindowIcon(QIcon("://resources/diamond.png"));
-   msgB.setWindowTitle("View Macro - " + macro);
+   msgB.setWindowTitle("View Macro - " + get_MacroName());
    msgB.setMinimumWidth(120);
 
    //
@@ -346,19 +361,3 @@ void Dialog_Macro::view()
 
    msgB.exec();
 }
-
-QString Dialog_Macro::get_Macro()
-{
-   QModelIndex index = m_ui->tableView->currentIndex();
-
-   if (! index.isValid()) {
-      return QString("");
-   }
-
-   // return the macro id
-   QStandardItem *item = m_model->item(index.row(), 0);
-   QString itemText = item->data(Qt::DisplayRole).toString();
-
-   return itemText;
-}
-

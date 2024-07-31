@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>Dialog_Macro</class>
- <widget class="QDialog" name="Dialog_Macro">
+ <class>Dialog_SavedFiles</class>
+ <widget class="QDialog" name="Dialog_SavedFiles">
   <property name="modal">
    <bool>false</bool>
   </property>
   <property name="windowTitle">
-   <string>Macro Manager</string>
+   <string>Load/Save List of Open Files</string>
   </property>
   <property name="windowModality">
    <enum>Qt::NonModal</enum>
@@ -21,7 +21,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>721</width>
+    <width>712</width>
     <height>500</height>
    </rect>
   </property>
@@ -53,7 +53,7 @@
      <item>
       <widget class="QPushButton" name="saveTags_PB">
        <property name="text">
-        <string>Update Macro Names</string>
+        <string>Update Tag Names</string>
        </property>
       </widget>
      </item>
@@ -74,9 +74,9 @@
       </spacer>
      </item>
      <item>
-      <widget class="QPushButton" name="saveMacro_PB">
+      <widget class="QPushButton" name="saveTabs_PB">
        <property name="text">
-        <string>Save Macro</string>
+        <string>Save List of Open Files</string>
        </property>
       </widget>
      </item>
@@ -97,32 +97,9 @@
       </spacer>
      </item>
      <item>
-      <widget class="QPushButton" name="loadMacro_PB">
+      <widget class="QPushButton" name="loadTabs_PB">
        <property name="text">
-        <string>Load Macro</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <spacer name="horizontalSpacer_3">
-       <property name="sizeType">
-        <enum>QSizePolicy::Fixed</enum>
-       </property>
-       <property name="sizeHint" stdset="0">
-        <size>
-         <width>8</width>
-         <height>20</height>
-        </size>
-       </property>
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
-      </spacer>
-     </item>
-     <item>
-      <widget class="QPushButton" name="viewMacro_PB">
-       <property name="text">
-        <string>View Macro</string>
+        <string>Load Existing List of Files</string>
        </property>
       </widget>
      </item>

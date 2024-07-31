@@ -14,6 +14,7 @@
 
 #include "dialog_macro.h"
 #include "dialog_open.h"
+#include "dialog_savedfiles.h"
 #include "dialog_symbols.h"
 #include "mainwindow.h"
 
@@ -1477,7 +1478,7 @@ void MainWindow::mw_macroStop()
       m_textEdit->macroStop();
 
       // save macro
-      json_Write(MACRO);
+      json_Write(MACRO_SAVE);
 
       // save macro to global list
       m_macroList = m_textEdit->get_MacroKeyList();
@@ -1516,36 +1517,25 @@ void MainWindow::macroPlay()
    }
 }
 
-void MainWindow::macroLoad()
+void MainWindow::macroManager()
 {
    QStringList macroIds = json_Load_MacroIds();
 
    if (macroIds.count() == 0)  {
-      csError("Load Macros", "No exiting macros");
+      csError("Macro Manager", "No existing macros");
       return;
    }
 
-   Dialog_Macro *dw = new Dialog_Macro(this, Dialog_Macro::MACRO_LOAD, macroIds, m_macroNames);
-   int result = dw->exec();
+   QStringList macroText;
 
-   if (result == QDialog::Accepted) {
-      QString text = dw->get_Macro();
-      json_Load_Macro(text);
+   for (int i = 0; i < FILE_TAG_NAMES_MAX; ++i) {
+      QString tmp = "Macro " + QString::number(i + 1);
+      macroText.append(tmp);
    }
 
-   delete dw;
-}
+   QStringList macroNames = json_Load_MacroNames();
 
-void MainWindow::macroEditNames()
-{
-   QStringList macroIds = json_Load_MacroIds();
-
-   if (macroIds.count() == 0)  {
-      csError("Load Macros", "No exiting macros");
-      return;
-   }
-
-   Dialog_Macro *dw = new Dialog_Macro(this, Dialog_Macro::MACRO_EDITNAMES, macroIds, m_macroNames);
+   Dialog_Macro *dw = new Dialog_Macro(this, MACRO_LOAD, macroIds, macroText, macroNames);
    dw->exec();
 
    delete dw;
@@ -1585,7 +1575,31 @@ void MainWindow::spellCheck()
 }
 
 // **
-void MainWindow::saveTabs()
+void MainWindow::fileManager()
+{
+   QStringList fileIds;
+
+   for (int i = 0; i < FILE_TAG_NAMES_MAX; ++i) {
+      QString tmp = "file-list-" + QString::number(i + 1);
+      fileIds.append(tmp);
+   }
+
+   QStringList fileText;
+
+   for (int i = 0; i < FILE_TAG_NAMES_MAX; ++i) {
+      QString tmp = "File List " + QString::number(i + 1);
+      fileText.append(tmp);
+   }
+
+   QStringList fileListNames = json_Load_FileListNames();
+
+   Dialog_SavedFiles *dw = new Dialog_SavedFiles(this, fileIds, fileText, fileListNames);
+   dw->exec();
+
+   delete dw;
+}
+
+void MainWindow::saveTabs(QString jsonTag)
 {
    QStringList list;
 
@@ -1603,16 +1617,16 @@ void MainWindow::saveTabs()
       }
    }
 
-   json_setTabList(list);
+   json_setTabList(list, jsonTag);
 }
 
-void MainWindow::loadTabs()
+void MainWindow::loadTabs(QString jsonTag)
 {
-   QStringList extraFiles = json_getTabList();
+   QStringList extraFiles = json_getTabList(jsonTag);
 
    for (auto fileName : extraFiles)  {
       if (loadFile(fileName, true, false)) {
-         m_openedFiles.append(fileName);
+         // m_openedFiles.append(fileName);
          m_openedModified.append(false);
       }
    }

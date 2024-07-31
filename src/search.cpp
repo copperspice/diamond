@@ -53,7 +53,8 @@ void MainWindow::find()
       } else {
          m_findList.move(index,0);
       }
-      json_Write(FIND_LIST);
+
+      json_Write(FIND_LIST, CFG_OVERRIDE);
 
       // get the flags
       m_flags = nullptr;
@@ -89,7 +90,7 @@ void MainWindow::find()
 
       if (upd_Find)   {
          m_findList = dw->get_findList();
-         json_Write(FIND_LIST);
+         json_Write(FIND_LIST, CFG_OVERRIDE);
       }
    }
 

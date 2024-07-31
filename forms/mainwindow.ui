@@ -215,13 +215,11 @@
     <addaction name="actionMacro_Stop"/>
     <addaction name="actionMacro_Play"/>
     <addaction name="separator"/>
-    <addaction name="actionMacro_Load"/>
-    <addaction name="actionMacro_EditNames"/>
+    <addaction name="actionMacro_Manager"/>
     <addaction name="separator"/>
     <addaction name="actionSpell_Check"/>
     <addaction name="separator"/>
-    <addaction name="actionSaveTabs"/>
-    <addaction name="actionLoadTabs"/>
+    <addaction name="actionFile_Manager"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuEdit"/>
@@ -700,9 +698,9 @@
     <string>None</string>
    </property>
   </action>
-  <action name="actionMacro_Load">
+  <action name="actionMacro_Manager">
    <property name="text">
-    <string>Load Macro</string>
+    <string>Load/Save Existing Macro</string>
    </property>
   </action>
   <action name="actionMacro_SelectPlay">
@@ -813,9 +811,9 @@
     <string>XML</string>
    </property>
   </action>
-  <action name="actionSaveTabs">
+  <action name="actionFile_Manager">
    <property name="text">
-    <string>Save List of Open Files</string>
+    <string>Load/Save List of Open Files</string>
    </property>
   </action>
   <action name="actionLoadTabs">

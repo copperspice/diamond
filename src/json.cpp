@@ -31,6 +31,9 @@
 #include <QPushButton>
 #include <QSettings>
 
+static QStringList s_fileListNames;
+static QStringList s_macroNames;
+
 bool MainWindow::json_Read(Config trail)
 {
    bool ok = true;
@@ -256,7 +259,7 @@ bool MainWindow::json_Read(Config trail)
       cnt  = list.count();
 
       for (int k = 0; k < cnt; k++)  {
-         m_macroNames.append(list.at(k).toString());
+         s_macroNames.append(list.at(k).toString());
       }
 
       // ensure a macro name exists for each macro-id
@@ -265,16 +268,16 @@ bool MainWindow::json_Read(Config trail)
 
       for (int k = 0; k < macroIds.count() ; ++k)  {
 
-         if ( (m_macroNames.count() <= k) || (m_macroNames.at(k).isEmpty()) )  {
-            QString temp = "Macro Name " + QString::number(k+1);
-            m_macroNames.append(temp);
+         if ( (s_macroNames.count() <= k) || (s_macroNames.at(k).isEmpty()) )  {
+            QString tmp = "Macro " + QString::number(k+1);
+            s_macroNames.append(tmp);
 
             modified  = true;
          }
       }
 
       if (modified) {
-         json_Write(MACRO_NAMES, trail);
+         json_Write(MACRO_TAG_NAMES, trail);
       }
 
       // preset folders
@@ -287,7 +290,7 @@ bool MainWindow::json_Read(Config trail)
 
       // silly way to pad the list
       for (int k = cnt; k < PRESET_FOLDERS_MAX; k++)  {
-         m_prefolder_List.append("");
+         m_prefolder_List.append(QString());
       }
 
       // recent folders
@@ -325,7 +328,7 @@ bool MainWindow::json_Read(Config trail)
 
 bool MainWindow::json_Write(Option route, Config trail)
 {
-   if (trail == CFG_STARTUP) {
+   if (trail == CFG_STARTUP || trail == CFG_OVERRIDE) {
       // fall thru
 
    } else if (m_args.flag_noSaveConfig) {
@@ -411,6 +414,14 @@ bool MainWindow::json_Write(Option route, Config trail)
          case DICT_USER:
             object.insert("dictUser", m_struct.dictUser);
             break;
+
+         case FILE_TAG_NAMES:
+            {
+               QJsonArray temp = QJsonArray::fromStringList(s_fileListNames);
+               object.insert("file-tag-names", temp);
+
+               break;
+            }
 
          case FIND_LIST:
             {
@@ -534,7 +545,11 @@ bool MainWindow::json_Write(Option route, Config trail)
 
             break;
 
-         case MACRO:
+         case MACRO_LOAD:
+            // not required
+            break;
+
+         case MACRO_SAVE:
             {
                QList<QKeyEvent *> eventList;
                eventList = m_textEdit->get_MacroKeyList();
@@ -543,7 +558,6 @@ bool MainWindow::json_Write(Option route, Config trail)
 
                if (count > 0)  {
                   QVariantList macroList;
-
                   QKeyEvent *event;
 
                   for (int k = 0; k < count; ++k) {
@@ -560,24 +574,29 @@ bool MainWindow::json_Write(Option route, Config trail)
 
                   bool ok = true;
 
-                  // get next macro name
-                  QString macroName = object.value("macro-next").toString();
+                  // get next macro id
+                  QString macroId = object.value("macro-next").toString();
 
                   // next macro id number
-                  int id = macroName.mid(9).toInteger<int>();
+                  int id = macroId.mid(9).toInteger<int>();
 
                   if (id > MACRO_MAX - 1)  {
-
                      QStringList macroIds = json_Load_MacroIds();
 
+                     QStringList macroText;
+
+                     for (int i = 0; i < FILE_TAG_NAMES_MAX; ++i) {
+                        QString tmp = "Macro " + QString::number(i + 1);
+                        macroText.append(tmp);
+                     }
+
                      // select macro id to overwrite
-                     Dialog_Macro *dw = new Dialog_Macro(this, Dialog_Macro::MACRO_SAVE, macroIds, m_macroNames);
+                     Dialog_Macro *dw = new Dialog_Macro(this, MACRO_SAVE, macroIds, macroText, s_macroNames);
                      int result = dw->exec();
 
                      if (result == QDialog::Accepted) {
                         // over write
-                        QString text = dw->get_Macro();
-                        macroName = text;
+                        macroId = dw->get_MacroId();
 
                      } else {
                         // do not save
@@ -591,25 +610,25 @@ bool MainWindow::json_Write(Option route, Config trail)
                      object.insert("macro-next", "macro-id-" + QString::number(id + 1));
 
                      // save macro_names
-                     m_macroNames.append("Macro Name " + QString::number(id + 1));
+                     s_macroNames.append("Macro " + QString::number(id + 1));
 
-                     QJsonArray temp = QJsonArray::fromStringList(m_macroNames);
+                     QJsonArray temp = QJsonArray::fromStringList(s_macroNames);
                      object.insert("macro-names", temp);
                   }
 
                   if (ok)  {
                      // save macro
                      QJsonArray temp = QJsonArray::fromVariantList(macroList);
-                     object.insert(macroName, temp);
+                     object.insert(macroId, temp);
                   }
                }
 
                break;
             }
 
-         case MACRO_NAMES:
+         case MACRO_TAG_NAMES:
             {
-               QJsonArray temp = QJsonArray::fromStringList(m_macroNames);
+               QJsonArray temp = QJsonArray::fromStringList(s_macroNames);
                object.insert("macro-names", temp);
                break;
             }
@@ -1207,11 +1226,8 @@ bool MainWindow::json_CreateNew()
    return ok;
 }
 
-void MainWindow::json_setTabList(QStringList list)
+void MainWindow::json_setTabList(QStringList list, QString jsonTag)
 {
-   // get json tag
-   QString userTag = "docs";      // query user to add another category
-
    // get existing json data
    QByteArray jsonData = json_ReadFile();
 
@@ -1227,7 +1243,7 @@ void MainWindow::json_setTabList(QStringList list)
 
    // save extra data using tag
    QJsonArray tmp = QJsonArray::fromStringList(list);
-   extra.insert(userTag, tmp);
+   extra.insert(jsonTag, tmp);
 
    object.insert("opened-files-extra", extra);
 
@@ -1238,12 +1254,9 @@ void MainWindow::json_setTabList(QStringList list)
    json_SaveFile(jsonData);
 }
 
-QStringList MainWindow::json_getTabList()
+QStringList MainWindow::json_getTabList(QString jsonTag)
 {
    QStringList list;
-
-   // get json tag
-   QString userTag = "docs";      // query user to add another category
 
    // get existing json data
    QByteArray jsonData = json_ReadFile();
@@ -1259,7 +1272,7 @@ QStringList MainWindow::json_getTabList()
    QJsonObject extra = object.value("opened-files-extra").toObject();
 
    // retrieve extra data from tag
-   QJsonArray array = extra.value(userTag).toArray();
+   QJsonArray array = extra.value(jsonTag).toArray();
 
    for (auto item : array)  {
       QString fileName = item.toString();
@@ -1526,8 +1539,8 @@ QStringList MainWindow::json_Load_MacroIds()
    QStringList keyList = object.keys();
    QStringList macroList;
 
-   for (int k = 0; k < keyList.count(); k++)  {
-      QString key = keyList.at(k);
+   for (int i = 0; i < keyList.count(); i++)  {
+      QString key = keyList.at(i);
 
       if (key.left(9) == "macro-id-") {
          macroList.append(key);
@@ -1537,7 +1550,18 @@ QStringList MainWindow::json_Load_MacroIds()
    return macroList;
 }
 
-bool MainWindow::json_Load_Macro(QString macroName)
+QStringList MainWindow::json_Load_MacroNames()
+{
+   return s_macroNames;
+}
+
+void MainWindow::json_Save_MacroNames(QStringList list)
+{
+   s_macroNames = list;
+   json_Write(MACRO_TAG_NAMES, CFG_OVERRIDE);
+}
+
+bool MainWindow::json_Load_Macro(QString macroId)
 {
    bool ok = true;
 
@@ -1550,7 +1574,7 @@ bool MainWindow::json_Load_Macro(QString macroName)
    QJsonArray list;
 
    // macro data
-   list = object.value(macroName).toArray();
+   list = object.value(macroId).toArray();
    int cnt = list.count();
 
    m_textEdit->macroStart();
@@ -1574,7 +1598,7 @@ bool MainWindow::json_Load_Macro(QString macroName)
    return ok;
 }
 
-QList<macroStruct> MainWindow::json_View_Macro(QString macroName)
+QList<macroStruct> MainWindow::json_View_Macro(QString macroId)
 {
    QList<macroStruct> retval;
 
@@ -1587,7 +1611,7 @@ QList<macroStruct> MainWindow::json_View_Macro(QString macroName)
    QJsonArray list;
 
    // macro data
-   list = object.value(macroName).toArray();
+   list = object.value(macroId).toArray();
    int cnt = list.count();
 
    for (int k = 0; k < cnt; k++)  {
@@ -1610,9 +1634,99 @@ QList<macroStruct> MainWindow::json_View_Macro(QString macroName)
    return retval;
 }
 
-void MainWindow::json_Save_MacroNames(QStringList list)
+// **
+QStringList MainWindow::json_Load_FileListNames()
 {
-   m_macroNames = list;
-   json_Write(MACRO_NAMES);
+   // get existing json data
+   QByteArray jsonData = json_ReadFile();
+
+   QJsonDocument doc  = QJsonDocument::fromJson(jsonData);
+   QJsonObject object = doc.object();
+
+   QJsonArray list = object.value("file-tag-names").toArray();
+   int cnt = list.count();
+
+   s_fileListNames.clear();
+
+   for (int i = 0; i < cnt; ++i) {
+      s_fileListNames.append(list.at(i).toString());
+   }
+
+   // ensure a tag name exists for each id
+   bool modified = false;
+
+   for (int i = 0; i < FILE_TAG_NAMES_MAX; ++i)  {
+
+      if (s_fileListNames.count() < FILE_TAG_NAMES_MAX || s_fileListNames.at(i).isEmpty()) {
+
+         if (i == 0) {
+            QString tmp = "docs";
+            s_fileListNames.append(tmp);
+
+         } else {
+            QString tmp = "file-list-" + QString::number(i + 1);
+            s_fileListNames.append(tmp);
+         }
+
+         modified  = true;
+      }
+   }
+
+   if (modified) {
+      // (1) save the defalut names
+      json_Write(FILE_TAG_NAMES, CFG_OVERRIDE);
+
+      // (2) convert old "docs" tag
+
+      QJsonObject extra = object.value("opened-files-extra").toObject();
+
+      // retrieve the tags names in this object
+      QStringList tags = extra.keys();
+
+      if (tags.count() == 1 && tags.contains("docs")) {
+
+         // remove the old data
+         auto iter = object.find("opened-files-extra");
+
+         if (iter != object.end()) {
+            object.erase(iter);
+         }
+
+         QStringList newList;
+
+         // retrieve extra data from tag
+         QJsonArray array = extra.value("docs").toArray();
+
+         for (auto item : array)  {
+            QString fileName = item.toString();
+
+            if (! fileName.isEmpty()) {
+               newList.append(fileName);
+            }
+         }
+
+         // make sure to clear
+         extra.remove("docs");
+
+         // save extra data using new tag
+         QJsonArray tmp = QJsonArray::fromStringList(newList);
+         extra.insert("file-list-1", tmp);
+
+         object.insert("opened-files-extra", extra);
+
+         // save the new data
+         doc.setObject(object);
+         jsonData = doc.toJson();
+
+         json_SaveFile(jsonData);
+      }
+   }
+
+   return s_fileListNames;
 }
 
+void MainWindow::json_Save_FileNames(QStringList list)
+{
+   s_fileListNames = list;
+   json_Write(FILE_TAG_NAMES, CFG_OVERRIDE);
+}

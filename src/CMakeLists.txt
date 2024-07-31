@@ -12,6 +12,7 @@ list(APPEND DIAMOND_INCLUDES
    ${CMAKE_CURRENT_SOURCE_DIR}/dialog_preset.h
    ${CMAKE_CURRENT_SOURCE_DIR}/dialog_print_opt.h
    ${CMAKE_CURRENT_SOURCE_DIR}/dialog_replace.h
+   ${CMAKE_CURRENT_SOURCE_DIR}/dialog_savedfiles.h
    ${CMAKE_CURRENT_SOURCE_DIR}/dialog_symbols.h
    ${CMAKE_CURRENT_SOURCE_DIR}/dialog_xp_getdir.h
 
@@ -41,6 +42,7 @@ list(APPEND DIAMOND_SOURCES
    ${CMAKE_CURRENT_SOURCE_DIR}/dialog_preset.cpp
    ${CMAKE_CURRENT_SOURCE_DIR}/dialog_print_opt.cpp
    ${CMAKE_CURRENT_SOURCE_DIR}/dialog_replace.cpp
+   ${CMAKE_CURRENT_SOURCE_DIR}/dialog_savedfiles.cpp
    ${CMAKE_CURRENT_SOURCE_DIR}/dialog_symbols.cpp
    ${CMAKE_CURRENT_SOURCE_DIR}/dialog_xp_getdir.cpp
    ${CMAKE_CURRENT_SOURCE_DIR}/diamond_edit.cpp
@@ -74,6 +76,7 @@ list(APPEND DIAMOND_SOURCES
    ${CMAKE_CURRENT_SOURCE_DIR}/../forms/dialog_preset.ui
    ${CMAKE_CURRENT_SOURCE_DIR}/../forms/dialog_print_opt.ui
    ${CMAKE_CURRENT_SOURCE_DIR}/../forms/dialog_replace.ui
+   ${CMAKE_CURRENT_SOURCE_DIR}/../forms/dialog_savedfiles.ui
    ${CMAKE_CURRENT_SOURCE_DIR}/../forms/dialog_symbols.ui
    ${CMAKE_CURRENT_SOURCE_DIR}/../forms/dialog_xp_getdir.ui
    ${CMAKE_CURRENT_SOURCE_DIR}/../forms/mainwindow.ui
@@ -102,6 +105,7 @@ COPPERSPICE_RESOURCES(
    ${CMAKE_CURRENT_SOURCE_DIR}/../forms/dialog_preset.ui
    ${CMAKE_CURRENT_SOURCE_DIR}/../forms/dialog_print_opt.ui
    ${CMAKE_CURRENT_SOURCE_DIR}/../forms/dialog_replace.ui
+   ${CMAKE_CURRENT_SOURCE_DIR}/../forms/dialog_savedfiles.ui
    ${CMAKE_CURRENT_SOURCE_DIR}/../forms/dialog_symbols.ui
    ${CMAKE_CURRENT_SOURCE_DIR}/../forms/dialog_xp_getdir.ui
    ${CMAKE_CURRENT_SOURCE_DIR}/../forms/mainwindow.ui
@@ -217,7 +221,7 @@ install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/../source_extra/dictionary/en_US.dic D
 
 # will not overwrite dictionary/userDict.txt
 install(CODE "
-   if (NOT EXISTS  \"${CMAKE_INSTALL_PREFIX}/dictionary/userDict.txt    \")
+   if (NOT EXISTS  \"${CMAKE_INSTALL_PREFIX}/dictionary/userDict.txt\")
       file(INSTALL \"${CMAKE_CURRENT_SOURCE_DIR}/../source_extra/dictionary/userDict.txt\" DESTINATION  \"${CMAKE_INSTALL_PREFIX}/dictionary\")
    endif()
 ")

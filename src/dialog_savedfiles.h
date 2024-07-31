@@ -12,50 +12,41 @@
 *
 ***************************************************************************/
 
-#ifndef DIALOG_MACRO_H
-#define DIALOG_MACRO_H
+#ifndef DIALOG_SAVEDFILES_H
+#define DIALOG_SAVEDFILES_H
 
 #include "mainwindow.h"
-#include "ui_dialog_macro.h"
+#include "ui_dialog_savedfiles.h"
 
 #include <QDialog>
-#include <QModelIndex>
 #include <QStandardItemModel>
 #include <QStringList>
 
-class Dialog_Macro : public QDialog
+class Dialog_SavedFiles : public QDialog
 {
-   CS_OBJECT(Dialog_Macro)
+   CS_OBJECT(Dialog_SavedFiles)
 
    public:
-      Dialog_Macro(MainWindow *parent, MainWindow::Option enumValue, QStringList macroIds,
-            QStringList macroText, QStringList macroNames);
-      ~Dialog_Macro();
-
-      QString get_MacroId();
+      Dialog_SavedFiles(MainWindow *parent, QStringList fileIds, QStringList fileText, QStringList fileNames);
+      ~Dialog_SavedFiles();
 
    private:
       void setUpView();
 
-      QString get_MacroName();
-
       void close();
+      void loadExtraFiles();
+      void saveExtraFiles();
       void saveTags();
-      void saveMacro();
-      void loadMacro();
-      void viewMacro();
 
-      Ui::Dialog_Macro *m_ui;
+      Ui::Dialog_SavedFiles *m_ui;
       MainWindow *m_parent;
       QStandardItemModel *m_model;
 
-      QStringList m_macroIds;
-      QStringList m_macroText;
-      QStringList m_macroNames;
-      QStringList m_macroList;
+      QStringList m_fileIds;
+      QStringList m_fileText;
+      QStringList m_fileNames;
       int m_maxCount;
-
-      MainWindow::Option m_enum;
 };
 
 #endif
+

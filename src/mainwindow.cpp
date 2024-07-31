@@ -475,11 +475,9 @@ void MainWindow::createConnections()
    connect(m_ui->actionMacro_Start,       &QAction::triggered, this, &MainWindow::mw_macroStart);
    connect(m_ui->actionMacro_Stop,        &QAction::triggered, this, &MainWindow::mw_macroStop);
    connect(m_ui->actionMacro_Play,        &QAction::triggered, this, &MainWindow::macroPlay);
-   connect(m_ui->actionMacro_Load,        &QAction::triggered, this, &MainWindow::macroLoad);
-   connect(m_ui->actionMacro_EditNames,   &QAction::triggered, this, &MainWindow::macroEditNames);
+   connect(m_ui->actionMacro_Manager,     &QAction::triggered, this, &MainWindow::macroManager);
    connect(m_ui->actionSpell_Check,       &QAction::triggered, this, &MainWindow::spellCheck);
-   connect(m_ui->actionSaveTabs,          &QAction::triggered, this, &MainWindow::saveTabs);
-   connect(m_ui->actionLoadTabs,          &QAction::triggered, this, &MainWindow::loadTabs);
+   connect(m_ui->actionFile_Manager,      &QAction::triggered, this, &MainWindow::fileManager);
 
    // settings
    connect(m_ui->actionColors,            &QAction::triggered, this, &MainWindow::setColors);

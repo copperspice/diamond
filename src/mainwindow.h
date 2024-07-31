@@ -44,11 +44,12 @@
 
 class Dialog_AdvFind;
 
-static const int MACRO_MAX           = 10;
-static const int OPENTABS_MAX        = 20;
-static const int PRESET_FOLDERS_MAX  = 15;
-static const int RECENT_FOLDERS_MAX  = 10;
-static const int RECENT_FILES_MAX    = 10;
+static constexpr const int MACRO_MAX          = 10;
+static constexpr const int OPENTABS_MAX       = 20;
+static constexpr const int PRESET_FOLDERS_MAX = 15;
+static constexpr const int RECENT_FOLDERS_MAX = 10;
+static constexpr const int RECENT_FILES_MAX   = 10;
+static constexpr const int FILE_TAG_NAMES_MAX = 10;
 
 struct macroStruct
 {
@@ -69,6 +70,15 @@ class MainWindow : public QMainWindow
    CS_OBJECT(MainWindow)
 
    public:
+      enum Option {
+         ABOUTURL, ADVFIND, AUTOLOAD, CLOSE, COLORS, COLUMN_MODE, DICT_MAIN, DICT_USER, FILE_TAG_NAMES,
+         FIND_LIST, FIND_REPLACE, FONT, FORMAT_DATE, FORMAT_TIME, KEYS,
+         MACRO_LOAD, MACRO_SAVE, MACRO_TAG_NAMES,
+         PATH_SYNTAX, PATH_PRIOR, PRESET_FOLDER, PRINT_OPTIONS, RECENTFOLDER, RECENTFILE, REMOVE_SPACE,
+         REWRAP_COLUMN, SHOW_LINEHIGHLIGHT, SHOW_LINENUMBERS, SHOW_SPACES, SHOW_BREAKS, SPELLCHECK,
+         STYLESHEET, TAB_SPACING, USESPACES, WORDWRAP
+      };
+
       MainWindow(QStringList fileList, QStringList flagList);
       struct Settings get_StructData();
 
@@ -80,8 +90,15 @@ class MainWindow : public QMainWindow
       void indentDecr(QString route);
 
       // macros
-      void json_Save_MacroNames(QStringList macroNames);
-      QList<macroStruct> json_View_Macro(QString macroName);
+      void json_Save_MacroNames(QStringList list);
+      bool json_Load_Macro(QString macroId);
+      QList<macroStruct> json_View_Macro(QString macroId);
+
+      // file list
+      void json_Save_FileNames(QStringList list);
+
+      void saveTabs(QString jsonTag);
+      void loadTabs(QString jsonTag);
 
       // spell
       QStringList spell_getMaybe(QString word);
@@ -96,6 +113,11 @@ class MainWindow : public QMainWindow
       void dropEvent(QDropEvent *event) override;
 
    private:
+      enum Config {
+         CFG_STARTUP,
+         CFG_OVERRIDE,
+         CFG_NONE
+      };
 
       enum SaveFiles {
          SAVE_ONE,
@@ -111,8 +133,6 @@ class MainWindow : public QMainWindow
       QList<advFindStruct> advFind_getResults(bool &aborted);
       void findRecursive(const QString &path, bool isFirstLoop = true);
       void advFind_ShowFiles(QList<advFindStruct> foundList);
-
-      QStringList m_macroNames;
 
       void replaceQuery();
       void replaceAll();
@@ -145,15 +165,6 @@ class MainWindow : public QMainWindow
 
       void createSpellCheck();
 
-
-      enum Option { ABOUTURL, ADVFIND, AUTOLOAD, CLOSE, COLORS, COLUMN_MODE, DICT_MAIN, DICT_USER, FIND_LIST,
-                    FIND_REPLACE, FONT, FORMAT_DATE, FORMAT_TIME, KEYS, MACRO, MACRO_NAMES, PATH_SYNTAX,
-                    PATH_PRIOR, PRESET_FOLDER, PRINT_OPTIONS, RECENTFOLDER, RECENTFILE, REMOVE_SPACE,
-                    REWRAP_COLUMN, SHOW_LINEHIGHLIGHT, SHOW_LINENUMBERS, SHOW_SPACES, SHOW_BREAKS, SPELLCHECK,
-                    TAB_SPACING, USESPACES, WORDWRAP};
-
-      enum Config { CFG_STARTUP, CFG_DEFAULT };
-
       void openDoc(QString path);
       bool closeAll_Doc(bool isExit);
       void save_ConfigFile();
@@ -176,19 +187,20 @@ class MainWindow : public QMainWindow
       void setStatus_FName(QString name);
       void showNotDone(QString item);
 
-      // json
-      bool json_Read(Config trail = CFG_DEFAULT);
-      bool json_Write(Option route, Config trail = CFG_DEFAULT);
+      bool json_Read(Config trail = CFG_NONE);
+      bool json_Write(Option route, Config trail = CFG_NONE);
       void json_getFileName();
       bool json_CreateNew();
       bool json_SaveFile(QByteArray route);
       QByteArray json_ReadFile();
 
-      void json_setTabList(QStringList list);
-      QStringList json_getTabList();
-
       QStringList json_Load_MacroIds();
-      bool json_Load_Macro(QString macroName);
+      QStringList json_Load_MacroNames();
+
+      QStringList json_Load_FileListNames();
+
+      void json_setTabList(QStringList list, QString jsonTag);
+      QStringList json_getTabList(QString jsonTag);
 
       QString get_SyntaxPath(QString syntaxPath);
       QString get_xxFile(QString title, QString fname, QString filter);
@@ -315,11 +327,9 @@ class MainWindow : public QMainWindow
       void mw_macroStart();
       void mw_macroStop();
       void macroPlay();
-      void macroLoad();
-      void macroEditNames();
+      void macroManager();
       void spellCheck();
-      void saveTabs();
-      void loadTabs();
+      void fileManager();
 
       // options
       void setColors();
