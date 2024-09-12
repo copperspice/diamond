@@ -2,6 +2,12 @@
 <ui version="4.0">
  <class>Dialog_Colors</class>
  <widget class="QDialog" name="Dialog_Colors">
+  <property name="modal">
+   <bool>false</bool>
+  </property>
+  <property name="windowTitle">
+   <string>Diamond Colors</string>
+  </property>
   <property name="windowModality">
    <enum>Qt::NonModal</enum>
   </property>
@@ -12,12 +18,6 @@
     <width>872</width>
     <height>499</height>
    </rect>
-  </property>
-  <property name="windowTitle">
-   <string>Diamond Colors</string>
-  </property>
-  <property name="modal">
-   <bool>false</bool>
   </property>
   <layout class="QGridLayout" name="gridLayout">
    <property name="leftMargin">
@@ -31,6 +31,9 @@
    </property>
    <item row="4" column="0">
     <widget class="QLabel" name="label">
+     <property name="text">
+      <string>Syntax Highlighting</string>
+     </property>
      <property name="font">
       <font>
        <family>Verdana</family>
@@ -41,27 +44,12 @@
        <underline>true</underline>
       </font>
      </property>
-     <property name="text">
-      <string>Syntax Highlighting</string>
-     </property>
     </widget>
    </item>
    <item row="0" column="3" rowspan="7">
     <widget class="QPlainTextEdit" name="sample">
-     <property name="minimumSize">
-      <size>
-       <width>300</width>
-       <height>0</height>
-      </size>
-     </property>
-     <property name="font">
-      <font>
-       <family>Verdana</family>
-       <pointsize>10</pointsize>
-      </font>
-     </property>
      <property name="plainText">
-      <string>&#35;include &lt;QString&gt;
+      <string>#include &lt;QString&gt;
 
 class CodeColoring
 {
@@ -74,7 +62,7 @@ class CodeColoring
       void sally();
 };
 
-QString CodeColoring ::test(int x, int y)
+QString CodeColoring::test(int x, int y)
 {
    QString retval = &quot;no&quot;;	
 
@@ -86,13 +74,22 @@ QString CodeColoring ::test(int x, int y)
    return retval;	
 }</string>
      </property>
+     <property name="minimumSize">
+      <size>
+       <width>300</width>
+       <height>0</height>
+      </size>
+     </property>
+     <property name="font">
+      <font>
+       <family>Verdana</family>
+       <pointsize>10</pointsize>
+      </font>
+     </property>
     </widget>
    </item>
    <item row="9" column="0">
     <spacer name="verticalSpacer_5">
-     <property name="orientation">
-      <enum>Qt::Vertical</enum>
-     </property>
      <property name="sizeType">
       <enum>QSizePolicy::Fixed</enum>
      </property>
@@ -102,15 +99,18 @@ QString CodeColoring ::test(int x, int y)
        <height>13</height>
       </size>
      </property>
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
     </spacer>
    </item>
    <item row="6" column="0" colspan="2">
     <layout class="QGridLayout" name="gridLayout_2">
-     <property name="horizontalSpacing">
-      <number>15</number>
-     </property>
      <property name="verticalSpacing">
       <number>10</number>
+     </property>
+     <property name="horizontalSpacing">
+      <number>15</number>
      </property>
      <item row="2" column="5">
       <widget class="QLineEdit" name="type_Color">
@@ -175,6 +175,9 @@ QString CodeColoring ::test(int x, int y)
      </item>
      <item row="4" column="3">
       <widget class="QCheckBox" name="func_Bold_CB">
+       <property name="text">
+        <string>Bold</string>
+       </property>
        <property name="minimumSize">
         <size>
          <width>35</width>
@@ -185,14 +188,14 @@ QString CodeColoring ::test(int x, int y)
         <font>
          <pointsize>10</pointsize>
         </font>
-       </property>
-       <property name="text">
-        <string>Bold</string>
        </property>
       </widget>
      </item>
      <item row="4" column="4">
       <widget class="QCheckBox" name="func_Italic_CB">
+       <property name="text">
+        <string>Italic</string>
+       </property>
        <property name="minimumSize">
         <size>
          <width>35</width>
@@ -203,9 +206,6 @@ QString CodeColoring ::test(int x, int y)
         <font>
          <pointsize>10</pointsize>
         </font>
-       </property>
-       <property name="text">
-        <string>Italic</string>
        </property>
       </widget>
      </item>
@@ -238,6 +238,9 @@ QString CodeColoring ::test(int x, int y)
      </item>
      <item row="3" column="0">
       <widget class="QLabel" name="label_6">
+       <property name="text">
+        <string>Classes:</string>
+       </property>
        <property name="minimumSize">
         <size>
          <width>80</width>
@@ -249,13 +252,13 @@ QString CodeColoring ::test(int x, int y)
          <pointsize>10</pointsize>
         </font>
        </property>
-       <property name="text">
-        <string>Classes:</string>
-       </property>
       </widget>
      </item>
      <item row="2" column="4">
       <widget class="QCheckBox" name="type_Italic_CB">
+       <property name="text">
+        <string>Italic</string>
+       </property>
        <property name="minimumSize">
         <size>
          <width>35</width>
@@ -266,9 +269,6 @@ QString CodeColoring ::test(int x, int y)
         <font>
          <pointsize>10</pointsize>
         </font>
-       </property>
-       <property name="text">
-        <string>Italic</string>
        </property>
       </widget>
      </item>
@@ -288,6 +288,9 @@ QString CodeColoring ::test(int x, int y)
      </item>
      <item row="5" column="4">
       <widget class="QCheckBox" name="quote_Italic_CB">
+       <property name="text">
+        <string>Italic</string>
+       </property>
        <property name="minimumSize">
         <size>
          <width>35</width>
@@ -299,13 +302,13 @@ QString CodeColoring ::test(int x, int y)
          <pointsize>10</pointsize>
         </font>
        </property>
-       <property name="text">
-        <string>Italic</string>
-       </property>
       </widget>
      </item>
      <item row="1" column="3">
       <widget class="QCheckBox" name="key_Bold_CB">
+       <property name="text">
+        <string>Bold</string>
+       </property>
        <property name="minimumSize">
         <size>
          <width>35</width>
@@ -322,9 +325,6 @@ QString CodeColoring ::test(int x, int y)
         <font>
          <pointsize>10</pointsize>
         </font>
-       </property>
-       <property name="text">
-        <string>Bold</string>
        </property>
       </widget>
      </item>
@@ -357,6 +357,9 @@ QString CodeColoring ::test(int x, int y)
      </item>
      <item row="4" column="0">
       <widget class="QLabel" name="label_5">
+       <property name="text">
+        <string>Functions:</string>
+       </property>
        <property name="minimumSize">
         <size>
          <width>80</width>
@@ -367,14 +370,14 @@ QString CodeColoring ::test(int x, int y)
         <font>
          <pointsize>10</pointsize>
         </font>
-       </property>
-       <property name="text">
-        <string>Functions:</string>
        </property>
       </widget>
      </item>
      <item row="5" column="0">
       <widget class="QLabel" name="label_7">
+       <property name="text">
+        <string>Quoted Text:</string>
+       </property>
        <property name="minimumSize">
         <size>
          <width>80</width>
@@ -385,14 +388,14 @@ QString CodeColoring ::test(int x, int y)
         <font>
          <pointsize>10</pointsize>
         </font>
-       </property>
-       <property name="text">
-        <string>Quoted Text:</string>
        </property>
       </widget>
      </item>
      <item row="2" column="0">
       <widget class="QLabel" name="label_4">
+       <property name="text">
+        <string>Types:</string>
+       </property>
        <property name="minimumSize">
         <size>
          <width>80</width>
@@ -403,9 +406,6 @@ QString CodeColoring ::test(int x, int y)
         <font>
          <pointsize>10</pointsize>
         </font>
-       </property>
-       <property name="text">
-        <string>Types:</string>
        </property>
       </widget>
      </item>
@@ -418,6 +418,9 @@ QString CodeColoring ::test(int x, int y)
      </item>
      <item row="3" column="3">
       <widget class="QCheckBox" name="class_Bold_CB">
+       <property name="text">
+        <string>Bold</string>
+       </property>
        <property name="minimumSize">
         <size>
          <width>35</width>
@@ -428,9 +431,6 @@ QString CodeColoring ::test(int x, int y)
         <font>
          <pointsize>10</pointsize>
         </font>
-       </property>
-       <property name="text">
-        <string>Bold</string>
        </property>
       </widget>
      </item>
@@ -463,6 +463,9 @@ QString CodeColoring ::test(int x, int y)
      </item>
      <item row="2" column="3">
       <widget class="QCheckBox" name="type_Bold_CB">
+       <property name="text">
+        <string>Bold</string>
+       </property>
        <property name="minimumSize">
         <size>
          <width>35</width>
@@ -474,13 +477,13 @@ QString CodeColoring ::test(int x, int y)
          <pointsize>10</pointsize>
         </font>
        </property>
-       <property name="text">
-        <string>Bold</string>
-       </property>
       </widget>
      </item>
      <item row="1" column="5">
       <widget class="QLineEdit" name="key_Color">
+       <property name="alignment">
+        <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+       </property>
        <property name="sizePolicy">
         <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
          <horstretch>0</horstretch>
@@ -504,13 +507,13 @@ QString CodeColoring ::test(int x, int y)
          <pointsize>10</pointsize>
         </font>
        </property>
-       <property name="alignment">
-        <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
-       </property>
       </widget>
      </item>
      <item row="6" column="3">
       <widget class="QCheckBox" name="comment_Bold_CB">
+       <property name="text">
+        <string>Bold</string>
+       </property>
        <property name="minimumSize">
         <size>
          <width>35</width>
@@ -521,14 +524,14 @@ QString CodeColoring ::test(int x, int y)
         <font>
          <pointsize>10</pointsize>
         </font>
-       </property>
-       <property name="text">
-        <string>Bold</string>
        </property>
       </widget>
      </item>
      <item row="3" column="4">
       <widget class="QCheckBox" name="class_Italic_CB">
+       <property name="text">
+        <string>Italic</string>
+       </property>
        <property name="minimumSize">
         <size>
          <width>35</width>
@@ -540,16 +543,10 @@ QString CodeColoring ::test(int x, int y)
          <pointsize>10</pointsize>
         </font>
        </property>
-       <property name="text">
-        <string>Italic</string>
-       </property>
       </widget>
      </item>
      <item row="1" column="2">
       <spacer name="horizontalSpacer">
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
        <property name="sizeType">
         <enum>QSizePolicy::Fixed</enum>
        </property>
@@ -559,10 +556,16 @@ QString CodeColoring ::test(int x, int y)
          <height>10</height>
         </size>
        </property>
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
       </spacer>
      </item>
      <item row="5" column="3">
       <widget class="QCheckBox" name="quote_Bold_CB">
+       <property name="text">
+        <string>Bold</string>
+       </property>
        <property name="minimumSize">
         <size>
          <width>35</width>
@@ -573,9 +576,6 @@ QString CodeColoring ::test(int x, int y)
         <font>
          <pointsize>10</pointsize>
         </font>
-       </property>
-       <property name="text">
-        <string>Bold</string>
        </property>
       </widget>
      </item>
@@ -588,6 +588,9 @@ QString CodeColoring ::test(int x, int y)
      </item>
      <item row="6" column="0">
       <widget class="QLabel" name="label_8">
+       <property name="text">
+        <string>Single Line Comment:</string>
+       </property>
        <property name="minimumSize">
         <size>
          <width>0</width>
@@ -599,13 +602,13 @@ QString CodeColoring ::test(int x, int y)
          <pointsize>10</pointsize>
         </font>
        </property>
-       <property name="text">
-        <string>Single Line Comment:</string>
-       </property>
       </widget>
      </item>
      <item row="1" column="4">
       <widget class="QCheckBox" name="key_Italic_CB">
+       <property name="text">
+        <string>Italic</string>
+       </property>
        <property name="minimumSize">
         <size>
          <width>35</width>
@@ -623,13 +626,13 @@ QString CodeColoring ::test(int x, int y)
          <pointsize>10</pointsize>
         </font>
        </property>
-       <property name="text">
-        <string>Italic</string>
-       </property>
       </widget>
      </item>
      <item row="6" column="4">
       <widget class="QCheckBox" name="comment_Italic_CB">
+       <property name="text">
+        <string>Italic</string>
+       </property>
        <property name="minimumSize">
         <size>
          <width>35</width>
@@ -641,13 +644,13 @@ QString CodeColoring ::test(int x, int y)
          <pointsize>10</pointsize>
         </font>
        </property>
-       <property name="text">
-        <string>Italic</string>
-       </property>
       </widget>
      </item>
      <item row="1" column="0">
       <widget class="QLabel" name="label_3">
+       <property name="text">
+        <string>Keywords:</string>
+       </property>
        <property name="minimumSize">
         <size>
          <width>80</width>
@@ -658,9 +661,6 @@ QString CodeColoring ::test(int x, int y)
         <font>
          <pointsize>10</pointsize>
         </font>
-       </property>
-       <property name="text">
-        <string>Keywords:</string>
        </property>
       </widget>
      </item>
@@ -673,13 +673,13 @@ QString CodeColoring ::test(int x, int y)
      </item>
      <item row="7" column="0">
       <widget class="QLabel" name="label_12">
+       <property name="text">
+        <string>Multi-line Comment:</string>
+       </property>
        <property name="font">
         <font>
          <pointsize>10</pointsize>
         </font>
-       </property>
-       <property name="text">
-        <string>Multi-line Comment:</string>
        </property>
       </widget>
      </item>
@@ -692,25 +692,25 @@ QString CodeColoring ::test(int x, int y)
      </item>
      <item row="7" column="3">
       <widget class="QCheckBox" name="mline_Bold_CB">
+       <property name="text">
+        <string>Bold</string>
+       </property>
        <property name="font">
         <font>
          <pointsize>10</pointsize>
         </font>
-       </property>
-       <property name="text">
-        <string>Bold</string>
        </property>
       </widget>
      </item>
      <item row="7" column="4">
       <widget class="QCheckBox" name="mline_Italic_CB">
+       <property name="text">
+        <string>Italic</string>
+       </property>
        <property name="font">
         <font>
          <pointsize>10</pointsize>
         </font>
-       </property>
-       <property name="text">
-        <string>Italic</string>
        </property>
       </widget>
      </item>
@@ -773,13 +773,13 @@ QString CodeColoring ::test(int x, int y)
      </item>
      <item row="2" column="3">
       <widget class="QLabel" name="label_11">
+       <property name="text">
+        <string>Highlight Background:</string>
+       </property>
        <property name="font">
         <font>
          <pointsize>10</pointsize>
         </font>
-       </property>
-       <property name="text">
-        <string>Highlight Background:</string>
        </property>
       </widget>
      </item>
@@ -821,6 +821,9 @@ QString CodeColoring ::test(int x, int y)
      </item>
      <item row="0" column="0">
       <widget class="QLabel" name="label_1">
+       <property name="text">
+        <string>Text Color:</string>
+       </property>
        <property name="minimumSize">
         <size>
          <width>0</width>
@@ -831,14 +834,14 @@ QString CodeColoring ::test(int x, int y)
         <font>
          <pointsize>10</pointsize>
         </font>
-       </property>
-       <property name="text">
-        <string>Text Color:</string>
        </property>
       </widget>
      </item>
      <item row="2" column="0">
       <widget class="QLabel" name="label_2">
+       <property name="text">
+        <string>Background:</string>
+       </property>
        <property name="minimumSize">
         <size>
          <width>0</width>
@@ -850,20 +853,17 @@ QString CodeColoring ::test(int x, int y)
          <pointsize>10</pointsize>
         </font>
        </property>
-       <property name="text">
-        <string>Background:</string>
-       </property>
       </widget>
      </item>
      <item row="0" column="3">
       <widget class="QLabel" name="label_10">
+       <property name="text">
+        <string>Highlight Text:</string>
+       </property>
        <property name="font">
         <font>
          <pointsize>10</pointsize>
         </font>
-       </property>
-       <property name="text">
-        <string>Highlight Text:</string>
        </property>
       </widget>
      </item>
@@ -929,14 +929,14 @@ QString CodeColoring ::test(int x, int y)
     <layout class="QHBoxLayout" name="horizontalLayout_101">
      <item>
       <spacer name="horizontalSpacer_100">
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
        <property name="sizeHint" stdset="0">
         <size>
          <width>10</width>
          <height>20</height>
         </size>
+       </property>
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
        </property>
       </spacer>
      </item>
@@ -949,9 +949,6 @@ QString CodeColoring ::test(int x, int y)
      </item>
      <item>
       <spacer name="horizontalSpacer_101">
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
        <property name="sizeType">
         <enum>QSizePolicy::Fixed</enum>
        </property>
@@ -960,6 +957,9 @@ QString CodeColoring ::test(int x, int y)
          <width>8</width>
          <height>25</height>
         </size>
+       </property>
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
        </property>
       </spacer>
      </item>
@@ -972,14 +972,14 @@ QString CodeColoring ::test(int x, int y)
      </item>
      <item>
       <spacer name="horizontalSpacer_103">
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
        <property name="sizeHint" stdset="0">
         <size>
          <width>10</width>
          <height>20</height>
         </size>
+       </property>
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
        </property>
       </spacer>
      </item>
@@ -987,6 +987,9 @@ QString CodeColoring ::test(int x, int y)
    </item>
    <item row="0" column="0">
     <widget class="QLabel" name="label_9">
+     <property name="text">
+      <string>Text / Background Colors</string>
+     </property>
      <property name="font">
       <font>
        <family>Verdana</family>
@@ -995,16 +998,10 @@ QString CodeColoring ::test(int x, int y)
        <underline>true</underline>
       </font>
      </property>
-     <property name="text">
-      <string>Text / Background Colors</string>
-     </property>
     </widget>
    </item>
    <item row="1" column="0">
     <spacer name="verticalSpacer_4">
-     <property name="orientation">
-      <enum>Qt::Vertical</enum>
-     </property>
      <property name="sizeType">
       <enum>QSizePolicy::Fixed</enum>
      </property>
@@ -1013,14 +1010,14 @@ QString CodeColoring ::test(int x, int y)
        <width>20</width>
        <height>10</height>
       </size>
+     </property>
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
      </property>
     </spacer>
    </item>
    <item row="5" column="0">
     <spacer name="verticalSpacer_3">
-     <property name="orientation">
-      <enum>Qt::Vertical</enum>
-     </property>
      <property name="sizeType">
       <enum>QSizePolicy::Fixed</enum>
      </property>
@@ -1030,13 +1027,13 @@ QString CodeColoring ::test(int x, int y)
        <height>10</height>
       </size>
      </property>
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
     </spacer>
    </item>
    <item row="0" column="2">
     <spacer name="horizontalSpacer_2">
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
-     </property>
      <property name="sizeType">
       <enum>QSizePolicy::Fixed</enum>
      </property>
@@ -1046,13 +1043,13 @@ QString CodeColoring ::test(int x, int y)
        <height>20</height>
       </size>
      </property>
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
     </spacer>
    </item>
    <item row="3" column="0">
     <spacer name="verticalSpacer">
-     <property name="orientation">
-      <enum>Qt::Vertical</enum>
-     </property>
      <property name="sizeType">
       <enum>QSizePolicy::Fixed</enum>
      </property>
@@ -1061,6 +1058,9 @@ QString CodeColoring ::test(int x, int y)
        <width>20</width>
        <height>10</height>
       </size>
+     </property>
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
      </property>
     </spacer>
    </item>

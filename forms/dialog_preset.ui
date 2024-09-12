@@ -2,29 +2,35 @@
 <ui version="4.0">
  <class>Dialog_Preset</class>
  <widget class="QDialog" name="Dialog_Preset">
+  <property name="windowTitle">
+   <string>Preset Folders</string>
+  </property>
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>531</width>
-    <height>516</height>
+    <width>550</width>
+    <height>565</height>
    </rect>
-  </property>
-  <property name="windowTitle">
-   <string>Preset Folders</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
     <widget class="QGroupBox" name="groupBox_1">
+     <property name="title">
+      <string/>
+     </property>
      <property name="font">
       <font>
        <pointsize>10</pointsize>
       </font>
      </property>
-     <property name="title">
-      <string/>
-     </property>
      <layout class="QGridLayout" name="gridLayout">
+      <property name="verticalSpacing">
+       <number>7</number>
+      </property>
+      <property name="horizontalSpacing">
+       <number>6</number>
+      </property>
       <property name="leftMargin">
        <number>30</number>
       </property>
@@ -37,12 +43,6 @@
       <property name="bottomMargin">
        <number>11</number>
       </property>
-      <property name="horizontalSpacing">
-       <number>6</number>
-      </property>
-      <property name="verticalSpacing">
-       <number>7</number>
-      </property>
       <item row="11" column="0">
        <widget class="QLabel" name="label_50">
         <property name="text">
@@ -52,14 +52,14 @@
       </item>
       <item row="5" column="2">
        <widget class="QLineEdit" name="folder6">
+        <property name="readOnly">
+         <bool>false</bool>
+        </property>
         <property name="minimumSize">
          <size>
           <width>350</width>
           <height>0</height>
          </size>
-        </property>
-        <property name="readOnly">
-         <bool>false</bool>
         </property>
        </widget>
       </item>
@@ -121,40 +121,40 @@
       </item>
       <item row="2" column="2">
        <widget class="QLineEdit" name="folder3">
+        <property name="readOnly">
+         <bool>false</bool>
+        </property>
         <property name="minimumSize">
          <size>
           <width>350</width>
           <height>0</height>
          </size>
-        </property>
-        <property name="readOnly">
-         <bool>false</bool>
         </property>
        </widget>
       </item>
       <item row="13" column="2">
        <widget class="QLineEdit" name="folder12">
+        <property name="readOnly">
+         <bool>false</bool>
+        </property>
         <property name="minimumSize">
          <size>
           <width>350</width>
           <height>0</height>
          </size>
-        </property>
-        <property name="readOnly">
-         <bool>false</bool>
         </property>
        </widget>
       </item>
       <item row="0" column="2">
        <widget class="QLineEdit" name="folder1">
+        <property name="readOnly">
+         <bool>false</bool>
+        </property>
         <property name="minimumSize">
          <size>
           <width>350</width>
           <height>0</height>
          </size>
-        </property>
-        <property name="readOnly">
-         <bool>false</bool>
         </property>
        </widget>
       </item>
@@ -174,14 +174,14 @@
       </item>
       <item row="12" column="2">
        <widget class="QLineEdit" name="folder11">
+        <property name="readOnly">
+         <bool>false</bool>
+        </property>
         <property name="minimumSize">
          <size>
           <width>350</width>
           <height>0</height>
          </size>
-        </property>
-        <property name="readOnly">
-         <bool>false</bool>
         </property>
        </widget>
       </item>
@@ -208,27 +208,27 @@
       </item>
       <item row="9" column="2">
        <widget class="QLineEdit" name="folder8">
+        <property name="readOnly">
+         <bool>false</bool>
+        </property>
         <property name="minimumSize">
          <size>
           <width>350</width>
           <height>0</height>
          </size>
-        </property>
-        <property name="readOnly">
-         <bool>false</bool>
         </property>
        </widget>
       </item>
       <item row="1" column="2">
        <widget class="QLineEdit" name="folder2">
+        <property name="readOnly">
+         <bool>false</bool>
+        </property>
         <property name="minimumSize">
          <size>
           <width>350</width>
           <height>0</height>
          </size>
-        </property>
-        <property name="readOnly">
-         <bool>false</bool>
         </property>
        </widget>
       </item>
@@ -241,14 +241,14 @@
       </item>
       <item row="14" column="2">
        <widget class="QLineEdit" name="folder13">
+        <property name="readOnly">
+         <bool>false</bool>
+        </property>
         <property name="minimumSize">
          <size>
           <width>350</width>
           <height>0</height>
          </size>
-        </property>
-        <property name="readOnly">
-         <bool>false</bool>
         </property>
        </widget>
       </item>
@@ -268,14 +268,14 @@
       </item>
       <item row="4" column="2">
        <widget class="QLineEdit" name="folder5">
+        <property name="readOnly">
+         <bool>false</bool>
+        </property>
         <property name="minimumSize">
          <size>
           <width>350</width>
           <height>0</height>
          </size>
-        </property>
-        <property name="readOnly">
-         <bool>false</bool>
         </property>
        </widget>
       </item>
@@ -288,27 +288,27 @@
       </item>
       <item row="15" column="2">
        <widget class="QLineEdit" name="folder14">
+        <property name="readOnly">
+         <bool>false</bool>
+        </property>
         <property name="minimumSize">
          <size>
           <width>350</width>
           <height>0</height>
          </size>
-        </property>
-        <property name="readOnly">
-         <bool>false</bool>
         </property>
        </widget>
       </item>
       <item row="3" column="2">
        <widget class="QLineEdit" name="folder4">
+        <property name="readOnly">
+         <bool>false</bool>
+        </property>
         <property name="minimumSize">
          <size>
           <width>350</width>
           <height>0</height>
          </size>
-        </property>
-        <property name="readOnly">
-         <bool>false</bool>
         </property>
        </widget>
       </item>
@@ -335,14 +335,14 @@
       </item>
       <item row="6" column="2">
        <widget class="QLineEdit" name="folder7">
+        <property name="readOnly">
+         <bool>false</bool>
+        </property>
         <property name="minimumSize">
          <size>
           <width>350</width>
           <height>0</height>
          </size>
-        </property>
-        <property name="readOnly">
-         <bool>false</bool>
         </property>
        </widget>
       </item>
@@ -362,14 +362,14 @@
       </item>
       <item row="10" column="2">
        <widget class="QLineEdit" name="folder9">
+        <property name="readOnly">
+         <bool>false</bool>
+        </property>
         <property name="minimumSize">
          <size>
           <width>350</width>
           <height>0</height>
          </size>
-        </property>
-        <property name="readOnly">
-         <bool>false</bool>
         </property>
        </widget>
       </item>
@@ -382,14 +382,14 @@
       </item>
       <item row="11" column="2">
        <widget class="QLineEdit" name="folder10">
+        <property name="readOnly">
+         <bool>false</bool>
+        </property>
         <property name="minimumSize">
          <size>
           <width>350</width>
           <height>0</height>
          </size>
-        </property>
-        <property name="readOnly">
-         <bool>false</bool>
         </property>
        </widget>
       </item>
@@ -423,14 +423,14 @@
       </item>
       <item row="16" column="2">
        <widget class="QLineEdit" name="folder15">
+        <property name="readOnly">
+         <bool>false</bool>
+        </property>
         <property name="minimumSize">
          <size>
           <width>350</width>
           <height>0</height>
          </size>
-        </property>
-        <property name="readOnly">
-         <bool>false</bool>
         </property>
        </widget>
       </item>
@@ -453,9 +453,6 @@
    </item>
    <item>
     <spacer name="verticalSpacer_1">
-     <property name="orientation">
-      <enum>Qt::Vertical</enum>
-     </property>
      <property name="sizeType">
       <enum>QSizePolicy::Fixed</enum>
      </property>
@@ -465,6 +462,9 @@
        <height>5</height>
       </size>
      </property>
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
     </spacer>
    </item>
    <item>
@@ -472,19 +472,28 @@
      <property name="spacing">
       <number>6</number>
      </property>
-     <property name="margin">
+     <property name="leftMargin">
+      <number>0</number>
+     </property>
+     <property name="topMargin">
+      <number>0</number>
+     </property>
+     <property name="rightMargin">
+      <number>0</number>
+     </property>
+     <property name="bottomMargin">
       <number>0</number>
      </property>
      <item>
       <spacer name="horizontalSpacer_102">
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
        <property name="sizeHint" stdset="0">
         <size>
          <width>10</width>
          <height>20</height>
         </size>
+       </property>
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
        </property>
       </spacer>
      </item>
@@ -497,9 +506,6 @@
      </item>
      <item>
       <spacer name="horizontalSpacer_103">
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
        <property name="sizeType">
         <enum>QSizePolicy::Fixed</enum>
        </property>
@@ -508,6 +514,9 @@
          <width>8</width>
          <height>25</height>
         </size>
+       </property>
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
        </property>
       </spacer>
      </item>
@@ -520,14 +529,14 @@
      </item>
      <item>
       <spacer name="horizontalSpacer_104">
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
        <property name="sizeHint" stdset="0">
         <size>
          <width>10</width>
          <height>20</height>
         </size>
+       </property>
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
        </property>
       </spacer>
      </item>

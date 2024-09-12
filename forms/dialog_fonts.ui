@@ -2,27 +2,27 @@
 <ui version="4.0">
  <class>Dialog_Fonts</class>
  <widget class="QDialog" name="Dialog_Fonts">
+  <property name="windowTitle">
+   <string>Screen Fonts</string>
+  </property>
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>549</width>
-    <height>155</height>
+    <width>585</width>
+    <height>170</height>
    </rect>
-  </property>
-  <property name="windowTitle">
-   <string>Screen Fonts</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
     <widget class="QGroupBox" name="groupBox_4">
+     <property name="title">
+      <string> Fonts</string>
+     </property>
      <property name="font">
       <font>
        <pointsize>10</pointsize>
       </font>
-     </property>
-     <property name="title">
-      <string> Fonts</string>
      </property>
      <layout class="QGridLayout" name="gridLayout_5">
       <property name="bottomMargin">
@@ -37,16 +37,13 @@
       </item>
       <item row="11" column="2">
        <widget class="QLineEdit" name="fontColumn">
-        <property name="minimumSize">
-         <size>
-          <width>350</width>
-          <height>0</height>
-         </size>
+        <property name="readOnly">
+         <bool>true</bool>
         </property>
         <property name="palette">
          <palette>
           <active>
-           <colorrole role="Text">
+           <colorrole role="PlaceholderText">
             <brush brushstyle="SolidPattern">
              <color alpha="255">
               <red>0</red>
@@ -57,7 +54,7 @@
            </colorrole>
           </active>
           <inactive>
-           <colorrole role="Text">
+           <colorrole role="PlaceholderText">
             <brush brushstyle="SolidPattern">
              <color alpha="255">
               <red>0</red>
@@ -68,7 +65,7 @@
            </colorrole>
           </inactive>
           <disabled>
-           <colorrole role="Text">
+           <colorrole role="PlaceholderText">
             <brush brushstyle="SolidPattern">
              <color alpha="255">
               <red>106</red>
@@ -80,8 +77,11 @@
           </disabled>
          </palette>
         </property>
-        <property name="readOnly">
-         <bool>true</bool>
+        <property name="minimumSize">
+         <size>
+          <width>350</width>
+          <height>0</height>
+         </size>
         </property>
        </widget>
       </item>
@@ -101,16 +101,13 @@
       </item>
       <item row="4" column="2">
        <widget class="QLineEdit" name="fontNormal">
-        <property name="minimumSize">
-         <size>
-          <width>350</width>
-          <height>0</height>
-         </size>
+        <property name="readOnly">
+         <bool>true</bool>
         </property>
         <property name="palette">
          <palette>
           <active>
-           <colorrole role="Text">
+           <colorrole role="PlaceholderText">
             <brush brushstyle="SolidPattern">
              <color alpha="255">
               <red>0</red>
@@ -121,7 +118,7 @@
            </colorrole>
           </active>
           <inactive>
-           <colorrole role="Text">
+           <colorrole role="PlaceholderText">
             <brush brushstyle="SolidPattern">
              <color alpha="255">
               <red>0</red>
@@ -132,7 +129,7 @@
            </colorrole>
           </inactive>
           <disabled>
-           <colorrole role="Text">
+           <colorrole role="PlaceholderText">
             <brush brushstyle="SolidPattern">
              <color alpha="255">
               <red>106</red>
@@ -144,8 +141,11 @@
           </disabled>
          </palette>
         </property>
-        <property name="readOnly">
-         <bool>true</bool>
+        <property name="minimumSize">
+         <size>
+          <width>350</width>
+          <height>0</height>
+         </size>
         </property>
        </widget>
       </item>
@@ -161,9 +161,6 @@
    </item>
    <item>
     <spacer name="verticalSpacer_4">
-     <property name="orientation">
-      <enum>Qt::Vertical</enum>
-     </property>
      <property name="sizeType">
       <enum>QSizePolicy::Fixed</enum>
      </property>
@@ -173,20 +170,23 @@
        <height>8</height>
       </size>
      </property>
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
     </spacer>
    </item>
    <item>
     <layout class="QHBoxLayout" name="horizontalLayout_102">
      <item>
       <spacer name="horizontalSpacer_103">
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
        <property name="sizeHint" stdset="0">
         <size>
          <width>10</width>
          <height>20</height>
         </size>
+       </property>
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
        </property>
       </spacer>
      </item>
@@ -199,9 +199,6 @@
      </item>
      <item>
       <spacer name="horizontalSpacer_104">
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
        <property name="sizeType">
         <enum>QSizePolicy::Fixed</enum>
        </property>
@@ -210,6 +207,9 @@
          <width>8</width>
          <height>25</height>
         </size>
+       </property>
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
        </property>
       </spacer>
      </item>
@@ -222,14 +222,14 @@
      </item>
      <item>
       <spacer name="horizontalSpacer_105">
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
        <property name="sizeHint" stdset="0">
         <size>
          <width>10</width>
          <height>20</height>
         </size>
+       </property>
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
        </property>
       </spacer>
      </item>

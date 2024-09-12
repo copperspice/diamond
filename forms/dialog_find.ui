@@ -2,16 +2,16 @@
 <ui version="4.0">
  <class>Dialog_Find</class>
  <widget class="QDialog" name="Dialog_Find">
-  <property name="modal" stdset="0">
+  <property name="modal">
    <bool>false</bool>
   </property>
-  <property name="windowTitle" stdset="0">
+  <property name="windowTitle">
    <string>Find</string>
   </property>
-  <property name="windowModality" stdset="0">
+  <property name="windowModality">
    <enum>Qt::NonModal</enum>
   </property>
-  <property name="geometry" stdset="0">
+  <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
@@ -20,7 +20,7 @@
    </rect>
   </property>
   <layout class="QGridLayout" name="gridLayout">
-   <property name="horizontalSpacing" stdset="0">
+   <property name="horizontalSpacing">
     <number>30</number>
    </property>
    <property name="topMargin">
@@ -28,19 +28,19 @@
    </property>
    <item row="4" column="2" rowspan="3">
     <widget class="QGroupBox" name="groupBox">
-     <property name="title" stdset="0">
+     <property name="title">
       <string>Direction</string>
      </property>
-     <property name="font" stdset="0">
+     <property name="font">
       <font>
        <pointsize>10</pointsize>
       </font>
      </property>
      <layout class="QGridLayout" name="gridLayout_2">
-      <property name="verticalSpacing" stdset="0">
+      <property name="verticalSpacing">
        <number>2</number>
       </property>
-      <property name="horizontalSpacing" stdset="0">
+      <property name="horizontalSpacing">
        <number>0</number>
       </property>
       <property name="topMargin">
@@ -51,10 +51,10 @@
       </property>
       <item row="1" column="0">
        <widget class="QRadioButton" name="down_RB">
-        <property name="text" stdset="0">
+        <property name="text">
          <string>Down</string>
         </property>
-        <property name="font" stdset="0">
+        <property name="font">
          <font>
           <pointsize>10</pointsize>
          </font>
@@ -63,10 +63,10 @@
       </item>
       <item row="0" column="0">
        <widget class="QRadioButton" name="up_RB">
-        <property name="text" stdset="0">
+        <property name="text">
          <string>Up</string>
         </property>
-        <property name="font" stdset="0">
+        <property name="font">
          <font>
           <pointsize>10</pointsize>
          </font>
@@ -78,10 +78,10 @@
    </item>
    <item row="5" column="1">
     <widget class="QCheckBox" name="wholeWords_CKB">
-     <property name="text" stdset="0">
+     <property name="text">
       <string>Match Whole Words</string>
      </property>
-     <property name="font" stdset="0">
+     <property name="font">
       <font>
        <pointsize>10</pointsize>
       </font>
@@ -90,7 +90,7 @@
    </item>
    <item row="2" column="0" colspan="4">
     <spacer name="verticalSpacer_1">
-     <property name="sizeType" stdset="0">
+     <property name="sizeType">
       <enum>QSizePolicy::Fixed</enum>
      </property>
      <property name="sizeHint" stdset="0">
@@ -99,14 +99,14 @@
        <height>10</height>
       </size>
      </property>
-     <property name="orientation" stdset="0">
+     <property name="orientation">
       <enum>Qt::Vertical</enum>
      </property>
     </spacer>
    </item>
    <item row="10" column="2">
     <spacer name="verticalSpacer_2">
-     <property name="sizeType" stdset="0">
+     <property name="sizeType">
       <enum>QSizePolicy::Fixed</enum>
      </property>
      <property name="sizeHint" stdset="0">
@@ -115,17 +115,17 @@
        <height>13</height>
       </size>
      </property>
-     <property name="orientation" stdset="0">
+     <property name="orientation">
       <enum>Qt::Vertical</enum>
      </property>
     </spacer>
    </item>
    <item row="4" column="1">
     <widget class="QCheckBox" name="matchCase_CKB">
-     <property name="text" stdset="0">
+     <property name="text">
       <string>Match Case</string>
      </property>
-     <property name="font" stdset="0">
+     <property name="font">
       <font>
        <pointsize>10</pointsize>
       </font>
@@ -134,21 +134,21 @@
    </item>
    <item row="0" column="0" rowspan="2" colspan="4">
     <layout class="QHBoxLayout" name="horizontalLayout">
-     <property name="spacing" stdset="0">
+     <property name="spacing">
       <number>8</number>
      </property>
      <item>
       <widget class="QLabel" name="label">
-       <property name="text" stdset="0">
+       <property name="text">
         <string>Find:</string>
        </property>
-       <property name="minimumSize" stdset="0">
+       <property name="minimumSize">
         <size>
          <width>0</width>
          <height>0</height>
         </size>
        </property>
-       <property name="font" stdset="0">
+       <property name="font">
         <font>
          <pointsize>10</pointsize>
         </font>
@@ -157,19 +157,19 @@
      </item>
      <item>
       <widget class="QComboBox" name="find_Combo">
-       <property name="sizePolicy" stdset="0">
+       <property name="sizePolicy">
         <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
          <horstretch>0</horstretch>
          <verstretch>0</verstretch>
         </sizepolicy>
        </property>
-       <property name="minimumSize" stdset="0">
+       <property name="minimumSize">
         <size>
          <width>350</width>
          <height>0</height>
         </size>
        </property>
-       <property name="font" stdset="0">
+       <property name="font">
         <font>
          <pointsize>10</pointsize>
         </font>
@@ -188,21 +188,21 @@
          <height>20</height>
         </size>
        </property>
-       <property name="orientation" stdset="0">
+       <property name="orientation">
         <enum>Qt::Horizontal</enum>
        </property>
       </spacer>
      </item>
      <item>
       <widget class="QPushButton" name="find_PB">
-       <property name="text" stdset="0">
+       <property name="text">
         <string>Find</string>
        </property>
       </widget>
      </item>
      <item>
       <spacer name="horizontalSpacer_23">
-       <property name="sizeType" stdset="0">
+       <property name="sizeType">
         <enum>QSizePolicy::Fixed</enum>
        </property>
        <property name="sizeHint" stdset="0">
@@ -211,14 +211,14 @@
          <height>25</height>
         </size>
        </property>
-       <property name="orientation" stdset="0">
+       <property name="orientation">
         <enum>Qt::Horizontal</enum>
        </property>
       </spacer>
      </item>
      <item>
       <widget class="QPushButton" name="cancel_PB">
-       <property name="text" stdset="0">
+       <property name="text">
         <string>Cancel</string>
        </property>
       </widget>
@@ -231,7 +231,7 @@
          <height>20</height>
         </size>
        </property>
-       <property name="orientation" stdset="0">
+       <property name="orientation">
         <enum>Qt::Horizontal</enum>
        </property>
       </spacer>
