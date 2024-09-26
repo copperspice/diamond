@@ -31,15 +31,13 @@ void MainWindow::openTab_CreateMenus()
    for (int k = 0; k < cnt; ++k) {
       fullName = get_curFileName(k);
 
-      if (fullName.isEmpty()) {
-         --cnt;
-
-      } else {
+      if (!fullName.isEmpty()) {
          m_openedFiles.append(fullName);
          m_openedModified.append(false);
       }
    }
-
+   // How many were really opened
+   cnt = m_openedFiles.count(); 
    //
    QMenu *windowMenu = m_ui->menuWindow;
    windowMenu->addSeparator();
