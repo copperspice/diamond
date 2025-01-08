@@ -28,26 +28,36 @@ C++ applications.
 * Record, Save, and Play back Macros
 
 
-### Building
+### Binary Files
 
-Diamond prebuilt binaries are available for Linux, Mac OS X, and Windows.
+Diamond prebuilt binaries are available for all supported platforms.
 
 https://download.copperspice.com/diamond/binary/
 
-To build Diamond from source a current copy of the CopperSpice libraries, a C++17 compiler, and a C++17 standard
-library are required. Diamond uses the following CopperSpice libraries: CsCore, CsGui, and CsNetwork.
+CopperSpice prebuilt binaries are available for all supported platforms.
 
-To run Diamond two plugins must be copied to the deploy folder. The platform plugin is copied to
-"your_path/diamond/platforms" and the printer driver plugin must be copied to "your_path/diamond/printerdrivers".
-
-CMake build files are provided with the Diamond source distribution.
+https://github.com/copperspice/copperspice/releases/
+https://download.copperspice.com/copperspice/binary/
 
 
-##### Additional Dependency
+### System Requirements
 
-The diamond program uses the Hunspell library for spell checking. When building Diamond from  source ensure you have
-Hunspell installed on your computer. For Windows developers the full source code is available on our Diamond source
-download page. For other platforms install the Hunspell package.
+Building Diamond requires a C++20 compiler and a C++20 standard library. You will also need a current copy
+of the CopperSpice libraries. Diamond links with CsCore, CsGui, and CsNetwork.
+
+CMake build files are provided with the source distribution to build this application.
+
+
+##### Additional Build Requirement
+
+The Diamond program uses the Hunspell library for spell checking. When building Diamond from source you most have
+Hunspell installed on your computer.
+
+For Windows developers the full source code for Hunspell is available on our download page.
+
+https://download.copperspice.com/diamond/source/
+
+For other platforms install the Hunspell package as indicated.
 
 * Debian, Ubuntu
    * `apt-get install libhunspell-dev`
@@ -63,24 +73,25 @@ download page. For other platforms install the Hunspell package.
 
 ### Documentation
 
-Full documentation for Diamond is available on our download page.
+Full documentation for Diamond is available on the website or from our download page.
+
 
 |URL      |Description|
 |---------|-----------|
+|https://www.copperspice.com/docs/diamond/index.html| Online
 |https://download.copperspice.com/diamond/documentation| Download (tar and zip formats)|
 
 
 ### Presentations
 
-Our YouTube channel videos are about modern C++, build systems, CopperSpice, DoxyPress, and other topics related to
-our open source work.
+Our YouTube channel contains over 75 videos about C++, programming fundamentals, Unicode/Strings, multithreading,
+graphics, CopperSpice, DoxyPress, and other software development topics.
 
 https://www.youtube.com/copperspice
 
+Links to additional videos can be found on our website.
 
-Links to technical presentations recorded at CppNow and CppCon:
-
-www.copperspice.com/presentations.html
+https://www.copperspice.com/presentations.html
 
 
 ### Authors
