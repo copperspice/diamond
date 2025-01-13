@@ -24,18 +24,6 @@
 
 #include <hunspell.hxx>
 
-#if defined (H_DEPRECATED)
-// could be version 1.5, 1.6, or 1.7
-#define HUNSPELL_VERSION 5
-
-#else
-// any version less than 1.5
-#define HUNSPELL_VERSION 4
-
-#endif
-
-// all supported platforms use 1.5 or newer
-
 SpellCheck::SpellCheck(const QString &dictMain, const QString &dictUser)
 {
    m_userFname = dictUser;
@@ -62,7 +50,7 @@ SpellCheck::SpellCheck(const QString &dictMain, const QString &dictUser)
    if (m_userFname.isEmpty()) {
       csError("Spell Check", "Unable to find User Dictionary");
 
-    } else {
+   } else {
       QFile file(m_userFname);
 
       if (! file.open(QFile::ReadOnly)) {
@@ -94,45 +82,36 @@ bool SpellCheck::spell(QStringView word)
       return true;
    }
 
-   while (! word.isEmpty() && ! word.at(0).isLetter()) {
-      word = word.mid(1);
+   QString lookUp(word);
+
+   while (! lookUp.isEmpty() && ! lookUp.at(0).isLetter()) {
+      lookUp = lookUp.mid(1);
    }
 
-#if (HUNSPELL_VERSION >= 5)
-   isCorrect = m_hunspell->spell(QString(word).toStdString());
+   const QByteArray ba = m_codec->fromUnicode(lookUp);
+   const std::string checkWord = ba.constData();
 
-#else
-   isCorrect = m_hunspell->spell(m_codec->fromUnicode(word).constData()) != 0;
-
-#endif
+   isCorrect = m_hunspell->spell(checkWord) != 0;
 
    return isCorrect;
 }
 
 QStringList SpellCheck::suggest(const QString &word)
 {
-   QStringList suggestions;
+   QStringList retval;
 
-#if (HUNSPELL_VERSION >= 5)
-   QVector<std::string> suggestWordList = QVector<std::string>::fromStdVector(m_hunspell->suggest(word.toStdString()));
+   std::vector<std::string> suggestWords;
 
-   for (auto item : suggestWordList) {
-      suggestions.append(QString::fromLatin1(item.c_str()));
+   const QByteArray ba = m_codec->fromUnicode(word);
+   const std::string checkWord = ba.constData();
+
+   suggestWords = m_hunspell->suggest(checkWord);
+
+   for (const auto &item : suggestWords) {
+      retval.append(m_codec->toUnicode(item.c_str()));
    }
 
-#else
-   char **suggestWordList;
-
-   const int cnt = m_hunspell->suggest(&suggestWordList, m_codec->fromUnicode(word).constData());
-
-   for (int k = 0; k < cnt; ++k) {
-      suggestions.append( m_codec->toUnicode(suggestWordList[k]) );
-   }
-
-   m_hunspell->free_list(&suggestWordList, cnt);
-#endif
-
-   return suggestions;
+   return retval;
 }
 
 void SpellCheck::ignoreWord(const QString &word)
